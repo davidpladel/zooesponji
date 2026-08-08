@@ -48,6 +48,21 @@ function renderFeedScreen(container, animal, coins, callbacks) {
   });
 }
 
+const DROP_HIT_MARGIN_PX = 40;
+
+function expandRect(rect, margin) {
+  return {
+    left: rect.left - margin,
+    right: rect.right + margin,
+    top: rect.top - margin,
+    bottom: rect.bottom + margin,
+  };
+}
+
+function rectsOverlap(a, b) {
+  return a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top;
+}
+
 function setupDragAndDrop(foodEl, targetEl, onDrop) {
   let dragging = false;
   let originalParent = null;
@@ -69,16 +84,10 @@ function setupDragAndDrop(foodEl, targetEl, onDrop) {
     moveTo(event.clientX, event.clientY);
   });
 
-  foodEl.addEventListener('pointerup', (event) => {
+  foodEl.addEventListener('pointerup', () => {
     if (!dragging) return;
 
-    const targetRect = targetEl.getBoundingClientRect();
-    const dropped = (
-      event.clientX >= targetRect.left &&
-      event.clientX <= targetRect.right &&
-      event.clientY >= targetRect.top &&
-      event.clientY <= targetRect.bottom
-    );
+    const dropped = rectsOverlap(foodEl.getBoundingClientRect(), expandRect(targetEl.getBoundingClientRect(), DROP_HIT_MARGIN_PX));
 
     restoreAfterDrag();
 
