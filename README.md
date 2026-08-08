@@ -20,6 +20,12 @@ Para ejecutar los tests automáticos de la lógica de datos y monedas (requiere 
 node --test tests/*.test.js
 ```
 
+### Desplegado en producción
+
+El juego vive también en `davidpladel.com/zooesponji`, desplegado con un simple `git pull` en el VPS (ver instrucciones más abajo).
+
+**Importante — caché del navegador:** los `<script>` y `<link>` de `index.html` llevan un parámetro `?v=N` (ej. `js/main.js?v=2`). Los móviles cachean agresivamente los JS/CSS por su nombre de archivo; sin ese parámetro, tras actualizar el código en el VPS los usuarios pueden seguir viendo la versión antigua durante días aunque recarguen la página. **Cada vez que se modifique algún archivo `.js` o `.css`, hay que subir en 1 ese número en todas sus apariciones dentro de `index.html`** para forzar la descarga de la versión nueva.
+
 ## Diseño de contenido (v1)
 
 **Animales:** león, cabra
