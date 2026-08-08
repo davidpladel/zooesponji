@@ -3,8 +3,14 @@
 
   function showZooScreen() {
     const coins = getCoins(window.localStorage);
-    renderZooScreen(app, coins, (animal) => {
-      console.log('Animal seleccionado:', animal);
+    renderZooScreen(app, coins, showFeedScreen);
+  }
+
+  function showFeedScreen(animal) {
+    const coins = getCoins(window.localStorage);
+    renderFeedScreen(app, animal, coins, {
+      onBack: showZooScreen,
+      onCoinEarned: () => addCoin(window.localStorage),
     });
   }
 
