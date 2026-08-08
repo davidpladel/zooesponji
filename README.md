@@ -80,6 +80,15 @@ Para las expresiones/reacciones del mismo animal, usar el mismo prompt añadiend
 
 Consejo: generar primero el animal en pose neutra, y usar esa misma imagen como referencia en Grok al pedir las variantes de expresión, para que no cambie el diseño del personaje entre frames.
 
+## Roadmap
+
+Próximas versiones planeadas (sin fecha cerrada — cualquiera puede coger una de estas):
+
+- **Tienda**: gastar las monedas ganadas para comprar/desbloquear la pantera y los pandas (ya aparecen bloqueados en el mapa del zoo) y comprar nuevos tipos de comida.
+- **Mejorar los sonidos**: sustituir los tonos generados por código (Web Audio) por sonidos más elaborados o grabados.
+
+Ideas ya recogidas antes pero sin planificar todavía: imágenes reales para los alimentos (de momento son emoji), y empaquetado a APK de Android con Capacitor.
+
 ## Cómo contribuir
 
 ¡Se aceptan colaboraciones! La idea es que el zoo crezca con más animales, más comidas y mejores gráficos. Para contribuir:
