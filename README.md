@@ -91,4 +91,6 @@ Consejo: generar primero el animal en pose neutra, y usar esa misma imagen como 
 
 ## Licencia
 
+Copyright (C) 2026 [davidpladel](https://github.com/davidpladel)
+
 [GPL-3.0](LICENSE). Cualquiera puede usar, copiar, modificar y redistribuir este proyecto, siempre que las versiones modificadas que se distribuyan sigan siendo de código abierto bajo la misma licencia.
