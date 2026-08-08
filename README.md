@@ -1,6 +1,6 @@
 # 🦁 ZooEsponji
 
-Juego creado por una niña de 9 años y un niño de 5 años, con la ayuda de su padre y de [Claude Code](https://claude.com/claude-code).
+Creado por y para Daniela y Adrián, con la ayuda de su padre y de [Claude Code](https://claude.com/claude-code).
 
 ## La idea
 
@@ -52,7 +52,7 @@ Este stack se eligió para minimizar la complejidad (y el gasto de tokens) del d
 
 ## Assets gráficos
 
-Los niños crean las imágenes ellos mismos con generación de IA (Grok Imagine), ajustando un prompt base. Claude Code no genera las imágenes, solo las integra en el juego una vez creadas — basta con guardar el PNG en `assets/img/` con el nombre exacto que toque y el juego lo usa automáticamente en vez del emoji de repuesto, sin tocar código (ver `js/sprites.js`).
+Los niños crean las imágenes ellos mismos con generación de IA (ChatGPT), ajustando un prompt base. Claude Code no genera las imágenes, solo las integra en el juego una vez creadas — basta con guardar el PNG en `assets/img/` con el nombre exacto que toque y el juego lo usa automáticamente en vez del emoji de repuesto, sin tocar código (ver `js/sprites.js`).
 
 - Imágenes **estáticas**, no vídeo ni GIF (mejor control de tiempos, transparencia real, y el juego ya cambia de imagen por código en el momento justo).
 - Formato **PNG con fondo transparente** cuando sea un personaje/objeto recortado (nunca JPG, que lleva fondo sólido).
@@ -60,7 +60,7 @@ Los niños crean las imágenes ellos mismos con generación de IA (Grok Imagine)
 - **Animales:** una foto por estado en `ANIMAL_STATE_IMAGE` (`js/data.js`) — `normal`, `come` (feliz), `rechaza` (enfadado), y `especial` solo si el animal tiene alguna reacción especial (ej. la cabra con el conejo). Nomenclatura actual: `leon-normal.png`, `leon-contentos.png`, `leon-enfadado.png`, `cabras-normal.png`, `cabras-contentas.png`, `cabras-enfadadas.png`, `cabras-con-el-conejo-especial.png`.
 - **Alimentos:** un PNG por alimento en `assets/img/` (`piedra.png`, `carne.png`, `conejo.png`, `zanahoria.png`) — de momento siguen como emoji porque aún no se han generado.
 
-### Prompt base para Grok (a ajustar por los niños)
+### Prompt base para ChatGPT (a ajustar por los niños)
 
 Plantilla de partida — cambiar solo lo que está entre `[corchetes]`, manteniendo el resto para que todos los animales/alimentos tengan un estilo consistente:
 
@@ -78,7 +78,7 @@ Para las expresiones/reacciones del mismo animal, usar el mismo prompt añadiend
 [mismo prompt del animal] + expresión de [feliz comiendo / disgusto y rechazo / sorpresa cariñosa]
 ```
 
-Consejo: generar primero el animal en pose neutra, y usar esa misma imagen como referencia en Grok al pedir las variantes de expresión, para que no cambie el diseño del personaje entre frames.
+Consejo: generar primero el animal en pose neutra, y usar esa misma imagen como referencia en ChatGPT al pedir las variantes de expresión, para que no cambie el diseño del personaje entre frames.
 
 ## Roadmap
 
@@ -100,6 +100,6 @@ Ideas ya recogidas antes pero sin planificar todavía: imágenes reales para los
 
 ## Licencia
 
-Copyright (C) 2026 [davidpladel](https://github.com/davidpladel)
+Copyright (C) 2026 [davidpladel](https://github.com/davidpladel) — hecho con cariño para Daniela y Adrián 💛
 
 [GPL-3.0](LICENSE). Cualquiera puede usar, copiar, modificar y redistribuir este proyecto, siempre que las versiones modificadas que se distribuyan sigan siendo de código abierto bajo la misma licencia.
