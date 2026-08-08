@@ -8,7 +8,17 @@ Eres el cuidador de los animales del zoo y les das de comer. Cada animal tiene s
 
 ## Estado del proyecto
 
-🚧 En fase de diseño inicial. Todavía no hay código — este README documenta las decisiones tomadas hasta ahora para que sirvan de punto de partida al desarrollo.
+✅ MVP jugable en el navegador (mapa del zoo + alimentar león/cabra). Sin imágenes reales todavía (placeholders con emoji) y sin empaquetar a Android.
+
+## Cómo jugarlo
+
+No hace falta instalar nada. Basta con abrir `index.html` directamente en un navegador (doble clic en el archivo, o `start index.html` en Windows / `open index.html` en Mac).
+
+Para ejecutar los tests automáticos de la lógica de datos y monedas (requiere Node.js):
+
+```bash
+node --test tests/
+```
 
 ## Diseño de contenido (v1)
 
