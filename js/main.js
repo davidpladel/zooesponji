@@ -10,7 +10,7 @@
     const coins = getCoins(window.localStorage);
     renderFeedScreen(app, animal, coins, {
       onBack: showZooScreen,
-      onCoinEarned: () => addCoin(window.localStorage),
+      onCoinEarned: (amount) => addCoin(window.localStorage, amount),
     });
   }
 

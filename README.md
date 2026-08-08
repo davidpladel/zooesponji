@@ -30,12 +30,12 @@ node --test tests/*.test.js
 
 | Alimento   | 🦁 León                          | 🐐 Cabra                              |
 |------------|-----------------------------------|----------------------------------------|
-| Carne      | Se lo come (feliz)                | No le gusta (cara + sonido de rechazo) |
-| Conejo     | Se lo come (feliz)                | Reacción especial: lo acaricia con la cabeza (no se lo come) |
-| Piedra     | No le gusta (cara + sonido de rechazo) | Se lo come (feliz) — gracioso, se come una piedra |
-| Zanahoria  | No le gusta (cara + sonido de rechazo) | Se lo come (feliz)                 |
+| Carne      | Se lo come (feliz, +1 moneda)     | No le gusta (cara + sonido de rechazo) |
+| Conejo     | Se lo come (feliz, +1 moneda)     | Reacción especial: lo acaricia con la cabeza, no se lo come (+2 monedas) |
+| Piedra     | No le gusta (cara + sonido de rechazo) | Se lo come (feliz, +1 moneda) — gracioso, se come una piedra |
+| Zanahoria  | No le gusta (cara + sonido de rechazo) | Se lo come (feliz, +1 moneda)     |
 
-Esta tabla se implementará como datos (no lógica hardcodeada por animal), para poder añadir animales y alimentos nuevos fácilmente. Cada combinación animal+alimento tiene un resultado de tres tipos posibles: `come` (feliz + sonido), `rechaza` (cara de disgusto + sonido negativo), o `especial` (animación/sonido propio, ej. acariciar).
+Esta tabla se implementa como datos (no lógica hardcodeada por animal), para poder añadir animales y alimentos nuevos fácilmente. Cada combinación animal+alimento tiene un resultado de tres tipos posibles: `come` (feliz + sonido, +1 moneda), `rechaza` (cara de disgusto + sonido negativo, sin moneda), o `especial` (animación/sonido propio, ej. acariciar, +2 monedas — el doble por ser una reacción rara).
 
 ## Decisiones técnicas
 

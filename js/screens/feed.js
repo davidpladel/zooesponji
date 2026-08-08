@@ -1,3 +1,6 @@
+const COINS_PER_COME = 1;
+const COINS_PER_ESPECIAL = 2;
+
 function renderFeedScreen(container, animal, coins, callbacks) {
   container.innerHTML = `
     <div class="feed-screen">
@@ -45,7 +48,7 @@ function renderFeedScreen(container, animal, coins, callbacks) {
       faceEl.textContent = '😋';
       playEatSound();
       setAnimalState('come');
-      const newCoins = callbacks.onCoinEarned();
+      const newCoins = callbacks.onCoinEarned(COINS_PER_COME);
       coinsEl.textContent = String(newCoins);
     } else if (reaction === 'rechaza') {
       faceEl.textContent = '😝';
@@ -55,6 +58,8 @@ function renderFeedScreen(container, animal, coins, callbacks) {
       faceEl.textContent = '🥰';
       playSpecialSound();
       setAnimalState('especial');
+      const newCoins = callbacks.onCoinEarned(COINS_PER_ESPECIAL);
+      coinsEl.textContent = String(newCoins);
     }
 
     setTimeout(() => {
@@ -83,14 +88,22 @@ function rectsOverlap(a, b) {
   return a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top;
 }
 
+const MIN_DRAG_DISTANCE_PX = 15;
+
 function setupDragAndDrop(foodEl, targetEl, onDrop) {
   let dragging = false;
   let originalParent = null;
   let originalNextSibling = null;
+  let startX = 0;
+  let startY = 0;
+  let hasMoved = false;
 
   foodEl.addEventListener('pointerdown', (event) => {
     if (dragging) return;
     dragging = true;
+    hasMoved = false;
+    startX = event.clientX;
+    startY = event.clientY;
     originalParent = foodEl.parentNode;
     originalNextSibling = foodEl.nextSibling;
     foodEl.classList.add('dragging');
@@ -101,13 +114,16 @@ function setupDragAndDrop(foodEl, targetEl, onDrop) {
 
   foodEl.addEventListener('pointermove', (event) => {
     if (!dragging) return;
+    if (Math.hypot(event.clientX - startX, event.clientY - startY) >= MIN_DRAG_DISTANCE_PX) {
+      hasMoved = true;
+    }
     moveTo(event.clientX, event.clientY);
   });
 
   foodEl.addEventListener('pointerup', () => {
     if (!dragging) return;
 
-    const dropped = rectsOverlap(foodEl.getBoundingClientRect(), expandRect(targetEl.getBoundingClientRect(), DROP_HIT_MARGIN_PX));
+    const dropped = hasMoved && rectsOverlap(foodEl.getBoundingClientRect(), expandRect(targetEl.getBoundingClientRect(), DROP_HIT_MARGIN_PX));
 
     restoreAfterDrag();
 

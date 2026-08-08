@@ -11,8 +11,8 @@ function getCoins(storage) {
   return Number.isFinite(value) && value >= 0 ? value : 0;
 }
 
-function addCoin(storage) {
-  const next = getCoins(storage) + 1;
+function addCoin(storage, amount = 1) {
+  const next = getCoins(storage) + amount;
   try {
     storage.setItem(COINS_KEY, String(next));
   } catch (err) {

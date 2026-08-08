@@ -33,3 +33,10 @@ test('getCoins con valor negativo devuelve 0', () => {
   storage.setItem(COINS_KEY, '-5');
   assert.strictEqual(getCoins(storage), 0);
 });
+
+test('addCoin con amount suma más de una moneda', () => {
+  const storage = createFakeStorage();
+  assert.strictEqual(addCoin(storage, 2), 2);
+  assert.strictEqual(addCoin(storage), 3);
+  assert.strictEqual(getCoins(storage), 3);
+});
