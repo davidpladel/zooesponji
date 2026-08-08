@@ -92,6 +92,14 @@ Próximas versiones planeadas (sin fecha cerrada — cualquiera puede coger una 
 
 - **Tienda**: gastar las monedas ganadas para comprar/desbloquear la pantera y los pandas (ya aparecen bloqueados en el mapa del zoo) y comprar nuevos tipos de comida.
 - **Mejorar los sonidos**: sustituir los tonos generados por código (Web Audio) por sonidos más elaborados o grabados.
+- **Clínica veterinaria**: una zona del zoo para curar a los animales cuando se ponen malitos.
+- **Bañar a los animales**: otra tarea de cuidado además de darles de comer.
+- **Más trabajos de cuidador**: ampliar el juego más allá de dar de comer con otras tareas propias de un empleado del zoo (limpiar la jaula, jugar con el animal, etc. — a definir).
+
+Más adelante:
+
+- **Delfines** como nuevo animal (y, con ellos, probablemente una zona de acuario en el mapa del zoo).
+- **Animaciones de verdad** para los animales (que se muevan, no solo fotos fijas por reacción).
 
 Ideas ya recogidas antes pero sin planificar todavía: imágenes reales para los alimentos (de momento son emoji), y empaquetado a APK de Android con Capacitor.
 
