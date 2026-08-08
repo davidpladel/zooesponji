@@ -10,13 +10,20 @@ function renderFeedScreen(container, animal, coins, callbacks) {
       </div>
       <div class="food-tray" id="food-tray">
         ${FOODS.map((food) => `
-          <div class="food-icon" data-food="${food}">${FOOD_EMOJI[food]}</div>
+          <div class="food-icon" data-food="${food}">
+            <span class="sprite-slot" id="food-sprite-${food}">${FOOD_EMOJI[food]}</span>
+          </div>
         `).join('')}
       </div>
     </div>
   `;
 
   container.querySelector('#back-btn').addEventListener('click', callbacks.onBack);
+
+  trySwapSprite(container.querySelector('#animal-emoji'), ANIMAL_IMAGE[animal]);
+  FOODS.forEach((food) => {
+    trySwapSprite(container.querySelector(`#food-sprite-${food}`), FOOD_IMAGE[food]);
+  });
 
   const animalEl = container.querySelector('#feed-animal');
   const faceEl = container.querySelector('#animal-face');

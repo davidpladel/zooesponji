@@ -3,9 +3,16 @@ const FOODS = ['piedra', 'carne', 'conejo', 'zanahoria'];
 
 const ANIMAL_LABELS = { leon: 'León', cabra: 'Cabra' };
 const ANIMAL_EMOJI = { leon: '🦁', cabra: '🐐' };
+const ANIMAL_IMAGE = { leon: 'assets/img/leon.png', cabra: 'assets/img/cabra.png' };
 
 const FOOD_LABELS = { piedra: 'Piedra', carne: 'Carne', conejo: 'Conejo', zanahoria: 'Zanahoria' };
 const FOOD_EMOJI = { piedra: '🪨', carne: '🥩', conejo: '🐇', zanahoria: '🥕' };
+const FOOD_IMAGE = {
+  piedra: 'assets/img/piedra.png',
+  carne: 'assets/img/carne.png',
+  conejo: 'assets/img/conejo.png',
+  zanahoria: 'assets/img/zanahoria.png',
+};
 
 const REACTIONS = {
   leon: { carne: 'come', conejo: 'come', piedra: 'rechaza', zanahoria: 'rechaza' },
@@ -26,8 +33,10 @@ if (typeof module !== 'undefined') {
     FOODS,
     ANIMAL_LABELS,
     ANIMAL_EMOJI,
+    ANIMAL_IMAGE,
     FOOD_LABELS,
     FOOD_EMOJI,
+    FOOD_IMAGE,
     REACTIONS,
     getReaction,
   };

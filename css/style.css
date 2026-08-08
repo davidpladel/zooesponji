@@ -127,3 +127,22 @@ body {
   pointer-events: none;
   transform: scale(1.2);
 }
+
+.cage-emoji .sprite-img {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+}
+
+.feed-animal .sprite-img {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+}
+
+.food-icon .sprite-img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  display: block;
+}
