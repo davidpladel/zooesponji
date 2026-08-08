@@ -20,14 +20,23 @@ function renderFeedScreen(container, animal, coins, callbacks) {
 
   container.querySelector('#back-btn').addEventListener('click', callbacks.onBack);
 
-  trySwapSprite(container.querySelector('#animal-emoji'), ANIMAL_IMAGE[animal]);
-  FOODS.forEach((food) => {
-    trySwapSprite(container.querySelector(`#food-sprite-${food}`), FOOD_IMAGE[food]);
-  });
-
+  const animalSpriteEl = container.querySelector('#animal-emoji');
   const animalEl = container.querySelector('#feed-animal');
   const faceEl = container.querySelector('#animal-face');
   const coinsEl = container.querySelector('#feed-coins');
+
+  function setAnimalState(state) {
+    const stateImages = ANIMAL_STATE_IMAGE[animal] || {};
+    const src = stateImages[state] || stateImages.normal;
+    if (src) {
+      trySwapSprite(animalSpriteEl, src);
+    }
+  }
+
+  setAnimalState('normal');
+  FOODS.forEach((food) => {
+    trySwapSprite(container.querySelector(`#food-sprite-${food}`), FOOD_IMAGE[food]);
+  });
 
   function handleReaction(food) {
     const reaction = getReaction(animal, food);
@@ -35,18 +44,22 @@ function renderFeedScreen(container, animal, coins, callbacks) {
     if (reaction === 'come') {
       faceEl.textContent = '😋';
       playEatSound();
+      setAnimalState('come');
       const newCoins = callbacks.onCoinEarned();
       coinsEl.textContent = String(newCoins);
     } else if (reaction === 'rechaza') {
       faceEl.textContent = '😝';
       playRejectSound();
+      setAnimalState('rechaza');
     } else {
       faceEl.textContent = '🥰';
       playSpecialSound();
+      setAnimalState('especial');
     }
 
     setTimeout(() => {
       faceEl.textContent = '';
+      setAnimalState('normal');
     }, 1200);
   }
 

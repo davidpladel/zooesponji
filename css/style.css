@@ -50,34 +50,31 @@ body {
   z-index: 10;
 }
 
-.zoo-screen {
-  padding: 70px 16px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+.zoo-map {
+  position: relative;
+  width: 100%;
   min-height: 100vh;
 }
 
-.cage {
-  background: var(--cage-bg);
-  border: 4px dashed var(--cage-border);
-  border-radius: 12px;
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
+.zoo-map-image {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.zoo-hotspot {
+  position: absolute;
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
   cursor: pointer;
-  user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.cage-emoji {
-  font-size: 64px;
-}
-
-.cage-label {
-  font-weight: 600;
-  color: var(--accent);
+.zoo-hotspot:active {
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 50%;
 }
 
 .feed-screen {
@@ -97,8 +94,8 @@ body {
 
 .feed-animal-face {
   position: absolute;
-  top: -20px;
-  right: -10px;
+  top: -24px;
+  right: -16px;
   font-size: 40px;
 }
 
@@ -128,16 +125,11 @@ body {
   transform: scale(1.2);
 }
 
-.cage-emoji .sprite-img {
-  width: 64px;
-  height: 64px;
-  object-fit: contain;
-}
-
 .feed-animal .sprite-img {
-  width: 120px;
-  height: 120px;
+  width: 200px;
+  height: 200px;
   object-fit: contain;
+  border-radius: 16px;
 }
 
 .food-icon .sprite-img {

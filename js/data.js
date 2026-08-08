@@ -3,7 +3,20 @@ const FOODS = ['piedra', 'carne', 'conejo', 'zanahoria'];
 
 const ANIMAL_LABELS = { leon: 'León', cabra: 'Cabra' };
 const ANIMAL_EMOJI = { leon: '🦁', cabra: '🐐' };
-const ANIMAL_IMAGE = { leon: 'assets/img/leon.png', cabra: 'assets/img/cabra.png' };
+
+const ANIMAL_STATE_IMAGE = {
+  leon: {
+    normal: 'assets/img/leon-normal.png',
+    come: 'assets/img/leon-contentos.png',
+    rechaza: 'assets/img/leon-enfadado.png',
+  },
+  cabra: {
+    normal: 'assets/img/cabras-normal.png',
+    come: 'assets/img/cabras-contentas.png',
+    rechaza: 'assets/img/cabras-enfadadas.png',
+    especial: 'assets/img/cabras-con-el-conejo-especial.png',
+  },
+};
 
 const FOOD_LABELS = { piedra: 'Piedra', carne: 'Carne', conejo: 'Conejo', zanahoria: 'Zanahoria' };
 const FOOD_EMOJI = { piedra: '🪨', carne: '🥩', conejo: '🐇', zanahoria: '🥕' };
@@ -17,6 +30,13 @@ const FOOD_IMAGE = {
 const REACTIONS = {
   leon: { carne: 'come', conejo: 'come', piedra: 'rechaza', zanahoria: 'rechaza' },
   cabra: { carne: 'rechaza', conejo: 'especial', piedra: 'come', zanahoria: 'come' },
+};
+
+const ZOO_MAP_IMAGE = 'assets/img/mapa-zoo-2-zonas.png';
+
+const ZOO_HOTSPOTS = {
+  leon: { left: 2, top: 2, width: 44, height: 44 },
+  cabra: { left: 54, top: 2, width: 44, height: 44 },
 };
 
 function getReaction(animal, food) {
@@ -33,11 +53,13 @@ if (typeof module !== 'undefined') {
     FOODS,
     ANIMAL_LABELS,
     ANIMAL_EMOJI,
-    ANIMAL_IMAGE,
+    ANIMAL_STATE_IMAGE,
     FOOD_LABELS,
     FOOD_EMOJI,
     FOOD_IMAGE,
     REACTIONS,
     getReaction,
+    ZOO_MAP_IMAGE,
+    ZOO_HOTSPOTS,
   };
 }
