@@ -54,6 +54,7 @@ function setupDragAndDrop(foodEl, targetEl, onDrop) {
   let originalNextSibling = null;
 
   foodEl.addEventListener('pointerdown', (event) => {
+    if (dragging) return;
     dragging = true;
     originalParent = foodEl.parentNode;
     originalNextSibling = foodEl.nextSibling;
@@ -70,10 +71,6 @@ function setupDragAndDrop(foodEl, targetEl, onDrop) {
 
   foodEl.addEventListener('pointerup', (event) => {
     if (!dragging) return;
-    dragging = false;
-    foodEl.classList.remove('dragging');
-    foodEl.style.left = '';
-    foodEl.style.top = '';
 
     const targetRect = targetEl.getBoundingClientRect();
     const dropped = (
@@ -83,16 +80,30 @@ function setupDragAndDrop(foodEl, targetEl, onDrop) {
       event.clientY <= targetRect.bottom
     );
 
-    if (originalNextSibling) {
-      originalParent.insertBefore(foodEl, originalNextSibling);
-    } else {
-      originalParent.appendChild(foodEl);
-    }
+    restoreAfterDrag();
 
     if (dropped) {
       onDrop();
     }
   });
+
+  foodEl.addEventListener('pointercancel', () => {
+    if (!dragging) return;
+    restoreAfterDrag();
+  });
+
+  function restoreAfterDrag() {
+    dragging = false;
+    foodEl.classList.remove('dragging');
+    foodEl.style.left = '';
+    foodEl.style.top = '';
+
+    if (originalNextSibling) {
+      originalParent.insertBefore(foodEl, originalNextSibling);
+    } else {
+      originalParent.appendChild(foodEl);
+    }
+  }
 
   function moveTo(x, y) {
     foodEl.style.left = `${x - foodEl.offsetWidth / 2}px`;

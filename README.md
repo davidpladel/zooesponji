@@ -17,7 +17,7 @@ No hace falta instalar nada. Basta con abrir `index.html` directamente en un nav
 Para ejecutar los tests automáticos de la lógica de datos y monedas (requiere Node.js):
 
 ```bash
-node --test tests/
+node --test tests/*.test.js
 ```
 
 ## Diseño de contenido (v1)
