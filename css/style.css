@@ -24,6 +24,19 @@ body {
   overflow: hidden;
 }
 
+.site-footer {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 12px 16px 20px;
+  text-align: center;
+  font-size: 12px;
+  color: #666;
+}
+
+.site-footer a {
+  color: inherit;
+}
+
 .coins-badge {
   position: absolute;
   top: 12px;
