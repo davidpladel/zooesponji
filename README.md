@@ -26,6 +26,8 @@ El juego vive también en `davidpladel.com/zooesponji`, desplegado con un simple
 
 **Importante — caché del navegador:** los `<script>` y `<link>` de `index.html` llevan un parámetro `?v=N` (ej. `js/main.js?v=2`). Los móviles cachean agresivamente los JS/CSS por su nombre de archivo; sin ese parámetro, tras actualizar el código en el VPS los usuarios pueden seguir viendo la versión antigua durante días aunque recarguen la página. **Cada vez que se modifique algún archivo `.js` o `.css`, hay que subir en 1 ese número en todas sus apariciones dentro de `index.html`** para forzar la descarga de la versión nueva.
 
+Lo mismo aplica a las imágenes: las rutas en `js/data.js` (`ANIMAL_STATE_IMAGE`, `FOOD_IMAGE`, `ZOO_MAP_IMAGE`) llevan `?v=N` mediante la constante `IMG_VERSION`. **Si se reemplaza algún PNG de `assets/img/` manteniendo el mismo nombre de archivo (ej. al recomprimirlo), hay que subir en 1 `IMG_VERSION` en `js/data.js`** para que los móviles descarguen la versión nueva.
+
 ## Diseño de contenido (v1)
 
 **Animales:** león, cabra
