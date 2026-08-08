@@ -8,7 +8,7 @@ Eres el cuidador de los animales del zoo y les das de comer. Cada animal tiene s
 
 ## Estado del proyecto
 
-✅ MVP jugable en el navegador (mapa del zoo + alimentar león/cabra). Sin imágenes reales todavía (placeholders con emoji) y sin empaquetar a Android.
+✅ MVP jugable en el navegador (mapa del zoo con imagen real + alimentar león/cabra con fotos reales por reacción). Sin empaquetar a Android todavía.
 
 ## Cómo jugarlo
 
@@ -44,20 +44,21 @@ El objetivo es plataforma **Android**, pero todo el desarrollo se hace desde **C
 Stack elegido:
 
 - **HTML5 + JavaScript** — todo el juego es código plano (HTML/CSS/JS), editable directamente por Claude Code sin necesidad de una GUI.
-- **Canvas nativo** para la lógica de dibujo y juego. Se valorará usar [Phaser](https://phaser.io/) solo si hacen falta físicas, animaciones de sprites o colisiones complejas; para una mecánica simple de "elegir animal + dar de comer", Canvas a pelo debería bastar y mantiene el proyecto ligero.
-- **[Capacitor](https://capacitorjs.com/)** para empaquetar la web como APK de Android al final del desarrollo.
+- **DOM + CSS**, sin Canvas — las imágenes son elementos `<img>` normales posicionados con CSS. Se decidió así (en vez de Canvas) porque arrastrar-y-soltar y las pantallas tipo menú son mucho más simples de hacer y depurar en DOM.
+- Arrastrar y soltar con **Pointer Events** (funciona igual con ratón y con el dedo en tablet/móvil).
+- **[Capacitor](https://capacitorjs.com/)** para empaquetar la web como APK de Android al final del desarrollo (pendiente).
 
 Este stack se eligió para minimizar la complejidad (y el gasto de tokens) del desarrollo asistido por IA: sin assets pesados, sin escenas de editor, sin configuración compleja — solo lógica en JS.
 
 ## Assets gráficos
 
-Los niños crean las imágenes ellos mismos con generación de IA (Grok Imagine), ajustando un prompt base. Claude Code no genera las imágenes, solo las integra en el juego una vez creadas.
+Los niños crean las imágenes ellos mismos con generación de IA (Grok Imagine), ajustando un prompt base. Claude Code no genera las imágenes, solo las integra en el juego una vez creadas — basta con guardar el PNG en `assets/img/` con el nombre exacto que toque y el juego lo usa automáticamente en vez del emoji de repuesto, sin tocar código (ver `js/sprites.js`).
 
-- Imágenes **estáticas**, no vídeo (Canvas dibuja imágenes/sprites, no reproduce vídeo).
-- Formato **PNG con fondo transparente** (nunca JPG, que lleva fondo sólido y se recorta mal sobre el escenario del zoo).
-- Un PNG por animal en pose neutra como mínimo; opcionalmente varios frames (idle / feliz-comiendo / disgusto / especial) para animación sencilla por cambio de frame.
-- Un PNG por alimento, también con transparencia.
-- Nomenclatura clara y descriptiva, ej. `leon.png`, `cabra.png`, `piedra.png`, `carne.png`, `conejo.png`, `zanahoria.png`.
+- Imágenes **estáticas**, no vídeo ni GIF (mejor control de tiempos, transparencia real, y el juego ya cambia de imagen por código en el momento justo).
+- Formato **PNG con fondo transparente** cuando sea un personaje/objeto recortado (nunca JPG, que lleva fondo sólido).
+- **Mapa del zoo:** una única imagen de escena completa — `assets/img/mapa-zoo-2-zonas.png`. Las zonas pinchables (león, cabra) se definen como porcentajes sobre esa imagen en `ZOO_HOTSPOTS` (`js/data.js`), fáciles de reajustar sin tocar el resto del código. Las jaulas todavía no disponibles se pintan directamente en la imagen (con candado), no hace falta lógica aparte para "desactivarlas".
+- **Animales:** una foto por estado en `ANIMAL_STATE_IMAGE` (`js/data.js`) — `normal`, `come` (feliz), `rechaza` (enfadado), y `especial` solo si el animal tiene alguna reacción especial (ej. la cabra con el conejo). Nomenclatura actual: `leon-normal.png`, `leon-contentos.png`, `leon-enfadado.png`, `cabras-normal.png`, `cabras-contentas.png`, `cabras-enfadadas.png`, `cabras-con-el-conejo-especial.png`.
+- **Alimentos:** un PNG por alimento en `assets/img/` (`piedra.png`, `carne.png`, `conejo.png`, `zanahoria.png`) — de momento siguen como emoji porque aún no se han generado.
 
 ### Prompt base para Grok (a ajustar por los niños)
 
