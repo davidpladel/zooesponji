@@ -19,7 +19,6 @@ body {
 #app {
   max-width: 480px;
   margin: 0 auto;
-  min-height: 100vh;
   position: relative;
   overflow: hidden;
 }
@@ -66,7 +65,6 @@ body {
 .zoo-map {
   position: relative;
   width: 100%;
-  min-height: 100vh;
 }
 
 .zoo-map-image {
@@ -91,8 +89,7 @@ body {
 }
 
 .feed-screen {
-  padding: 70px 16px 16px;
-  min-height: 100vh;
+  padding: 70px 16px 32px;
   display: flex;
   flex-direction: column;
   align-items: center;
