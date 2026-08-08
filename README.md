@@ -24,18 +24,7 @@ node --test tests/*.test.js
 
 El juego vive también en `davidpladel.com/zooesponji`, desplegado con un simple `git pull` en el VPS (ver instrucciones más abajo).
 
-**Importante — caché del navegador:** los `<script>` y `<link>` de `index.html` llevan un parámetro `?v=N` (ej. `js/main.js?v=3`). Los móviles cachean agresivamente los JS/CSS por su nombre de archivo; sin ese parámetro, tras actualizar el código en el VPS los usuarios pueden seguir viendo la versión antigua durante días aunque recarguen la página. **Cada vez que se modifique algún archivo `.js` o `.css`, hay que subir en 1 ese número en todas sus apariciones dentro de `index.html`** para forzar la descarga de la versión nueva.
-
-### Cookies y analítica (opcional, no incluido en el repo)
-
-El juego incluye un banner de cookies (`js/cookie-consent.js`) que, solo si el usuario le da a "Aceptar", carga `js/analytics.js`. Ese archivo **no está en el repositorio** (está en `.gitignore`) porque normalmente contiene el ID de un sitio de analítica (ej. Matomo) que cada quien despliegue puede querer mantener privado.
-
-Para activarlo en un servidor propio:
-
-1. Copia `js/analytics.example.js` como `js/analytics.js` y rellena tu URL y Site ID.
-2. Al estar en `.gitignore`, ese archivo se queda tal cual en el servidor para siempre — los futuros `git pull` no lo tocan ni lo borran, así que **solo hace falta hacerlo una vez** por servidor.
-
-Sin ese archivo, el banner de cookies sigue apareciendo con normalidad, simplemente no hay nada que cargar al aceptar.
+**Importante — caché del navegador:** los `<script>` y `<link>` de `index.html` llevan un parámetro `?v=N` (ej. `js/main.js?v=2`). Los móviles cachean agresivamente los JS/CSS por su nombre de archivo; sin ese parámetro, tras actualizar el código en el VPS los usuarios pueden seguir viendo la versión antigua durante días aunque recarguen la página. **Cada vez que se modifique algún archivo `.js` o `.css`, hay que subir en 1 ese número en todas sus apariciones dentro de `index.html`** para forzar la descarga de la versión nueva.
 
 ## Diseño de contenido (v1)
 

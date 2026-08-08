@@ -37,51 +37,6 @@ body {
   color: inherit;
 }
 
-.cookie-banner {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: #222;
-  color: #fff;
-  padding: 12px 16px;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  font-size: 14px;
-  z-index: 200;
-}
-
-.cookie-banner p {
-  margin: 0;
-}
-
-.cookie-banner-actions {
-  display: flex;
-  gap: 8px;
-  flex-shrink: 0;
-}
-
-.cookie-banner button {
-  border: none;
-  border-radius: 20px;
-  padding: 6px 14px;
-  font-size: 14px;
-  cursor: pointer;
-}
-
-.cookie-banner #cookie-accept {
-  background: var(--accent);
-  color: #fff;
-}
-
-.cookie-banner #cookie-reject {
-  background: #555;
-  color: #fff;
-}
-
 .coins-badge {
   position: absolute;
   top: 12px;
