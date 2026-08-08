@@ -80,6 +80,15 @@ Para las expresiones/reacciones del mismo animal, usar el mismo prompt añadiend
 
 Consejo: generar primero el animal en pose neutra, y usar esa misma imagen como referencia en Grok al pedir las variantes de expresión, para que no cambie el diseño del personaje entre frames.
 
+## Cómo contribuir
+
+¡Se aceptan colaboraciones! La idea es que el zoo crezca con más animales, más comidas y mejores gráficos. Para contribuir:
+
+1. Haz un fork del repositorio y crea una rama para tu cambio.
+2. Sigue las convenciones ya establecidas: nuevo animal o comida → añádelo en `js/data.js` (listas `ANIMALS`/`FOODS`, `REACTIONS`, imágenes en `ANIMAL_STATE_IMAGE`/`FOOD_IMAGE`) sin tocar la lógica de las pantallas, que ya es genérica.
+3. Comprueba que los tests siguen pasando: `node --test tests/*.test.js`.
+4. Abre un Pull Request describiendo el cambio.
+
 ## Licencia
 
-Este proyecto no tiene licencia definida todavía. Sin licencia, se aplican los derechos de autor por defecto: el código es visible en GitHub pero no está autorizado su uso, copia o modificación por terceros. Se decidirá una licencia más adelante.
+[GPL-3.0](LICENSE). Cualquiera puede usar, copiar, modificar y redistribuir este proyecto, siempre que las versiones modificadas que se distribuyan sigan siendo de código abierto bajo la misma licencia.
