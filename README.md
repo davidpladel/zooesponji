@@ -8,7 +8,12 @@ Eres el cuidador de los animales del zoo y les das de comer. Cada animal tiene s
 
 ## Estado del proyecto
 
-v1.1.0 — 4 animales jugables (león, cabra, pantera negra, oso panda), tienda con sistema de desbloqueo de zonas, progresión con monedas, 31 tests. Sin empaquetar a Android todavía.
+| Versión | Fecha | Novedades |
+|---------|-------|-----------|
+| **v1.1.0** | 2026-08-09 | Tienda con sistema de desbloqueo, 2 nuevos animales (pantera negra, oso panda), progresión con monedas (20 tienda, 50 pantera, 100 panda), compras persistentes en localStorage, 31 tests |
+| v1.0.0 | 2026-08-08 | MVP inicial: mapa del zoo, 2 animales (león, cabra), 4 alimentos, drag & drop, sonidos Web Audio, monedas básicas, 13 tests |
+
+Sin empaquetar a Android todavía.
 
 ## Cómo jugarlo
 
