@@ -1,6 +1,6 @@
 # 🦁 ZooEsponji
 
-Creado por y para Daniela y Adrián, con la ayuda de su padre y de [OpenCode](https://opencode.ai) + DeepSeek.
+Creado por y para Daniela y Adrián, con la ayuda de su padre y de Claude + OpenCode + DeepSeek + ChatGPT.
 
 ## La idea
 
@@ -8,7 +8,7 @@ Eres el cuidador de los animales del zoo y les das de comer. Cada animal tiene s
 
 ## Estado del proyecto
 
-v1.0.0 — MVP jugable con 4 animales, tienda y sistema de desbloqueo de zonas. Sin empaquetar a Android todavía.
+v1.1.0 — 4 animales jugables (león, cabra, pantera negra, oso panda), tienda con sistema de desbloqueo de zonas, progresión con monedas, 31 tests. Sin empaquetar a Android todavía.
 
 ## Cómo jugarlo
 
@@ -24,9 +24,9 @@ node --test tests/*.test.js
 
 El juego vive también en `davidpladel.com/zooesponji`, desplegado con un simple `git pull` en el VPS.
 
-**Importante — caché del navegador:** toda la versión está centralizada en una sola constante `APP_VERSION` definida en el `<script>` inicial de `index.html`. CSS, JS e imágenes usan este mismo número como `?v=`. **Para forzar la recarga de caché en todos los clientes, basta con cambiar `APP_VERSION` en `index.html`** (ej. de `'1.0.0'` a `'1.0.1'`). No hay que tocar nada más.
+**Importante — caché del navegador:** toda la versión está centralizada en una sola constante `APP_VERSION` definida en el `<script>` inicial de `index.html`. CSS, JS e imágenes usan este mismo número como `?v=`. **Para forzar la recarga de caché en todos los clientes, basta con cambiar `APP_VERSION` en `index.html`** (ej. de `'1.1.0'` a `'1.1.1'`). No hay que tocar nada más.
 
-## Diseño de contenido (v1.0.0)
+## Diseño de contenido (v1.1.0)
 
 **Animales:** león, cabra, pantera negra, oso panda
 
@@ -51,7 +51,7 @@ Esta tabla se implementa como datos (no lógica hardcodeada por animal), para po
 
 ## Decisiones técnicas
 
-El objetivo es plataforma **Android**, pero todo el desarrollo se hace desde **OpenCode** + **DeepSeek** (terminal, sin editor gráfico), lo que descarta motores con editor visual como Unity o Godot.
+El objetivo es plataforma **Android**, pero todo el desarrollo se hace desde Claude + OpenCode + DeepSeek + ChatGPT (terminal, sin editor gráfico), lo que descarta motores con editor visual como Unity o Godot.
 
 Stack elegido:
 
