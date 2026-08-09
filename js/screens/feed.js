@@ -1,6 +1,3 @@
-const COINS_PER_COME = 1;
-const COINS_PER_ESPECIAL = 2;
-
 function renderFeedScreen(container, animal, coins, callbacks) {
   container.innerHTML = `
     <div class="feed-screen">
@@ -43,13 +40,12 @@ function renderFeedScreen(container, animal, coins, callbacks) {
 
   function handleReaction(food) {
     const reaction = getReaction(animal, food);
+    const coinAmount = (ANIMAL_COINS[animal] && ANIMAL_COINS[animal][reaction]) || 0;
 
     if (reaction === 'come') {
       faceEl.textContent = '😋';
       playEatSound();
       setAnimalState('come');
-      const newCoins = callbacks.onCoinEarned(COINS_PER_COME);
-      coinsEl.textContent = String(newCoins);
     } else if (reaction === 'rechaza') {
       faceEl.textContent = '😝';
       playRejectSound();
@@ -58,7 +54,10 @@ function renderFeedScreen(container, animal, coins, callbacks) {
       faceEl.textContent = '🥰';
       playSpecialSound();
       setAnimalState('especial');
-      const newCoins = callbacks.onCoinEarned(COINS_PER_ESPECIAL);
+    }
+
+    if (coinAmount > 0) {
+      const newCoins = callbacks.onCoinEarned(coinAmount);
       coinsEl.textContent = String(newCoins);
     }
 

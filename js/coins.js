@@ -1,4 +1,5 @@
 const COINS_KEY = 'zooesponji_coins';
+const PURCHASES_KEY = 'zooesponji_purchases';
 
 function getCoins(storage) {
   let raw;
@@ -16,12 +17,44 @@ function addCoin(storage, amount = 1) {
   try {
     storage.setItem(COINS_KEY, String(next));
   } catch (err) {
-    // Persistence failed (e.g. storage blocked on file:// origins); still
-    // return the in-memory value so the UI reflects this session's total.
   }
   return next;
 }
 
+function spendCoins(storage, amount) {
+  const current = getCoins(storage);
+  if (current < amount) {
+    throw new Error(`Monedas insuficientes: tienes ${current}, necesitas ${amount}`);
+  }
+  const next = current - amount;
+  try {
+    storage.setItem(COINS_KEY, String(next));
+  } catch (err) {
+  }
+  return next;
+}
+
+function getPurchases(storage) {
+  try {
+    const raw = storage.getItem(PURCHASES_KEY);
+    if (raw) {
+      return JSON.parse(raw);
+    }
+  } catch (err) {
+  }
+  return {};
+}
+
+function savePurchase(storage, itemId) {
+  const purchases = getPurchases(storage);
+  purchases[itemId] = true;
+  try {
+    storage.setItem(PURCHASES_KEY, JSON.stringify(purchases));
+  } catch (err) {
+  }
+  return purchases;
+}
+
 if (typeof module !== 'undefined') {
-  module.exports = { COINS_KEY, getCoins, addCoin };
+  module.exports = { COINS_KEY, PURCHASES_KEY, getCoins, addCoin, spendCoins, getPurchases, savePurchase };
 }
