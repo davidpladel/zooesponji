@@ -14,8 +14,11 @@ var mapBackground = null;
 
 function initGame() {
   var footerEl = document.querySelector('.site-footer');
-  if (footerEl && footerEl.innerHTML.indexOf('Versión') === -1) {
-    footerEl.innerHTML += ' · Versión ' + (typeof APP_VERSION !== 'undefined' ? APP_VERSION : '2.0.0-dev');
+  if (footerEl) {
+    if (footerEl.innerHTML.indexOf('Versión') === -1) {
+      footerEl.innerHTML += ' · Versión ' + (typeof APP_VERSION !== 'undefined' ? APP_VERSION : '2.0.0-dev');
+    }
+    footerEl.style.display = 'none';
   }
 
   gameCanvas = document.getElementById('game-canvas');

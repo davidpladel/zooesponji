@@ -10,7 +10,7 @@ Eres el cuidador de los animales del zoo y les das de comer. Cada animal tiene s
 
 | Versión | Rama | Fecha | Novedades |
 |---------|------|-------|-----------|
-| **v2.0.0-dev** | `stardew-engine` | 2026-08-11 | Motor Canvas 2D estilo Stardew Valley, cuidador controlable, visitantes con IA, mapa con caminos y recintos, sprites pixel art, sistema de puertas, arquitectura por zonas |
+| **v2.0.0-dev** | `stardew-engine` | 2026-08-11 | Motor Canvas 2D Stardew Valley, cuidador controlable, visitantes con pathfinding A\*, 4 animales con sprites pixel art, tienda + progresión, arquitectura por zonas data-driven, modo debug con 3 capas (caminos/vallas/puertas), optimizado móvil |
 | v1.1.0 | `main` | 2026-08-09 | Tienda con sistema de desbloqueo, 2 nuevos animales (pantera negra, oso panda), progresión con monedas (20 tienda, 50 pantera, 100 panda), compras persistentes en localStorage, 31 tests |
 | v1.0.0 | — | 2026-08-08 | MVP inicial: mapa del zoo, 2 animales (león, cabra), 4 alimentos, drag & drop, sonidos Web Audio, monedas básicas, 13 tests |
 
