@@ -2,28 +2,29 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <meta name="description" content="ZooEsponji: un juego sencillo para dar de comer a los animales del zoo, creado por y para Daniela y Adrián.">
   <meta name="author" content="davidpladel">
   <title>ZooEsponji</title>
   <script>
-    window.APP_VERSION = '1.1.0';
+    window.APP_VERSION = '2.0.0-dev';
     var v = APP_VERSION;
     document.write('<link rel="stylesheet" href="css/style.css?v=' + v + '">');
   </script>
   <script>
-    document.write('<script src="js/data.js?v=' + APP_VERSION + '"><\/script>');
-    document.write('<script src="js/coins.js?v=' + APP_VERSION + '"><\/script>');
-    document.write('<script src="js/sound.js?v=' + APP_VERSION + '"><\/script>');
-    document.write('<script src="js/sprites.js?v=' + APP_VERSION + '"><\/script>');
-    document.write('<script src="js/screens/zoo.js?v=' + APP_VERSION + '"><\/script>');
-    document.write('<script src="js/screens/shop.js?v=' + APP_VERSION + '"><\/script>');
-    document.write('<script src="js/screens/feed.js?v=' + APP_VERSION + '"><\/script>');
-    document.write('<script src="js/main.js?v=' + APP_VERSION + '"><\/script>');
+    document.write('<script src="js/engine/constants.js?v=' + APP_VERSION + '"><\/script>');
+    document.write('<script src="js/engine/tiles.js?v=' + APP_VERSION + '"><\/script>');
+    document.write('<script src="js/engine/tilemap.js?v=' + APP_VERSION + '"><\/script>');
+    document.write('<script src="js/engine/camera.js?v=' + APP_VERSION + '"><\/script>');
+    document.write('<script src="js/engine/entity.js?v=' + APP_VERSION + '"><\/script>');
+    document.write('<script src="js/engine/player.js?v=' + APP_VERSION + '"><\/script>');
+    document.write('<script src="js/engine/game.js?v=' + APP_VERSION + '"><\/script>');
   </script>
 </head>
 <body>
-  <div id="app"></div>
+  <div id="app">
+    <canvas id="game-canvas"></canvas>
+  </div>
 
   <footer class="site-footer">
     © 2026 davidpladel · Hecho con cariño por Daniela y Adrián 💛 ·
@@ -31,5 +32,11 @@
     <a href="https://github.com/davidpladel/zooesponji">repositorio en GitHub</a> ·
     ilustraciones generadas con IA
   </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      initGame();
+    });
+  </script>
 </body>
 </html>
