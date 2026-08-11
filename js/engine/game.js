@@ -19,6 +19,18 @@ function initGame() {
   resizeCanvas();
   window.addEventListener('resize', resizeCanvas);
 
+  var tilesetMapping = {};
+  tilesetMapping[TILE_GRASS_1] = 0;
+  tilesetMapping[TILE_GRASS_2] = 1;
+  tilesetMapping[TILE_DIRT] = 16;
+  tilesetMapping[TILE_COBBLE] = 24;
+  tilesetMapping[TILE_FENCE] = 32;
+  tilesetMapping[TILE_WATER] = 48;
+  tilesetMapping[TILE_WALL] = 32;
+  tilesetMapping[TILE_FLOOR] = 24;
+  tilesetMapping[TILE_ENCLOSURE] = 16;
+  initSpriteTileset(16, 4, tilesetMapping);
+
   buildTileset();
   buildMap();
 
@@ -44,6 +56,8 @@ function initGame() {
   buildHUD();
   coins = getCoins(storage);
   updateCoinDisplay();
+
+  loadSpriteTileset('assets/img/sprites/tileset.png');
 
   lastTime = performance.now();
   running = true;

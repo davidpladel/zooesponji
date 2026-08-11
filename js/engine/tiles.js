@@ -131,6 +131,10 @@ function isWalkable(tileId) {
 }
 
 function drawTile(ctx, tileId, screenX, screenY) {
+  if (hasSpriteTileset) {
+    drawSpriteTile(ctx, tileId, screenX, screenY);
+    return;
+  }
   if (!tilesetCanvas) buildTileset();
   var sx = tileId * TILE_SIZE;
   ctx.drawImage(tilesetCanvas, sx, 0, TILE_SIZE, TILE_SIZE, screenX, screenY, DISPLAY_TILE, DISPLAY_TILE);
