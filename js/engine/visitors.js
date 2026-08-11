@@ -5,12 +5,12 @@ function Visitor(x, y, spriteKey) {
   this.spriteRows = 4;
   this.w = TILE_SIZE * 1.5;
   this.h = TILE_SIZE * 1.5;
-  this.speed = 1.2 + Math.random() * 0.8;
+  this.speed = 1 + Math.random() * 0.6;
   this.facing = 'down';
   this.wanderTimer = 0;
-  this.pauseTimer = 0;
-  this.targetX = x + (Math.random() - 0.5) * TILE_SIZE * 16;
-  this.targetY = y + (Math.random() - 0.5) * TILE_SIZE * 16;
+  this.targetX = x + (Math.random() - 0.5) * TILE_SIZE * 10;
+  this.targetY = y + (Math.random() - 0.5) * TILE_SIZE * 10;
+  this.moving = true;
   this.fillColor = null;
 }
 
@@ -18,42 +18,36 @@ Visitor.prototype = Object.create(Entity.prototype);
 Visitor.prototype.constructor = Visitor;
 
 Visitor.prototype.update = function (dt) {
-  if (this.pauseTimer > 0) {
-    this.pauseTimer -= dt;
-    this.moving = false;
-    Entity.prototype.update.call(this, dt);
-    return;
-  }
-
-  if (this.wanderTimer <= 0) {
-    this.wanderTimer = 3 + Math.random() * 5;
-    var angle = Math.random() * Math.PI * 2;
-    var dist = TILE_SIZE * 6 + Math.random() * TILE_SIZE * 12;
-    this.targetX = this.x + Math.cos(angle) * dist;
-    this.targetY = this.y + Math.sin(angle) * dist;
-    this.targetX = Math.max(TILE_SIZE * 2, Math.min(MAP_PX_W - TILE_SIZE * 2, this.targetX));
-    this.targetY = Math.max(TILE_SIZE * 2, Math.min(MAP_PX_H - TILE_SIZE * 2, this.targetY));
-  }
   this.wanderTimer -= dt;
 
   var dx = this.targetX - this.x;
   var dy = this.targetY - this.y;
   var dist = Math.hypot(dx, dy);
 
-  if (dist < 4) {
-    this.pauseTimer = 0.5 + Math.random() * 2;
-    this.moving = false;
+  if (dist < 6 || this.wanderTimer <= 0) {
+    this.wanderTimer = 2 + Math.random() * 3;
+    var angle = Math.random() * Math.PI * 2;
+    var range = TILE_SIZE * 5 + Math.random() * TILE_SIZE * 10;
+    this.targetX = this.x + Math.cos(angle) * range;
+    this.targetY = this.y + Math.sin(angle) * range;
+    this.targetX = Math.max(TILE_SIZE * 2, Math.min(MAP_PX_W - TILE_SIZE * 2, this.targetX));
+    this.targetY = Math.max(TILE_SIZE * 2, Math.min(MAP_PX_H - TILE_SIZE * 2, this.targetY));
+  }
+
+  if (Math.abs(dx) >= Math.abs(dy)) {
+    this.facing = dx > 0 ? 'right' : 'left';
   } else {
+    this.facing = dy > 0 ? 'down' : 'up';
+  }
+
+  if (dist > 1) {
     this.moving = true;
-    if (Math.abs(dx) >= Math.abs(dy)) {
-      this.facing = dx > 0 ? 'right' : 'left';
-    } else {
-      this.facing = dy > 0 ? 'down' : 'up';
-    }
     var nx = this.x + (dx / dist) * this.speed;
     var ny = this.y + (dy / dist) * this.speed;
     if (canWalkRect(nx, this.y, this.w, this.h)) this.x = nx;
+    else if (dx !== 0) { this.targetX = this.x - dx; }
     if (canWalkRect(this.x, ny, this.w, this.h)) this.y = ny;
+    else if (dy !== 0) { this.targetY = this.y - dy; }
   }
 
   Entity.prototype.update.call(this, dt);
