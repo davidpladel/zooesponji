@@ -68,11 +68,11 @@ function buildMap() {
 
   for (i = 0; i < PATHS_H.length; i++) {
     var ph = PATHS_H[i];
-    fillRect(ph.x, ph.y, ph.w, 1, TILE_PATH);
+    fillRect(ph.x, ph.y, ph.w, 2, TILE_PATH);
   }
   for (i = 0; i < PATHS_V.length; i++) {
     var pv = PATHS_V[i];
-    fillRect(pv.x, pv.y, 1, pv.h, TILE_PATH);
+    fillRect(pv.x, pv.y, 2, pv.h, TILE_PATH);
   }
 
   enclosureData = [];
@@ -125,11 +125,7 @@ function canMove(entityType, px, py) {
 }
 
 function canMoveRect(entityType, x, y, w, h) {
-  var m = 4;
-  return canMove(entityType, x + m, y + m)
-    && canMove(entityType, x + w - m, y + m)
-    && canMove(entityType, x, y + h / 2)
-    && canMove(entityType, x + w, y + h / 2);
+  return canMove(entityType, x + w / 2, y + h / 2);
 }
 
 function getCurrentZone() {
