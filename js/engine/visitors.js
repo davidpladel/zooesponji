@@ -5,12 +5,12 @@ function Visitor(x, y, spriteKey) {
   this.spriteRows = 4;
   this.w = TILE_SIZE * 1.5;
   this.h = TILE_SIZE * 1.5;
-  this.speed = 0.8 + Math.random() * 0.6;
+  this.speed = 1.2 + Math.random() * 0.8;
   this.facing = 'down';
   this.wanderTimer = 0;
   this.pauseTimer = 0;
-  this.targetX = x;
-  this.targetY = y;
+  this.targetX = x + (Math.random() - 0.5) * TILE_SIZE * 16;
+  this.targetY = y + (Math.random() - 0.5) * TILE_SIZE * 16;
   this.fillColor = null;
 }
 
@@ -25,32 +25,33 @@ Visitor.prototype.update = function (dt) {
     return;
   }
 
-  this.wanderTimer -= dt;
   if (this.wanderTimer <= 0) {
-    this.wanderTimer = 2 + Math.random() * 4;
-    this.targetX = this.x + (Math.random() - 0.5) * TILE_SIZE * 8;
-    this.targetY = this.y + (Math.random() - 0.5) * TILE_SIZE * 8;
-    this.targetX = Math.max(TILE_SIZE, Math.min(MAP_PX_W - TILE_SIZE, this.targetX));
-    this.targetY = Math.max(TILE_SIZE, Math.min(MAP_PX_H - TILE_SIZE, this.targetY));
+    this.wanderTimer = 3 + Math.random() * 5;
+    var angle = Math.random() * Math.PI * 2;
+    var dist = TILE_SIZE * 6 + Math.random() * TILE_SIZE * 12;
+    this.targetX = this.x + Math.cos(angle) * dist;
+    this.targetY = this.y + Math.sin(angle) * dist;
+    this.targetX = Math.max(TILE_SIZE * 2, Math.min(MAP_PX_W - TILE_SIZE * 2, this.targetX));
+    this.targetY = Math.max(TILE_SIZE * 2, Math.min(MAP_PX_H - TILE_SIZE * 2, this.targetY));
   }
+  this.wanderTimer -= dt;
 
   var dx = this.targetX - this.x;
   var dy = this.targetY - this.y;
   var dist = Math.hypot(dx, dy);
 
-  if (dist < 2) {
-    this.pauseTimer = 1 + Math.random() * 3;
+  if (dist < 4) {
+    this.pauseTimer = 0.5 + Math.random() * 2;
     this.moving = false;
   } else {
     this.moving = true;
-    var speed = this.speed;
     if (Math.abs(dx) >= Math.abs(dy)) {
       this.facing = dx > 0 ? 'right' : 'left';
     } else {
       this.facing = dy > 0 ? 'down' : 'up';
     }
-    var nx = this.x + (dx / dist) * speed;
-    var ny = this.y + (dy / dist) * speed;
+    var nx = this.x + (dx / dist) * this.speed;
+    var ny = this.y + (dy / dist) * this.speed;
     if (canWalkRect(nx, this.y, this.w, this.h)) this.x = nx;
     if (canWalkRect(this.x, ny, this.w, this.h)) this.y = ny;
   }
@@ -69,9 +70,9 @@ Visitor.prototype.render = function (ctx, cam) {
 function spawnVisitors() {
   var visitorSpots = [
     [12, 34], [18, 34], [30, 34], [36, 34],
-    [14, 18], [20, 18], [28, 14], [34, 14],
-    [40, 10], [45, 8], [8, 14], [8, 26],
-    [16, 8], [24, 22], [20, 26],
+    [14, 18], [22, 18], [28, 12], [34, 12],
+    [38, 10], [45, 6], [8, 12], [8, 24],
+    [16, 6], [24, 20], [20, 24],
   ];
   var spriteKeys = ['visitante-1', 'visitante-2', 'visitante-3'];
 
