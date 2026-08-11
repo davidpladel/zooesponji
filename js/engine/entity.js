@@ -32,18 +32,18 @@ Entity.prototype.hasSprite = function () {
   return this.spriteKey && !!getSprite(this.spriteKey);
 };
 
-Entity.prototype.renderSprite = function (ctx, cam, scaleX, scaleY) {
+Entity.prototype.renderSprite = function (ctx, cam) {
   if (!this.hasSprite()) return false;
-  var sx = scaleX || SCALE;
-  var sy = scaleY || SCALE;
   var dx = this.x * SCALE - cam.x;
   var dy = this.y * SCALE - cam.y;
+  var dw = this.w * SCALE;
+  var dh = this.h * SCALE;
   var row = FACING_ROWS[this.facing] || 0;
   var col = this.animFrame % this.spriteCols;
   var img = getSprite(this.spriteKey);
   var fw = Math.floor(img.width / this.spriteCols);
   var fh = Math.floor(img.height / this.spriteRows);
-  ctx.drawImage(img, col * fw, row * fh, fw, fh, dx, dy, fw * sx, fh * sy);
+  ctx.drawImage(img, col * fw, row * fh, fw, fh, dx, dy, dw, dh);
   return true;
 };
 
