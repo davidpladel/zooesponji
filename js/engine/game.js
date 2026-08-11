@@ -56,6 +56,8 @@ function initGame() {
 
   entities.push(gamePlayer);
 
+  spawnVisitors();
+
   buildFeedPanel();
   buildHUD();
   coins = getCoins(storage);
