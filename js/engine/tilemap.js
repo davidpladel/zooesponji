@@ -1,4 +1,5 @@
 var tileMap = [];
+var enclosureData = [];
 
 function buildMap() {
   var i, j;
@@ -30,9 +31,11 @@ function buildMap() {
   fillRect(38, 7, 2, 13, TILE_DIRT);
   fillRect(38, 12, 10, 2, TILE_DIRT);
 
-  buildEnclosure(2, 2, 10, 10);
-  buildEnclosure(26, 2, 10, 10);
-  buildEnclosure(2, 22, 10, 10);
+  enclosureData = [];
+  addEnclosure('leon', 2, 2, 10, 10);
+  addEnclosure('cabra', 26, 2, 10, 10);
+  addEnclosure('pantera', 2, 22, 10, 10);
+  addEnclosure('panda', 40, 2, 8, 8);
 
   fillRect(28, 26, 3, 3, TILE_WATER);
   fillRect(30, 27, 2, 2, TILE_WATER);
@@ -46,10 +49,17 @@ function buildMap() {
   addTrees();
 }
 
-function buildEnclosure(x, y, w, h) {
+function addEnclosure(animalId, x, y, w, h) {
   fillRect(x, y, w + 2, h + 2, TILE_FENCE);
   fillRect(x + 1, y + 1, w, h, TILE_ENCLOSURE);
   fillRect(x + 2, y, 2, 1, TILE_COBBLE);
+  enclosureData.push({
+    animalId: animalId,
+    centerX: (x + 1 + w / 2) * TILE_SIZE,
+    centerY: (y + 1 + h / 2) * TILE_SIZE,
+    gateX: (x + 2 + 0.5) * TILE_SIZE,
+    gateY: (y + 0.5) * TILE_SIZE,
+  });
 }
 
 function fillRect(x, y, w, h, tile) {

@@ -12,12 +12,16 @@
     document.write('<link rel="stylesheet" href="css/style.css?v=' + v + '">');
   </script>
   <script>
+    document.write('<script src="js/data.js?v=' + APP_VERSION + '"><\/script>');
+    document.write('<script src="js/coins.js?v=' + APP_VERSION + '"><\/script>');
+    document.write('<script src="js/sound.js?v=' + APP_VERSION + '"><\/script>');
     document.write('<script src="js/engine/constants.js?v=' + APP_VERSION + '"><\/script>');
     document.write('<script src="js/engine/tiles.js?v=' + APP_VERSION + '"><\/script>');
     document.write('<script src="js/engine/tilemap.js?v=' + APP_VERSION + '"><\/script>');
     document.write('<script src="js/engine/camera.js?v=' + APP_VERSION + '"><\/script>');
     document.write('<script src="js/engine/entity.js?v=' + APP_VERSION + '"><\/script>');
     document.write('<script src="js/engine/player.js?v=' + APP_VERSION + '"><\/script>');
+    document.write('<script src="js/engine/animals.js?v=' + APP_VERSION + '"><\/script>');
     document.write('<script src="js/engine/game.js?v=' + APP_VERSION + '"><\/script>');
   </script>
 </head>
