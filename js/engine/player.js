@@ -122,7 +122,9 @@ Player.prototype.update = function (dt) {
     var nx = this.x + dx;
     var ny = this.y + dy;
 
-    var eType = window.DEBUG_FREE_MOVE ? 'animal' : (this.inZone ? 'animal' : 'keeper');
+    var eType = 'keeper';
+    if (window.DEBUG_FREE_MOVE) { eType = 'debug'; }
+    else if (this.inZone) { eType = 'animal'; }
     if (canMoveRect(eType, nx, this.y, this.w, this.h)) this.x = nx;
     else if (dx !== 0) {
       if (canMoveRect(eType, this.x + Math.sign(dx), this.y, this.w, this.h)) this.x += Math.sign(dx);

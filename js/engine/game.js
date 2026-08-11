@@ -32,7 +32,7 @@ function initGame() {
 
   var startX = 25 * TILE_SIZE;
   var startY = 34 * TILE_SIZE;
-  if (window.DEBUG_FREE_MOVE && !canMove('animal', startX + 8, startY + 8)) {
+  if (window.DEBUG_FREE_MOVE && !canMove('debug', startX + 8, startY + 8)) {
     for (var sy = 0; sy < MAP_ROWS; sy++) {
       var found = false;
       for (var sx = 0; sx < MAP_COLS; sx++) {

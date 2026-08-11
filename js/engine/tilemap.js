@@ -47,6 +47,15 @@ MOVE_PERMS.animal[TILE_FENCE] = false;
 MOVE_PERMS.animal[TILE_WATER] = false;
 MOVE_PERMS.animal[TILE_WALL] = false;
 
+MOVE_PERMS.debug = {};
+MOVE_PERMS.debug[TILE_PATH] = true;
+MOVE_PERMS.debug[TILE_GATE] = true;
+MOVE_PERMS.debug[TILE_GRASS] = true;
+MOVE_PERMS.debug[TILE_ENCLOSURE] = true;
+MOVE_PERMS.debug[TILE_FENCE] = true;
+MOVE_PERMS.debug[TILE_WATER] = true;
+MOVE_PERMS.debug[TILE_WALL] = true;
+
 var tileMap = [];
 var enclosureData = [];
 var tilesetCanvas = null;
