@@ -58,6 +58,11 @@ function initGame() {
   updateCoinDisplay();
 
   loadSpriteTileset('assets/img/sprites/tileset.png');
+  loadSprite('cuidador', 'assets/img/sprites/cuidador.png');
+  loadSprite('leon', 'assets/img/sprites/leon.png');
+  loadSprite('cabra', 'assets/img/sprites/cabra.png');
+  loadSprite('pantera', 'assets/img/sprites/pantera.png');
+  loadSprite('panda', 'assets/img/sprites/panda.png');
 
   lastTime = performance.now();
   running = true;

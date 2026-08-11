@@ -1,13 +1,18 @@
+var FACING_ROWS = { down: 0, up: 1, left: 2, right: 3 };
+
 function Entity(x, y) {
   this.x = x || 0;
   this.y = y || 0;
   this.w = TILE_SIZE;
   this.h = TILE_SIZE;
-  this.sprite = null;
+  this.spriteKey = null;
+  this.spriteCols = 3;
+  this.spriteRows = 4;
   this.facing = 'down';
   this.animFrame = 0;
   this.animTimer = 0;
   this.moving = false;
+  this.fillColor = null;
 }
 
 Entity.prototype.update = function (dt) {
@@ -15,12 +20,31 @@ Entity.prototype.update = function (dt) {
     this.animTimer += dt;
     if (this.animTimer > 0.15) {
       this.animTimer = 0;
-      this.animFrame = (this.animFrame + 1) % 4;
+      this.animFrame = (this.animFrame + 1) % 3;
     }
   } else {
     this.animFrame = 0;
     this.animTimer = 0;
   }
+};
+
+Entity.prototype.hasSprite = function () {
+  return this.spriteKey && !!getSprite(this.spriteKey);
+};
+
+Entity.prototype.renderSprite = function (ctx, cam, scaleX, scaleY) {
+  if (!this.hasSprite()) return false;
+  var sx = scaleX || SCALE;
+  var sy = scaleY || SCALE;
+  var dx = this.x * SCALE - cam.x;
+  var dy = this.y * SCALE - cam.y;
+  var row = FACING_ROWS[this.facing] || 0;
+  var col = this.animFrame % this.spriteCols;
+  var img = getSprite(this.spriteKey);
+  var fw = Math.floor(img.width / this.spriteCols);
+  var fh = Math.floor(img.height / this.spriteRows);
+  ctx.drawImage(img, col * fw, row * fh, fw, fh, dx, dy, fw * sx, fh * sy);
+  return true;
 };
 
 Entity.prototype.render = function (ctx, cam) {

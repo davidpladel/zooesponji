@@ -2,6 +2,9 @@ function Animal(animalId, x, y) {
   Entity.call(this, x, y);
   this.animalId = animalId;
   this.fillColor = getAnimalColor(animalId);
+  this.spriteKey = animalId;
+  this.spriteCols = 1;
+  this.spriteRows = 1;
   this.w = TILE_SIZE;
   this.h = TILE_SIZE - 4;
   this.facing = 'left';
@@ -67,6 +70,25 @@ Animal.prototype.render = function (ctx, cam) {
 
   if (this.state === 'come') sy -= 6;
   if (this.state === 'rechaza') sy += 2;
+
+  if (this.renderSprite(ctx, cam)) {
+    if (this.state === 'come') {
+      ctx.fillStyle = '#ffeb3b';
+      ctx.font = (14 * SCALE) + 'px sans-serif';
+      ctx.fillText('😋', sx + sw / 2 - 12, sy - 8);
+    }
+    if (this.state === 'rechaza') {
+      ctx.fillStyle = '#ff5722';
+      ctx.font = (14 * SCALE) + 'px sans-serif';
+      ctx.fillText('😝', sx + sw / 2 - 12, sy - 8);
+    }
+    if (this.state === 'especial') {
+      ctx.fillStyle = '#e91e63';
+      ctx.font = (14 * SCALE) + 'px sans-serif';
+      ctx.fillText('🥰', sx + sw / 2 - 12, sy - 16);
+    }
+    return;
+  }
 
   ctx.fillStyle = this.fillColor;
   ctx.fillRect(sx, sy + 6, sw, sh - 6);

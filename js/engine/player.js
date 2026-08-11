@@ -4,6 +4,9 @@ function Player(x, y) {
   this.w = TILE_SIZE - 2;
   this.h = TILE_SIZE - 4;
   this.speed = PLAYER_SPEED;
+  this.spriteKey = 'cuidador';
+  this.spriteCols = 3;
+  this.spriteRows = 4;
   this.keys = {};
   this.touchActive = false;
   this.touchDX = 0;
@@ -131,6 +134,8 @@ Player.prototype.update = function (dt) {
 };
 
 Player.prototype.render = function (ctx, cam) {
+  if (this.renderSprite(ctx, cam)) return;
+
   var sx = this.x * SCALE - cam.x;
   var sy = this.y * SCALE - cam.y;
   var sw = this.w * SCALE;
