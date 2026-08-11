@@ -98,9 +98,6 @@ Animal.prototype.render = function (ctx, cam) {
     return;
   }
 
-  return;
-  }
-
   if (this.locked) {
     ctx.fillStyle = 'rgba(0,0,0,0.4)';
     ctx.fillRect(sx, sy, sw, sh);
