@@ -14,6 +14,7 @@ function Animal(animalId, x, y) {
   this.wanderDir = 0;
   this.state = 'normal';
   this.stateTimer = 0;
+  this.locked = false;
 }
 
 Animal.prototype = Object.create(Entity.prototype);
@@ -72,6 +73,13 @@ Animal.prototype.render = function (ctx, cam) {
   if (this.state === 'rechaza') sy += 2;
 
   if (this.renderSprite(ctx, cam)) {
+    if (this.locked) {
+      ctx.fillStyle = 'rgba(0,0,0,0.4)';
+      ctx.fillRect(sx, sy, sw, sh);
+      ctx.fillStyle = '#fff';
+      ctx.font = (12 * SCALE) + 'px sans-serif';
+      ctx.fillText('🔒', sx + sw / 2 - 12, sy + sh / 2 + 8);
+    }
     if (this.state === 'come') {
       ctx.fillStyle = '#ffeb3b';
       ctx.font = (14 * SCALE) + 'px sans-serif';
@@ -88,6 +96,17 @@ Animal.prototype.render = function (ctx, cam) {
       ctx.fillText('🥰', sx + sw / 2 - 12, sy - 16);
     }
     return;
+  }
+
+  return;
+  }
+
+  if (this.locked) {
+    ctx.fillStyle = 'rgba(0,0,0,0.4)';
+    ctx.fillRect(sx, sy, sw, sh);
+    ctx.fillStyle = '#fff';
+    ctx.font = (12 * SCALE) + 'px sans-serif';
+    ctx.fillText('🔒', sx + sw / 2 - 12, sy + sh / 2 + 8);
   }
 
   ctx.fillStyle = this.fillColor;

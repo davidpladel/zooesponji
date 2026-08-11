@@ -594,3 +594,194 @@ body {
   background: #d4e4c0;
   border-color: #8bc34a;
 }
+
+.shop-hud-btn {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  background: #ff9800;
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 16px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  z-index: 25;
+}
+
+.shop-overlay, .celebration-overlay, .unlock-overlay-engine {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 40;
+  padding: 16px;
+}
+
+.unlock-card, .celebration-card-engine {
+  background: #fff;
+  border-radius: 20px;
+  padding: 32px 24px;
+  text-align: center;
+  max-width: 360px;
+  width: 100%;
+  animation: pop-in 0.4s ease-out;
+}
+
+.unlock-icon, .shop-item-img {
+  font-size: 48px;
+  margin-bottom: 8px;
+}
+
+.unlock-card h2, .celebration-card-engine h2 {
+  margin: 0 0 8px;
+  color: #33691e;
+  font-size: 20px;
+}
+
+.unlock-card p, .celebration-card-engine p {
+  margin: 0 0 20px;
+  color: #555;
+  font-size: 14px;
+}
+
+.unlock-btn, .celebration-ok {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  background: #ff9800;
+  color: #fff;
+  margin-bottom: 8px;
+}
+
+.unlock-btn-later {
+  background: transparent;
+  border: none;
+  color: #888;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.shop-panel {
+  background: #fff;
+  border-radius: 20px;
+  max-width: 400px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+  animation: pop-in 0.3s ease-out;
+}
+
+.shop-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #33691e;
+  border-bottom: 1px solid #eee;
+}
+
+.shop-close {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #999;
+}
+
+.shop-coin {
+  text-align: center;
+  padding: 10px;
+  font-weight: 600;
+  color: #666;
+  font-size: 14px;
+}
+
+.shop-list {
+  padding: 8px 16px 16px;
+}
+
+.shop-item-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border-radius: 12px;
+  margin-bottom: 6px;
+}
+
+.shop-item-row.owned {
+  background: #e8f5e9;
+  opacity: 0.7;
+}
+
+.shop-item-text {
+  flex: 1;
+  font-size: 13px;
+  color: #555;
+}
+
+.shop-item-text strong {
+  color: #333;
+  font-size: 14px;
+}
+
+.shop-buy-btn {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  background: #4caf50;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.shop-buy-nocoins {
+  background: #e0e0e0;
+  color: #999;
+  cursor: not-allowed;
+}
+
+.shop-state-owned {
+  color: #2e7d32;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.shop-state-locked {
+  color: #999;
+  font-size: 13px;
+}
+
+.shop-toast-engine {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  background: #d32f2f;
+  color: #fff;
+  padding: 14px 22px;
+  border-radius: 14px;
+  font-size: 14px;
+  font-weight: 600;
+  z-index: 50;
+  animation: toast-in 0.3s ease-out;
+}
+
+.shop-toast-engine.fade {
+  opacity: 0;
+  transition: opacity 0.4s;
+}

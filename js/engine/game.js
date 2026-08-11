@@ -34,6 +34,8 @@ function initGame() {
 
   buildTileset();
   buildMap();
+  buildShopUI();
+  updatePurchases();
 
   var startX = 24 * TILE_SIZE + TILE_SIZE / 2;
   var startY = 36 * TILE_SIZE;
@@ -47,6 +49,7 @@ function initGame() {
   for (var e = 0; e < enclosureData.length; e++) {
     var enc = enclosureData[e];
     var animal = new Animal(enc.animalId, enc.centerX, enc.centerY);
+    animal.locked = !isAnimalUnlocked(enc.animalId);
     animals.push(animal);
     entities.push(animal);
   }
@@ -57,6 +60,8 @@ function initGame() {
   buildHUD();
   coins = getCoins(storage);
   updateCoinDisplay();
+
+  checkShopUnlock();
 
   loadSpriteTileset('assets/img/sprites/tileset.png');
   loadSprite('cuidador', 'assets/img/sprites/cuidador.png');
@@ -126,12 +131,14 @@ function checkInteraction() {
   var closestDist = Infinity;
 
   for (var i = 0; i < animals.length; i++) {
-    var pt = animals[i].getInteractionPoint();
+    var a = animals[i];
+    if (a.locked) continue;
+    var pt = a.getInteractionPoint();
     var dx = gamePlayer.x + gamePlayer.w / 2 - pt.x;
     var dy = gamePlayer.y + gamePlayer.h / 2 - pt.y;
     var dist = Math.hypot(dx, dy);
     if (dist < TILE_SIZE * 5 && dist < closestDist) {
-      closestAnimal = animals[i];
+      closestAnimal = a;
       closestDist = dist;
     }
   }
@@ -223,6 +230,7 @@ function handleFeed(food) {
     coins = addCoin(storage, coinAmount);
     updateCoinDisplay();
     playEatSound();
+    checkShopUnlock();
   } else if (reaction === 'rechaza') {
     playRejectSound();
   } else {
@@ -230,6 +238,7 @@ function handleFeed(food) {
     coins = addCoin(storage, specialAmount);
     updateCoinDisplay();
     playSpecialSound();
+    checkShopUnlock();
   }
 
   interactionTarget.react(reaction);
