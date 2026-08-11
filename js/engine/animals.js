@@ -5,8 +5,8 @@ function Animal(animalId, x, y) {
   this.spriteKey = animalId;
   this.spriteCols = 1;
   this.spriteRows = 1;
-  this.w = TILE_SIZE;
-  this.h = TILE_SIZE - 4;
+  this.w = TILE_SIZE * 2;
+  this.h = TILE_SIZE * 2;
   this.facing = 'left';
   this.baseX = x;
   this.baseY = y;
@@ -46,7 +46,7 @@ Animal.prototype.update = function (dt) {
   if (this.moving) {
     var dx = this.facing === 'left' ? -0.3 : 0.3;
     var nx = this.x + dx;
-    if (canWalkRect(nx, this.y, this.w, this.h) && Math.abs(nx - this.baseX) < TILE_SIZE * 4) {
+    if (canWalkRect(nx, this.y, this.w, this.h) && Math.abs(nx - this.baseX) < TILE_SIZE * 6) {
       this.x = nx;
     } else {
       this.facing = this.facing === 'left' ? 'right' : 'left';

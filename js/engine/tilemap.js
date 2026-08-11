@@ -68,7 +68,7 @@ function canWalkAt(px, py) {
 }
 
 function canWalkRect(x, y, w, h) {
-  var margin = 2;
+  var margin = 4;
   var cx = x + margin;
   var cy = y + margin;
   var cw = w - margin * 2;

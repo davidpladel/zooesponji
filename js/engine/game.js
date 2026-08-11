@@ -130,7 +130,7 @@ function checkInteraction() {
     var dx = gamePlayer.x + gamePlayer.w / 2 - pt.x;
     var dy = gamePlayer.y + gamePlayer.h / 2 - pt.y;
     var dist = Math.hypot(dx, dy);
-    if (dist < TILE_SIZE * 2 && dist < closestDist) {
+    if (dist < TILE_SIZE * 5 && dist < closestDist) {
       closestAnimal = animals[i];
       closestDist = dist;
     }

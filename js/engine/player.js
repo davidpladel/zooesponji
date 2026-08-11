@@ -1,9 +1,9 @@
 function Player(x, y) {
   Entity.call(this, x, y);
   this.fillColor = '#4caf50';
-  this.w = TILE_SIZE - 2;
-  this.h = TILE_SIZE - 4;
-  this.speed = PLAYER_SPEED;
+  this.w = TILE_SIZE * 2;
+  this.h = TILE_SIZE * 2;
+  this.speed = PLAYER_SPEED * 1.2;
   this.spriteKey = 'cuidador';
   this.spriteCols = 3;
   this.spriteRows = 4;
