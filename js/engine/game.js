@@ -101,6 +101,8 @@ function gameLoop(timestamp) {
     gamePlayer.y * SCALE + gamePlayer.h * SCALE / 2
   );
 
+  debugRecordPlayer(dt);
+
   checkInteraction();
   render();
   requestAnimationFrame(gameLoop);
