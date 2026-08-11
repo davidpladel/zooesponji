@@ -32,6 +32,20 @@ function initGame() {
 
   var startX = 25 * TILE_SIZE;
   var startY = 34 * TILE_SIZE;
+  if (DEBUG) {
+    if (!canMove('animal', startX, startY)) {
+      for (var ty = 0; ty < MAP_ROWS && !canMove('animal', startX, startY); ty++) {
+        for (var tx = 0; tx < MAP_COLS; tx++) {
+          if (canMove('animal', tx * TILE_SIZE + TILE_SIZE / 2, ty * TILE_SIZE + TILE_SIZE / 2)) {
+            startX = tx * TILE_SIZE + TILE_SIZE / 2;
+            startY = ty * TILE_SIZE + TILE_SIZE / 2;
+            ty = MAP_ROWS;
+            break;
+          }
+        }
+      }
+    }
+  }
   gamePlayer = new Player(startX, startY);
 
   gameCamera = new Camera(0, 0, gameCanvas.width, gameCanvas.height);
