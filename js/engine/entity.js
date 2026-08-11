@@ -1,10 +1,11 @@
 var FACING_ROWS = { down: 0, up: 1, left: 2, right: 3 };
 
-function Entity(x, y) {
+function Entity(x, y, entityType) {
   this.x = x || 0;
   this.y = y || 0;
-  this.w = TILE_SIZE;
-  this.h = TILE_SIZE;
+  this.entityType = entityType || 'keeper';
+  this.w = TILE_SIZE * 2;
+  this.h = TILE_SIZE * 2;
   this.spriteKey = null;
   this.spriteCols = 3;
   this.spriteRows = 4;

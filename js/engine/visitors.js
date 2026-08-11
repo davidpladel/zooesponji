@@ -1,5 +1,5 @@
 function Visitor(x, y, spriteKey) {
-  Entity.call(this, x, y);
+  Entity.call(this, x, y, 'visitor');
   this.spriteKey = spriteKey || 'visitante-1';
   this.spriteCols = 3;
   this.spriteRows = 4;
@@ -44,10 +44,10 @@ Visitor.prototype.update = function (dt) {
     this.moving = true;
     var nx = this.x + (dx / dist) * this.speed;
     var ny = this.y + (dy / dist) * this.speed;
-    if (canWalkRect(nx, this.y, this.w, this.h)) this.x = nx;
-    else if (dx !== 0) { this.targetX = this.x - dx; }
-    if (canWalkRect(this.x, ny, this.w, this.h)) this.y = ny;
-    else if (dy !== 0) { this.targetY = this.y - dy; }
+    if (canMoveRect('visitor', nx, this.y, this.w, this.h)) this.x = nx;
+    else { this.targetX = this.x - dx * 2; }
+    if (canMoveRect('visitor', this.x, ny, this.w, this.h)) this.y = ny;
+    else { this.targetY = this.y - dy * 2; }
   }
 
   Entity.prototype.update.call(this, dt);

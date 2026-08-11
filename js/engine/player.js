@@ -1,5 +1,5 @@
 function Player(x, y) {
-  Entity.call(this, x, y);
+  Entity.call(this, x, y, 'keeper');
   this.fillColor = '#4caf50';
   this.w = TILE_SIZE * 2;
   this.h = TILE_SIZE * 2;
@@ -7,6 +7,7 @@ function Player(x, y) {
   this.spriteKey = 'cuidador';
   this.spriteCols = 3;
   this.spriteRows = 4;
+  this.inZone = null;
   this.keys = {};
   this.touchActive = false;
   this.touchDX = 0;
@@ -120,13 +121,30 @@ Player.prototype.update = function (dt) {
 
     var nx = this.x + dx;
     var ny = this.y + dy;
-    if (canWalkRect(nx, this.y, this.w, this.h)) this.x = nx;
+
+    var eType = this.inZone ? 'animal' : 'keeper';
+    if (canMoveRect(eType, nx, this.y, this.w, this.h)) this.x = nx;
     else if (dx !== 0) {
-      if (canWalkRect(this.x + Math.sign(dx), this.y, this.w, this.h)) this.x += Math.sign(dx);
+      if (canMoveRect(eType, this.x + Math.sign(dx), this.y, this.w, this.h)) this.x += Math.sign(dx);
     }
-    if (canWalkRect(this.x, ny, this.w, this.h)) this.y = ny;
+    if (canMoveRect(eType, this.x, ny, this.w, this.h)) this.y = ny;
     else if (dy !== 0) {
-      if (canWalkRect(this.x, this.y + Math.sign(dy), this.w, this.h)) this.y += Math.sign(dy);
+      if (canMoveRect(eType, this.x, this.y + Math.sign(dy), this.w, this.h)) this.y += Math.sign(dy);
+    }
+
+    var entered = tryEnterZone('keeper', this.x + this.w / 2, this.y + this.h / 2);
+    if (entered) { this.inZone = entered; }
+    if (this.inZone) {
+      var ez = this.inZone.enclosure;
+      var ex = ez.x * TILE_SIZE;
+      var ey = ez.y * TILE_SIZE;
+      var ew = ez.w * TILE_SIZE;
+      var eh = ez.h * TILE_SIZE;
+      var cx = this.x + this.w / 2;
+      var cy = this.y + this.h / 2;
+      if (cx < ex || cx > ex + ew || cy < ey || cy > ey + eh) {
+        this.inZone = null;
+      }
     }
   }
 

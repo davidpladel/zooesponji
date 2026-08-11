@@ -20,24 +20,11 @@ function initGame() {
   resizeCanvas();
   window.addEventListener('resize', resizeCanvas);
 
-  var tilesetMapping = {};
-  tilesetMapping[TILE_GRASS_1] = 0;
-  tilesetMapping[TILE_GRASS_2] = 1;
-  tilesetMapping[TILE_DIRT] = 16;
-  tilesetMapping[TILE_COBBLE] = 24;
-  tilesetMapping[TILE_FENCE] = 32;
-  tilesetMapping[TILE_WATER] = 48;
-  tilesetMapping[TILE_WALL] = 32;
-  tilesetMapping[TILE_FLOOR] = 24;
-  tilesetMapping[TILE_ENCLOSURE] = 16;
-  initSpriteTileset(16, 4, tilesetMapping);
-
-  buildTileset();
   buildMap();
   buildShopUI();
   updatePurchases();
 
-  var startX = 24 * TILE_SIZE + TILE_SIZE / 2;
+  var startX = 25 * TILE_SIZE;
   var startY = 36 * TILE_SIZE;
   gamePlayer = new Player(startX, startY);
 
@@ -65,7 +52,6 @@ function initGame() {
 
   checkShopUnlock();
 
-  loadSpriteTileset('assets/img/sprites/tileset.png');
   loadSprite('cuidador', 'assets/img/sprites/cuidador.png');
   loadSprite('leon', 'assets/img/sprites/leon.png');
   loadSprite('cabra', 'assets/img/sprites/cabra.png');

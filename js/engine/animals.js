@@ -1,5 +1,5 @@
 function Animal(animalId, x, y) {
-  Entity.call(this, x, y);
+  Entity.call(this, x, y, 'animal');
   this.animalId = animalId;
   this.fillColor = getAnimalColor(animalId);
   this.spriteKey = animalId;
@@ -53,7 +53,7 @@ Animal.prototype.update = function (dt) {
   if (this.moving) {
     var dx = this.facing === 'left' ? -0.3 : 0.3;
     var nx = this.x + dx;
-    if (canWalkRect(nx, this.y, this.w, this.h) && Math.abs(nx - this.baseX) < TILE_SIZE * 6) {
+    if (canMoveRect('animal', nx, this.y, this.w, this.h) && Math.abs(nx - this.baseX) < TILE_SIZE * 6) {
       this.x = nx;
     } else {
       this.facing = this.facing === 'left' ? 'right' : 'left';
