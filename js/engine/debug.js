@@ -4,12 +4,11 @@ var debugPoints = [];
 var debugPanel = null;
 var debugRecording = false;
 var debugRecTimer = 0;
-var debugFreeMove = false;
 
 function initDebug() {
   if (window.location.search.indexOf('debug=1') === -1) return;
   DEBUG = true;
-  debugFreeMove = true;
+  window.DEBUG_FREE_MOVE = true;
 
   var dtEl = document.getElementById('debug-tile');
   if (dtEl) dtEl.style.cssText = 'position:fixed;top:4px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.85);color:#0f0;padding:4px 12px;font:12px monospace;z-index:100;border-radius:6px;pointer-events:none;';

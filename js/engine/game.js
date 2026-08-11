@@ -32,18 +32,18 @@ function initGame() {
 
   var startX = 25 * TILE_SIZE;
   var startY = 34 * TILE_SIZE;
-  if (DEBUG) {
-    if (!canMove('animal', startX, startY)) {
-      for (var ty = 0; ty < MAP_ROWS && !canMove('animal', startX, startY); ty++) {
-        for (var tx = 0; tx < MAP_COLS; tx++) {
-          if (canMove('animal', tx * TILE_SIZE + TILE_SIZE / 2, ty * TILE_SIZE + TILE_SIZE / 2)) {
-            startX = tx * TILE_SIZE + TILE_SIZE / 2;
-            startY = ty * TILE_SIZE + TILE_SIZE / 2;
-            ty = MAP_ROWS;
-            break;
-          }
+  if (window.DEBUG_FREE_MOVE && !canMove('animal', startX + 8, startY + 8)) {
+    for (var sy = 0; sy < MAP_ROWS; sy++) {
+      var found = false;
+      for (var sx = 0; sx < MAP_COLS; sx++) {
+        if (canMove('animal', sx * TILE_SIZE + 8, sy * TILE_SIZE + 8)) {
+          startX = sx * TILE_SIZE + 8;
+          startY = sy * TILE_SIZE + 8;
+          found = true;
+          break;
         }
       }
+      if (found) break;
     }
   }
   gamePlayer = new Player(startX, startY);
