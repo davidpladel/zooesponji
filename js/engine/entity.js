@@ -38,11 +38,19 @@ Entity.prototype.renderSprite = function (ctx, cam) {
   var dy = this.y * SCALE - cam.y;
   var dw = this.w * SCALE;
   var dh = this.h * SCALE;
-  var row = FACING_ROWS[this.facing] || 0;
-  var col = this.animFrame % this.spriteCols;
   var img = getSprite(this.spriteKey);
   var fw = Math.floor(img.width / this.spriteCols);
   var fh = Math.floor(img.height / this.spriteRows);
+
+  var col, row;
+  if (this.spriteCols === 1 && this.spriteRows === 1) {
+    col = 0;
+    row = 0;
+  } else {
+    row = FACING_ROWS[this.facing] || 0;
+    col = this.animFrame % this.spriteCols;
+  }
+
   ctx.drawImage(img, col * fw, row * fh, fw, fh, dx, dy, dw, dh);
   return true;
 };
