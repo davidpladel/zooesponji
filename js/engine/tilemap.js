@@ -6,59 +6,23 @@ function buildMap() {
   for (i = 0; i < MAP_ROWS; i++) {
     tileMap[i] = [];
     for (j = 0; j < MAP_COLS; j++) {
-      tileMap[i][j] = TILE_GRASS_1;
+      tileMap[i][j] = (i === 0 || i === MAP_ROWS - 1 || j === 0 || j === MAP_COLS - 1) ? TILE_FENCE : TILE_GRASS_1;
     }
   }
 
-  fillRect(0, 0, MAP_COLS, 1, TILE_FENCE);
-  fillRect(0, MAP_ROWS - 1, MAP_COLS, 1, TILE_FENCE);
-  fillRect(0, 0, 1, MAP_ROWS, TILE_FENCE);
-  fillRect(MAP_COLS - 1, 0, 1, MAP_ROWS, TILE_FENCE);
-
-  fillRect(1, MAP_ROWS - 2, 4, 1, TILE_DIRT);
-  fillRect(5, MAP_ROWS - 2, 4, 1, TILE_COBBLE);
-
-  fillRect(10, 34, 30, 1, TILE_DIRT);
-  fillRect(24, 34, 2, 4, TILE_COBBLE);
-  fillRect(24, 7, 2, 27, TILE_DIRT);
-  fillRect(12, 18, 12, 2, TILE_DIRT);
-  fillRect(26, 12, 12, 2, TILE_DIRT);
-  fillRect(12, 26, 12, 2, TILE_DIRT);
-  fillRect(12, 7, 2, 11, TILE_DIRT);
-  fillRect(22, 7, 2, 11, TILE_DIRT);
-  fillRect(12, 20, 2, 6, TILE_DIRT);
-  fillRect(22, 20, 2, 6, TILE_DIRT);
-  fillRect(38, 7, 2, 13, TILE_DIRT);
-  fillRect(38, 12, 10, 2, TILE_DIRT);
-
   enclosureData = [];
-  addEnclosure('leon', 2, 2, 10, 10);
-  addEnclosure('cabra', 26, 2, 10, 10);
-  addEnclosure('pantera', 2, 22, 10, 10);
-  addEnclosure('panda', 40, 2, 8, 8);
-
-  fillRect(28, 26, 3, 3, TILE_WATER);
-  fillRect(30, 27, 2, 2, TILE_WATER);
-  fillRect(29, 26, 1, 1, TILE_GRASS_1);
-
-  fillRect(40, 24, 8, 6, TILE_WALL);
-  fillRect(41, 25, 6, 4, TILE_FLOOR);
-  fillRect(42, 24, 2, 1, TILE_FENCE);
-  fillRect(42, 29, 2, 1, TILE_COBBLE);
-
-  addTrees();
-}
+  addEnclosure('leon', 3, 3, 9, 8);
+  addEnclosure('cabra', 27, 3, 9, 8);
+  addEnclosure('pantera', 3, 21, 9, 8);
+  addEnclosure('panda', 40, 3, 7, 7);
 
 function addEnclosure(animalId, x, y, w, h) {
-  fillRect(x, y, w + 2, h + 2, TILE_FENCE);
-  fillRect(x + 1, y + 1, w, h, TILE_ENCLOSURE);
-  fillRect(x + 2, y, 2, 1, TILE_COBBLE);
   enclosureData.push({
     animalId: animalId,
-    centerX: (x + 1 + w / 2) * TILE_SIZE,
-    centerY: (y + 1 + h / 2) * TILE_SIZE,
-    gateX: (x + 2 + 0.5) * TILE_SIZE,
-    gateY: (y + 0.5) * TILE_SIZE,
+    centerX: (x + w / 2) * TILE_SIZE,
+    centerY: (y + h / 2) * TILE_SIZE,
+    gateX: (x + 1.5) * TILE_SIZE,
+    gateY: y * TILE_SIZE,
   });
 }
 
