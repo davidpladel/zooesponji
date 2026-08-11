@@ -15,6 +15,7 @@ function buildMap() {
   addEnclosure('cabra', 27, 3, 9, 8);
   addEnclosure('pantera', 3, 21, 9, 8);
   addEnclosure('panda', 40, 3, 7, 7);
+}
 
 function addEnclosure(animalId, x, y, w, h) {
   enclosureData.push({
