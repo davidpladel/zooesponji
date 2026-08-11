@@ -10,6 +10,7 @@ var interactionTarget = null;
 var feedPanelVisible = false;
 var coins = 0;
 var storage = window.localStorage;
+var mapBackground = null;
 
 function initGame() {
   gameCanvas = document.getElementById('game-canvas');
@@ -64,6 +65,10 @@ function initGame() {
   loadSprite('pantera', 'assets/img/sprites/pantera.png');
   loadSprite('panda', 'assets/img/sprites/panda.png');
 
+  var bg = new Image();
+  bg.onload = function () { mapBackground = bg; };
+  bg.src = 'assets/img/sprites/zoo-map.png';
+
   lastTime = performance.now();
   running = true;
   requestAnimationFrame(gameLoop);
@@ -98,11 +103,17 @@ function gameLoop(timestamp) {
   render();
   requestAnimationFrame(gameLoop);
 }
-
 function render() {
   gameCtx.fillStyle = '#2d5a1e';
   gameCtx.fillRect(0, 0, gameCanvas.width, gameCanvas.height);
-  renderTilemap(gameCtx, gameCamera);
+
+  if (mapBackground) {
+    var mapW = MAP_PX_W * SCALE;
+    var mapH = MAP_PX_H * SCALE;
+    gameCtx.drawImage(mapBackground, -gameCamera.x, -gameCamera.y, mapW, mapH);
+  } else {
+    renderTilemap(gameCtx, gameCamera);
+  }
 
   entities.sort(function (a, b) { return a.y - b.y; });
   for (var i = 0; i < entities.length; i++) {
