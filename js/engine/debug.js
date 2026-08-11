@@ -46,49 +46,51 @@ function initDebug() {
 
 function exportPathDefinitions() {
   if (debugPoints.length === 0) return;
-  console.log('--- PATHS_H / PATHS_V sugeridos ---');
+  console.log('--- PATHS_H / PATHS_V ---');
 
   var points = debugPoints.slice();
+  points.sort(function (a, b) { return a.y !== b.y ? a.y - b.y : a.x - b.x; });
   var used = {};
-  var hPaths = [];
-  var vPaths = [];
 
   for (var i = 0; i < points.length; i++) {
     if (used[i]) continue;
     var p = points[i];
 
-    var hCount = 1;
-    for (var j = i + 1; j < points.length; j++) {
-      if (used[j]) continue;
-      if (points[j].y === p.y && points[j].x === p.x + hCount) { hCount++; used[j] = true; }
+    var hEnd = p.x;
+    for (var hx = p.x + 1; ; hx++) {
+      var found = false;
+      for (var j = 0; j < points.length; j++) {
+        if (used[j] || j === i) continue;
+        if (points[j].x === hx && points[j].y === p.y) { hEnd = hx; used[j] = true; found = true; break; }
+      }
+      if (!found) break;
     }
 
-    var vCount = 1;
-    for (var k = i + 1; k < points.length; k++) {
-      if (used[k]) continue;
-      if (points[k].x === p.x && points[k].y === p.y + vCount) { vCount++; used[k] = true; }
+    var vEnd = p.y;
+    for (var vy = p.y + 1; ; vy++) {
+      var found2 = false;
+      for (var k = 0; k < points.length; k++) {
+        if (used[k] || k === i) continue;
+        if (points[k].x === p.x && points[k].y === vy) { vEnd = vy; used[k] = true; found2 = true; break; }
+      }
+      if (!found2) break;
     }
 
-    if (hCount >= 2 && hCount > vCount) {
-      console.log('  { x: ' + p.x + ', y: ' + p.y + ', w: ' + hCount + ' },');
+    var hLen = hEnd - p.x + 1;
+    var vLen = vEnd - p.y + 1;
+
+    if (hLen >= 2 && hLen >= vLen) {
+      console.log('  { x: ' + p.x + ', y: ' + p.y + ', w: ' + hLen + ' },');
       used[i] = true;
-      continue;
-    }
-    if (vCount >= 2) {
-      console.log('  { x: ' + p.x + ', y: ' + p.y + ', h: ' + vCount + ' },');
+    } else if (vLen >= 2) {
+      console.log('  { x: ' + p.x + ', y: ' + p.y + ', h: ' + vLen + ' },');
       used[i] = true;
-      continue;
-    }
-    if (hCount >= 2) {
-      console.log('  { x: ' + p.x + ', y: ' + p.y + ', w: ' + hCount + ' },');
-      used[i] = true;
-      continue;
     }
   }
 
-  console.log('--- Puntos sueltos (no agrupados) ---');
+  console.log('--- Sueltos ---');
   for (var m = 0; m < points.length; m++) {
-    if (!used[m]) console.log('  { x: ' + points[m].x + ', y: ' + points[m].y + ' },');
+    if (!used[m]) console.log('  { x: ' + points[m].x + ', y: ' + points[m].y + ', w: 1 },');
   }
 }
 
