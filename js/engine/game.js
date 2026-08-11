@@ -13,6 +13,11 @@ var storage = window.localStorage;
 var mapBackground = null;
 
 function initGame() {
+  var footerEl = document.querySelector('.site-footer');
+  if (footerEl && footerEl.innerHTML.indexOf('Versión') === -1) {
+    footerEl.innerHTML += ' · Versión ' + (typeof APP_VERSION !== 'undefined' ? APP_VERSION : '2.0.0-dev');
+  }
+
   gameCanvas = document.getElementById('game-canvas');
   gameCtx = gameCanvas.getContext('2d');
   gameCtx.imageSmoothingEnabled = false;
@@ -23,6 +28,7 @@ function initGame() {
   buildMap();
   buildShopUI();
   updatePurchases();
+  initDebug();
 
   var startX = 25 * TILE_SIZE;
   var startY = 34 * TILE_SIZE;
@@ -115,6 +121,8 @@ function render() {
   for (var i = 0; i < entities.length; i++) {
     entities[i].render(gameCtx, gameCamera);
   }
+
+  renderDebug(gameCtx, gameCamera);
 }
 
 function checkInteraction() {
