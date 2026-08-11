@@ -25,7 +25,7 @@ function initGame() {
   updatePurchases();
 
   var startX = 25 * TILE_SIZE;
-  var startY = 36 * TILE_SIZE;
+  var startY = 34 * TILE_SIZE;
   gamePlayer = new Player(startX, startY);
 
   gameCamera = new Camera(0, 0, gameCanvas.width, gameCanvas.height);

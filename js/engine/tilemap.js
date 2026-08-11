@@ -145,15 +145,7 @@ function tryEnterZone(entityType, px, py) {
   var ty = Math.floor(py / TILE_SIZE);
   var tile = getTileAt(tx, ty);
   if (tile === TILE_GATE && entityType === 'keeper') {
-    var zone = getZoneAt(tx, ty);
-    if (!zone) {
-      for (var dx = -1; dx <= 1; dx++) {
-        var adjZone = getZoneAt(tx + dx, ty + 1);
-        if (adjZone) return adjZone;
-        adjZone = getZoneAt(tx, ty - 1);
-        if (adjZone) return adjZone;
-      }
-    }
+    return getZoneAt(tx, ty + 1);
   }
   return null;
 }
