@@ -5,14 +5,12 @@ function Visitor(x, y, spriteKey) {
   this.spriteRows = 4;
   this.w = TILE_SIZE * 1.5;
   this.h = TILE_SIZE * 1.5;
-  this.speed = 0.9 + Math.random() * 0.5;
+  this.speed = 1.2 + Math.random() * 0.4;
   this.facing = 'down';
-  this.wanderTimer = 0;
-  this.dirX = 0;
-  this.dirY = 1;
-  this.targetX = x;
-  this.targetY = y;
-  this.moving = true;
+  this.path = [];
+  this.pathIdx = 0;
+  this.waitTimer = 0;
+  this.moving = false;
   this.fillColor = null;
 }
 
@@ -20,52 +18,78 @@ Visitor.prototype = Object.create(Entity.prototype);
 Visitor.prototype.constructor = Visitor;
 
 Visitor.prototype.update = function (dt) {
-  this.wanderTimer -= dt;
-
-  var dx = this.targetX - this.x;
-  var dy = this.targetY - this.y;
-  var dist = Math.hypot(dx, dy);
-
-  if (dist < 6 || this.wanderTimer <= 0) {
-    this.pickNewTarget();
+  if (this.path.length === 0 || this.pathIdx >= this.path.length) {
+    if (this.waitTimer > 0) {
+      this.waitTimer -= dt;
+      this.moving = false;
+    } else {
+      this.findNewPath();
+    }
   }
 
-  dx = this.targetX - this.x;
-  dy = this.targetY - this.y;
-  dist = Math.hypot(dx, dy);
+  if (this.path.length > 0 && this.pathIdx < this.path.length) {
+    var wp = this.path[this.pathIdx];
+    var tx = wp.x * TILE_SIZE + TILE_SIZE / 2;
+    var ty = wp.y * TILE_SIZE + TILE_SIZE / 2;
+    var dx = tx - this.x;
+    var dy = ty - this.y;
+    var dist = Math.hypot(dx, dy);
 
-  if (dist > 1) {
-    this.dirX += (dx / dist - this.dirX) * 0.08;
-    this.dirY += (dy / dist - this.dirY) * 0.08;
-    var dlen = Math.hypot(this.dirX, this.dirY);
-    if (dlen > 0) { this.dirX /= dlen; this.dirY /= dlen; }
-
-    if (Math.abs(this.dirX) >= Math.abs(this.dirY)) {
-      this.facing = this.dirX > 0 ? 'right' : 'left';
+    if (dist < 3) {
+      this.pathIdx++;
+      if (this.pathIdx >= this.path.length) {
+        this.waitTimer = 1.5 + Math.random() * 3;
+        this.moving = false;
+      }
     } else {
-      this.facing = this.dirY > 0 ? 'down' : 'up';
+      this.moving = true;
+      if (Math.abs(dx) >= Math.abs(dy)) {
+        this.facing = dx > 0 ? 'right' : 'left';
+      } else {
+        this.facing = dy > 0 ? 'down' : 'up';
+      }
+      var spd = this.speed;
+      this.x += (dx / dist) * spd;
+      this.y += (dy / dist) * spd;
     }
-
-    this.moving = true;
-    var nx = this.x + this.dirX * this.speed;
-    var ny = this.y + this.dirY * this.speed;
-    if (canMoveRect('visitor', nx, this.y, this.w, this.h)) this.x = nx;
-    else { this.pickNewTarget(); }
-    if (canMoveRect('visitor', this.x, ny, this.w, this.h)) this.y = ny;
-    else { this.pickNewTarget(); }
   }
 
   Entity.prototype.update.call(this, dt);
 };
 
-Visitor.prototype.pickNewTarget = function () {
-  this.wanderTimer = 3 + Math.random() * 4;
-  var angle = Math.random() * Math.PI * 2;
-  var range = TILE_SIZE * 8 + Math.random() * TILE_SIZE * 14;
-  this.targetX = this.x + Math.cos(angle) * range;
-  this.targetY = this.y + Math.sin(angle) * range;
-  this.targetX = Math.max(TILE_SIZE * 2, Math.min(MAP_PX_W - TILE_SIZE * 2, this.targetX));
-  this.targetY = Math.max(TILE_SIZE * 2, Math.min(MAP_PX_H - TILE_SIZE * 2, this.targetY));
+Visitor.prototype.findNewPath = function () {
+  this.waitTimer = 0;
+  var sc = Math.floor(this.x / TILE_SIZE);
+  var sr = Math.floor(this.y / TILE_SIZE);
+
+  var pathTiles = [];
+  for (var ty = 0; ty < MAP_ROWS; ty++) {
+    for (var tx = 0; tx < MAP_COLS; tx++) {
+      if (tileMap[ty][tx] === TILE_PATH) {
+        pathTiles.push({ tx: tx, ty: ty });
+      }
+    }
+  }
+
+  var best = null;
+  for (var attempt = 0; attempt < 20; attempt++) {
+    var r = pathTiles[Math.floor(Math.random() * pathTiles.length)];
+    if (r.tx === sc && r.ty === sr) continue;
+    var p = astar(sc, sr, r.tx, r.ty);
+    if (p && p.length > 1) {
+      best = p;
+      break;
+    }
+  }
+
+  if (best) {
+    this.path = best;
+    this.pathIdx = 1;
+  } else {
+    this.path = [];
+    this.pathIdx = 0;
+    this.waitTimer = 2;
+  }
 };
 
 Visitor.prototype.render = function (ctx, cam) {
