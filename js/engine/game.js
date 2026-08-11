@@ -71,6 +71,9 @@ function initGame() {
   loadSprite('cabra', 'assets/img/sprites/cabra.png');
   loadSprite('pantera', 'assets/img/sprites/pantera.png');
   loadSprite('panda', 'assets/img/sprites/panda.png');
+  loadSprite('visitante-1', 'assets/img/sprites/visitante-1.png');
+  loadSprite('visitante-2', 'assets/img/sprites/visitante-2.png');
+  loadSprite('visitante-3', 'assets/img/sprites/visitante-3.png');
 
   var bg = new Image();
   bg.onload = function () { mapBackground = bg; };
