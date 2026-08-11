@@ -26,6 +26,12 @@ function getAnimalColor(id) {
 }
 
 Animal.prototype.update = function (dt) {
+  if (this.locked) {
+    this.moving = false;
+    this.animFrame = 0;
+    return;
+  }
+
   if (this.state !== 'normal') {
     this.stateTimer -= dt;
     if (this.stateTimer <= 0) {
