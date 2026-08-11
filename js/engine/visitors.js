@@ -86,7 +86,7 @@ function spawnVisitors() {
     }
   }
 
-  var count = 15;
+  var count = 3;
   var spriteKeys = ['visitante-1', 'visitante-2', 'visitante-3'];
 
   for (var i = 0; i < count; i++) {
