@@ -77,17 +77,23 @@ Visitor.prototype.render = function (ctx, cam) {
 };
 
 function spawnVisitors() {
-  var visitorSpots = [
-    [12, 34], [18, 34], [30, 34], [36, 34], [42, 34],
-    [12, 24], [18, 24], [22, 24],
-    [12, 14], [18, 14], [22, 14], [28, 14], [34, 14],
-    [37, 8], [37, 4],
-  ];
+  var pathTiles = [];
+  for (var ty = 0; ty < MAP_ROWS; ty++) {
+    for (var tx = 0; tx < MAP_COLS; tx++) {
+      if (tileMap[ty][tx] === TILE_PATH) {
+        pathTiles.push({ tx: tx, ty: ty });
+      }
+    }
+  }
+
+  var count = 15;
   var spriteKeys = ['visitante-1', 'visitante-2', 'visitante-3'];
 
-  for (var i = 0; i < visitorSpots.length; i++) {
-    var vx = visitorSpots[i][0] * TILE_SIZE + TILE_SIZE / 2;
-    var vy = visitorSpots[i][1] * TILE_SIZE + TILE_SIZE / 2;
+  for (var i = 0; i < count; i++) {
+    var idx = Math.floor(Math.random() * pathTiles.length);
+    var tile = pathTiles[idx];
+    var vx = tile.tx * TILE_SIZE + TILE_SIZE / 2;
+    var vy = tile.ty * TILE_SIZE + TILE_SIZE / 2;
     var v = new Visitor(vx, vy, spriteKeys[i % spriteKeys.length]);
     entities.push(v);
   }
