@@ -60,3 +60,28 @@ var PATHS_V = [
   { x: 37, y: 2, h: 13 },
   { x: 12, y: 14, h: 5 },
 ];
+
+function getZoneForAnimal(animalId) {
+  for (var i = 0; i < ZONES.length; i++) {
+    if (ZONES[i].animalId === animalId) return ZONES[i];
+  }
+  return null;
+}
+
+function getZoneAt(tx, ty) {
+  for (var i = 0; i < ZONES.length; i++) {
+    var e = ZONES[i].enclosure;
+    if (tx >= e.x && tx < e.x + e.w && ty >= e.y && ty < e.y + e.h) {
+      return ZONES[i];
+    }
+  }
+  return null;
+}
+
+function zoneCenterGameCoords(zone) {
+  var e = zone.enclosure;
+  return {
+    x: (e.x + e.w / 2) * TILE_SIZE,
+    y: (e.y + e.h / 2) * TILE_SIZE,
+  };
+}
