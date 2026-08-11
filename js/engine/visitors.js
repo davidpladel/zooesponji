@@ -5,11 +5,13 @@ function Visitor(x, y, spriteKey) {
   this.spriteRows = 4;
   this.w = TILE_SIZE * 1.5;
   this.h = TILE_SIZE * 1.5;
-  this.speed = 1 + Math.random() * 0.6;
+  this.speed = 0.9 + Math.random() * 0.5;
   this.facing = 'down';
   this.wanderTimer = 0;
-  this.targetX = x + (Math.random() - 0.5) * TILE_SIZE * 10;
-  this.targetY = y + (Math.random() - 0.5) * TILE_SIZE * 10;
+  this.dirX = 0;
+  this.dirY = 1;
+  this.targetX = x;
+  this.targetY = y;
   this.moving = true;
   this.fillColor = null;
 }
@@ -25,32 +27,45 @@ Visitor.prototype.update = function (dt) {
   var dist = Math.hypot(dx, dy);
 
   if (dist < 6 || this.wanderTimer <= 0) {
-    this.wanderTimer = 2 + Math.random() * 3;
-    var angle = Math.random() * Math.PI * 2;
-    var range = TILE_SIZE * 5 + Math.random() * TILE_SIZE * 10;
-    this.targetX = this.x + Math.cos(angle) * range;
-    this.targetY = this.y + Math.sin(angle) * range;
-    this.targetX = Math.max(TILE_SIZE * 2, Math.min(MAP_PX_W - TILE_SIZE * 2, this.targetX));
-    this.targetY = Math.max(TILE_SIZE * 2, Math.min(MAP_PX_H - TILE_SIZE * 2, this.targetY));
+    this.pickNewTarget();
   }
 
-  if (Math.abs(dx) >= Math.abs(dy)) {
-    this.facing = dx > 0 ? 'right' : 'left';
-  } else {
-    this.facing = dy > 0 ? 'down' : 'up';
-  }
+  dx = this.targetX - this.x;
+  dy = this.targetY - this.y;
+  dist = Math.hypot(dx, dy);
 
   if (dist > 1) {
+    this.dirX += (dx / dist - this.dirX) * 0.08;
+    this.dirY += (dy / dist - this.dirY) * 0.08;
+    var dlen = Math.hypot(this.dirX, this.dirY);
+    if (dlen > 0) { this.dirX /= dlen; this.dirY /= dlen; }
+
+    if (Math.abs(this.dirX) >= Math.abs(this.dirY)) {
+      this.facing = this.dirX > 0 ? 'right' : 'left';
+    } else {
+      this.facing = this.dirY > 0 ? 'down' : 'up';
+    }
+
     this.moving = true;
-    var nx = this.x + (dx / dist) * this.speed;
-    var ny = this.y + (dy / dist) * this.speed;
+    var nx = this.x + this.dirX * this.speed;
+    var ny = this.y + this.dirY * this.speed;
     if (canMoveRect('visitor', nx, this.y, this.w, this.h)) this.x = nx;
-    else { this.targetX = this.x - dx * 2; }
+    else { this.pickNewTarget(); }
     if (canMoveRect('visitor', this.x, ny, this.w, this.h)) this.y = ny;
-    else { this.targetY = this.y - dy * 2; }
+    else { this.pickNewTarget(); }
   }
 
   Entity.prototype.update.call(this, dt);
+};
+
+Visitor.prototype.pickNewTarget = function () {
+  this.wanderTimer = 3 + Math.random() * 4;
+  var angle = Math.random() * Math.PI * 2;
+  var range = TILE_SIZE * 8 + Math.random() * TILE_SIZE * 14;
+  this.targetX = this.x + Math.cos(angle) * range;
+  this.targetY = this.y + Math.sin(angle) * range;
+  this.targetX = Math.max(TILE_SIZE * 2, Math.min(MAP_PX_W - TILE_SIZE * 2, this.targetX));
+  this.targetY = Math.max(TILE_SIZE * 2, Math.min(MAP_PX_H - TILE_SIZE * 2, this.targetY));
 };
 
 Visitor.prototype.render = function (ctx, cam) {

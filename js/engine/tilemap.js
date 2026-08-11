@@ -107,8 +107,10 @@ function fillRect(x, y, w, h, tile) {
 }
 
 function getTileAt(tx, ty) {
-  if (ty < 0 || ty >= MAP_ROWS || tx < 0 || tx >= MAP_COLS) return -1;
-  return tileMap[ty][tx];
+  if (isNaN(tx) || isNaN(ty) || ty < 0 || ty >= MAP_ROWS || tx < 0 || tx >= MAP_COLS) return -1;
+  var row = tileMap[ty];
+  if (!row) return -1;
+  return row[tx];
 }
 
 function getTileAtPixel(px, py) {
