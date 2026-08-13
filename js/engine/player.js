@@ -3,7 +3,7 @@ function Player(x, y) {
   this.fillColor = '#4caf50';
   this.w = TILE_SIZE * 2;
   this.h = TILE_SIZE * 2;
-  this.speed = PLAYER_SPEED * 1.2;
+  this.speed = PLAYER_SPEED * 0.6;
   this.spriteKey = 'cuidador';
   this.spriteCols = 3;
   this.spriteRows = 4;
