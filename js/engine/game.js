@@ -1,3 +1,6 @@
+function spriteUrl(path) {
+  return path + '?v=' + (typeof APP_VERSION !== 'undefined' ? APP_VERSION : '2.0');
+}
 var gameCanvas = null;
 var gameCtx = null;
 var gameCamera = null;
@@ -75,18 +78,18 @@ function initGame() {
 
   checkShopUnlock();
 
-  loadSprite('cuidador', 'assets/img/sprites/cuidador.png');
-  loadSprite('leon', 'assets/img/sprites/leon.png');
-  loadSprite('cabra', 'assets/img/sprites/cabra.png');
-  loadSprite('pantera', 'assets/img/sprites/pantera.png');
-  loadSprite('panda', 'assets/img/sprites/panda.png');
-  loadSprite('visitante-1', 'assets/img/sprites/visitante-1.png');
-  loadSprite('visitante-2', 'assets/img/sprites/visitante-2.png');
-  loadSprite('visitante-3', 'assets/img/sprites/visitante-3.png');
+  loadSprite('cuidador', spriteUrl('assets/img/sprites/cuidador.png'));
+  loadSprite('leon', spriteUrl('assets/img/sprites/leon.png'));
+  loadSprite('cabra', spriteUrl('assets/img/sprites/cabra.png'));
+  loadSprite('pantera', spriteUrl('assets/img/sprites/pantera.png'));
+  loadSprite('panda', spriteUrl('assets/img/sprites/panda.png'));
+  loadSprite('visitante-1', spriteUrl('assets/img/sprites/visitante-1.png'));
+  loadSprite('visitante-2', spriteUrl('assets/img/sprites/visitante-2.png'));
+  loadSprite('visitante-3', spriteUrl('assets/img/sprites/visitante-3.png'));
 
   var bg = new Image();
   bg.onload = function () { mapBackground = bg; };
-  bg.src = 'assets/img/sprites/zoo-map.png';
+  bg.src = spriteUrl('assets/img/sprites/zoo-map.png');
 
   lastTime = performance.now();
   running = true;
