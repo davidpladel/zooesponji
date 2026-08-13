@@ -140,7 +140,7 @@ function renderDebug(ctx, cam) {
   }
   if (debugRecording && gamePlayer) {
     var colors = { P: '#4f4', F: '#f44', G: '#ff4' };
-    var px = gamePlayer.x*SCALE-cam.x+gamePlayer.w*SCALE/2, py = gamePlayer.y*SCALE-cam.y+gamePlayer.h*SCALE/2;
+    var px = gamePlayer.x*SCALE-cam.x+gamePlayer.w*SCALE/2, py = (gamePlayer.y+gamePlayer.h)*SCALE-cam.y;
     ctx.strokeStyle=colors[debugMode]||'#fff'; ctx.lineWidth=3;
     ctx.beginPath(); ctx.arc(px,py,DISPLAY_TILE*0.55,0,Math.PI*2); ctx.stroke();
   }
