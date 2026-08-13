@@ -57,8 +57,8 @@ function debugRecordPlayer(dt) {
   debugRecTimer += dt;
   if (debugRecTimer < 0.3) return;
   debugRecTimer = 0;
-  var tx = Math.floor(gamePlayer.x / TILE_SIZE);
-  var ty = Math.floor(gamePlayer.y / TILE_SIZE);
+  var tx = Math.floor((gamePlayer.x + gamePlayer.w / 2) / TILE_SIZE);
+  var ty = Math.floor((gamePlayer.y + gamePlayer.h) / TILE_SIZE);
   var arr = debugMode === 'P' ? debugPathPoints : debugMode === 'F' ? debugFencePoints : debugGatePoints;
   if (arr.length === 0 || arr[arr.length-1].x !== tx || arr[arr.length-1].y !== ty) arr.push({ x: tx, y: ty });
   updateDebugLabel();
