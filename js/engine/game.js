@@ -163,6 +163,7 @@ function render() {
 }
 
 function checkInteraction() {
+  if (gameState !== 'map') return;
   var closestAnimal = null;
   var closestDist = Infinity;
 
@@ -188,6 +189,10 @@ function checkInteraction() {
 function updateFeedPrompt() {
   var prompt = document.getElementById('feed-prompt');
   if (!prompt) return;
+  if (gameState !== 'map') {
+    prompt.style.display = 'none';
+    return;
+  }
   if (interactionTarget) {
     var label = ANIMAL_LABELS[interactionTarget.animalId] || interactionTarget.animalId;
     prompt.textContent = '🍽️ Dar de comer a ' + label;

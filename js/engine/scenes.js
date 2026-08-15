@@ -19,7 +19,7 @@ function setGameState(state, data) {
   gameState = state;
   if (state === 'feed') {
     feedAnimalId = data.animalId;
-    feedFoodIcons = [];
+    feedFoodIcons = computeFoodIcons();
     feedReaction = null;
     feedReactionTimer = 0;
     feedIdleTimer = 0;
@@ -54,6 +54,30 @@ function sceneDrawCloseButton(ctx, w) {
 
 function sceneRectHit(px, py, rx, ry, rw, rh) {
   return px >= rx && px <= rx + rw && py >= ry && py <= ry + rh;
+}
+
+function computeFoodIcons() {
+  var w = gameCanvas.width;
+  var h = gameCanvas.height;
+  var bgW = Math.min(w * 0.8, 600);
+  var bgH = Math.min(h * 0.65, 400);
+  var bgX = (w - bgW) / 2;
+  var bgY = (h - bgH) / 2 - 20;
+  var trayY = bgY + bgH + 10;
+  var iconSize = Math.min(48, (bgW - 40) / 4);
+  var gap = (bgW - iconSize * 4) / 5;
+  var icons = [];
+  for (var i = 0; i < FOODS.length; i++) {
+    icons.push({
+      x: bgX + gap + i * (iconSize + gap),
+      y: trayY,
+      w: iconSize,
+      h: iconSize,
+      food: FOODS[i],
+      alpha: 1
+    });
+  }
+  return icons;
 }
 
 var sceneInputBound = false;
