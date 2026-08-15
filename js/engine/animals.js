@@ -31,6 +31,7 @@ Animal.prototype.update = function (dt) {
     this.animFrame = 0;
     return;
   }
+  if (gameState !== 'map') return;
 
   if (this.state !== 'normal') {
     this.stateTimer -= dt;

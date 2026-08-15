@@ -18,6 +18,7 @@ Visitor.prototype = Object.create(Entity.prototype);
 Visitor.prototype.constructor = Visitor;
 
 Visitor.prototype.update = function (dt) {
+  if (gameState !== 'map') return;
   if (this.path.length === 0 || this.pathIdx >= this.path.length) {
     if (this.waitTimer > 0) {
       this.waitTimer -= dt;

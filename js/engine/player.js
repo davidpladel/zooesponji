@@ -92,6 +92,7 @@ Player.prototype.bindInput = function () {
 };
 
 Player.prototype.update = function (dt) {
+  if (gameState !== 'map') return;
   var dx = 0;
   var dy = 0;
 
