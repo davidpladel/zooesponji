@@ -70,8 +70,131 @@ function updateFeedScene(dt) {
   }
 }
 
-function updateShopScene(dt) {}
-function renderShopScene(ctx, cam) {}
+function updateShopScene(dt) {
+  shopkeeperAnim += dt;
+  for (var i = 0; i < shopItems.length; i++) {
+    if (shopItems[i].shaking) {
+      shopItems[i].shakeTimer -= dt;
+      if (shopItems[i].shakeTimer <= 0) {
+        shopItems[i].shaking = false;
+      }
+    }
+  }
+}
+
+function buildShopItems() {
+  var items = [];
+  var purchases = getPurchases(storage);
+  for (var i = 0; i < SHOP_ITEMS.length; i++) {
+    var item = SHOP_ITEMS[i];
+    if (typeof item.cost !== 'number') continue;
+    var owned = !!purchases[item.id];
+    var affordable = coins >= item.cost;
+    items.push({ id: item.id, label: item.label, cost: item.cost, image: item.image, owned: owned, affordable: affordable, shaking: false, shakeTimer: 0 });
+  }
+  return items;
+}
+
+function renderShopScene(ctx, cam) {
+  var w = gameCanvas.width;
+  var h = gameCanvas.height;
+
+  var bgW = Math.min(w * 0.9, 600);
+  var bgH = Math.min(h * 0.7, 400);
+  var bgX = (w - bgW) / 2;
+  var bgY = (h - bgH) / 2;
+
+  var bgImg = sceneLoadImage('assets/img/scenes/shop-bg.png');
+  if (bgImg.complete && bgImg.naturalWidth > 0) {
+    ctx.drawImage(bgImg, bgX, bgY, bgW, bgH);
+  } else {
+    ctx.fillStyle = '#5c3a1e';
+    ctx.fillRect(bgX, bgY, bgW, bgH);
+    for (var ly = bgY; ly < bgY + bgH; ly += 12) {
+      ctx.fillStyle = ly % 24 === 0 ? '#4a2a10' : '#7a5230';
+      ctx.fillRect(bgX, ly, bgW, 6);
+    }
+    ctx.strokeStyle = '#3a1a0a';
+    ctx.lineWidth = 4;
+    ctx.strokeRect(bgX, bgY, bgW, bgH);
+  }
+
+  var keeperX = bgX + 30;
+  var keeperY = bgY + bgH - 120;
+  var keeperW = 64;
+  var keeperH = 80;
+  var shopkeeperImg = sceneLoadImage('assets/img/sprites/tendero.png');
+  if (shopkeeperImg.complete && shopkeeperImg.naturalWidth > 0) {
+    ctx.drawImage(shopkeeperImg, 0, 0, shopkeeperImg.width, shopkeeperImg.height, keeperX, keeperY + Math.sin(shopkeeperAnim * 2) * 2, keeperW, keeperH);
+  } else {
+    ctx.fillStyle = '#6d4c2e';
+    ctx.fillRect(keeperX, keeperY + Math.sin(shopkeeperAnim * 2) * 2, keeperW, keeperH);
+    ctx.fillStyle = '#ffcc80';
+    ctx.beginPath();
+    ctx.arc(keeperX + keeperW / 2, keeperY + 12, 16, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#333';
+    ctx.fillRect(keeperX + keeperW / 2 - 6, keeperY + 8, 4, 4);
+    ctx.fillRect(keeperX + keeperW / 2 + 4, keeperY + 8, 4, 4);
+  }
+
+  var itemsX = bgX + 140;
+  var itemsY = bgY + 40;
+  var itemH = 80;
+  for (var i = 0; i < shopItems.length; i++) {
+    var si = shopItems[i];
+    var iy = itemsY + i * (itemH + 10);
+    var shakeX = si.shaking ? Math.sin(Date.now() * 0.05) * 4 : 0;
+
+    ctx.fillStyle = si.owned ? '#555' : si.affordable ? 'rgba(76,175,80,0.3)' : 'rgba(244,67,54,0.3)';
+    ctx.fillRect(itemsX + shakeX, iy, bgW - 160, itemH);
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(itemsX + shakeX, iy, bgW - 160, itemH);
+
+    var animalSprite = sceneLoadImage('assets/img/sprites/' + si.id + '.png');
+    var sprX = itemsX + shakeX + 8;
+    var sprY = iy + 8;
+    var sprW = itemH - 16;
+    var sprH = itemH - 16;
+    if (animalSprite.complete && animalSprite.naturalWidth > 0) {
+      ctx.drawImage(animalSprite, 0, 0, animalSprite.width, animalSprite.height, sprX, sprY, sprW, sprH);
+    } else {
+      ctx.fillStyle = '#666';
+      ctx.fillRect(sprX, sprY, sprW, sprH);
+    }
+
+    if (si.owned) {
+      ctx.fillStyle = 'rgba(0,0,0,0.4)';
+      ctx.fillRect(sprX, sprY, sprW, sprH);
+    }
+
+    ctx.fillStyle = '#fff';
+    ctx.font = '14px sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    var labelY = iy + itemH / 2;
+    ctx.fillText(si.label, sprX + sprW + 10, labelY - 10);
+
+    if (si.owned) {
+      ctx.fillStyle = '#4caf50';
+      ctx.fillText('✓ Comprado', sprX + sprW + 10, labelY + 12);
+    } else {
+      ctx.fillText(si.cost + ' 🪙', sprX + sprW + 10, labelY + 12);
+    }
+
+    si._rect = { x: itemsX, y: iy, w: bgW - 160, h: itemH };
+  }
+
+  ctx.fillStyle = 'rgba(0,0,0,0.6)';
+  ctx.fillRect(bgX + bgW - 100, bgY + 8, 92, 28);
+  ctx.fillStyle = '#ffd700';
+  ctx.font = '14px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('🪙 ' + coins, bgX + bgW - 54, bgY + 26);
+
+  sceneDrawCloseButton(ctx, w);
+}
 
 function renderFeedScene(ctx, cam) {
   var w = gameCanvas.width;
