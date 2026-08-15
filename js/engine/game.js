@@ -226,7 +226,9 @@ function buildHUD() {
   prompt.className = 'feed-prompt-btn';
   prompt.style.display = 'none';
   prompt.addEventListener('click', function () {
-    showFeedPanel();
+    if (interactionTarget) {
+      startFeedingScene(interactionTarget.animalId);
+    }
   });
   document.body.appendChild(prompt);
 

@@ -266,3 +266,31 @@ function handleFeedPointerUp(e) {
 function handleFeedPointerCancel(e) {
   draggedFood = null;
 }
+
+function handleFeedReaction(food) {
+  var reaction = getReaction(feedAnimalId, food);
+  feedReaction = reaction;
+  var timers = { come: 1.5, rechaza: 1.0, especial: 2.0 };
+  feedReactionTimer = timers[reaction] || 1.5;
+
+  if (reaction === 'come') {
+    var comeCoins = (ANIMAL_COINS[feedAnimalId] && ANIMAL_COINS[feedAnimalId].come) || 0;
+    coins = addCoin(storage, comeCoins);
+    updateCoinDisplay();
+    checkShopUnlock();
+    playEatSound();
+  } else if (reaction === 'rechaza') {
+    playRejectSound();
+  } else if (reaction === 'especial') {
+    var especCoins = (ANIMAL_COINS[feedAnimalId] && ANIMAL_COINS[feedAnimalId].especial) || 0;
+    coins = addCoin(storage, especCoins);
+    updateCoinDisplay();
+    checkShopUnlock();
+    playSpecialSound();
+  }
+}
+
+function startFeedingScene(animalId) {
+  var zone = getZoneForAnimal(animalId);
+  setGameState('feed', { animalId: animalId, zone: zone });
+}
