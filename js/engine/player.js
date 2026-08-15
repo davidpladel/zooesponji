@@ -124,7 +124,7 @@ Player.prototype.update = function (dt) {
 
     var eType = 'keeper';
     if (window.DEBUG_FREE_MOVE) { eType = 'debug'; }
-    else if (this.inZone) { eType = 'animal'; }
+    else if (this.inZone) { eType = 'keeperInZone'; }
     if (canMoveRect(eType, nx, this.y, this.w, this.h)) this.x = nx;
     else if (dx !== 0) {
       if (canMoveRect(eType, this.x + Math.sign(dx), this.y, this.w, this.h)) this.x += Math.sign(dx);
@@ -144,7 +144,11 @@ Player.prototype.update = function (dt) {
       var eh = ez.h * TILE_SIZE;
       var cx = this.x + this.w / 2;
       var cy = this.y + this.h / 2;
-      if (cx < ex || cx > ex + ew || cy < ey || cy > ey + eh) {
+      var tx = Math.floor(cx / TILE_SIZE);
+      var ty = Math.floor(cy / TILE_SIZE);
+      var inside = cx >= ex && cx <= ex + ew && cy >= ey && cy <= ey + eh;
+      var onGate = getTileAt(tx, ty) === TILE_GATE;
+      if (!inside && !onGate) {
         this.inZone = null;
       }
     }

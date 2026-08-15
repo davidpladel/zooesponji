@@ -47,6 +47,15 @@ MOVE_PERMS.animal[TILE_FENCE] = false;
 MOVE_PERMS.animal[TILE_WATER] = false;
 MOVE_PERMS.animal[TILE_WALL] = false;
 
+MOVE_PERMS.keeperInZone = {};
+MOVE_PERMS.keeperInZone[TILE_PATH] = true;
+MOVE_PERMS.keeperInZone[TILE_GATE] = true;
+MOVE_PERMS.keeperInZone[TILE_GRASS] = true;
+MOVE_PERMS.keeperInZone[TILE_ENCLOSURE] = true;
+MOVE_PERMS.keeperInZone[TILE_FENCE] = false;
+MOVE_PERMS.keeperInZone[TILE_WATER] = false;
+MOVE_PERMS.keeperInZone[TILE_WALL] = false;
+
 MOVE_PERMS.debug = {};
 MOVE_PERMS.debug[TILE_PATH] = true;
 MOVE_PERMS.debug[TILE_GATE] = true;
@@ -151,8 +160,11 @@ function tryEnterZone(entityType, px, py) {
   var tx = Math.floor(px / TILE_SIZE);
   var ty = Math.floor(py / TILE_SIZE);
   var tile = getTileAt(tx, ty);
-  if (tile === TILE_GATE && entityType === 'keeper') {
-    return getZoneAt(tx, ty + 1);
+  if (tile !== TILE_GATE || entityType !== 'keeper') return null;
+  var dirs = [[0, -1], [0, 1], [-1, 0], [1, 0]];
+  for (var d = 0; d < dirs.length; d++) {
+    var z = getZoneAt(tx + dirs[d][0], ty + dirs[d][1]);
+    if (z) return z;
   }
   return null;
 }
