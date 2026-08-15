@@ -417,3 +417,49 @@ function startFeedingScene(animalId) {
   var zone = getZoneForAnimal(animalId);
   setGameState('feed', { animalId: animalId, zone: zone });
 }
+
+function startShopScene() {
+  setGameState('shop', {});
+}
+
+function handleShopPointerDown(e) {
+  var rectBounds = gameCanvas.getBoundingClientRect();
+  var px = e.clientX - rectBounds.left;
+  var py = e.clientY - rectBounds.top;
+
+  if (px >= gameCanvas.width - 48 && py <= 48) {
+    setGameState('map');
+    return;
+  }
+
+  for (var i = 0; i < shopItems.length; i++) {
+    var si = shopItems[i];
+    if (!si._rect) continue;
+    if (!sceneRectHit(px, py, si._rect.x, si._rect.y, si._rect.w, si._rect.h)) continue;
+
+    if (si.owned) return;
+    if (!si.affordable) {
+      si.shaking = true;
+      si.shakeTimer = 0.3;
+      return;
+    }
+
+    try {
+      coins = spendCoins(storage, si.cost);
+    } catch (err) {
+      si.shaking = true;
+      si.shakeTimer = 0.3;
+      return;
+    }
+
+    savePurchase(storage, si.id);
+    updateCoinDisplay();
+    updateAnimalAccess();
+    checkShopUnlock();
+    playEatSound();
+
+    shopItems = buildShopItems();
+    e.preventDefault();
+    return;
+  }
+}

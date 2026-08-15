@@ -28,7 +28,7 @@ function buildShopUI() {
   shopBtn.className = 'shop-hud-btn';
   shopBtn.textContent = '🏪 Tienda';
   shopBtn.style.display = 'none';
-  shopBtn.addEventListener('click', showShopOverlay);
+  shopBtn.addEventListener('click', function () { startShopScene(); });
   document.body.appendChild(shopBtn);
 }
 
