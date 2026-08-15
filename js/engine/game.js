@@ -112,18 +112,25 @@ function gameLoop(timestamp) {
   var dt = Math.min((timestamp - lastTime) / 1000, 0.1);
   lastTime = timestamp;
 
-  for (var i = 0; i < entities.length; i++) {
-    entities[i].update(dt);
+  if (gameState === 'map') {
+    for (var i = 0; i < entities.length; i++) {
+      entities[i].update(dt);
+    }
+
+    gameCamera.follow(
+      gamePlayer.x * SCALE + gamePlayer.w * SCALE / 2,
+      gamePlayer.y * SCALE + gamePlayer.h * SCALE / 2
+    );
+
+    debugRecordPlayer(dt);
+
+    checkInteraction();
+  } else if (gameState === 'feed') {
+    updateFeedScene(dt);
+  } else if (gameState === 'shop') {
+    updateShopScene(dt);
   }
 
-  gameCamera.follow(
-    gamePlayer.x * SCALE + gamePlayer.w * SCALE / 2,
-    gamePlayer.y * SCALE + gamePlayer.h * SCALE / 2
-  );
-
-  debugRecordPlayer(dt);
-
-  checkInteraction();
   render();
   requestAnimationFrame(gameLoop);
 }
@@ -143,6 +150,14 @@ function render() {
   for (var i = 0; i < entities.length; i++) {
     entities[i].render(gameCtx, gameCamera);
   }
+
+  if (gameState !== 'map') {
+    gameCtx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+    gameCtx.fillRect(0, 0, gameCanvas.width, gameCanvas.height);
+  }
+
+  if (gameState === 'feed') renderFeedScene(gameCtx, gameCamera);
+  if (gameState === 'shop') renderShopScene(gameCtx, gameCamera);
 
   renderDebug(gameCtx, gameCamera);
 }

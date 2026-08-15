@@ -59,6 +59,11 @@ function sceneRectHit(px, py, rx, ry, rw, rh) {
 var sceneInputBound = false;
 var sceneInputMode = null;
 
+function updateFeedScene(dt) {}
+function updateShopScene(dt) {}
+function renderFeedScene(ctx, cam) {}
+function renderShopScene(ctx, cam) {}
+
 function rebindSceneInputs() {
   if (!gameCanvas) return;
   if (sceneInputMode === 'feed') {
