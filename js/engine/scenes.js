@@ -203,3 +203,66 @@ function rebindSceneInputs() {
     sceneInputMode = null;
   }
 }
+
+function handleFeedPointerDown(e) {
+  if (feedReaction) return;
+  var rect = gameCanvas.getBoundingClientRect();
+  var px = e.clientX - rect.left;
+  var py = e.clientY - rect.top;
+
+  if (px >= gameCanvas.width - 48 && py <= 48) {
+    setGameState('map');
+    return;
+  }
+
+  for (var i = 0; i < feedFoodIcons.length; i++) {
+    var ic = feedFoodIcons[i];
+    if (sceneRectHit(px, py, ic.x, ic.y, ic.w, ic.h)) {
+      draggedFood = ic.food;
+      draggedFoodX = px;
+      draggedFoodY = py;
+      dragStartX = ic.x + ic.w / 2;
+      dragStartY = ic.y + ic.h / 2;
+      e.preventDefault();
+      return;
+    }
+  }
+}
+
+function handleFeedPointerMove(e) {
+  if (!draggedFood) return;
+  var rect = gameCanvas.getBoundingClientRect();
+  draggedFoodX = e.clientX - rect.left;
+  draggedFoodY = e.clientY - rect.top;
+  e.preventDefault();
+}
+
+function handleFeedPointerUp(e) {
+  if (!draggedFood) return;
+  var food = draggedFood;
+  draggedFood = null;
+
+  var rectBounds = gameCanvas.getBoundingClientRect();
+  var px = e.clientX - rectBounds.left;
+  var py = e.clientY - rectBounds.top;
+
+  var w = gameCanvas.width;
+  var h = gameCanvas.height;
+  var bgW = Math.min(w * 0.8, 600);
+  var bgH = Math.min(h * 0.65, 400);
+  var bgY = (h - bgH) / 2 - 20;
+  var animalW = 32 * 2.5;
+  var animalH = 32 * 2.5;
+  var animalX = w / 2 - animalW / 2;
+  var animalY = bgY + bgH / 2 - animalH / 2;
+  var margin = 20;
+
+  if (sceneRectHit(px, py, animalX - margin, animalY - margin, animalW + margin * 2, animalH + margin * 2)) {
+    handleFeedReaction(food);
+  }
+  e.preventDefault();
+}
+
+function handleFeedPointerCancel(e) {
+  draggedFood = null;
+}
