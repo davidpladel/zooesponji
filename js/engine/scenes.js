@@ -59,10 +59,114 @@ function sceneRectHit(px, py, rx, ry, rw, rh) {
 var sceneInputBound = false;
 var sceneInputMode = null;
 
-function updateFeedScene(dt) {}
+function updateFeedScene(dt) {
+  feedIdleTimer += dt;
+  if (feedReaction) {
+    feedReactionTimer -= dt;
+    if (feedReactionTimer <= 0) {
+      feedReaction = null;
+      feedReactionTimer = 0;
+    }
+  }
+}
+
 function updateShopScene(dt) {}
-function renderFeedScene(ctx, cam) {}
 function renderShopScene(ctx, cam) {}
+
+function renderFeedScene(ctx, cam) {
+  var w = gameCanvas.width;
+  var h = gameCanvas.height;
+
+  var bgW = Math.min(w * 0.8, 600);
+  var bgH = Math.min(h * 0.65, 400);
+  var bgX = (w - bgW) / 2;
+  var bgY = (h - bgH) / 2 - 20;
+
+  var animalImg = sceneLoadImage('assets/img/sprites/' + feedAnimalId + '.png');
+  var bgImg = sceneLoadImage('assets/img/scenes/' + feedAnimalId + '-bg.png');
+
+  if (bgImg.complete && bgImg.naturalWidth > 0) {
+    ctx.drawImage(bgImg, bgX, bgY, bgW, bgH);
+  } else {
+    var colors = ANIMAL_BG_COLORS[feedAnimalId] || ['#6b8e5a', '#4a7a3a'];
+    var grad = ctx.createLinearGradient(bgX, bgY, bgX, bgY + bgH);
+    grad.addColorStop(0, colors[0]);
+    grad.addColorStop(1, colors[1]);
+    ctx.fillStyle = grad;
+    ctx.fillRect(bgX, bgY, bgW, bgH);
+    ctx.strokeStyle = '#3a2a1a';
+    ctx.lineWidth = 4;
+    ctx.strokeRect(bgX, bgY, bgW, bgH);
+  }
+
+  var idleScale = 1 + Math.sin(feedIdleTimer * 3) * 0.02;
+  var animalW = 32 * 2.5 * idleScale;
+  var animalH = 32 * 2.5 * idleScale;
+  var animalX = w / 2 - animalW / 2;
+  var animalY = bgY + bgH / 2 - animalH / 2;
+  if (animalImg.complete && animalImg.naturalWidth > 0) {
+    ctx.drawImage(animalImg, 0, 0, animalImg.width, animalImg.height, animalX, animalY, animalW, animalH);
+  } else {
+    ctx.fillStyle = '#888';
+    ctx.fillRect(animalX, animalY, animalW, animalH);
+  }
+
+  if (feedReaction) {
+    ctx.font = '48px sans-serif';
+    ctx.textAlign = 'center';
+    var emote = feedReaction === 'come' ? '😋' : feedReaction === 'rechaza' ? '😝' : '🥰';
+    ctx.fillText(emote, w / 2, animalY - 20);
+  }
+
+  if (!feedReaction) {
+    var trayY = bgY + bgH + 10;
+    var iconSize = Math.min(48, (bgW - 40) / 4);
+    var gap = (bgW - iconSize * 4) / 5;
+    var icons = [];
+    for (var i = 0; i < FOODS.length; i++) {
+      var ix = bgX + gap + i * (iconSize + gap);
+      var iy = trayY;
+      icons.push({ x: ix, y: iy, w: iconSize, h: iconSize, food: FOODS[i], alpha: draggedFood && draggedFood !== FOODS[i] ? 0.4 : 1 });
+    }
+    feedFoodIcons = icons;
+
+    ctx.fillStyle = '#3a2a1a';
+    ctx.fillRect(bgX, trayY - 5, bgW, iconSize + 20);
+    ctx.strokeStyle = '#6b4d3a';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(bgX, trayY - 5, bgW, iconSize + 20);
+
+    for (var j = 0; j < icons.length; j++) {
+      var ic = icons[j];
+      if (draggedFood === ic.food) continue;
+      ctx.globalAlpha = ic.alpha;
+      drawFoodIcon(ctx, ic);
+      ctx.globalAlpha = 1;
+    }
+  }
+
+  if (draggedFood) {
+    var dragIcon = { x: draggedFoodX - 24, y: draggedFoodY - 24, w: 48, h: 48, food: draggedFood, alpha: 1 };
+    drawFoodIcon(ctx, dragIcon);
+  }
+
+  sceneDrawCloseButton(ctx, w);
+}
+
+function drawFoodIcon(ctx, icon) {
+  var foodImg = sceneLoadImage('assets/img/sprites/comida-' + icon.food + '.png');
+  if (foodImg.complete && foodImg.naturalWidth > 0) {
+    ctx.drawImage(foodImg, 0, 0, foodImg.width, foodImg.height, icon.x, icon.y, icon.w, icon.h);
+  } else {
+    ctx.fillStyle = FOOD_COLORS[icon.food] || '#ccc';
+    ctx.fillRect(icon.x, icon.y, icon.w, icon.h);
+    ctx.fillStyle = '#fff';
+    ctx.font = Math.floor(icon.w * 0.5) + 'px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(FOOD_EMOJI[icon.food] || '?', icon.x + icon.w / 2, icon.y + icon.h / 2);
+  }
+}
 
 function rebindSceneInputs() {
   if (!gameCanvas) return;
