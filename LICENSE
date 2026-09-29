@@ -1,0 +1,50 @@
+Zoo Esponji
+Copyright (C) 2026 davidpladel. Todos los derechos reservados.
+Copyright (C) 2026 davidpladel. All rights reserved.
+
+LICENCIA DE CÓDIGO VISIBLE (SOURCE-AVAILABLE) — NO ES SOFTWARE LIBRE
+
+1. Qué se permite
+   Puedes ver, leer y estudiar el código de este repositorio, y hacer un
+   fork dentro de GitHub únicamente para verlo, según las Condiciones de
+   Servicio de GitHub.
+
+2. Qué NO se permite sin permiso previo y por escrito del titular
+   a) Copiar, modificar, adaptar o crear obras derivadas.
+   b) Distribuir o publicar el código, el juego o cualquier derivado, en
+      cualquier forma o soporte, incluyendo (sin limitarse a) Google Play,
+      App Store, Steam, Microsoft Store, itch.io, tiendas de terceros,
+      sitios web o repositorios.
+   c) Compilar, empaquetar y ofrecer el juego a terceros, sea gratis o de
+      pago.
+   d) Usar el nombre "Zoo Esponji", su marca, su identidad o sus personajes
+      para identificar otros productos.
+   e) Usar el código o el juego para entrenar modelos de IA.
+
+3. Contribuciones
+   No se aceptan contribuciones externas salvo acuerdo previo por escrito.
+
+4. Material de terceros
+   Este proyecto usa componentes de terceros que conservan sus propias
+   licencias (ver THIRD_PARTY_NOTICES.md). Esta licencia no se aplica a
+   ellos. El arte de VectoRaith no forma parte de este repositorio ni se
+   licencia aquí.
+
+5. Versiones anteriores
+   Las versiones publicadas antes de este cambio se ofrecieron bajo la
+   licencia GPL-3.0. Quien obtuvo copias bajo esa licencia conserva los
+   derechos que ésta le otorgó sobre esas copias concretas. Todo lo
+   publicado a partir de este cambio queda bajo esta licencia.
+
+6. Sin garantía
+   EL SOFTWARE SE OFRECE "TAL CUAL", SIN GARANTÍA DE NINGÚN TIPO. EL
+   TITULAR NO SERÁ RESPONSABLE DE NINGÚN DAÑO DERIVADO DE SU USO.
+
+Para pedir permiso: https://github.com/davidpladel
+
+----------------------------------------------------------------------
+ENGLISH SUMMARY: You may view and study the source. You may not copy,
+modify, redistribute, or publish the game or derivatives (including on
+any app store such as Google Play, the App Store or Steam) without prior
+written permission. Third-party components keep their own licenses.
+Copies obtained earlier under GPL-3.0 remain under that license.

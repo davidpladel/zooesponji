@@ -1,0 +1,8064 @@
+{
+ "compressionlevel": -1,
+ "width": 48,
+ "height": 35,
+ "tilewidth": 16,
+ "tileheight": 16,
+ "infinite": false,
+ "orientation": "orthogonal",
+ "renderorder": "right-down",
+ "tiledversion": "1.11.0",
+ "type": "map",
+ "version": "1.10",
+ "nextlayerid": 3,
+ "nextobjectid": 191,
+ "layers": [
+  {
+   "id": 1,
+   "name": "suelo",
+   "type": "tilelayer",
+   "width": 48,
+   "height": 35,
+   "x": 0,
+   "y": 0,
+   "opacity": 1,
+   "visible": true,
+   "data": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    5,
+    5,
+    5,
+    5,
+    5,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    1,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    1,
+    1,
+    2,
+    2,
+    5,
+    5,
+    5,
+    5,
+    5,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    1,
+    3,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    3,
+    1,
+    1,
+    2,
+    2,
+    5,
+    5,
+    5,
+    5,
+    5,
+    3,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    3,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    1,
+    3,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    3,
+    1,
+    1,
+    2,
+    2,
+    5,
+    5,
+    5,
+    5,
+    5,
+    3,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    3,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    1,
+    3,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    3,
+    1,
+    1,
+    2,
+    2,
+    5,
+    5,
+    5,
+    5,
+    5,
+    3,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    3,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    1,
+    3,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    3,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    4,
+    4,
+    1,
+    3,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    3,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    1,
+    3,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    3,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    2,
+    2,
+    1,
+    3,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    3,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    1,
+    3,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    3,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    2,
+    2,
+    1,
+    3,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    3,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    1,
+    3,
+    3,
+    3,
+    3,
+    3,
+    4,
+    4,
+    3,
+    3,
+    3,
+    3,
+    3,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    2,
+    2,
+    1,
+    3,
+    3,
+    3,
+    3,
+    3,
+    4,
+    4,
+    3,
+    3,
+    3,
+    3,
+    3,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    4,
+    4,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    4,
+    4,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    3,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    3,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    3,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    3,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    3,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    3,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    3,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    3,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    3,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    3,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    3,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    3,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    3,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    3,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    3,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    3,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    3,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    3,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    3,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    3,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    3,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    3,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    3,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    3,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+   ]
+  },
+  {
+   "id": 2,
+   "name": "objetos",
+   "type": "objectgroup",
+   "draworder": "topdown",
+   "x": 0,
+   "y": 0,
+   "opacity": 1,
+   "visible": true,
+   "objects": [
+    {
+     "id": 1,
+     "name": "recinto-leon",
+     "type": "recinto",
+     "x": 144,
+     "y": 80,
+     "width": 192,
+     "height": 128,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "animalId",
+       "type": "string",
+       "value": "leon"
+      },
+      {
+       "name": "biome",
+       "type": "string",
+       "value": "savannah"
+      }
+     ]
+    },
+    {
+     "id": 2,
+     "name": "puerta-leon",
+     "type": "puerta",
+     "x": 224,
+     "y": 192,
+     "width": 32,
+     "height": 16,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "animalId",
+       "type": "string",
+       "value": "leon"
+      }
+     ]
+    },
+    {
+     "id": 3,
+     "name": "recinto-cabra",
+     "type": "recinto",
+     "x": 480,
+     "y": 80,
+     "width": 192,
+     "height": 128,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "animalId",
+       "type": "string",
+       "value": "cabra"
+      },
+      {
+       "name": "biome",
+       "type": "string",
+       "value": "alpine"
+      }
+     ]
+    },
+    {
+     "id": 4,
+     "name": "puerta-cabra",
+     "type": "puerta",
+     "x": 560,
+     "y": 192,
+     "width": 32,
+     "height": 16,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "animalId",
+       "type": "string",
+       "value": "cabra"
+      }
+     ]
+    },
+    {
+     "id": 5,
+     "name": "recinto-pantera",
+     "type": "recinto",
+     "x": 96,
+     "y": 336,
+     "width": 240,
+     "height": 128,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "animalId",
+       "type": "string",
+       "value": "pantera"
+      },
+      {
+       "name": "biome",
+       "type": "string",
+       "value": "rainforest"
+      }
+     ]
+    },
+    {
+     "id": 6,
+     "name": "puerta-pantera",
+     "type": "puerta",
+     "x": 192,
+     "y": 336,
+     "width": 32,
+     "height": 16,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "animalId",
+       "type": "string",
+       "value": "pantera"
+      }
+     ]
+    },
+    {
+     "id": 7,
+     "name": "recinto-panda",
+     "type": "recinto",
+     "x": 432,
+     "y": 336,
+     "width": 240,
+     "height": 128,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "animalId",
+       "type": "string",
+       "value": "panda"
+      },
+      {
+       "name": "biome",
+       "type": "string",
+       "value": "bamboo"
+      }
+     ]
+    },
+    {
+     "id": 8,
+     "name": "puerta-panda",
+     "type": "puerta",
+     "x": 528,
+     "y": 336,
+     "width": 32,
+     "height": 16,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "animalId",
+       "type": "string",
+       "value": "panda"
+      }
+     ]
+    },
+    {
+     "id": 9,
+     "name": "tienda",
+     "type": "tienda",
+     "x": 400,
+     "y": 64,
+     "width": 80,
+     "height": 80,
+     "rotation": 0,
+     "visible": true
+    },
+    {
+     "id": 10,
+     "name": "puerta-tienda",
+     "type": "puertaTienda",
+     "x": 432,
+     "y": 144,
+     "width": 32,
+     "height": 16,
+     "rotation": 0,
+     "visible": true
+    },
+    {
+     "id": 11,
+     "name": "acacia-12",
+     "type": "prop",
+     "x": 200,
+     "y": 144,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "acacia"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": true
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      },
+      {
+       "name": "blockW",
+       "type": "int",
+       "value": 32
+      },
+      {
+       "name": "blockH",
+       "type": "int",
+       "value": 16
+      }
+     ]
+    },
+    {
+     "id": 12,
+     "name": "acacia-small-13",
+     "type": "prop",
+     "x": 296,
+     "y": 192,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "acacia-small"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": true
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      },
+      {
+       "name": "blockW",
+       "type": "int",
+       "value": 16
+      },
+      {
+       "name": "blockH",
+       "type": "int",
+       "value": 16
+      }
+     ]
+    },
+    {
+     "id": 13,
+     "name": "rock-savannah-big-14",
+     "type": "prop",
+     "x": 264,
+     "y": 128,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "rock-savannah-big"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": true
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      },
+      {
+       "name": "blockW",
+       "type": "int",
+       "value": 32
+      },
+      {
+       "name": "blockH",
+       "type": "int",
+       "value": 16
+      }
+     ]
+    },
+    {
+     "id": 14,
+     "name": "rock-savannah-15",
+     "type": "prop",
+     "x": 184,
+     "y": 192,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "rock-savannah"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": true
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      },
+      {
+       "name": "blockW",
+       "type": "int",
+       "value": 16
+      },
+      {
+       "name": "blockH",
+       "type": "int",
+       "value": 16
+      }
+     ]
+    },
+    {
+     "id": 15,
+     "name": "grass-tall-dry-16",
+     "type": "prop",
+     "x": 248,
+     "y": 128,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "grass-tall-dry"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 16,
+     "name": "grass-tall-dry-17",
+     "type": "prop",
+     "x": 312,
+     "y": 144,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "grass-tall-dry"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 17,
+     "name": "grass-tall-dry-18",
+     "type": "prop",
+     "x": 216,
+     "y": 160,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "grass-tall-dry"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 18,
+     "name": "grass-tall-dry-19",
+     "type": "prop",
+     "x": 280,
+     "y": 160,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "grass-tall-dry"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 19,
+     "name": "grass-tall-dry-big-20",
+     "type": "prop",
+     "x": 168,
+     "y": 128,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "grass-tall-dry-big"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 20,
+     "name": "plateau-21",
+     "type": "prop",
+     "x": 632,
+     "y": 176,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "plateau"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": true
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 21,
+     "name": "cave-22",
+     "type": "prop",
+     "x": 536,
+     "y": 128,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "cave"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": true
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      },
+      {
+       "name": "blockW",
+       "type": "int",
+       "value": 48
+      },
+      {
+       "name": "blockH",
+       "type": "int",
+       "value": 16
+      }
+     ]
+    },
+    {
+     "id": 22,
+     "name": "pine-23",
+     "type": "prop",
+     "x": 520,
+     "y": 176,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "pine"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": true
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      },
+      {
+       "name": "blockW",
+       "type": "int",
+       "value": 16
+      },
+      {
+       "name": "blockH",
+       "type": "int",
+       "value": 16
+      }
+     ]
+    },
+    {
+     "id": 23,
+     "name": "pine-small-24",
+     "type": "prop",
+     "x": 584,
+     "y": 128,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "pine-small"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": true
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      },
+      {
+       "name": "blockW",
+       "type": "int",
+       "value": 16
+      },
+      {
+       "name": "blockH",
+       "type": "int",
+       "value": 16
+      }
+     ]
+    },
+    {
+     "id": 24,
+     "name": "rock-grey-25",
+     "type": "prop",
+     "x": 584,
+     "y": 160,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "rock-grey"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": true
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      },
+      {
+       "name": "blockW",
+       "type": "int",
+       "value": 16
+      },
+      {
+       "name": "blockH",
+       "type": "int",
+       "value": 16
+      }
+     ]
+    },
+    {
+     "id": 25,
+     "name": "rock-grey-big-26",
+     "type": "prop",
+     "x": 504,
+     "y": 192,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "rock-grey-big"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": true
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      },
+      {
+       "name": "blockW",
+       "type": "int",
+       "value": 32
+      },
+      {
+       "name": "blockH",
+       "type": "int",
+       "value": 16
+      }
+     ]
+    },
+    {
+     "id": 26,
+     "name": "waterfall-27",
+     "type": "prop",
+     "x": 264,
+     "y": 448,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "waterfall"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": true
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": true
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      },
+      {
+       "name": "blockW",
+       "type": "int",
+       "value": 112
+      },
+      {
+       "name": "blockH",
+       "type": "int",
+       "value": 88
+      }
+     ]
+    },
+    {
+     "id": 27,
+     "name": "lilypad-28",
+     "type": "prop",
+     "x": 232,
+     "y": 432,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "lilypad"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": true
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 2
+      }
+     ]
+    },
+    {
+     "id": 28,
+     "name": "lilypad-flower-29",
+     "type": "prop",
+     "x": 280,
+     "y": 432,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "lilypad-flower"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": true
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 2
+      }
+     ]
+    },
+    {
+     "id": 29,
+     "name": "palm-30",
+     "type": "prop",
+     "x": 136,
+     "y": 400,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "palm"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": true
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      },
+      {
+       "name": "blockW",
+       "type": "int",
+       "value": 16
+      },
+      {
+       "name": "blockH",
+       "type": "int",
+       "value": 8
+      }
+     ]
+    },
+    {
+     "id": 30,
+     "name": "palm-31",
+     "type": "prop",
+     "x": 152,
+     "y": 448,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "palm"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": true
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      },
+      {
+       "name": "blockW",
+       "type": "int",
+       "value": 16
+      },
+      {
+       "name": "blockH",
+       "type": "int",
+       "value": 8
+      }
+     ]
+    },
+    {
+     "id": 31,
+     "name": "bush-jungle-32",
+     "type": "prop",
+     "x": 136,
+     "y": 432,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "bush-jungle"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": true
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      },
+      {
+       "name": "blockW",
+       "type": "int",
+       "value": 32
+      },
+      {
+       "name": "blockH",
+       "type": "int",
+       "value": 16
+      }
+     ]
+    },
+    {
+     "id": 32,
+     "name": "flowers-red-33",
+     "type": "prop",
+     "x": 168,
+     "y": 384,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "flowers-red"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 33,
+     "name": "bamboo-big-34",
+     "type": "prop",
+     "x": 648,
+     "y": 448,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "bamboo-big"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": true
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      },
+      {
+       "name": "blockW",
+       "type": "int",
+       "value": 32
+      },
+      {
+       "name": "blockH",
+       "type": "int",
+       "value": 16
+      }
+     ]
+    },
+    {
+     "id": 34,
+     "name": "bamboo-big-35",
+     "type": "prop",
+     "x": 648,
+     "y": 400,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "bamboo-big"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": true
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      },
+      {
+       "name": "blockW",
+       "type": "int",
+       "value": 32
+      },
+      {
+       "name": "blockH",
+       "type": "int",
+       "value": 16
+      }
+     ]
+    },
+    {
+     "id": 35,
+     "name": "bamboo-mid-36",
+     "type": "prop",
+     "x": 616,
+     "y": 448,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "bamboo-mid"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": true
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      },
+      {
+       "name": "blockW",
+       "type": "int",
+       "value": 32
+      },
+      {
+       "name": "blockH",
+       "type": "int",
+       "value": 16
+      }
+     ]
+    },
+    {
+     "id": 36,
+     "name": "bamboo-mid-37",
+     "type": "prop",
+     "x": 584,
+     "y": 448,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "bamboo-mid"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": true
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      },
+      {
+       "name": "blockW",
+       "type": "int",
+       "value": 32
+      },
+      {
+       "name": "blockH",
+       "type": "int",
+       "value": 16
+      }
+     ]
+    },
+    {
+     "id": 37,
+     "name": "bamboo-small-38",
+     "type": "prop",
+     "x": 616,
+     "y": 400,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "bamboo-small"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": true
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      },
+      {
+       "name": "blockW",
+       "type": "int",
+       "value": 16
+      },
+      {
+       "name": "blockH",
+       "type": "int",
+       "value": 16
+      }
+     ]
+    },
+    {
+     "id": 38,
+     "name": "bamboo-small-39",
+     "type": "prop",
+     "x": 456,
+     "y": 448,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "bamboo-small"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": true
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      },
+      {
+       "name": "blockW",
+       "type": "int",
+       "value": 16
+      },
+      {
+       "name": "blockH",
+       "type": "int",
+       "value": 16
+      }
+     ]
+    },
+    {
+     "id": 39,
+     "name": "log-40",
+     "type": "prop",
+     "x": 520,
+     "y": 416,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "log"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": true
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      },
+      {
+       "name": "blockW",
+       "type": "int",
+       "value": 32
+      },
+      {
+       "name": "blockH",
+       "type": "int",
+       "value": 16
+      }
+     ]
+    },
+    {
+     "id": 40,
+     "name": "flowers-41",
+     "type": "prop",
+     "x": 504,
+     "y": 400,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "flowers"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 41,
+     "name": "flowers-red-42",
+     "type": "prop",
+     "x": 584,
+     "y": 400,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "flowers-red"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 42,
+     "name": "fountain-43",
+     "type": "prop",
+     "x": 384,
+     "y": 304,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "fountain"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 43,
+     "name": "tree-44",
+     "type": "prop",
+     "x": 72,
+     "y": 112,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "tree"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 44,
+     "name": "tree-45",
+     "type": "prop",
+     "x": 72,
+     "y": 224,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "tree"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 45,
+     "name": "tree-46",
+     "type": "prop",
+     "x": 104,
+     "y": 144,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "tree"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 46,
+     "name": "tree-47",
+     "type": "prop",
+     "x": 104,
+     "y": 192,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "tree"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 47,
+     "name": "tree-48",
+     "type": "prop",
+     "x": 72,
+     "y": 368,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "tree"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 48,
+     "name": "tree-49",
+     "type": "prop",
+     "x": 72,
+     "y": 432,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "tree"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 49,
+     "name": "tree-50",
+     "type": "prop",
+     "x": 344,
+     "y": 128,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "tree"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 50,
+     "name": "tree-51",
+     "type": "prop",
+     "x": 344,
+     "y": 192,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "tree"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 51,
+     "name": "tree-52",
+     "type": "prop",
+     "x": 344,
+     "y": 384,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "tree"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 52,
+     "name": "tree-53",
+     "type": "prop",
+     "x": 360,
+     "y": 448,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "tree"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 53,
+     "name": "tree-54",
+     "type": "prop",
+     "x": 424,
+     "y": 384,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "tree"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 54,
+     "name": "tree-55",
+     "type": "prop",
+     "x": 408,
+     "y": 448,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "tree"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 55,
+     "name": "tree-56",
+     "type": "prop",
+     "x": 680,
+     "y": 112,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "tree"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 56,
+     "name": "tree-57",
+     "type": "prop",
+     "x": 680,
+     "y": 192,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "tree"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 57,
+     "name": "tree-58",
+     "type": "prop",
+     "x": 680,
+     "y": 368,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "tree"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 58,
+     "name": "tree-59",
+     "type": "prop",
+     "x": 680,
+     "y": 448,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "tree"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 59,
+     "name": "tree-60",
+     "type": "prop",
+     "x": 536,
+     "y": 80,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "tree"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 60,
+     "name": "tree-61",
+     "type": "prop",
+     "x": 632,
+     "y": 80,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "tree"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 61,
+     "name": "bush-62",
+     "type": "prop",
+     "x": 120,
+     "y": 224,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "bush"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 62,
+     "name": "bush-63",
+     "type": "prop",
+     "x": 360,
+     "y": 368,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "bush"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 63,
+     "name": "bush-64",
+     "type": "prop",
+     "x": 424,
+     "y": 416,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "bush"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 64,
+     "name": "bush-65",
+     "type": "prop",
+     "x": 696,
+     "y": 240,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "bush"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 65,
+     "name": "bush-66",
+     "type": "prop",
+     "x": 168,
+     "y": 80,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "bush"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 66,
+     "name": "bush-67",
+     "type": "prop",
+     "x": 248,
+     "y": 480,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "bush"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 67,
+     "name": "bush-68",
+     "type": "prop",
+     "x": 584,
+     "y": 480,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "bush"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 68,
+     "name": "sign-69",
+     "type": "prop",
+     "x": 216,
+     "y": 224,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "sign"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 69,
+     "name": "sign-70",
+     "type": "prop",
+     "x": 552,
+     "y": 224,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "sign"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 70,
+     "name": "sign-71",
+     "type": "prop",
+     "x": 184,
+     "y": 336,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "sign"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 71,
+     "name": "sign-72",
+     "type": "prop",
+     "x": 520,
+     "y": 336,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "sign"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 72,
+     "name": "lamp-73",
+     "type": "prop",
+     "x": 360,
+     "y": 160,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "lamp"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 73,
+     "name": "lamp-74",
+     "type": "prop",
+     "x": 408,
+     "y": 192,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "lamp"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 74,
+     "name": "lamp-75",
+     "type": "prop",
+     "x": 360,
+     "y": 416,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "lamp"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 75,
+     "name": "lamp-76",
+     "type": "prop",
+     "x": 408,
+     "y": 416,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "lamp"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 76,
+     "name": "bench-77",
+     "type": "prop",
+     "x": 288,
+     "y": 240,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "bench"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 77,
+     "name": "bench-78",
+     "type": "prop",
+     "x": 128,
+     "y": 240,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "bench"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 78,
+     "name": "bench-79",
+     "type": "prop",
+     "x": 480,
+     "y": 320,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "bench"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 79,
+     "name": "bench-80",
+     "type": "prop",
+     "x": 640,
+     "y": 320,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "bench"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 80,
+     "name": "flowerbed-81",
+     "type": "prop",
+     "x": 352,
+     "y": 80,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "flowerbed"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 81,
+     "name": "barrel-82",
+     "type": "prop",
+     "x": 424,
+     "y": 160,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "barrel"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 82,
+     "name": "crate-fruit-83",
+     "type": "prop",
+     "x": 472,
+     "y": 160,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "crate-fruit"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 83,
+     "name": "park-wall-84",
+     "type": "prop",
+     "x": 16,
+     "y": 32,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 84,
+     "name": "park-wall-85",
+     "type": "prop",
+     "x": 48,
+     "y": 32,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 85,
+     "name": "park-wall-86",
+     "type": "prop",
+     "x": 80,
+     "y": 32,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 86,
+     "name": "park-wall-87",
+     "type": "prop",
+     "x": 112,
+     "y": 32,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 87,
+     "name": "park-wall-88",
+     "type": "prop",
+     "x": 144,
+     "y": 32,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 88,
+     "name": "park-wall-89",
+     "type": "prop",
+     "x": 176,
+     "y": 32,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 89,
+     "name": "park-wall-90",
+     "type": "prop",
+     "x": 208,
+     "y": 32,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 90,
+     "name": "park-wall-91",
+     "type": "prop",
+     "x": 240,
+     "y": 32,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 91,
+     "name": "park-wall-92",
+     "type": "prop",
+     "x": 272,
+     "y": 32,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 92,
+     "name": "park-wall-93",
+     "type": "prop",
+     "x": 304,
+     "y": 32,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 93,
+     "name": "park-wall-94",
+     "type": "prop",
+     "x": 336,
+     "y": 32,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 94,
+     "name": "park-wall-95",
+     "type": "prop",
+     "x": 368,
+     "y": 32,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 95,
+     "name": "park-wall-96",
+     "type": "prop",
+     "x": 400,
+     "y": 32,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 96,
+     "name": "park-wall-97",
+     "type": "prop",
+     "x": 432,
+     "y": 32,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 97,
+     "name": "park-wall-98",
+     "type": "prop",
+     "x": 464,
+     "y": 32,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 98,
+     "name": "park-wall-99",
+     "type": "prop",
+     "x": 496,
+     "y": 32,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 99,
+     "name": "park-wall-100",
+     "type": "prop",
+     "x": 528,
+     "y": 32,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 100,
+     "name": "park-wall-101",
+     "type": "prop",
+     "x": 560,
+     "y": 32,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 101,
+     "name": "park-wall-102",
+     "type": "prop",
+     "x": 592,
+     "y": 32,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 102,
+     "name": "park-wall-103",
+     "type": "prop",
+     "x": 624,
+     "y": 32,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 103,
+     "name": "park-wall-104",
+     "type": "prop",
+     "x": 656,
+     "y": 32,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 104,
+     "name": "park-wall-105",
+     "type": "prop",
+     "x": 688,
+     "y": 32,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 105,
+     "name": "park-wall-106",
+     "type": "prop",
+     "x": 720,
+     "y": 32,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 106,
+     "name": "park-wall-107",
+     "type": "prop",
+     "x": 752,
+     "y": 32,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 107,
+     "name": "park-wall-108",
+     "type": "prop",
+     "x": 16,
+     "y": 560,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 108,
+     "name": "park-wall-109",
+     "type": "prop",
+     "x": 48,
+     "y": 560,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 109,
+     "name": "park-wall-110",
+     "type": "prop",
+     "x": 80,
+     "y": 560,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 110,
+     "name": "park-wall-111",
+     "type": "prop",
+     "x": 112,
+     "y": 560,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 111,
+     "name": "park-wall-112",
+     "type": "prop",
+     "x": 144,
+     "y": 560,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 112,
+     "name": "park-wall-113",
+     "type": "prop",
+     "x": 176,
+     "y": 560,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 113,
+     "name": "park-wall-114",
+     "type": "prop",
+     "x": 208,
+     "y": 560,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 114,
+     "name": "park-wall-115",
+     "type": "prop",
+     "x": 240,
+     "y": 560,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 115,
+     "name": "park-wall-116",
+     "type": "prop",
+     "x": 272,
+     "y": 560,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 116,
+     "name": "park-wall-117",
+     "type": "prop",
+     "x": 304,
+     "y": 560,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 117,
+     "name": "park-wall-118",
+     "type": "prop",
+     "x": 336,
+     "y": 560,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 118,
+     "name": "park-wall-119",
+     "type": "prop",
+     "x": 432,
+     "y": 560,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 119,
+     "name": "park-wall-120",
+     "type": "prop",
+     "x": 464,
+     "y": 560,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 120,
+     "name": "park-wall-121",
+     "type": "prop",
+     "x": 496,
+     "y": 560,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 121,
+     "name": "park-wall-122",
+     "type": "prop",
+     "x": 528,
+     "y": 560,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 122,
+     "name": "park-wall-123",
+     "type": "prop",
+     "x": 560,
+     "y": 560,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 123,
+     "name": "park-wall-124",
+     "type": "prop",
+     "x": 592,
+     "y": 560,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 124,
+     "name": "park-wall-125",
+     "type": "prop",
+     "x": 624,
+     "y": 560,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 125,
+     "name": "park-wall-126",
+     "type": "prop",
+     "x": 656,
+     "y": 560,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 126,
+     "name": "park-wall-127",
+     "type": "prop",
+     "x": 688,
+     "y": 560,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 127,
+     "name": "park-wall-128",
+     "type": "prop",
+     "x": 720,
+     "y": 560,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 128,
+     "name": "park-wall-129",
+     "type": "prop",
+     "x": 752,
+     "y": 560,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 129,
+     "name": "park-wall-side-130",
+     "type": "prop",
+     "x": 16,
+     "y": 48,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 130,
+     "name": "park-wall-side-131",
+     "type": "prop",
+     "x": 752,
+     "y": 48,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 131,
+     "name": "park-wall-side-132",
+     "type": "prop",
+     "x": 16,
+     "y": 64,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 132,
+     "name": "park-wall-side-133",
+     "type": "prop",
+     "x": 752,
+     "y": 64,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 133,
+     "name": "park-wall-side-134",
+     "type": "prop",
+     "x": 16,
+     "y": 80,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 134,
+     "name": "park-wall-side-135",
+     "type": "prop",
+     "x": 752,
+     "y": 80,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 135,
+     "name": "park-wall-side-136",
+     "type": "prop",
+     "x": 16,
+     "y": 96,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 136,
+     "name": "park-wall-side-137",
+     "type": "prop",
+     "x": 752,
+     "y": 96,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 137,
+     "name": "park-wall-side-138",
+     "type": "prop",
+     "x": 16,
+     "y": 112,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 138,
+     "name": "park-wall-side-139",
+     "type": "prop",
+     "x": 752,
+     "y": 112,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 139,
+     "name": "park-wall-side-140",
+     "type": "prop",
+     "x": 16,
+     "y": 128,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 140,
+     "name": "park-wall-side-141",
+     "type": "prop",
+     "x": 752,
+     "y": 128,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 141,
+     "name": "park-wall-side-142",
+     "type": "prop",
+     "x": 16,
+     "y": 144,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 142,
+     "name": "park-wall-side-143",
+     "type": "prop",
+     "x": 752,
+     "y": 144,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 143,
+     "name": "park-wall-side-144",
+     "type": "prop",
+     "x": 16,
+     "y": 160,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 144,
+     "name": "park-wall-side-145",
+     "type": "prop",
+     "x": 752,
+     "y": 160,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 145,
+     "name": "park-wall-side-146",
+     "type": "prop",
+     "x": 16,
+     "y": 176,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 146,
+     "name": "park-wall-side-147",
+     "type": "prop",
+     "x": 752,
+     "y": 176,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 147,
+     "name": "park-wall-side-148",
+     "type": "prop",
+     "x": 16,
+     "y": 192,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 148,
+     "name": "park-wall-side-149",
+     "type": "prop",
+     "x": 752,
+     "y": 192,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 149,
+     "name": "park-wall-side-150",
+     "type": "prop",
+     "x": 16,
+     "y": 208,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 150,
+     "name": "park-wall-side-151",
+     "type": "prop",
+     "x": 752,
+     "y": 208,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 151,
+     "name": "park-wall-side-152",
+     "type": "prop",
+     "x": 16,
+     "y": 224,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 152,
+     "name": "park-wall-side-153",
+     "type": "prop",
+     "x": 752,
+     "y": 224,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 153,
+     "name": "park-wall-side-154",
+     "type": "prop",
+     "x": 16,
+     "y": 240,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 154,
+     "name": "park-wall-side-155",
+     "type": "prop",
+     "x": 752,
+     "y": 240,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 155,
+     "name": "park-wall-side-156",
+     "type": "prop",
+     "x": 16,
+     "y": 256,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 156,
+     "name": "park-wall-side-157",
+     "type": "prop",
+     "x": 752,
+     "y": 256,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 157,
+     "name": "park-wall-side-158",
+     "type": "prop",
+     "x": 16,
+     "y": 272,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 158,
+     "name": "park-wall-side-159",
+     "type": "prop",
+     "x": 752,
+     "y": 272,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 159,
+     "name": "park-wall-side-160",
+     "type": "prop",
+     "x": 16,
+     "y": 288,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 160,
+     "name": "park-wall-side-161",
+     "type": "prop",
+     "x": 752,
+     "y": 288,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 161,
+     "name": "park-wall-side-162",
+     "type": "prop",
+     "x": 16,
+     "y": 304,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 162,
+     "name": "park-wall-side-163",
+     "type": "prop",
+     "x": 752,
+     "y": 304,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 163,
+     "name": "park-wall-side-164",
+     "type": "prop",
+     "x": 16,
+     "y": 320,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 164,
+     "name": "park-wall-side-165",
+     "type": "prop",
+     "x": 752,
+     "y": 320,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 165,
+     "name": "park-wall-side-166",
+     "type": "prop",
+     "x": 16,
+     "y": 336,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 166,
+     "name": "park-wall-side-167",
+     "type": "prop",
+     "x": 752,
+     "y": 336,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 167,
+     "name": "park-wall-side-168",
+     "type": "prop",
+     "x": 16,
+     "y": 352,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 168,
+     "name": "park-wall-side-169",
+     "type": "prop",
+     "x": 752,
+     "y": 352,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 169,
+     "name": "park-wall-side-170",
+     "type": "prop",
+     "x": 16,
+     "y": 368,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 170,
+     "name": "park-wall-side-171",
+     "type": "prop",
+     "x": 752,
+     "y": 368,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 171,
+     "name": "park-wall-side-172",
+     "type": "prop",
+     "x": 16,
+     "y": 384,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 172,
+     "name": "park-wall-side-173",
+     "type": "prop",
+     "x": 752,
+     "y": 384,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 173,
+     "name": "park-wall-side-174",
+     "type": "prop",
+     "x": 16,
+     "y": 400,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 174,
+     "name": "park-wall-side-175",
+     "type": "prop",
+     "x": 752,
+     "y": 400,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 175,
+     "name": "park-wall-side-176",
+     "type": "prop",
+     "x": 16,
+     "y": 416,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 176,
+     "name": "park-wall-side-177",
+     "type": "prop",
+     "x": 752,
+     "y": 416,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 177,
+     "name": "park-wall-side-178",
+     "type": "prop",
+     "x": 16,
+     "y": 432,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 178,
+     "name": "park-wall-side-179",
+     "type": "prop",
+     "x": 752,
+     "y": 432,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 179,
+     "name": "park-wall-side-180",
+     "type": "prop",
+     "x": 16,
+     "y": 448,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 180,
+     "name": "park-wall-side-181",
+     "type": "prop",
+     "x": 752,
+     "y": 448,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 181,
+     "name": "park-wall-side-182",
+     "type": "prop",
+     "x": 16,
+     "y": 464,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 182,
+     "name": "park-wall-side-183",
+     "type": "prop",
+     "x": 752,
+     "y": 464,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 183,
+     "name": "park-wall-side-184",
+     "type": "prop",
+     "x": 16,
+     "y": 480,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 184,
+     "name": "park-wall-side-185",
+     "type": "prop",
+     "x": 752,
+     "y": 480,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 185,
+     "name": "park-wall-side-186",
+     "type": "prop",
+     "x": 16,
+     "y": 496,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 186,
+     "name": "park-wall-side-187",
+     "type": "prop",
+     "x": 752,
+     "y": 496,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 187,
+     "name": "park-wall-side-188",
+     "type": "prop",
+     "x": 16,
+     "y": 512,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 188,
+     "name": "park-wall-side-189",
+     "type": "prop",
+     "x": 752,
+     "y": 512,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-wall-side"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 189,
+     "name": "park-gate-190",
+     "type": "prop",
+     "x": 384,
+     "y": 560,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "prop",
+       "type": "string",
+       "value": "park-gate"
+      },
+      {
+       "name": "blocks",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 190,
+     "name": "inicio",
+     "type": "punto",
+     "point": true,
+     "x": 376,
+     "y": 488,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true
+    }
+   ]
+  }
+ ],
+ "tilesets": [
+  {
+   "firstgid": 1,
+   "name": "placeholder",
+   "image": "../tiles/placeholder.png",
+   "imagewidth": 80,
+   "imageheight": 16,
+   "tilewidth": 16,
+   "tileheight": 16,
+   "tilecount": 5,
+   "columns": 5,
+   "margin": 0,
+   "spacing": 0,
+   "tiles": [
+    {
+     "id": 1,
+     "properties": [
+      {
+       "name": "walkable",
+       "type": "bool",
+       "value": true
+      }
+     ]
+    },
+    {
+     "id": 3,
+     "properties": [
+      {
+       "name": "walkable",
+       "type": "bool",
+       "value": true
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

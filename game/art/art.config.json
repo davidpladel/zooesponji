@@ -1,0 +1,495 @@
+{
+  "privateRepo": "../../zooesponji-private",
+  "zips": {
+    "npc": "Top Down RPG NPC Sprite Pack.zip",
+    "wild": "Wild Animals Sprite Pack.zip",
+    "farm": "Farm & Cute Animals Sprite Pack.zip",
+    "wooden": "vectoraith_tileset_buildings_wooden.zip",
+    "biomeA": "Biome Tileset Pack A.zip",
+    "biomeB": "Biome Tileset Pack B.zip",
+    "biomeC": "Biome Tileset Pack C.zip",
+    "biomeD": "Biome Tileset Pack D.zip",
+    "monocots": "Pixel Objects Pack - Monocots Plants.zip",
+    "icons": "vectoraith_iconset_16x16_farming.zip",
+    "interior": "Interior Tileset Pack - Essentials.zip"
+  },
+  "terrain": {
+    "zip": "wooden",
+    "file": "Original/16x16/RPG Maker only/vectoraith_tileset_terrains_temperate_autotile_rpgmaker.png",
+    "columns": 16
+  },
+  "decor": {
+    "shop": {
+      "zip": "wooden",
+      "file": "Original/16x16/vectoraith_tileset_buildings_wooden_1.png",
+      "x": 0,
+      "y": 160,
+      "w": 80,
+      "h": 80
+    },
+    "fountain": {
+      "zip": "wooden",
+      "file": "Original/16x16/vectoraith_tileset_buildings_wooden_1.png",
+      "x": 0,
+      "y": 96,
+      "w": 80,
+      "h": 64
+    },
+    "tree": {
+      "zip": "wooden",
+      "file": "Original/16x16/vectoraith_tileset_buildings_wooden_1.png",
+      "x": 112,
+      "y": 144,
+      "w": 16,
+      "h": 32
+    },
+    "bush": {
+      "zip": "wooden",
+      "file": "Original/16x16/vectoraith_tileset_buildings_wooden_1.png",
+      "x": 112,
+      "y": 176,
+      "w": 16,
+      "h": 16
+    }
+  },
+  "keeper": {
+    "zip": "npc",
+    "file": "Original/16x16/_default_tint/generic_jobs.png",
+    "character": 6
+  },
+  "shopkeeper": {
+    "zip": "npc",
+    "file": "Original/16x16/_default_tint/generic_jobs.png",
+    "character": 1
+  },
+  "visitors": [
+    {
+      "zip": "npc",
+      "file": "Original/16x16/_default_tint/mediterranean_people.png",
+      "character": 3
+    },
+    {
+      "zip": "npc",
+      "file": "Original/16x16/_default_tint/mediterranean_people.png",
+      "character": 0
+    },
+    {
+      "zip": "npc",
+      "file": "Original/16x16/_default_tint/mediterranean_people.png",
+      "character": 4
+    },
+    {
+      "zip": "npc",
+      "file": "Original/16x16/_default_tint/generic_people.png",
+      "character": 1
+    },
+    {
+      "zip": "npc",
+      "file": "Original/16x16/_default_tint/generic_people.png",
+      "character": 3
+    },
+    {
+      "zip": "npc",
+      "file": "Original/16x16/_default_tint/generic_people.png",
+      "character": 5
+    },
+    {
+      "zip": "npc",
+      "file": "Original/16x16/_default_tint/generic_people.png",
+      "character": 6
+    },
+    {
+      "zip": "npc",
+      "file": "Original/16x16/_default_tint/generic_people.png",
+      "character": 7
+    }
+  ],
+  "animals": {
+    "leon": {
+      "zip": "wild",
+      "file": "16x16/Default format/$lion_male.png"
+    },
+    "cabra": {
+      "zip": "farm",
+      "file": "16x16/Default Format/$goat.png"
+    },
+    "pantera": {
+      "zip": "wild",
+      "file": "16x16/Default format/$leopard_snow.png",
+      "recolor": "panther",
+      "override": "pantera.png",
+      "overrideRows": [3, 1, 2, 0]
+    },
+    "panda": {
+      "zip": "wild",
+      "file": "16x16/Default format/$bear_polar.png",
+      "override": "panda.png"
+    }
+  },
+  "companions": {
+    "leon": {
+      "zip": "wild",
+      "file": "16x16/Default format/$lion_female.png"
+    }
+  },
+  "foods": {
+    "zanahoria": {
+      "zip": "icons",
+      "file": "vectoraith_16x16_iconset_farming.png",
+      "x": 160,
+      "y": 240,
+      "w": 16,
+      "h": 16
+    },
+    "piedra": {
+      "zip": "icons",
+      "file": "vectoraith_16x16_iconset_farming.png",
+      "x": 0,
+      "y": 48,
+      "w": 16,
+      "h": 16
+    },
+    "conejo": {
+      "zip": "farm",
+      "file": "16x16/Default Format/$rabbit.png",
+      "x": 16,
+      "y": 32,
+      "w": 16,
+      "h": 16
+    },
+    "carne": {
+      "override": "carne.png"
+    }
+  },
+  "props": {
+    "ground-savannah": {
+      "zip": "biomeB",
+      "file": "16x16/savannah/tilesets/vectoraith_tileset_full_terrain_savannah.png",
+      "x": 0,
+      "y": 16,
+      "w": 16,
+      "h": 16
+    },
+    "ground-alpine": {
+      "zip": "biomeD",
+      "file": "Original/16x16/alpine/tilesets/vectoraith_tileset_full_terrain_alpine_A.png",
+      "x": 64,
+      "y": 32,
+      "w": 16,
+      "h": 16
+    },
+    "ground-rainforest": {
+      "zip": "biomeC",
+      "file": "Original/16x16/tropical_rainforest/tilesets/vectoraith_tileset_full_terrain_tropical_rainforest.png",
+      "x": 0,
+      "y": 16,
+      "w": 16,
+      "h": 16
+    },
+    "ground-bamboo": {
+      "zip": "biomeC",
+      "file": "Original/16x16/tropical_rainforest/tilesets/vectoraith_tileset_full_terrain_tropical_rainforest.png",
+      "x": 0,
+      "y": 16,
+      "w": 16,
+      "h": 16
+    },
+    "acacia": {
+      "zip": "biomeB",
+      "file": "16x16/savannah/tilesets/vectoraith_tileset_details_savannah.png",
+      "x": 80,
+      "y": 0,
+      "w": 48,
+      "h": 48
+    },
+    "acacia-small": {
+      "zip": "biomeB",
+      "file": "16x16/savannah/tilesets/vectoraith_tileset_details_savannah.png",
+      "x": 48,
+      "y": 0,
+      "w": 32,
+      "h": 48
+    },
+    "grass-tall-dry": {
+      "zip": "biomeB",
+      "file": "16x16/savannah/tilesets/vectoraith_tileset_details_savannah.png",
+      "x": 0,
+      "y": 192,
+      "w": 16,
+      "h": 16
+    },
+    "grass-tall-dry-big": {
+      "zip": "biomeB",
+      "file": "16x16/savannah/tilesets/vectoraith_tileset_details_savannah.png",
+      "x": 0,
+      "y": 224,
+      "w": 32,
+      "h": 32
+    },
+    "rock-savannah": {
+      "zip": "biomeB",
+      "file": "16x16/savannah/tilesets/vectoraith_tileset_details_savannah.png",
+      "x": 64,
+      "y": 240,
+      "w": 16,
+      "h": 16
+    },
+    "rock-savannah-big": {
+      "zip": "biomeB",
+      "file": "16x16/savannah/tilesets/vectoraith_tileset_details_savannah.png",
+      "x": 0,
+      "y": 112,
+      "w": 32,
+      "h": 32
+    },
+    "plateau": {
+      "zip": "biomeD",
+      "file": "Original/16x16/alpine/tilesets/vectoraith_tileset_full_terrain_alpine_A.png",
+      "x": 80,
+      "y": 32,
+      "w": 48,
+      "h": 80
+    },
+    "cave": {
+      "zip": "biomeD",
+      "file": "Original/16x16/alpine/tilesets/vectoraith_tileset_full_terrain_alpine_A.png",
+      "x": 160,
+      "y": 96,
+      "w": 48,
+      "h": 32
+    },
+    "pine": {
+      "zip": "biomeA",
+      "file": "Original/16x16/temperate_forest/tilesets/vectoraith_tileset_details_temperate_forest.png",
+      "x": 48,
+      "y": 0,
+      "w": 32,
+      "h": 48
+    },
+    "pine-small": {
+      "zip": "biomeA",
+      "file": "Original/16x16/temperate_forest/tilesets/vectoraith_tileset_details_temperate_forest.png",
+      "x": 32,
+      "y": 16,
+      "w": 16,
+      "h": 32
+    },
+    "rock-grey": {
+      "zip": "biomeA",
+      "file": "Original/16x16/temperate_forest/tilesets/vectoraith_tileset_details_temperate_forest.png",
+      "x": 0,
+      "y": 96,
+      "w": 16,
+      "h": 16
+    },
+    "rock-grey-big": {
+      "zip": "biomeA",
+      "file": "Original/16x16/temperate_forest/tilesets/vectoraith_tileset_details_temperate_forest.png",
+      "x": 0,
+      "y": 112,
+      "w": 32,
+      "h": 32
+    },
+    "park-wall": {"zip": "wooden", "file": "Original/16x16/RPG Maker only/vectoraith_tileset_walls_wooden_autotile_rpgmaker.png", "x": 0, "y": 0, "w": 32, "h": 46, "compose": {"frames": 1, "clear": [[137, 187, 105]], "layers": [{"x": 8, "y": 18, "w": 16, "h": 6, "dx": 0, "dy": 0, "clear": true}, {"x": 8, "y": 24, "w": 16, "h": 8, "dx": 0, "dy": 6}, {"x": 8, "y": 40, "w": 16, "h": 8, "dx": 0, "dy": 14}, {"x": 8, "y": 18, "w": 16, "h": 6, "dx": 16, "dy": 0, "clear": true}, {"x": 8, "y": 24, "w": 16, "h": 8, "dx": 16, "dy": 6}, {"x": 8, "y": 40, "w": 16, "h": 8, "dx": 16, "dy": 14}, {"x": 0, "y": 48, "w": 32, "h": 8, "dx": 0, "dy": 22, "clear": true}, {"x": 0, "y": 64, "w": 32, "h": 16, "dx": 0, "dy": 30, "clear": true}]}},
+    "park-wall-side": {"zip": "wooden", "file": "Original/16x16/RPG Maker only/vectoraith_tileset_walls_wooden_autotile_rpgmaker.png", "x": 0, "y": 0, "w": 16, "h": 16, "compose": {"frames": 1, "layers": [{"x": 0, "y": 24, "w": 8, "h": 16, "dx": 0, "dy": 0}, {"x": 24, "y": 24, "w": 8, "h": 16, "dx": 8, "dy": 0}]}},
+    "park-gate": {"zip": "wooden", "file": "Original/16x16/vectoraith_tileset_buildings_wooden_2.png", "x": 192, "y": 0, "w": 64, "h": 60},
+    "waterfall": {"zip": "biomeA", "file": "Original/16x16/temperate_forest/tilesets/vectoraith_tileset_full_terrain_temperate_forest_SPECIALS.png", "x": 0, "y": 0, "w": 112, "h": 96, "compose": {"frames": 3, "fps": 5, "clear": [[137, 187, 105], [110, 163, 69], [130, 180, 98], [147, 197, 115]], "layers": [{"x": 0, "y": 128, "w": 16, "h": 16, "dx": 16, "dy": 44, "step": 80, "clear": true}, {"x": 16, "y": 144, "w": 16, "h": 16, "dx": 32, "dy": 44, "step": 80, "clear": true}, {"x": 16, "y": 144, "w": 16, "h": 16, "dx": 48, "dy": 44, "step": 80, "clear": true}, {"x": 16, "y": 144, "w": 16, "h": 16, "dx": 64, "dy": 44, "step": 80, "clear": true}, {"x": 32, "y": 128, "w": 16, "h": 16, "dx": 80, "dy": 44, "step": 80, "clear": true}, {"x": 0, "y": 144, "w": 16, "h": 16, "dx": 16, "dy": 60, "step": 80, "clear": true}, {"x": 16, "y": 144, "w": 16, "h": 16, "dx": 32, "dy": 60, "step": 80, "clear": true}, {"x": 16, "y": 144, "w": 16, "h": 16, "dx": 48, "dy": 60, "step": 80, "clear": true}, {"x": 16, "y": 144, "w": 16, "h": 16, "dx": 64, "dy": 60, "step": 80, "clear": true}, {"x": 32, "y": 144, "w": 16, "h": 16, "dx": 80, "dy": 60, "step": 80, "clear": true}, {"x": 0, "y": 160, "w": 16, "h": 16, "dx": 16, "dy": 76, "step": 80, "clear": true}, {"x": 16, "y": 160, "w": 16, "h": 16, "dx": 32, "dy": 76, "step": 80, "clear": true}, {"x": 16, "y": 160, "w": 16, "h": 16, "dx": 48, "dy": 76, "step": 80, "clear": true}, {"x": 16, "y": 160, "w": 16, "h": 16, "dx": 64, "dy": 76, "step": 80, "clear": true}, {"x": 32, "y": 160, "w": 16, "h": 16, "dx": 80, "dy": 76, "step": 80, "clear": true}, {"x": 80, "y": 32, "w": 16, "h": 12, "dx": 0, "dy": 0, "clear": true}, {"x": 80, "y": 74, "w": 16, "h": 36, "dx": 0, "dy": 12, "clear": true}, {"x": 96, "y": 32, "w": 16, "h": 12, "dx": 16, "dy": 0, "clear": true}, {"x": 96, "y": 74, "w": 16, "h": 36, "dx": 16, "dy": 12, "clear": true}, {"x": 96, "y": 32, "w": 16, "h": 12, "dx": 80, "dy": 0, "clear": true}, {"x": 96, "y": 74, "w": 16, "h": 36, "dx": 80, "dy": 12, "clear": true}, {"x": 112, "y": 32, "w": 16, "h": 12, "dx": 96, "dy": 0, "clear": true}, {"x": 112, "y": 74, "w": 16, "h": 36, "dx": 96, "dy": 12, "clear": true}, {"x": 0, "y": 176, "w": 48, "h": 48, "dx": 32, "dy": 0, "step": 48}]}},
+    "pond": {
+      "zip": "biomeD",
+      "file": "Original/16x16/alpine/tilesets/vectoraith_tileset_full_terrain_alpine_A.png",
+      "x": 0,
+      "y": 128,
+      "w": 48,
+      "h": 48,
+      "animate": { "step": 80, "count": 3, "fps": 3 }
+    },
+    "lilypad": {
+      "zip": "biomeC",
+      "file": "Original/16x16/tropical_rainforest/tilesets/vectoraith_tileset_details_tropical_rainforest.png",
+      "x": 0,
+      "y": 192,
+      "w": 16,
+      "h": 16
+    },
+    "lilypad-flower": {
+      "zip": "biomeC",
+      "file": "Original/16x16/tropical_rainforest/tilesets/vectoraith_tileset_details_tropical_rainforest.png",
+      "x": 32,
+      "y": 192,
+      "w": 16,
+      "h": 16
+    },
+    "palm": {
+      "zip": "biomeC",
+      "file": "Original/16x16/tropical_rainforest/tilesets/vectoraith_tileset_details_tropical_rainforest.png",
+      "x": 88,
+      "y": 96,
+      "w": 32,
+      "h": 48
+    },
+    "jungle-tree": {
+      "zip": "biomeC",
+      "file": "Original/16x16/tropical_rainforest/tilesets/vectoraith_tileset_details_tropical_rainforest.png",
+      "x": 80,
+      "y": 0,
+      "w": 48,
+      "h": 48
+    },
+    "bush-jungle": {
+      "zip": "biomeC",
+      "file": "Original/16x16/tropical_rainforest/tilesets/vectoraith_tileset_details_tropical_rainforest.png",
+      "x": 48,
+      "y": 128,
+      "w": 32,
+      "h": 16
+    },
+    "bamboo-big": {
+      "zip": "monocots",
+      "file": "ReShade/16x16/tree_bamboo_new_A_7_reshade.png",
+      "x": 0,
+      "y": 0,
+      "w": 48,
+      "h": 96
+    },
+    "bamboo-mid": {
+      "zip": "monocots",
+      "file": "ReShade/16x16/tree_bamboo_new_A_5_reshade.png",
+      "x": 0,
+      "y": 0,
+      "w": 48,
+      "h": 96
+    },
+    "bamboo-small": {
+      "zip": "monocots",
+      "file": "ReShade/16x16/tree_bamboo_new_A_3_reshade.png",
+      "x": 0,
+      "y": 0,
+      "w": 48,
+      "h": 80
+    },
+    "log": {
+      "zip": "biomeA",
+      "file": "Original/16x16/temperate_forest/tilesets/vectoraith_tileset_details_temperate_forest.png",
+      "x": 0,
+      "y": 48,
+      "w": 48,
+      "h": 16
+    },
+    "flowers": {
+      "zip": "biomeB",
+      "file": "16x16/savannah/tilesets/vectoraith_tileset_details_savannah.png",
+      "x": 0,
+      "y": 32,
+      "w": 16,
+      "h": 16
+    },
+    "flowers-red": {
+      "zip": "biomeC",
+      "file": "Original/16x16/tropical_rainforest/tilesets/vectoraith_tileset_details_tropical_rainforest.png",
+      "x": 128,
+      "y": 32,
+      "w": 16,
+      "h": 16
+    },
+    "bench": {
+      "zip": "wooden",
+      "file": "Original/16x16/vectoraith_tileset_buildings_wooden_1.png",
+      "x": 32,
+      "y": 0,
+      "w": 32,
+      "h": 16
+    },
+    "lamp": {
+      "zip": "wooden",
+      "file": "Original/16x16/vectoraith_tileset_buildings_wooden_1.png",
+      "x": 96,
+      "y": 112,
+      "w": 32,
+      "h": 48,
+      "erase": [
+        [
+          16,
+          32,
+          16,
+          16
+        ]
+      ]
+    },
+    "sign": {
+      "zip": "wooden",
+      "file": "Original/16x16/vectoraith_tileset_buildings_wooden_1.png",
+      "x": 80,
+      "y": 48,
+      "w": 16,
+      "h": 16
+    },
+    "barrel": {
+      "zip": "wooden",
+      "file": "Original/16x16/vectoraith_tileset_buildings_wooden_1.png",
+      "x": 208,
+      "y": 112,
+      "w": 16,
+      "h": 16
+    },
+    "crate-fruit": {
+      "zip": "wooden",
+      "file": "Original/16x16/vectoraith_tileset_buildings_wooden_1.png",
+      "x": 0,
+      "y": 240,
+      "w": 16,
+      "h": 16
+    },
+    "flowerbed": {
+      "zip": "wooden",
+      "file": "Original/16x16/vectoraith_tileset_buildings_wooden_1.png",
+      "x": 224,
+      "y": 112,
+      "w": 32,
+      "h": 16
+    },
+    "tree": {
+      "zip": "wooden",
+      "file": "Original/16x16/vectoraith_tileset_buildings_wooden_1.png",
+      "x": 112,
+      "y": 144,
+      "w": 16,
+      "h": 32
+    },
+    "bush": {
+      "zip": "wooden",
+      "file": "Original/16x16/vectoraith_tileset_buildings_wooden_1.png",
+      "x": 112,
+      "y": 176,
+      "w": 16,
+      "h": 16
+    },
+    "fountain": {
+      "zip": "wooden",
+      "file": "Original/16x16/Animated Sprites/!$vectoraith_sprite_fountain_horsetail.png",
+      "x": 0,
+      "y": 64,
+      "w": 80,
+      "h": 64,
+      "animate": { "step": 80, "count": 3, "fps": 4 }
+    }
+  },
+  "interior": {
+    "floor":        { "zip": "interior", "file": "16x16/Classic/vectoraith_tileset_interior_essentials_floorwall_ATLAS.png", "x": 16,  "y": 16,  "w": 16, "h": 16 },
+    "wall":         { "zip": "interior", "file": "16x16/Classic/vectoraith_tileset_interior_essentials_floorwall_ATLAS.png", "x": 256, "y": 576, "w": 64, "h": 64 },
+    "window":       { "zip": "interior", "file": "16x16/Classic/vectoraith_tileset_interior_essentials_3.png", "x": 129, "y": 104, "w": 14, "h": 17 },
+    "clock":        { "zip": "interior", "file": "16x16/Classic/vectoraith_tileset_interior_essentials_1.png", "x": 129, "y": 82,  "w": 13, "h": 13 },
+    "frames":       { "zip": "interior", "file": "16x16/Classic/vectoraith_tileset_interior_essentials_1.png", "x": 97,  "y": 81,  "w": 30, "h": 15 },
+    "candles":      { "zip": "interior", "file": "16x16/Classic/vectoraith_tileset_interior_essentials_1.png", "x": 227, "y": 112, "w": 12, "h": 14 },
+    "shelf-wide":   { "zip": "interior", "file": "16x16/Classic/vectoraith_tileset_interior_essentials_3.png", "x": 128, "y": 186, "w": 48, "h": 32 },
+    "shelf-a":      { "zip": "interior", "file": "16x16/Classic/vectoraith_tileset_interior_essentials_3.png", "x": 192, "y": 122, "w": 32, "h": 32 },
+    "shelf-b":      { "zip": "interior", "file": "16x16/Classic/vectoraith_tileset_interior_essentials_3.png", "x": 224, "y": 122, "w": 32, "h": 32 },
+    "bookcase":     { "zip": "interior", "file": "16x16/Classic/vectoraith_tileset_interior_essentials_3.png", "x": 224, "y": 170, "w": 32, "h": 32 },
+    "counter":      { "zip": "interior", "file": "16x16/Classic/vectoraith_tileset_interior_essentials_3.png", "x": 176, "y": 186, "w": 48, "h": 32 },
+    "bread":        { "zip": "interior", "file": "16x16/Classic/vectoraith_tileset_interior_essentials_3.png", "x": 240, "y": 85,  "w": 16, "h": 21 },
+    "crate-green":  { "zip": "interior", "file": "16x16/Classic/vectoraith_tileset_interior_essentials_3.png", "x": 144, "y": 224, "w": 16, "h": 24 },
+    "crate-yellow": { "zip": "interior", "file": "16x16/Classic/vectoraith_tileset_interior_essentials_3.png", "x": 160, "y": 224, "w": 16, "h": 24 },
+    "crate-red":    { "zip": "interior", "file": "16x16/Classic/vectoraith_tileset_interior_essentials_3.png", "x": 176, "y": 224, "w": 16, "h": 24 },
+    "barrel":       { "zip": "interior", "file": "16x16/Classic/vectoraith_tileset_interior_essentials_3.png", "x": 50,  "y": 119, "w": 12, "h": 15 },
+    "plant":        { "zip": "interior", "file": "16x16/Classic/vectoraith_tileset_interior_essentials_1.png", "x": 97,  "y": 100, "w": 14, "h": 21 }
+  }
+}

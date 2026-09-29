@@ -1,0 +1,8 @@
+# index.html y manifest: el navegador siempre pregunta si hay versión nueva.
+<FilesMatch "\.(html|json)$">
+  Header set Cache-Control "no-cache"
+</FilesMatch>
+# JS/CSS llevan huella en el nombre y el resto va con ?v=: se pueden guardar mucho tiempo.
+<FilesMatch "\.(js|css|png|ogg|mp3|tmj)$">
+  Header set Cache-Control "public, max-age=31536000, immutable"
+</FilesMatch>

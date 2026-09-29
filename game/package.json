@@ -1,0 +1,43 @@
+{
+  "name": "zooesponji",
+  "private": true,
+  "version": "2.1.2",
+  "type": "module",
+  "license": "SEE LICENSE IN ../LICENSE",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "make:test-map": "node scripts/make-test-map.mjs",
+    "art:import": "node scripts/import-art.ts",
+    "make:zoo-map": "node scripts/make-zoo-map.mjs",
+    "make:shop-map": "node scripts/make-shop-map.mjs",
+    "make:campanita": "node scripts/make-campanita.mjs",
+    "make:paso": "node scripts/make-paso.mjs",
+    "art:grid": "node scripts/art/grid.ts",
+    "art:props-sheet": "node scripts/art/propsSheet.ts"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.5.2",
+    "@capacitor/app": "^8.1.1",
+    "@capacitor/core": "^8.5.2",
+    "@capacitor/preferences": "^8.0.1",
+    "phaser": "4.2.1"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.5.2",
+    "@playwright/test": "^1.63.0",
+    "@types/adm-zip": "^0.5.8",
+    "@types/node": "^24.19.0",
+    "@types/pngjs": "^6.0.5",
+    "adm-zip": "^0.5.18",
+    "pngjs": "^7.0.0",
+    "typescript": "^5.9.3",
+    "vite": "^8.3.1",
+    "vitest": "^5.0.2"
+  }
+}

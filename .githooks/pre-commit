@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+# Pre-commit de seguridad de content-news.
+# 1) Si Gitleaks está instalado -> escaneo completo de lo que vas a commitear.
+# 2) Si no lo está -> escáner de respaldo (regex) para no quedarte sin red.
+# Instalar el hook:  git config core.hooksPath .githooks
+set -u
+RED=$'\033[31m'; YEL=$'\033[33m'; GRN=$'\033[32m'; NC=$'\033[0m'
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+
+if command -v gitleaks >/dev/null 2>&1; then
+  echo "${GRN}[pre-commit]${NC} Gitleaks: escaneando staged..."
+  if ! gitleaks protect --staged --redact -c "$REPO_ROOT/.gitleaks.toml"; then
+    echo "${RED}[pre-commit] BLOQUEADO: Gitleaks detectó un posible secreto.${NC}"
+    echo "Revisa arriba. Si es un falso positivo, añádelo al allowlist de .gitleaks.toml."
+    exit 1
+  fi
+  echo "${GRN}[pre-commit] OK (Gitleaks).${NC}"
+  exit 0
+fi
+
+# --- Respaldo sin Gitleaks ---
+echo "${YEL}[pre-commit]${NC} Gitleaks no instalado; uso escáner de respaldo (regex)."
+echo "             Instálalo para cobertura completa (ver SECURITY.md)."
+PATTERNS='(sk-(proj-)?[a-zA-Z0-9_-]{20,})|([0-9]{8,10}:AA[a-zA-Z0-9_-]{33})|(-----BEGIN [A-Z ]*PRIVATE KEY-----)|(AKIA[0-9A-Z]{16})'
+# En Git Bash (Windows) `git ... | grep` dentro del hook a veces no propaga la
+# salida por el pipe; redirigir a fichero SÍ es fiable. Así que volcamos el diff
+# a un temporal y hacemos que grep lea del fichero como primera etapa.
+RAW="$(mktemp)"; trap 'rm -f "$RAW"' EXIT
+git diff --cached --no-color -U0 > "$RAW"
+# `^\+[^+]` = línea añadida que no es la cabecera `+++`.
+HITS="$(grep -EnI '^\+[^+]' "$RAW" | grep -EI "$PATTERNS" | grep -vE '<[A-Z_]+>|[xX]{4,}')"
+if [ -n "$HITS" ]; then
+  echo "${RED}[pre-commit] BLOQUEADO: posible secreto en lo staged:${NC}"
+  echo "$HITS" | sed 's/^/   /'
+  echo "Si es un falso positivo, ajusta el patrón o instala Gitleaks + allowlist."
+  exit 1
+fi
+echo "${GRN}[pre-commit] OK (respaldo).${NC}"
+exit 0

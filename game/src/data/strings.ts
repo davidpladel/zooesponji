@@ -1,0 +1,51 @@
+export const STRINGS_ES = {
+  'title.name': 'Zoo Esponji',
+  'title.play': 'Jugar',
+  'title.credits': 'Hecho por Daniela y Adrián 💛',
+  'settings.title': 'Ajustes',
+  'quit.ask': '¿Salir?',
+  'error.title': '¡Ups! 🐾',
+  'error.retry': 'Volver a empezar',
+  'settings.music': 'Música',
+  'settings.sfx': 'Sonidos',
+  'settings.joystick': 'Joystick',
+  'credits.madeBy': 'Hecho con cariño por Daniela y Adrián 💛',
+  'credits.art': 'Panda y pantera pintados por Daniela y Adrián',
+  'animal.leon': 'León',
+  'animal.cabra': 'Cabra',
+  'animal.pantera': 'Pantera negra',
+  'animal.panda': 'Oso panda',
+  'food.piedra': 'Piedra',
+  'food.carne': 'Carne',
+  'food.conejo': 'Conejo',
+  'food.zanahoria': 'Zanahoria',
+  'feed.yum': '¡Ñam!',
+  'feed.yuck': '¡Puaj!',
+  'feed.wow': '¡Guau!',
+  'shop.title': 'Tienda del zoo',
+  'shop.label': 'Tienda',
+  'shop.owned': '¡Ya es tuyo!',
+  'shop.full': '¡Completo!',
+  'shop.hello': '¡Hola! ¿Qué animal quieres hoy?',
+  'shop.thanks': '¡Gracias! ¡Cuídalo mucho!',
+  'shop.needCoins': '¡Te faltan monedas!',
+  'shop.about.leon': '¡El león es el rey del zoo!',
+  'shop.about.cabra': '¡Las cabras comen de todo… hasta piedras!',
+  'shop.about.pantera': '¡La pantera es rapidísima!',
+  'shop.about.panda': '¡Al panda le encanta el bambú!',
+  'shop.extra.cabra': 'Otra cabra',
+  'shop.extra.pantera': 'Otra pantera',
+  'shop.extra.panda': 'Otro panda',
+  'toast.shopOpen': '¡La tienda está abierta!',
+  'toast.shopLocked': 'La tienda abre con {n} monedas',
+  'toast.needShop': 'Cómpralo en la tienda 🏪',
+  'toast.newAnimal': '¡Nuevo animal: {name}!',
+} as const;
+
+export type StringKey = keyof typeof STRINGS_ES;
+
+export function t(key: StringKey, vars: Record<string, string | number> = {}): string {
+  return STRINGS_ES[key].replace(/\{(\w+)\}/g, (match, name: string) =>
+    name in vars ? String(vars[name]) : match,
+  );
+}

@@ -1,0 +1,28 @@
+# Configuración de Gitleaks para content-news.
+# Extiende el set de reglas por defecto de Gitleaks y añade reglas propias
+# para los secretos concretos de este proyecto.
+[extend]
+useDefault = true
+
+[[rules]]
+id = "telegram-bot-token"
+description = "Token de bot de Telegram"
+regex = '''[0-9]{8,10}:AA[a-zA-Z0-9_-]{33}'''
+tags = ["telegram", "token"]
+
+[[rules]]
+id = "openai-key"
+description = "Clave de API de OpenAI"
+regex = '''sk-(proj-)?[a-zA-Z0-9_-]{20,}'''
+tags = ["openai", "key"]
+
+[allowlist]
+description = "Placeholders y ejemplos que no son secretos reales"
+regexes = [
+  '''<[A-Z_]+>''',           # placeholders tipo <DB_PASSWORD>
+  '''sk-(proj-)?[xX]{4,}''', # ejemplos sk-xxxx
+]
+paths = [
+  '''\.env\.example$''',
+  '''\.gitleaks\.toml$''',
+]
