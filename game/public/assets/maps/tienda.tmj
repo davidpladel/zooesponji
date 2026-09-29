@@ -1,0 +1,901 @@
+{
+ "compressionlevel": -1,
+ "width": 20,
+ "height": 12,
+ "tilewidth": 16,
+ "tileheight": 16,
+ "infinite": false,
+ "orientation": "orthogonal",
+ "renderorder": "right-down",
+ "tiledversion": "1.11.0",
+ "type": "map",
+ "version": "1.10",
+ "nextlayerid": 3,
+ "nextobjectid": 32,
+ "layers": [
+  {
+   "id": 1,
+   "name": "suelo",
+   "type": "tilelayer",
+   "width": 20,
+   "height": 12,
+   "x": 0,
+   "y": 0,
+   "opacity": 1,
+   "visible": true,
+   "data": [
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    1,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    1,
+    3,
+    3,
+    3,
+    3,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    3,
+    3,
+    3,
+    3,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    3,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    3,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    3
+   ]
+  },
+  {
+   "id": 2,
+   "name": "objetos",
+   "type": "objectgroup",
+   "draworder": "topdown",
+   "x": 0,
+   "y": 0,
+   "opacity": 1,
+   "visible": true,
+   "objects": [
+    {
+     "id": 1,
+     "name": "tendero-2",
+     "type": "tendero",
+     "point": true,
+     "x": 48,
+     "y": 92,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": []
+    },
+    {
+     "id": 2,
+     "name": "puertaInterior-3",
+     "type": "puertaInterior",
+     "point": true,
+     "x": 192,
+     "y": 186,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": []
+    },
+    {
+     "id": 3,
+     "name": "peana-4",
+     "type": "peana",
+     "point": true,
+     "x": 112,
+     "y": 126,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "orden",
+       "type": "int",
+       "value": 0
+      }
+     ]
+    },
+    {
+     "id": 4,
+     "name": "peana-5",
+     "type": "peana",
+     "point": true,
+     "x": 152,
+     "y": 114,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "orden",
+       "type": "int",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "id": 5,
+     "name": "peana-6",
+     "type": "peana",
+     "point": true,
+     "x": 192,
+     "y": 108,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "orden",
+       "type": "int",
+       "value": 2
+      }
+     ]
+    },
+    {
+     "id": 6,
+     "name": "peana-7",
+     "type": "peana",
+     "point": true,
+     "x": 232,
+     "y": 114,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "orden",
+       "type": "int",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "id": 7,
+     "name": "peana-8",
+     "type": "peana",
+     "point": true,
+     "x": 272,
+     "y": 126,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "orden",
+       "type": "int",
+       "value": 4
+      }
+     ]
+    },
+    {
+     "id": 8,
+     "name": "deco-9",
+     "type": "deco",
+     "point": true,
+     "x": 40,
+     "y": 38,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "pieza",
+       "type": "string",
+       "value": "window"
+      }
+     ]
+    },
+    {
+     "id": 9,
+     "name": "deco-10",
+     "type": "deco",
+     "point": true,
+     "x": 120,
+     "y": 36,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "pieza",
+       "type": "string",
+       "value": "window"
+      }
+     ]
+    },
+    {
+     "id": 10,
+     "name": "deco-11",
+     "type": "deco",
+     "point": true,
+     "x": 224,
+     "y": 36,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "pieza",
+       "type": "string",
+       "value": "window"
+      }
+     ]
+    },
+    {
+     "id": 11,
+     "name": "deco-12",
+     "type": "deco",
+     "point": true,
+     "x": 80,
+     "y": 34,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "pieza",
+       "type": "string",
+       "value": "clock"
+      }
+     ]
+    },
+    {
+     "id": 12,
+     "name": "deco-13",
+     "type": "deco",
+     "point": true,
+     "x": 272,
+     "y": 34,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "pieza",
+       "type": "string",
+       "value": "frames"
+      }
+     ]
+    },
+    {
+     "id": 13,
+     "name": "deco-14",
+     "type": "deco",
+     "point": true,
+     "x": 88,
+     "y": 80,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "pieza",
+       "type": "string",
+       "value": "plant"
+      }
+     ]
+    },
+    {
+     "id": 14,
+     "name": "deco-15",
+     "type": "deco",
+     "point": true,
+     "x": 128,
+     "y": 80,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "pieza",
+       "type": "string",
+       "value": "shelf-wide"
+      }
+     ]
+    },
+    {
+     "id": 15,
+     "name": "deco-16",
+     "type": "deco",
+     "point": true,
+     "x": 176,
+     "y": 80,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "pieza",
+       "type": "string",
+       "value": "shelf-a"
+      }
+     ]
+    },
+    {
+     "id": 16,
+     "name": "deco-17",
+     "type": "deco",
+     "point": true,
+     "x": 216,
+     "y": 80,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "pieza",
+       "type": "string",
+       "value": "bookcase"
+      }
+     ]
+    },
+    {
+     "id": 17,
+     "name": "deco-18",
+     "type": "deco",
+     "point": true,
+     "x": 256,
+     "y": 80,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "pieza",
+       "type": "string",
+       "value": "shelf-b"
+      }
+     ]
+    },
+    {
+     "id": 18,
+     "name": "deco-19",
+     "type": "deco",
+     "point": true,
+     "x": 296,
+     "y": 80,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "pieza",
+       "type": "string",
+       "value": "shelf-wide"
+      }
+     ]
+    },
+    {
+     "id": 19,
+     "name": "deco-20",
+     "type": "deco",
+     "point": true,
+     "x": 48,
+     "y": 112,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "pieza",
+       "type": "string",
+       "value": "counter"
+      }
+     ]
+    },
+    {
+     "id": 20,
+     "name": "deco-21",
+     "type": "deco",
+     "point": true,
+     "x": 64,
+     "y": 114,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "pieza",
+       "type": "string",
+       "value": "candles"
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 30
+      }
+     ]
+    },
+    {
+     "id": 21,
+     "name": "deco-22",
+     "type": "deco",
+     "point": true,
+     "x": 30,
+     "y": 114,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "pieza",
+       "type": "string",
+       "value": "bread"
+      },
+      {
+       "name": "z",
+       "type": "int",
+       "value": 30
+      }
+     ]
+    },
+    {
+     "id": 22,
+     "name": "deco-23",
+     "type": "deco",
+     "point": true,
+     "x": 192,
+     "y": 118,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "pieza",
+       "type": "string",
+       "value": "rug"
+      },
+      {
+       "name": "flat",
+       "type": "bool",
+       "value": true
+      }
+     ]
+    },
+    {
+     "id": 23,
+     "name": "deco-24",
+     "type": "deco",
+     "point": true,
+     "x": 16,
+     "y": 176,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "pieza",
+       "type": "string",
+       "value": "crate-green"
+      }
+     ]
+    },
+    {
+     "id": 24,
+     "name": "deco-25",
+     "type": "deco",
+     "point": true,
+     "x": 32,
+     "y": 176,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "pieza",
+       "type": "string",
+       "value": "crate-yellow"
+      }
+     ]
+    },
+    {
+     "id": 25,
+     "name": "deco-26",
+     "type": "deco",
+     "point": true,
+     "x": 48,
+     "y": 176,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "pieza",
+       "type": "string",
+       "value": "crate-red"
+      }
+     ]
+    },
+    {
+     "id": 26,
+     "name": "deco-27",
+     "type": "deco",
+     "point": true,
+     "x": 308,
+     "y": 150,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "pieza",
+       "type": "string",
+       "value": "barrel"
+      }
+     ]
+    },
+    {
+     "id": 27,
+     "name": "deco-28",
+     "type": "deco",
+     "point": true,
+     "x": 10,
+     "y": 190,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "pieza",
+       "type": "string",
+       "value": "plant"
+      }
+     ]
+    },
+    {
+     "id": 28,
+     "name": "deco-29",
+     "type": "deco",
+     "point": true,
+     "x": 308,
+     "y": 190,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "pieza",
+       "type": "string",
+       "value": "plant"
+      }
+     ]
+    },
+    {
+     "id": 29,
+     "name": "deco-30",
+     "type": "deco",
+     "point": true,
+     "x": 28,
+     "y": 192,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "pieza",
+       "type": "string",
+       "value": "flowers"
+      }
+     ]
+    },
+    {
+     "id": 30,
+     "name": "deco-31",
+     "type": "deco",
+     "point": true,
+     "x": 290,
+     "y": 192,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "pieza",
+       "type": "string",
+       "value": "flowers"
+      }
+     ]
+    },
+    {
+     "id": 31,
+     "name": "deco-32",
+     "type": "deco",
+     "point": true,
+     "x": 292,
+     "y": 160,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "pieza",
+       "type": "string",
+       "value": "flowers-red"
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "tilesets": [
+  {
+   "firstgid": 1,
+   "name": "interior",
+   "image": "../tiles/placeholder.png",
+   "imagewidth": 48,
+   "imageheight": 16,
+   "tilewidth": 16,
+   "tileheight": 16,
+   "tilecount": 3,
+   "columns": 3,
+   "margin": 0,
+   "spacing": 0,
+   "tiles": [
+    {
+     "id": 0,
+     "properties": [
+      {
+       "name": "walkable",
+       "type": "bool",
+       "value": true
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

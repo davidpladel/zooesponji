@@ -1,0 +1,3 @@
+# Scripts de shell de Gradle: siempre LF (si no, fallan en Linux/Mac)
+game/android/gradlew text eol=lf
+*.bat text eol=crlf

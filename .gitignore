@@ -1,0 +1,13 @@
+.superpowers/
+
+# Secretos y entorno (añadido por rollout de seguridad)
+.env
+.env.*
+!.env.example
+*.log
+
+# Packs de arte comprados: la licencia prohíbe redistribuir los originales
+art-packs/
+
+# Arte derivado de los packs de VectoRaith: nunca al repo público (licencia)
+game/public/art/
