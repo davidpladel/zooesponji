@@ -1,5 +1,18 @@
 apply plugin: 'com.android.application'
 
+// Firma de subida a Google Play. Las contraseñas NO están en el repo: se leen de las variables
+// de entorno ZOO_STORE_PASS y ZOO_KEY_PASS (o, si no existen, de android/keystore.properties, ignorado por git).
+def keystoreProps = new Properties()
+def keystorePropsFile = rootProject.file('keystore.properties')
+if (keystorePropsFile.exists()) {
+    keystorePropsFile.withInputStream { keystoreProps.load(it) }
+}
+def zooStorePass = System.getenv('ZOO_STORE_PASS') ?: keystoreProps['storePassword']
+def zooKeyPass = System.getenv('ZOO_KEY_PASS') ?: zooStorePass
+def zooStoreFile = keystoreProps['storeFile'] ?: "${System.getProperty('user.home')}/keystores/zooesponji-upload.jks"
+def zooKeyAlias = keystoreProps['keyAlias'] ?: 'zooesponji'
+def zooCanSign = zooStorePass != null && file(zooStoreFile).exists()
+
 android {
     namespace = "com.davidpladel.zooesponji"
     compileSdk = rootProject.ext.compileSdkVersion
@@ -16,8 +29,21 @@ android {
             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+    signingConfigs {
+        release {
+            if (zooCanSign) {
+                storeFile file(zooStoreFile)
+                storePassword zooStorePass
+                keyAlias zooKeyAlias
+                keyPassword zooKeyPass
+            }
+        }
+    }
     buildTypes {
         release {
+            if (zooCanSign) {
+                signingConfig signingConfigs.release
+            }
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
