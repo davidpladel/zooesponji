@@ -39,6 +39,14 @@ export class TitleScene extends Phaser.Scene {
       })
       .setOrigin(0.5)
       .setAlpha(0.85);
+    this.add
+      .text(width / 2, height * 0.9 + Math.max(16, height * 0.04) * 1.1, t('credits.copyright'), {
+        fontFamily: 'sans-serif',
+        fontSize: `${Math.round(Math.max(11, height * 0.028))}px`,
+        color: '#ffffff',
+      })
+      .setOrigin(0.5)
+      .setAlpha(0.6);
     restartOnResize(this);
 
     play.once('pointerup', () => {

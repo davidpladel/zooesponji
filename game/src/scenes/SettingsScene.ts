@@ -103,6 +103,7 @@ export class SettingsScene extends Phaser.Scene {
     const { width, height } = this.scale;
     const size = Math.round(Math.min(height * 0.04, panelW * 0.035));
     this.add.text(width / 2, y, t('credits.madeBy'), textStyle(size, '#4e342e', '#ffffff')).setOrigin(0.5);
+    this.add.text(width / 2, height * 0.905, t('credits.copyright'), textStyle(Math.round(size * 0.8), '#37474f', '#ffffff')).setOrigin(0.5);
     const art = getArt();
     const line = this.add.text(width / 2, y + size * 2, t('credits.art'), textStyle(Math.round(size * 0.85), '#4e342e', '#ffffff')).setOrigin(0.5);
     if (!art) return;
