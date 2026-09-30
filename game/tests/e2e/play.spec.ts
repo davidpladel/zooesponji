@@ -74,7 +74,7 @@ test('soltar la comida lejos no da monedas', async ({ page }) => {
   expect(await page.evaluate(() => window.__ZOO__!.hudCoinsText())).toBe('🪙 0');
 });
 
-/** En la tienda: tocar el animal (el cuidador va andando) y luego el bocadillo de compra. */
+/** En la tienda: tocar el animal (la cuidadora va andando) y luego el bocadillo de compra. */
 async function buyInShop(page: Page, itemId: string): Promise<void> {
   const box = await canvasBox(page);
   const card = await page.evaluate((id) => window.__ZOO__!.shopCardScreenPos(id), itemId);

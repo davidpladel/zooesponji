@@ -1,6 +1,6 @@
 export const TILE_SIZE = 16;
 
-/** Velocidad del cuidador en píxeles de mundo por segundo (4 tiles/s). */
+/** Velocidad de la cuidadora en píxeles de mundo por segundo (4 tiles/s). */
 export const KEEPER_SPEED = 64;
 
 export const TEXTURES = {

@@ -115,7 +115,7 @@ export class WorldScene extends Phaser.Scene {
     else if (doorEvent === 'locked') bus.emit('toast', { text: t('toast.shopLocked', { n: SHOP_UNLOCK_COINS }) });
   }
 
-  /** Manda al cuidador hacia un punto del mundo. Devuelve false si no hay a dónde ir. */
+  /** Manda a la cuidadora hacia un punto del mundo. Devuelve false si no hay a dónde ir. */
   goTo(world: Vec): boolean {
     const path = findPathOrNearest(this.grid, worldToTile(this.keeper, TILE_SIZE), worldToTile(world, TILE_SIZE));
     if (!path || path.length < 2) {
@@ -245,7 +245,7 @@ export class WorldScene extends Phaser.Scene {
     this.shop?.sync(state);
   }
 
-  /** Al salir de la tienda el cuidador aparece delante de la puerta, mirando hacia abajo (y no vuelve a entrar). */
+  /** Al salir de la tienda la cuidadora aparece delante de la puerta, mirando hacia abajo (y no vuelve a entrar). */
   private leaveShop(): void {
     const shop = readShop(this.mapData);
     if (!shop) return;

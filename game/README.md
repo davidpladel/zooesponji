@@ -1,6 +1,6 @@
 # Zoo Esponji 2.0 (Phaser 4 + TypeScript)
 
-Versión 2.1.2. En la documentación de desarrollo se llama "v3" (nombre interno: fue el tercer motor, tras la v1 en DOM y el prototipo en Canvas).
+Versión 2.1.3. En la documentación de desarrollo se llama "v3" (nombre interno: fue el tercer motor, tras la v1 en DOM y el prototipo en Canvas).
 
 Spec: `docs/superpowers/specs/2026-09-27-motor-phaser-v3-design.md`
 
@@ -35,14 +35,14 @@ Sin `public/art/` el juego funciona con arte provisional (emojis y colores plano
 - **Agua animada:** una pieza con `animate: { step, count, area?, fps? }` en `art.config.json` se importa como hoja de fotogramas (`step` = distancia entre fotogramas en la hoja del pack; `area` = zona que cambia).
 - **Carne:** cuando exista `zooesponji-private/art-work/terminados/carne.png`, `art:import` la usa en la bandeja (mientras, emoji 🥩).
 - **Mapa:** `npm run make:zoo-map` regenera `public/assets/maps/zoo.tmj` (mapa lógico; el arte lo pone el juego).
-- **Tienda por dentro:** `npm run make:shop-map` regenera `public/assets/maps/tienda.tmj` (20×12: suelo, pared, muebles, tendero, 5 peanas, felpudo y decoración). `art:import` recorta los muebles del *Interior Tileset Pack – Essentials* (`interior` en `art.config.json`, salen como `interior-*.png`); sin ellos la tienda se pinta con colores. `npm run make:campanita` y `npm run make:paso` vuelven a sintetizar `public/audio/campanita.wav` y `paso.wav`. Dentro, la cuidadora anda por la rejilla de `tienda.tmj` con las peanas bloqueadas (`core/shopWalk.ts`: alcance, punto de aproximación, pista y felpudo).
+- **Tienda por dentro:** `npm run make:shop-map` regenera `public/assets/maps/tienda.tmj` (20×12: suelo, pared, muebles, tendero, 5 peanas, felpudo y decoración). `art:import` recorta los muebles del *Interior Tileset Pack – Essentials* (`interior` en `art.config.json`, salen como `interior-*.png`); sin ellos la tienda se pinta con colores. `npm run make:campanita` y `npm run make:paso` vuelven a sintetizar `public/audio/campanita.wav` y `paso.wav`. Dentro, la cuidadora anda por la rejilla de `tienda.tmj` con las peanas bloqueadas (`core/shopWalk.ts`: alcance, punto de aproximación, pista y felpudo). Tienda: una peana por animal (al comprar el recinto pasa a vender "otro animal"), precio o sello AGOTADO. En la estantería hay un **libro secreto** (`BookScene`, `core/book.ts`): 14 páginas con la historia, Mary y cada animal con nombre; se guardan los ids leídos en `book` del guardado.
 
 ## Estructura
 
 - `src/core/` — lógica pura sin Phaser (reacciones, economía y extras, guardado, A*, mapas, movimiento, `flock` para que los animales no se pisen, `back` para el botón atrás). Todo con tests.
-- `src/data/` — contenido: animales, comidas, tienda, textos.
+- `src/data/` — contenido: animales, comidas, tienda, libro del zoo (`book.ts`: ids de página y qué las desbloquea) y textos (`strings.ts`: todo texto visible pasa por `t()`, preparado para multi-idioma).
 - `src/systems/` — eventos, sesión, almacenamiento, zoom, `audio` (samples y música), `platform` (botón atrás, segundo plano, girar el móvil), `errors` (pantalla ¡Ups!).
-- `src/scenes/` — escenas de Phaser (solo dibujan y recogen input): Boot, Preload, Title, World, Feed (dar de comer), Shop (tienda), Hud, Settings (menú ⚙️ y créditos), Quit (¿Salir?), Rotate (gira el móvil).
+- `src/scenes/` — escenas de Phaser (solo dibujan y recogen input): Boot, Preload, Title, World, Feed (dar de comer), Shop (tienda), Book (libro del zoo), Hud, Settings (menú ⚙️ y créditos), Quit (¿Salir?), Rotate (gira el móvil).
 - `src/world/` — ayudantes del mundo: `Pens` (animales, candados y la puerta donde se abre la comida), `ShopBuilding` (edificio y puerta de la tienda), `ShopInterior` (la tienda por dentro), `ShopKeeperWalker` (la cuidadora dentro de la tienda), `Shopkeeper` (el tendero), `ShopHint` (huellas de pista), `VisitorCrowd` (visitantes).
 
 ## Añadir un animal
@@ -78,4 +78,4 @@ Girar el móvil: los navegadores avisan del giro antes de dar el tamaño nuevo, 
 
 ## Versión
 
-`version` en `package.json` y `versionName` en `android/app/build.gradle`: **2.1.2**. `versionCode` sube en 1 con cada subida a Play.
+`version` en `package.json` y `versionName` en `android/app/build.gradle`: **2.1.3**. `versionCode` sube en 1 con cada subida a Play.

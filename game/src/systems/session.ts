@@ -1,6 +1,6 @@
 import { addCoins, purchase, type GameState, type PurchaseResult } from '../core/economy';
 import { resolveFeeding, type FeedResult } from '../core/reactions';
-import { loadSave, parseSave, writeSave, type KeyValueStore, type SaveData, type Settings } from '../core/save';
+import { loadSave, parseSave, writeSave, type BookProgress, type KeyValueStore, type SaveData, type Settings } from '../core/save';
 import { ANIMAL_IDS, type AnimalId } from '../data/animals';
 import type { FoodId } from '../data/foods';
 import { bus, type EventBus, type GameEvents } from './events';
@@ -72,6 +72,33 @@ export class Session {
     const result = purchase(this.data.state, itemId);
     if (result.ok) await this.update(() => result.state);
     return result;
+  }
+
+  get book(): BookProgress {
+    return this.data.book;
+  }
+
+  /** Marca páginas del libro como leídas (ids). */
+  async readPages(ids: readonly string[]): Promise<void> {
+    const seen = new Set(this.data.book.seen);
+    if (ids.every((id) => seen.has(id))) return;
+    for (const id of ids) seen.add(id);
+    this.data = { ...this.data, book: { ...this.data.book, seen: [...seen] } };
+    await writeSave(this.store, this.data);
+  }
+
+  /** Página donde se ha quedado el libro. */
+  async setBookPage(id: string): Promise<void> {
+    if (this.data.book.page === id) return;
+    this.data = { ...this.data, book: { ...this.data.book, page: id } };
+    await writeSave(this.store, this.data);
+  }
+
+  /** El tendero ya ha contado lo del libro secreto: no lo repite. */
+  async markBookHinted(): Promise<void> {
+    if (this.data.book.hinted) return;
+    this.data = { ...this.data, book: { ...this.data.book, hinted: true } };
+    await writeSave(this.store, this.data);
   }
 
   async updateSettings(change: Partial<Settings>): Promise<void> {

@@ -6,6 +6,7 @@ import { PreloadScene } from './scenes/PreloadScene';
 import { QuitScene } from './scenes/QuitScene';
 import { RotateScene } from './scenes/RotateScene';
 import { SettingsScene } from './scenes/SettingsScene';
+import { BookScene } from './scenes/BookScene';
 import { ShopScene } from './scenes/ShopScene';
 import { TitleScene } from './scenes/TitleScene';
 import { WorldScene } from './scenes/WorldScene';
@@ -23,7 +24,7 @@ const game = new Phaser.Game({
   roundPixels: true,
   scale: { mode: Phaser.Scale.RESIZE, width: window.innerWidth, height: window.innerHeight },
   // El orden importa: Hud se dibuja encima de Feed/Shop; ajustes, salir y girar, encima de todo.
-  scene: [BootScene, PreloadScene, TitleScene, WorldScene, FeedScene, ShopScene, HudScene, SettingsScene, QuitScene, RotateScene],
+  scene: [BootScene, PreloadScene, TitleScene, WorldScene, FeedScene, ShopScene, BookScene, HudScene, SettingsScene, QuitScene, RotateScene],
 });
 
 const platform = new Platform(game);

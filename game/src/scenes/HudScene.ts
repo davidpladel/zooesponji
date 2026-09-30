@@ -116,7 +116,7 @@ export class HudScene extends Phaser.Scene {
 
   private onPointerDown(pointer: Phaser.Input.Pointer): void {
     if (!getSession().settings.joystick || this.stickPointerId !== null) return;
-    // Con Feed o Settings abiertas el mundo está pausado; en la tienda el cuidador también anda.
+    // Con Feed o Settings abiertas el mundo está pausado; en la tienda la cuidadora también anda.
     if (!this.scene.isActive('World') && !this.scene.isActive('Shop')) return;
     const point = { x: pointer.x, y: pointer.y };
     if (this.gear.getBounds().contains(point.x, point.y)) return; // la rueda no arranca el joystick

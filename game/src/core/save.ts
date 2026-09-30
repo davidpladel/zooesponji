@@ -16,10 +16,19 @@ export interface Settings {
 /** v1: `unlocked: AnimalId[]`. v2: `counts` por recinto (animales extra). */
 export const SAVE_VERSION = 2;
 
+/** Libro del zoo: páginas ya leídas y si el tendero ya contó el secreto. Ids, nunca textos. */
+export interface BookProgress {
+  seen: string[];
+  hinted: boolean;
+  /** Página donde se quedó (se abre por ahí, como un libro de verdad). */
+  page: string | null;
+}
+
 export interface SaveData {
   version: typeof SAVE_VERSION;
   state: GameState;
   settings: Settings;
+  book: BookProgress;
 }
 
 export const SAVE_KEY = 'zooesponji_v3_save';
@@ -55,8 +64,24 @@ export function defaultSettings(): Settings {
   return { music: true, sfx: true, joystick: false };
 }
 
+export function defaultBook(): BookProgress {
+  return { seen: [], hinted: false, page: null };
+}
+
+/** Partidas sin libro (anteriores a él): libro vacío, así brilla y se descubre. */
+function parseBook(raw: unknown): BookProgress {
+  if (!isObject(raw)) return defaultBook();
+  const seen = Array.isArray(raw.seen) ? raw.seen.filter((id): id is string => typeof id === 'string') : [];
+  return { seen: [...new Set(seen)], hinted: raw.hinted === true, page: typeof raw.page === 'string' ? raw.page : null };
+}
+
 export function defaultSave(): SaveData {
-  return { version: SAVE_VERSION, state: { coins: 0, counts: initialCounts(), shopUnlocked: false }, settings: defaultSettings() };
+  return {
+    version: SAVE_VERSION,
+    state: { coins: 0, counts: initialCounts(), shopUnlocked: false },
+    settings: defaultSettings(),
+    book: defaultBook(),
+  };
 }
 
 export function parseSave(value: unknown): SaveData | null {
@@ -87,6 +112,7 @@ export function parseSave(value: unknown): SaveData | null {
     version: SAVE_VERSION,
     state: { coins, counts, shopUnlocked: state.shopUnlocked === true },
     settings: { music: bool('music'), sfx: bool('sfx'), joystick: bool('joystick') },
+    book: parseBook(value.book),
   };
 }
 
@@ -113,6 +139,7 @@ export function migrateLegacy(coinsRaw: string | null, purchasesRaw: string | nu
       shopUnlocked: bought.shop === true || coins >= SHOP_UNLOCK_COINS,
     },
     settings: defaultSettings(),
+    book: defaultBook(),
   };
 }
 

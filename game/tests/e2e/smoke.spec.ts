@@ -16,7 +16,7 @@ async function startGame(page: Page): Promise<void> {
   });
 }
 
-test('tocar el camino mueve al cuidador hasta allí', async ({ page }) => {
+test('tocar el camino mueve a la cuidadora hasta allí', async ({ page }) => {
   await page.goto('/');
   await startGame(page);
 

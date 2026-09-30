@@ -4,6 +4,7 @@ import type * as Phaser from 'phaser';
 import { decideBack, type BackAction } from '../core/back';
 import type { FeedScene } from '../scenes/FeedScene';
 import type { QuitScene, QuitSceneData } from '../scenes/QuitScene';
+import type { BookScene } from '../scenes/BookScene';
 import type { SettingsScene } from '../scenes/SettingsScene';
 import type { ShopScene } from '../scenes/ShopScene';
 import { sfx } from './audio';
@@ -60,7 +61,7 @@ export class Platform {
     const screen = this.active('World') || this.game.scene.isPaused('World') ? 'world' : this.active('Title') ? 'title' : 'other';
     return decideBack({
       quitDialogOpen: this.active('Quit'),
-      settingsOpen: this.active('Settings'),
+      settingsOpen: this.active('Settings') || this.active('Book'),
       overlayOpen: this.active('Feed') || this.active('Shop'),
       screen,
     });
@@ -74,7 +75,8 @@ export class Platform {
         scene<QuitScene>('Quit').close();
         break;
       case 'close-settings':
-        scene<SettingsScene>('Settings').close();
+        if (this.active('Book')) scene<BookScene>('Book').close();
+        else scene<SettingsScene>('Settings').close();
         break;
       case 'close-overlay':
         if (this.active('Feed')) scene<FeedScene>('Feed').close();

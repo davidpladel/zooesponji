@@ -258,7 +258,7 @@ export interface InteriorSpots {
   shopkeeper: Point;
   /** Base de cada peana (px), en orden de `orden`. */
   pedestals: Point[];
-  /** Felpudo de salida (px) y su tile (entrada del cuidador en la fase B). */
+  /** Felpudo de salida (px) y su tile (entrada de la cuidadora en la fase B). */
   door: Point;
   doorTile: Point;
   decos: InteriorDeco[];

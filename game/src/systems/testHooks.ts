@@ -6,6 +6,7 @@ import type { AnimalId } from '../data/animals';
 import type { FoodId } from '../data/foods';
 import type { FeedScene } from '../scenes/FeedScene';
 import type { HudScene } from '../scenes/HudScene';
+import type { BookScene } from '../scenes/BookScene';
 import type { SettingsScene } from '../scenes/SettingsScene';
 import type { ShopScene } from '../scenes/ShopScene';
 import type { WorldScene } from '../scenes/WorldScene';
@@ -30,6 +31,11 @@ export interface ZooTestApi {
   shopBuyBubblePos(): Vec | null;
   shopHintVisible(): boolean;
   shopActiveItem(): string | null;
+  shopBookPos(): Vec | null;
+  shopBookOut(): boolean;
+  bookPage(): string | null;
+  bookText(): string | null;
+  bookNext(): void;
   unlocked(): string[];
   /** Simula el botón atrás de Android; devuelve la acción aplicada. */
   back(): Promise<string>;
@@ -88,6 +94,11 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
     shopBuyBubblePos: () => activeScene<ShopScene>('Shop')?.buyBubblePos() ?? null,
     shopHintVisible: () => activeScene<ShopScene>('Shop')?.hintVisible() ?? false,
     shopActiveItem: () => activeScene<ShopScene>('Shop')?.activeItem() ?? null,
+    shopBookPos: () => activeScene<ShopScene>('Shop')?.bookScreenPos() ?? null,
+    shopBookOut: () => activeScene<ShopScene>('Shop')?.bookIsOut() ?? false,
+    bookPage: () => activeScene<BookScene>('Book')?.pageId() ?? null,
+    bookText: () => activeScene<BookScene>('Book')?.pageText() ?? null,
+    bookNext: () => activeScene<BookScene>('Book')?.next(),
     openSettings: () => game.scene.getScene<HudScene>('Hud').openSettings(),
     settingsTogglePos: (key) => activeScene<SettingsScene>('Settings')?.togglePos(key) ?? null,
     settings: () => ({ ...getSession().settings }),

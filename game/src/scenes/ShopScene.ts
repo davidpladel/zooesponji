@@ -4,12 +4,14 @@ import { pedestalFor } from '../core/interiorLayout';
 import { inJoystickZone } from '../core/joystick';
 import { tileCenter, type Vec } from '../core/movement';
 import { isWalkable, type WalkGrid } from '../core/pathfinding';
+import { newlyUnlockedPages, unreadPageIds } from '../core/book';
 import { shopEntries, type ShopEntry } from '../core/shopEntries';
 import { ENTRY_TARGET, approachPoint, hintTarget, onDoorMat, openInteriorGrid, productInReach, shopWalkGrid } from '../core/shopWalk';
 import { buildWalkGrid, type TiledMap } from '../core/tiledmap';
 import { MAPS } from '../config';
 import { t, type StringKey } from '../data/strings';
 import { sfx } from '../systems/audio';
+import { bus } from '../systems/events';
 import { joystickState } from '../systems/joystickState';
 import { getSession } from '../systems/session';
 import { animalPortrait } from '../world/Actors';
@@ -24,10 +26,14 @@ const TAP_MAX_DISTANCE = 12;
 /** Pista: a los 6 s quieto sale el rastro de huellas, y luego cada 8 s. */
 const HINT_FIRST_MS = 6000;
 const HINT_REPEAT_MS = 8000;
+/** A esta distancia (px de interior) de la estantería, el libro secreto salta fuera. */
+const BOOK_REACH = 28;
+/** Dónde se para la cuidadora para mirar la estantería. */
+const BOOK_APPROACH = (shelf: Vec): Vec => ({ x: shelf.x, y: shelf.y + 12 });
 
 type WasdKeys = Record<'W' | 'A' | 'S' | 'D', Phaser.Input.Keyboard.Key>;
 
-/** Al girar el móvil la escena se vuelve a montar: el cuidador sigue donde estaba y no se repite la entrada. */
+/** Al girar el móvil la escena se vuelve a montar: la cuidadora sigue donde estaba y no se repite la entrada. */
 export interface ShopSceneData {
   keeper?: Vec;
 }
@@ -42,7 +48,7 @@ interface Product {
   parts: Phaser.GameObjects.GameObject[];
 }
 
-/** La tienda por dentro: el cuidador entra andando, se acerca a un animal y lo compra con el bocadillo. */
+/** La tienda por dentro: la cuidadora entra andando, se acerca a un animal y lo compra con el bocadillo. */
 export class ShopScene extends Phaser.Scene {
   private readonly products = new Map<string, Product>();
   private interior!: ShopInterior;
@@ -64,6 +70,8 @@ export class ShopScene extends Phaser.Scene {
   private nextHintMs = HINT_FIRST_MS;
   private busy = false;
   private closing = false;
+  private book: Phaser.GameObjects.Text | null = null;
+  private bookOut = false;
 
   constructor() {
     super('Shop');
@@ -80,6 +88,8 @@ export class ShopScene extends Phaser.Scene {
     this.nextHintMs = HINT_FIRST_MS;
     this.busy = false;
     this.closing = false;
+    this.book = null;
+    this.bookOut = false;
   }
 
   create(): void {
@@ -102,6 +112,7 @@ export class ShopScene extends Phaser.Scene {
     // De vez en cuando a algún animal se le escapa un corazón.
     this.time.addEvent({ delay: 1800, loop: true, callback: () => this.floatHeart() });
     this.interior.doorMat(() => this.onDoorTap());
+    this.addBook();
     addCloseButton(this, () => this.close());
 
     const keyboard = this.input.keyboard;
@@ -135,6 +146,7 @@ export class ShopScene extends Phaser.Scene {
     const feet = this.keeper.feet;
     this.shopkeeper.lookAt(this.keeper.screen.x);
     this.updateReach(feet);
+    this.updateBook(feet);
 
     if (!onDoorMat(feet, this.interior.spots.door)) this.armed = true;
     else if (this.armed && !this.entering) {
@@ -144,7 +156,7 @@ export class ShopScene extends Phaser.Scene {
     this.updateHint(moved, delta);
   }
 
-  /** Entrada: fundido, campanita, el cuidador da unos pasos y el tendero saluda. Se puede cortar. */
+  /** Entrada: fundido, campanita, la cuidadora da unos pasos y el tendero saluda. Se puede cortar. */
   private enter(): void {
     this.cameras.main.fadeIn(300, 0, 0, 0);
     sfx.play('campanita');
@@ -155,6 +167,95 @@ export class ShopScene extends Phaser.Scene {
     this.shopkeeper.hop();
     this.shopkeeper.wave();
     this.shopkeeper.say(t('shop.hello'), 2640);
+    // La primera vez, el tendero cuenta el secreto del libro (después del saludo).
+    if (!getSession().book.hinted) {
+      this.time.delayedCall(2900, () => {
+        // Si ya está hablando de un animal, no le pisa: lo contará otra vez que entre.
+        if (this.closing || this.activeId || this.busy) return;
+        this.shopkeeper.say(t('shop.bookHint'), 3200);
+        void getSession().markBookHinted();
+      });
+    }
+  }
+
+  // --- Libro secreto ---
+
+  /**
+   * Como los secretos de otros juegos: la estantería solo destella de vez en cuando. Al acercarse
+   * la cuidadora, el libro salta fuera; tocarlo lo abre. Tocar la estantería lleva hasta ella.
+   */
+  private addBook(): void {
+    const spot = this.interior.bookShelf;
+    if (!spot) return;
+    const s = this.interior.layout.scale;
+    const shelf = this.interior.screen({ x: spot.x, y: spot.y - 16 });
+    this.book = this.add
+      .text(shelf.x, shelf.y, '📕', { fontSize: `${Math.round(Math.max(22, 11 * s))}px`, padding: { x: 6, y: 6 } })
+      .setOrigin(0.5)
+      .setDepth(2000)
+      .setVisible(false)
+      .setInteractive({ useHandCursor: true });
+    this.book.on('pointerup', (pointer: Phaser.Input.Pointer) => {
+      if (this.isTap(pointer)) this.openBook();
+    });
+    const zone = this.add.zone(shelf.x, shelf.y, 32 * s, 32 * s).setDepth(1900).setInteractive({ useHandCursor: true });
+    zone.on('pointerup', (pointer: Phaser.Input.Pointer) => {
+      if (!this.isTap(pointer)) return;
+      if (this.bookOut) this.openBook();
+      else this.keeper.goTo(BOOK_APPROACH(spot));
+    });
+    this.time.addEvent({ delay: 1100, loop: true, callback: () => this.twinkle(spot) });
+  }
+
+  /** Destello suave en la estantería; más a menudo si hay páginas sin leer. */
+  private twinkle(spot: Vec): void {
+    if (this.bookOut) return;
+    const session = getSession();
+    const unread = unreadPageIds(session.state, session.book.seen).length > 0;
+    if (Math.random() > (unread ? 0.8 : 0.35)) return;
+    const s = this.interior.layout.scale;
+    const at = this.interior.screen({ x: spot.x + Phaser.Math.Between(-12, 12), y: spot.y - Phaser.Math.Between(10, 28) });
+    const star = this.add.text(at.x, at.y, '✨', { fontSize: `${Math.round(5 * s)}px` }).setOrigin(0.5).setDepth(1950).setScale(0).setAlpha(0.9);
+    this.tweens.add({ targets: star, scale: 1, angle: 90, duration: 350, yoyo: true, ease: 'Sine.InOut', onComplete: () => star.destroy() });
+  }
+
+  /** Con la cuidadora cerca, el libro salta fuera de la estantería; al alejarse, vuelve a su sitio. */
+  private updateBook(feet: Vec): void {
+    const spot = this.interior.bookShelf;
+    if (!spot || !this.book) return;
+    const near = Math.hypot(feet.x - spot.x, feet.y - (spot.y + 12)) < BOOK_REACH;
+    if (near === this.bookOut) return;
+    this.bookOut = near;
+    const s = this.interior.layout.scale;
+    const home = this.interior.screen({ x: spot.x, y: spot.y - 16 });
+    this.tweens.killTweensOf(this.book);
+    if (near) {
+      sfx.play('tap');
+      this.book.setVisible(true).setPosition(home.x, home.y).setScale(0.3).setAngle(0);
+      this.tweens.add({ targets: this.book, y: home.y - 14 * s, scale: 1.2, angle: -10, duration: 320, ease: 'Back.Out' });
+      this.tweens.add({ targets: this.book, y: home.y - 17 * s, duration: 500, yoyo: true, repeat: -1, delay: 320, ease: 'Sine.InOut' });
+    } else {
+      this.tweens.add({ targets: this.book, y: home.y, scale: 0.3, duration: 200, onComplete: () => this.book?.setVisible(false) });
+    }
+  }
+
+  openBook(): void {
+    if (this.closing || this.scene.isActive('Book')) return;
+    sfx.play('tap');
+    this.hint.hide();
+    this.scene.launch('Book');
+  }
+
+  /** Dónde tocar para el libro: el libro si ha salido, si no la estantería. */
+  bookScreenPos(): Vec | null {
+    if (!this.book) return null;
+    if (this.bookOut) return { x: this.book.x, y: this.book.y };
+    const spot = this.interior.bookShelf!;
+    return this.interior.screen({ x: spot.x, y: spot.y - 16 });
+  }
+
+  bookIsOut(): boolean {
+    return this.bookOut;
   }
 
   /** Cualquier toque, tecla o joystick corta el paseo de entrada (y el saludo) y da el control. */
@@ -204,7 +305,7 @@ export class ShopScene extends Phaser.Scene {
     return this.buyBubble ? { x: this.buyBubble.x, y: this.buyBubble.y } : null;
   }
 
-  /** Producto que el cuidador tiene a mano (null si ninguno). */
+  /** Producto que la cuidadora tiene a mano (null si ninguno). */
   activeItem(): string | null {
     return this.activeId;
   }
@@ -233,7 +334,7 @@ export class ShopScene extends Phaser.Scene {
     return !(getSession().settings.joystick && inJoystickZone(down, this.scale.width, this.scale.height));
   }
 
-  /** Tocar el suelo: el cuidador va andando hasta allí. */
+  /** Tocar el suelo: la cuidadora va andando hasta allí. */
   private onPointerUp(pointer: Phaser.Input.Pointer, over: Phaser.GameObjects.GameObject[]): void {
     if (this.closing || !this.isTap(pointer)) return;
     this.endEntry();
@@ -242,7 +343,7 @@ export class ShopScene extends Phaser.Scene {
     this.keeper.goTo({ x: (pointer.x - offsetX) / scale, y: (pointer.y - offsetY) / scale });
   }
 
-  /** Tocar un animal: el cuidador va hasta su peana (si ya está al lado, el bocadillo late). */
+  /** Tocar un animal: la cuidadora va hasta su peana (si ya está al lado, el bocadillo late). */
   private onProductTap(pointer: Phaser.Input.Pointer, id: string): void {
     if (this.closing || !this.isTap(pointer)) return;
     this.endEntry();
@@ -282,33 +383,48 @@ export class ShopScene extends Phaser.Scene {
     const affordable = getSession().state.coins >= entry.cost;
 
     const animal = animalPortrait(this, entry.animalId, pos.x, pos.y, 28 * s).setOrigin(0.5, 1).setDepth(base.y);
-    if (entry.status === 'full') animal.setAlpha(0.5);
+    if (done) {
+      animal.setAlpha(0.5);
+      if (animal instanceof Phaser.GameObjects.Sprite) animal.setTint(0x9e9e9e);
+    }
     // Bota suavecito, cada uno a su ritmo.
     this.tweens.add({ targets: animal, y: pos.y - 2 * s, duration: 520, yoyo: true, repeat: -1, delay: Phaser.Math.Between(0, 500), ease: 'Sine.InOut' });
     parts.push(animal);
 
     const fontSize = Math.round(Math.max(16, 6.5 * s));
-    if (entry.kind === 'extra') {
-      // Cuántos hay de cuántos caben, en una chapita encima del animal.
-      const badge = this.add
-        .text(pos.x, pos.y - animal.displayHeight - 2 * s, `➕ ${entry.count}/${entry.max}`, textStyle(Math.round(fontSize * 0.8), '#ffffff', '#6a1b9a'))
-        .setOrigin(0.5, 1)
+    // Como en otras tiendas: se compra → precio; no quedan → sello AGOTADO sobre el animal en gris.
+    if (done) {
+      const stamp = this.add
+        .text(pos.x, pos.y - 12 * s, t('shop.soldOut'), {
+          fontFamily: 'sans-serif',
+          fontSize: `${Math.round(fontSize * 0.85)}px`,
+          fontStyle: 'bold',
+          color: '#ffffff',
+          backgroundColor: '#c62828',
+          padding: { x: Math.round(2.5 * s), y: Math.round(1 * s) },
+        })
+        .setOrigin(0.5)
+        .setAngle(-12)
         .setDepth(1500);
-      parts.push(badge);
+      parts.push(stamp);
+    } else {
+      const sign = this.add
+        .text(pos.x, pos.y + 12 * s, `🪙 ${entry.cost}`, {
+          fontFamily: 'sans-serif',
+          fontSize: `${fontSize}px`,
+          color: '#ffffff',
+          backgroundColor: affordable ? '#43a047' : '#9e9e9e',
+          padding: { x: Math.round(2.5 * s), y: Math.round(1.5 * s) },
+        })
+        .setOrigin(0.5, 0)
+        .setDepth(1500);
+      parts.push(sign);
     }
-    // Carteles cortos para que no se pisen entre peanas: el ✅/✔️ lo entienden hasta los que no leen.
-    const label = entry.status === 'owned' ? '✅' : entry.status === 'full' ? '✔️' : `🪙 ${entry.cost}`;
-    const sign = this.add
-      .text(pos.x, pos.y + 12 * s, label, {
-        fontFamily: 'sans-serif',
-        fontSize: `${fontSize}px`,
-        color: '#ffffff',
-        backgroundColor: done ? '#2e7d32' : affordable ? '#43a047' : '#9e9e9e',
-        padding: { x: Math.round(2.5 * s), y: Math.round(1.5 * s) },
-      })
-      .setOrigin(0.5, 0)
-      .setDepth(1500);
-    parts.push(sign);
+    if (entry.kind === 'extra') {
+      // Cuántos tienes ya, en letra pequeña bajo el precio (o el sello): informa, no pide nada.
+      const have = t('shop.have', { n: entry.count ?? 0, max: entry.max ?? 0 });
+      parts.push(this.add.text(pos.x, pos.y + (done ? 4 : 25) * s, have, textStyle(Math.round(fontSize * 0.7), '#fff8e1', '#4e342e')).setOrigin(0.5, 0).setDepth(1500));
+    }
 
     // Zona táctil generosa (peana + animal) para dedos pequeños.
     const hit = { x: pos.x, y: pos.y - 10 * s };
@@ -319,7 +435,7 @@ export class ShopScene extends Phaser.Scene {
     this.products.set(entry.id, { entry, base, hit, animal, parts });
   }
 
-  /** ¿Qué peana tiene a mano el cuidador? Al cambiar, reacciona el animal y habla el tendero. */
+  /** ¿Qué peana tiene a mano la cuidadora? Al cambiar, reacciona el animal y habla el tendero. */
   private updateReach(feet: Vec, quiet = false): void {
     const list = [...this.products.values()];
     const index = productInReach(feet, list.map((p) => p.base));
@@ -338,7 +454,7 @@ export class ShopScene extends Phaser.Scene {
     if (product.entry.status === 'buy') this.showBuyBubble(product);
   }
 
-  /** El animal se gira hacia el cuidador, da un saltito y suelta un corazón. */
+  /** El animal se gira hacia la cuidadora, da un saltito y suelta un corazón. */
   private greet(product: Product): void {
     const s = this.interior.layout.scale;
     const animal = product.animal;
@@ -393,6 +509,7 @@ export class ShopScene extends Phaser.Scene {
     this.busy = true;
     this.idleMs = 0;
     const s = this.interior.layout.scale;
+    const before = getSession().state;
     const result = await getSession().buy(entry.id);
     if (result.ok) {
       sfx.play('buy');
@@ -408,6 +525,12 @@ export class ShopScene extends Phaser.Scene {
       }
       this.shopkeeper.hop();
       this.shopkeeper.say(t('shop.thanks'), 1980);
+      // Página nueva: aviso y el libro se abrirá por ella.
+      const fresh = newlyUnlockedPages(before, result.state)[0];
+      if (fresh) {
+        bus.emit('toast', { text: t('book.newPage') });
+        void getSession().setBookPage(fresh);
+      }
     } else if (result.error === 'not-enough-coins') {
       sfx.play('rechaza');
       const product = this.products.get(entry.id);

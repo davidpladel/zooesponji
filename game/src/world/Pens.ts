@@ -64,7 +64,7 @@ export interface DoorstepEvent {
 export class Pens {
   private readonly pens: Pen[] = [];
   private readonly sparklePool: Phaser.GameObjects.Text[] = [];
-  /** Recinto en cuya puerta está el cuidador (para avisar solo al llegar, no en cada fotograma). */
+  /** Recinto en cuya puerta está la cuidadora (para avisar solo al llegar, no en cada fotograma). */
   private atDoorstep: AnimalId | null = null;
 
   constructor(
@@ -149,7 +149,7 @@ export class Pens {
 
   /**
    * Al llegar al camino pegado a la puerta de un recinto: su animal (y si está cerrado).
-   * Solo al llegar; no se repite hasta que el cuidador se aparte de la puerta.
+   * Solo al llegar; no se repite hasta que la cuidadora se aparte de la puerta.
    */
   onKeeperTile(keeperTile: Point, state: GameState): DoorstepEvent | null {
     const gate = gateAtDoorstep(keeperTile, this.pens.map((pen) => ({ animalId: pen.id, tile: pen.gate })));

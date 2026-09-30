@@ -11,3 +11,6 @@ art-packs/
 
 # Arte derivado de los packs de VectoRaith: nunca al repo público (licencia)
 game/public/art/
+
+# Guias privadas (Play Store, cuentas): nunca al repo publico
+docs/privado/

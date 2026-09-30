@@ -16,15 +16,19 @@ export interface ShopEntry {
   max?: number;
 }
 
-/** Artículos en orden de animal: recinto (si se vende) y, con el recinto abierto, su extra. */
+/**
+ * Un artículo por animal, como en las tiendas de otros juegos: el recinto mientras no se tenga y,
+ * al comprarlo, su "otro animal" ocupa su sitio (así no quedan peanas "ya compradas" que confunden).
+ */
 export function shopEntries(state: GameState): ShopEntry[] {
   const entries: ShopEntry[] = [];
   for (const animalId of ANIMAL_IDS) {
     const def = ANIMALS[animalId];
     const unlocked = isAnimalUnlocked(state, animalId);
     const pen = shopItemForAnimal(animalId);
-    if (pen) entries.push({ id: pen.id, kind: 'pen', animalId, cost: pen.cost, status: unlocked ? 'owned' : 'buy' });
-    if (unlocked && def.maxCount > 1 && def.extraCost !== undefined) {
+    const hasExtra = unlocked && def.maxCount > 1 && def.extraCost !== undefined;
+    if (pen && !hasExtra) entries.push({ id: pen.id, kind: 'pen', animalId, cost: pen.cost, status: unlocked ? 'owned' : 'buy' });
+    if (hasExtra && def.extraCost !== undefined) {
       const count = animalCount(state, animalId);
       entries.push({
         id: extraItemId(animalId),

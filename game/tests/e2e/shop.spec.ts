@@ -17,7 +17,7 @@ async function startGame(page: Page): Promise<void> {
   });
 }
 
-/** En la tienda: tocar el animal (el cuidador va andando) y esperar su bocadillo de compra. */
+/** En la tienda: tocar el animal (la cuidadora va andando) y esperar su bocadillo de compra. */
 async function walkToProduct(page: Page, itemId: string) {
   const box = await canvasBox(page);
   const card = await page.evaluate((id) => window.__ZOO__!.shopCardScreenPos(id), itemId);
@@ -31,23 +31,23 @@ async function walkToProduct(page: Page, itemId: string) {
   return (await page.evaluate(() => window.__ZOO__!.shopBuyBubblePos()))!;
 }
 
-test('fase B: el cuidador entra andando, compra con el bocadillo y sale por el felpudo', async ({ page }) => {
+test('fase B: la cuidadora entra andando, compra con el bocadillo y sale por el felpudo', async ({ page }) => {
   test.setTimeout(60_000); // anda de verdad por la tienda: con la máquina cargada tarda
   await startGame(page);
   await page.evaluate(() => window.__ZOO__!.addCoins(60));
-  // Entrar de verdad: el cuidador pisa la puerta del puesto.
+  // Entrar de verdad: la cuidadora pisa la puerta del puesto.
   const door = await page.evaluate(() => window.__ZOO__!.shopDoorTile());
   await page.evaluate(([x, y]) => window.__ZOO__!.goToTile(x!, y!), [door!.x, door!.y]);
   await page.waitForFunction(() => window.__ZOO__!.shopCardScreenPos('pantera') !== null, undefined, { timeout: 20_000 });
 
-  // El tendero saluda y el cuidador entra andando hasta pasar el felpudo (sin salir otra vez).
+  // El tendero saluda y la cuidadora entra andando hasta pasar el felpudo (sin salir otra vez).
   expect(await page.evaluate(() => window.__ZOO__!.shopBubble())).toBe('¡Hola! ¿Qué animal quieres hoy?');
   const matY = (await page.evaluate(() => window.__ZOO__!.shopDoorScreenPos()))!.y;
   await expect.poll(() => page.evaluate(() => window.__ZOO__!.shopKeeperScreenPos()!.y)).toBeLessThan(matY - 20);
   await page.waitForTimeout(300);
   expect(await page.evaluate(() => window.__ZOO__!.activeScenes())).toContain('Shop');
 
-  // Tocar la pantera no la compra: el cuidador va hasta ella y el tendero habla de ella.
+  // Tocar la pantera no la compra: la cuidadora va hasta ella y el tendero habla de ella.
   const box = await canvasBox(page);
   const bubble = await walkToProduct(page, 'pantera');
   expect(await page.evaluate(() => window.__ZOO__!.shopCardStatus('pantera'))).toBe('buy');
@@ -55,7 +55,7 @@ test('fase B: el cuidador entra andando, compra con el bocadillo y sale por el f
 
   // El bocadillo sí compra.
   await page.mouse.click(box.x + bubble.x, box.y + bubble.y);
-  await expect.poll(() => page.evaluate(() => window.__ZOO__!.shopCardStatus('pantera'))).toBe('owned');
+  await expect.poll(() => page.evaluate(() => window.__ZOO__!.shopCardStatus('extra-pantera'))).toBe('buy');
   await expect.poll(() => page.evaluate(() => window.__ZOO__!.shopBubble())).toBe('¡Gracias! ¡Cuídalo mucho!');
 
   // Sin monedas para el panda: bocadillo gris y el tendero avisa.
@@ -64,7 +64,7 @@ test('fase B: el cuidador entra andando, compra con el bocadillo y sale por el f
   await expect.poll(() => page.evaluate(() => window.__ZOO__!.shopBubble())).toBe('¡Te faltan monedas!');
   expect(await page.evaluate(() => window.__ZOO__!.shopCardStatus('panda'))).toBe('buy');
 
-  // Tocar el felpudo: el cuidador va andando, sale y aparece delante de la puerta del puesto.
+  // Tocar el felpudo: la cuidadora va andando, sale y aparece delante de la puerta del puesto.
   const mat = await page.evaluate(() => window.__ZOO__!.shopDoorScreenPos());
   await page.mouse.click(box.x + mat!.x, box.y + mat!.y);
   await page.waitForFunction(() => window.__ZOO__!.activeScenes().includes('World'), undefined, { timeout: 10_000 });
@@ -96,4 +96,37 @@ test('fase B: ESC sigue cerrando la tienda', async ({ page }) => {
   await page.waitForFunction(() => window.__ZOO__!.shopCardScreenPos('pantera') !== null);
   await page.keyboard.press('Escape');
   await page.waitForFunction(() => !window.__ZOO__?.activeScenes().includes('Shop'));
+});
+
+test('libro: se abre desde la estantería y al comprar la pantera aparece Noche', async ({ page }) => {
+  await startGame(page);
+  await page.evaluate(() => window.__ZOO__!.addCoins(60));
+  await page.evaluate(() => window.__ZOO__!.openShop());
+  await page.waitForFunction(() => window.__ZOO__!.shopBookPos() !== null);
+  const box = await canvasBox(page);
+
+  // El libro está escondido: tocar la estantería lleva hasta ella y el libro salta fuera.
+  const openBook = async () => {
+    const shelf = (await page.evaluate(() => window.__ZOO__!.shopBookPos()))!;
+    await page.mouse.click(box.x + shelf.x, box.y + shelf.y);
+    await page.waitForFunction(() => window.__ZOO__!.shopBookOut(), undefined, { timeout: 10_000 });
+    await page.waitForTimeout(400);
+    const book = (await page.evaluate(() => window.__ZOO__!.shopBookPos()))!;
+    await page.mouse.click(box.x + book.x, box.y + book.y);
+    await page.waitForFunction(() => window.__ZOO__!.activeScenes().includes('Book'));
+  };
+  expect(await page.evaluate(() => window.__ZOO__!.shopBookOut())).toBe(false);
+  await openBook();
+  expect(await page.evaluate(() => window.__ZOO__!.bookPage())).toBe('cover');
+  await page.keyboard.press('Escape');
+  await page.waitForFunction(() => !window.__ZOO__!.activeScenes().includes('Book'));
+
+  const bubble = await walkToProduct(page, 'pantera');
+  await page.mouse.click(box.x + bubble.x, box.y + bubble.y);
+  await expect.poll(() => page.evaluate(() => window.__ZOO__!.shopCardStatus('extra-pantera'))).toBe('buy');
+
+  // El libro se abre por la página nueva.
+  await openBook();
+  expect(await page.evaluate(() => window.__ZOO__!.bookPage())).toBe('noche');
+  expect(await page.evaluate(() => window.__ZOO__!.bookText())).toContain('Noche es negra como el carbón');
 });

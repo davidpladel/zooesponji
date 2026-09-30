@@ -33,6 +33,7 @@ export class PreloadScene extends Phaser.Scene {
     });
     this.load.tilemapTiledJSON(MAPS.zoo, withVersion('assets/maps/zoo.tmj'));
     this.load.tilemapTiledJSON(MAPS.shop, withVersion('assets/maps/tienda.tmj'));
+    this.load.image('logo', withVersion('logo.png'));
     queueAudio(this);
   }
 

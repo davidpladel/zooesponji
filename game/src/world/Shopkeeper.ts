@@ -4,10 +4,10 @@ import type { Facing } from '../core/facing';
 import type { Point } from '../core/pathfinding';
 import type { ShopInterior } from './ShopInterior';
 
-/** Cuánto se aparta el cuidador (px de pantalla por unidad de escala) antes de que el tendero gire la cabeza. */
+/** Cuánto se aparta la cuidadora (px de pantalla por unidad de escala) antes de que el tendero gire la cabeza. */
 const LOOK_MARGIN = 10;
 
-/** El tendero tras el mostrador: respira, mira al cuidador, saluda y habla con bocadillos. */
+/** El tendero tras el mostrador: respira, mira a la cuidadora, saluda y habla con bocadillos. */
 export class Shopkeeper {
   private readonly sprite: Phaser.GameObjects.Sprite | Phaser.GameObjects.Text;
   private readonly feet: Point;

@@ -14,7 +14,7 @@ export interface GateRef {
 }
 
 /**
- * Puerta de recinto (2 casillas de ancho) justo delante de la que está el cuidador: en la casilla de
+ * Puerta de recinto (2 casillas de ancho) justo delante de la que está la cuidadora: en la casilla de
  * arriba o de abajo de cualquiera de sus dos casillas. Ahí se abre la ventana de dar de comer.
  */
 export function gateAtDoorstep<T extends GateRef>(keeperTile: Point, gates: readonly T[]): T | null {
@@ -46,7 +46,7 @@ const NEIGHBOURS: readonly (readonly [number, number])[] = [
   [-1, 0],
 ];
 
-/** Casilla transitable junto a la puerta y fuera del recinto: donde se para el cuidador para dar de comer. */
+/** Casilla transitable junto a la puerta y fuera del recinto: donde se para la cuidadora para dar de comer. */
 export function approachTile(gate: Point, enclosure: Rect, tileSize: number, grid: WalkGrid): Point | null {
   for (const [dx, dy] of NEIGHBOURS) {
     const x = gate.x + dx;
