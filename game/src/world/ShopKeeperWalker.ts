@@ -12,7 +12,7 @@ const T = 16;
 const STEP_MS = 270;
 
 /**
- * El cuidador dentro de la tienda. Su posición (los pies) va en píxeles del interior y se dibuja
+ * La cuidadora dentro de la tienda. Su posición (los pies) va en píxeles del interior y se dibuja
  * con la escala de la tienda; se ordena por la Y del interior como el mobiliario.
  */
 export class ShopKeeperWalker {

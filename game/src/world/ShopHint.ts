@@ -1,7 +1,7 @@
 import type * as Phaser from 'phaser';
 import type { Point } from '../core/pathfinding';
 
-/** Pista para los más peques: un rastro de huellas que va apareciendo del cuidador hasta el objetivo. */
+/** Pista para los más peques: un rastro de huellas que va apareciendo de la cuidadora hasta el objetivo. */
 export class ShopHint {
   private prints: Phaser.GameObjects.Container[] = [];
   private shown = 0;

@@ -4,8 +4,29 @@
     {
       "name": "game",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev", "--prefix", "game"],
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--prefix",
+        "game"
+      ],
       "port": 5173
+    },
+    {
+      "name": "game-5174",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--prefix",
+        "game",
+        "--",
+        "--port",
+        "5174",
+        "--strictPort"
+      ],
+      "port": 5174,
+      "autoPort": false
     }
   ]
 }

@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Lilita+One&display=block" rel="stylesheet">
+<style>
+  html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: #000; }
+  #stage { position: absolute; inset: 0; overflow: hidden; }
+  #cam { position: absolute; inset: 0; transform-origin: 0 0; }
+  video { width: 1920px; height: 1080px; display: block; image-rendering: pixelated; }
+  #tint { position: absolute; inset: 0; pointer-events: none; }
+  #flash { position: absolute; inset: 0; background: #fff; opacity: 0; }
+  .txt {
+    position: absolute; left: 0; right: 0; text-align: center; white-space: nowrap;
+    font-family: 'Lilita One', 'Arial Black', sans-serif; text-transform: uppercase;
+    color: #ffd23f; -webkit-text-stroke: 14px #2b1400; paint-order: stroke fill;
+    text-shadow: 0 14px 0 #2b1400, 0 22px 30px rgba(0,0,0,.45);
+    letter-spacing: 4px; line-height: 1;
+  }
+  #conf { position: absolute; inset: 0; }
+  .c { position: absolute; width: 22px; height: 34px; border-radius: 5px; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="cam"><video id="v" src="out/gameplay.mp4" muted preload="auto"></video></div>
+  <div id="tint"></div>
+  <div id="conf"></div>
+  <div id="texts"></div>
+  <div id="flash"></div>
+</div>
+<script>
+// Cada plano: [inicio, fin, segundo del vídeo fuente, zoom inicial, zoom final, centroX, centroY]
+const SHOTS = [
+  [3.0, 6.5, 29.9, 1.25, 1.1, 960, 700],    // portón de entrada
+  [6.5, 10.0, 51.2, 1.3, 1.4, 1250, 480],   // paseo por el zoo y la fuente
+  [10.0, 13.5, 40.7, 1.3, 1.45, 960, 470],  // león: ¡Ñam!
+  [13.5, 17.0, 59.5, 1.3, 1.45, 960, 470],  // cabra
+  [17.0, 20.5, 92.7, 1.3, 1.45, 960, 470],  // panda
+  [20.5, 24.0, 67.6, 1.35, 1.2, 960, 470],  // cabra con conejo
+  [24.0, 26.5, 47.4, 1.4, 1.55, 960, 470],  // león con conejo
+  [26.5, 29.0, 97.6, 1.4, 1.55, 960, 470],  // panda: ¡Guau!
+  [29.0, 31.5, 41.0, 1.45, 1.65, 960, 470], // león: ¡Ñam!
+  [31.5, 35.0, 86.0, 1.05, 1.25, 960, 560], // gente paseando
+  [35.0, 43.0, 30.6, 1.3, 1.45, 960, 650],  // fondo del logo
+];
+// [inicio, fin, texto, tamaño px, y, color]
+const TEXTS = [
+  [0.4, 3.0, '¡¿QUÉ ES ESO?!', 150, 450, '#ffffff'],
+  [3.1, 6.5, '¡BIENVENIDO!', 190, 90, '#ffd23f'],
+  [6.6, 10.0, 'TU PROPIO ZOO', 170, 800, '#7dff5a'],
+  [10.1, 13.5, '¡LEONES!', 200, 820, '#ffb13b'],
+  [13.6, 17.0, '¡CABRAS!', 200, 820, '#ffffff'],
+  [17.1, 20.5, '¡PANDAS!', 200, 820, '#8ee6ff'],
+  [20.6, 24.0, '¡DALES DE COMER!', 170, 820, '#ff7ab8'],
+  [24.1, 26.5, '¡CUIDA!', 230, 780, '#ffd23f'],
+  [26.6, 29.0, '¡RÍE!', 230, 780, '#8ee6ff'],
+  [29.1, 31.5, '¡WOW!', 260, 760, '#ff7ab8'],
+  [31.6, 35.0, '¡TODOS TE ESPERAN!', 165, 800, '#ffd23f'],
+  [35.3, 43.0, 'ZOO', 330, 170, '#ffd23f'],
+  [35.6, 43.0, 'ESPONJI', 270, 480, '#ff9a2e'],
+  [38.5, 43.0, '¡MUY PRONTO EN GOOGLE PLAY!', 100, 850, '#ffffff'],
+];
+const FLASHES = [3.0, 10.0, 24.0, 31.5, 35.0, 41.0];
+const SHAKES = [[0.2, 0.9, 16], [1.2, 1.9, 16], [2.2, 2.9, 16], [41.0, 42.0, 12]];
+
+const v = document.getElementById('v'), cam = document.getElementById('cam');
+const tint = document.getElementById('tint'), flash = document.getElementById('flash');
+const texts = document.getElementById('texts'), conf = document.getElementById('conf');
+const ease = (x) => 1 - Math.pow(1 - x, 3);
+// Rebote: 0 → 1.25 → 0.92 → 1
+function bounce(x) {
+  if (x <= 0) return 0;
+  if (x < 0.45) return 1.25 * ease(x / 0.45);
+  if (x < 0.7) return 1.25 - 0.33 * ((x - 0.45) / 0.25);
+  if (x < 1) return 0.92 + 0.08 * ((x - 0.7) / 0.3);
+  return 1;
+}
+const els = TEXTS.map(([, , s, size, y, color]) => {
+  const d = document.createElement('div');
+  d.className = 'txt'; d.textContent = s;
+  Object.assign(d.style, { fontSize: size + 'px', top: y + 'px', color });
+  texts.appendChild(d); return d;
+});
+const CONF = [];
+let seed = 3; const r = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+const COLORS = ['#ffd23f', '#ff7ab8', '#7dff5a', '#8ee6ff', '#ff9a2e', '#ffffff'];
+for (let i = 0; i < 90; i++) {
+  const d = document.createElement('div'); d.className = 'c';
+  d.style.background = COLORS[i % COLORS.length]; conf.appendChild(d);
+  CONF.push({ d, x: r() * 1920, delay: r() * 1.5, speed: 250 + r() * 350, sway: 40 + r() * 80, rot: r() * 720 });
+}
+
+window.render = async (t) => {
+  const shot = SHOTS.find(([a, b]) => t >= a && t < b);
+  let shake = 0;
+  for (const [a, b, amp] of SHAKES) if (t >= a && t < b) shake = amp * (1 - (t - a) / (b - a));
+  const sx = shake * Math.sin(t * 91), sy = shake * Math.cos(t * 77);
+  if (shot) {
+    const [a, b, src, z0, z1, cx, cy] = shot;
+    const k = (t - a) / (b - a), z = z0 + (z1 - z0) * k;
+    const target = src + (t - a);
+    if (Math.abs(v.currentTime - target) > 0.001) {
+      await new Promise((res) => { v.addEventListener('seeked', res, { once: true }); v.currentTime = target; });
+    }
+    cam.style.visibility = 'visible';
+    const tx = Math.min(0, Math.max(1920 - 1920 * z, 960 - cx * z)) + sx;
+    const ty = Math.min(0, Math.max(1080 - 1080 * z, 540 - cy * z)) + sy;
+    cam.style.transform = `translate(${tx}px, ${ty}px) scale(${z})`;
+    cam.style.filter = t >= 35 ? `blur(${Math.min(8, (t - 35) * 20)}px) saturate(1.3) brightness(.8)` : 'none';
+  } else {
+    cam.style.visibility = 'hidden';
+  }
+  tint.style.background = t >= 35 ? 'radial-gradient(ellipse at center, rgba(255,210,63,.25), rgba(40,10,60,.55))' : 'none';
+  TEXTS.forEach(([a, b, , , ,], i) => {
+    const e = els[i];
+    if (t < a || t >= b) { e.style.display = 'none'; return; }
+    e.style.display = 'block';
+    let s = bounce((t - a) / 0.3);
+    if (b - t < 0.12 && b < 42.9) s *= (b - t) / 0.12;
+    const wob = Math.sin((t - a) * 9) * 2.5 * Math.exp(-(t - a) * 2) + (a >= 35 ? Math.sin(t * 4 + i) * 2 : 0);
+    const pulse = 1 + 0.03 * Math.sin((t - a) * 2 * Math.PI * 2);
+    e.style.transform = `translate(${sx}px, ${sy}px) scale(${s * pulse}) rotate(${wob}deg)`;
+  });
+  CONF.forEach((c) => {
+    const lt = t - 35.3 - c.delay;
+    if (lt < 0) { c.d.style.display = 'none'; return; }
+    const y = -60 + ((lt * c.speed) % 1200);
+    c.d.style.display = 'block';
+    c.d.style.transform = `translate(${c.x + Math.sin(lt * 3) * c.sway}px, ${y}px) rotate(${c.rot + lt * 400}deg)`;
+  });
+  let f = 0; for (const a of FLASHES) if (t >= a && t < a + 0.15) f = 1 - (t - a) / 0.15;
+  flash.style.opacity = f * 0.85;
+  await new Promise(requestAnimationFrame);
+};
+</script>
+</body>
+</html>

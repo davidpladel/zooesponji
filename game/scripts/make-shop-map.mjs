@@ -1,5 +1,5 @@
 // Genera public/assets/maps/tienda.tmj: el interior de la tienda (20x12), lógico (suelo/pared/mueble).
-// El arte lo pone ShopInterior en el juego; sin arte se pinta con colores. El cuidador anda por aquí (fase B).
+// El arte lo pone ShopInterior en el juego; sin arte se pinta con colores. La cuidadora anda por aquí (fase B).
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';

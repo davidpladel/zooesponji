@@ -46,6 +46,8 @@ function textureFor(piece: string): string | null {
 export class ShopInterior {
   readonly spots: InteriorSpots;
   readonly layout: InteriorLayout;
+  /** La estantería donde se esconde el libro (base en px de interior), si la hay. */
+  readonly bookShelf: Point | null;
   private readonly withArt: boolean;
 
   constructor(
@@ -57,6 +59,8 @@ export class ShopInterior {
     this.spots = spots ?? FALLBACK_SPOTS;
     this.layout = interiorLayout(scene.scale.width, scene.scale.height, MAP_W, MAP_H);
     this.withArt = Boolean(getArt() && Object.keys(getArt()!.interior).length > 0);
+    const shelf = this.spots.decos.find((d) => d.piece === 'shelf-b');
+    this.bookShelf = shelf ? { x: shelf.x, y: shelf.y - shelf.z } : null;
     this.drawRoom(map ? wallRows(map) : 4);
     for (const deco of this.spots.decos) this.addDeco(deco);
     this.addAmbience();

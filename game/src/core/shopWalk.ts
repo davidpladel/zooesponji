@@ -4,7 +4,7 @@ import { createGrid, isWalkable, type Point, type WalkGrid } from './pathfinding
 /** Tiles del interior de la tienda (px). */
 const T = 16;
 
-/** Distancia (px de interior) de los pies del cuidador a la base de una peana para "tenerla a mano". */
+/** Distancia (px de interior) de los pies de la cuidadora a la base de una peana para "tenerla a mano". */
 export const PEDESTAL_REACH = 32;
 
 /** Donde acaba el paseo de entrada: delante de la alfombra. */
@@ -29,7 +29,7 @@ export function shopWalkGrid(base: WalkGrid, bases: readonly Point[]): WalkGrid 
   return { width: base.width, height: base.height, cells };
 }
 
-/** Índice de la peana más cercana a los pies del cuidador dentro del alcance, o null. */
+/** Índice de la peana más cercana a los pies de la cuidadora dentro del alcance, o null. */
 export function productInReach(feet: Vec, bases: readonly Point[], reach = PEDESTAL_REACH): number | null {
   let best: number | null = null;
   let bestDistance = reach;
@@ -44,7 +44,7 @@ export function productInReach(feet: Vec, bases: readonly Point[], reach = PEDES
 }
 
 /**
- * Dónde se para el cuidador para comprar: la casilla libre más cercana a la de debajo de la peana,
+ * Dónde se para la cuidadora para comprar: la casilla libre más cercana a la de debajo de la peana,
  * de entre las que la dejan a mano (si ninguna, la más cercana sin más).
  */
 export function approachPoint(grid: WalkGrid, base: Point, reach = PEDESTAL_REACH): Vec | null {
@@ -73,7 +73,7 @@ export function hintTarget(entries: readonly { id: string; status: string; cost:
   return best?.id ?? 'door';
 }
 
-/** ¿Los pies del cuidador pisan el felpudo de salida? */
+/** ¿Los pies de la cuidadora pisan el felpudo de salida? */
 export function onDoorMat(feet: Vec, door: Point): boolean {
   return Math.abs(feet.x - door.x) <= 16 && feet.y >= door.y - 12;
 }

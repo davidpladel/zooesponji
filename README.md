@@ -2,7 +2,7 @@
 
 Creado por y para Daniela y Adrián, con la ayuda de su padre y de Claude + OpenCode + DeepSeek + ChatGPT.
 
-**Versión actual: 2.1.2** · Juega en la web: https://davidpladel.com/zoo/ · Android: prueba cerrada de Google Play (en preparación)
+**Versión actual: 2.2.0** · Juega en la web: https://davidpladel.com/zoo/ · Android: prueba cerrada de Google Play (en preparación)
 
 ## La idea
 
@@ -28,7 +28,8 @@ Pensado para niños de 6 a 9 años: sin textos largos, sin perder y sin anuncios
 
 | Versión | Fecha | Qué trajo |
 |---|---|---|
-| **2.1.2** | 2026-09-28 | Catarata de la pantera montada como enseña el autor del pack: bloques altos de acantilado con su remate a cada lado, la caída en medio empalmando con la roca y el lago al pie (7×6 casillas) |
+| **2.2.0** | 2026-09-30 | **El libro secreto del zoo.** En la estantería de la tienda se esconde un libro (destella y salta al acercarse) con la historia del Zoo Esponji, Mary la cuidadora y cada animal con nombre propio (Bills, Sasha, Gordi, Noche, Mochi…); las páginas se consiguen comprando animales, las que faltan salen en silueta y recuerda por dónde ibas. Tienda más clara: una peana por animal, precio o sello AGOTADO y "Tienes 2 de 5". Catarata como la del pack (río arriba, caída, espuma, brillo y nenúfar) y recinto de la pantera más alto. Textos preparados para varios idiomas. 283 tests y 16 pruebas de juego |
+| 2.1.2 | 2026-09-28 | Catarata de la pantera montada como enseña el autor del pack: bloques altos de acantilado con su remate a cada lado, la caída en medio empalmando con la roca y el lago al pie (7×6 casillas) |
 | 2.1.1 | 2026-09-28 | Catarata de la pantera rehecha como la del pack: pared de roca recta hasta la valla, la caída acaba donde acaba la roca y el estanque empieza debajo con su orilla completa |
 | 2.1.0 | 2026-09-28 | **La tienda por dentro y un parque de verdad.** La cuidadora entra andando en la tienda: tendero que saluda, mira y habla de cada animal; animales en peanas que reaccionan al acercarse; se compra con el bocadillo "¡Comprar!", pista de huellas para los peques, campanita y pasos. Zoo rehecho: muro del parque con portón "Zoo Esponji" (se empieza en la entrada), plaza central con fuente animada, catarata con acantilado en la selva, pasillos más estrechos para ver los recintos y cámara más alejada. Dar de comer se abre al llegar a la puerta del recinto (sin bocadillo) y la carne ya tiene dibujo. 275 tests y 15 pruebas de juego |
 | 2.0.0 | 2026-09-27 | **Juego nuevo desde cero** con Phaser 4 + TypeScript, para web y Android. Mundo de pixel art que se recorre andando: mapa del zoo 48×32 con recintos decorados (sabana, montaña, selva con catarata, bosque de bambú) y parque con bancos, farolas, fuente y carteles; cuidadora, visitantes y animales animados; dar de comer arrastrando con reacciones, monedas voladoras y la amistad del conejo con corazones; tienda con animales extra; agua animada; música y sonidos; menú ⚙️ con créditos de Daniela y Adrián (que pintaron el panda y la pantera); botón atrás, girar el móvil, guardado (conserva las monedas de la v1.1) y pantalla de error amable. 248 tests y 12 pruebas de juego en CI |

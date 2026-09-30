@@ -15,13 +15,8 @@ describe('shopEntries', () => {
     expect(summary(withCounts({}))).toEqual(['extra-cabra:buy', 'pantera:buy', 'panda:buy']);
   });
 
-  it('con la pantera comprada aparece "otra pantera"', () => {
-    expect(summary(withCounts({ pantera: 1 }))).toEqual([
-      'extra-cabra:buy',
-      'pantera:owned',
-      'extra-pantera:buy',
-      'panda:buy',
-    ]);
+  it('con la pantera comprada, "otra pantera" ocupa el sitio del recinto', () => {
+    expect(summary(withCounts({ pantera: 1 }))).toEqual(['extra-cabra:buy', 'extra-pantera:buy', 'panda:buy']);
   });
 
   it('al llegar al máximo el extra sale como completo', () => {

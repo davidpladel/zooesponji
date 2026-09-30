@@ -36,7 +36,8 @@ fill(22, 15, 25, 18, GRASS);
 
 const objects = [];
 let nextId = 1;
-const EH = 8;
+// Alto por defecto; la pantera es más alta (10) para que quepa la catarata entera.
+const DEFAULT_EH = 8;
 // El pasillo central deja solo 2 casillas de césped a cada lado para que al andar se vea el interior
 // de los recintos: pantera y panda son más anchos (15) y el león se arrima al centro (la fuente queda
 // en la esquina de fuera). La cabra no se mueve: a su lado está el puesto de la tienda.
@@ -45,11 +46,12 @@ const EH = 8;
 const enclosures = [
   { animalId: 'leon', biome: 'savannah', x: 9, y: 5, ew: 12, gateX: 14, gateRow: 12, link: [13, 15] },
   { animalId: 'cabra', biome: 'alpine', x: 30, y: 5, ew: 12, gateX: 35, gateRow: 12, link: [13, 15] },
-  { animalId: 'pantera', biome: 'rainforest', x: 6, y: 21, ew: 15, gateX: 12, gateRow: 21, link: [18, 20] },
+  { animalId: 'pantera', biome: 'rainforest', x: 6, y: 19, ew: 15, eh: 10, gateX: 12, gateRow: 19, link: [18, 18] },
   { animalId: 'panda', biome: 'bamboo', x: 27, y: 21, ew: 15, gateX: 33, gateRow: 21, link: [18, 20] },
 ];
 for (const e of enclosures) {
   const EW = e.ew;
+  const EH = e.eh ?? DEFAULT_EH;
   fill(e.x, e.y, e.x + EW - 1, e.y, FENCE);
   fill(e.x, e.y + EH - 1, e.x + EW - 1, e.y + EH - 1, FENCE);
   fill(e.x, e.y, e.x, e.y + EH - 1, FENCE);
@@ -121,13 +123,13 @@ cabra('rock-grey', 5, 3);
 cabra('rock-grey-big', 0, 5);
 // 🐆 Selva con catarata (puerta arriba), a la derecha junto al pasillo. Montada como enseña el autor
 // del pack: bloque alto de acantilado a cada lado (con su remate), la catarata en medio empalmando con la
-// roca y el lago al pie. Pieza de 112x96 (7x6 casillas): ocupa todo el alto del recinto.
-pantera('waterfall', 9, 5, { flat: true, block: [112, 88] });
-pantera('lilypad', 7, 4, { flat: true, z: 2 });
-pantera('lilypad-flower', 10, 4, { flat: true, z: 2 });
+// roca y el agua al pie, montada con las casillas 16x16 del terrain como pide el autor (catarata
+// arriba/medio/abajo alineada con el acantilado C/D y empalmando con el agua E). 112x112 (7x7).
+pantera('waterfall', 9, 7, { flat: true, block: [112, 104] });
+pantera('lilypad', 10, 6, { flat: true, z: 2 });
 pantera('palm', 1, 2, { block: [16, 8] });
-pantera('palm', 2, 5, { block: [16, 8] });
-pantera('bush-jungle', 1, 4);
+pantera('palm', 2, 7, { block: [16, 8] });
+pantera('bush-jungle', 1, 5);
 pantera('flowers-red', 3, 1);
 // 🐼 Bosquecillo de bambú en el lado de fuera y abajo (puerta arriba). El bambú mide 5-6 casillas:
 // arriba taparía el camino y el cartel, en el centro escondería al panda y junto al pasillo central
@@ -149,7 +151,7 @@ for (const [x, y] of [[4, 6], [4, 13], [6, 8], [6, 11], [4, 22], [4, 26], [21, 7
   at('tree', x, y);
 }
 for (const [x, y] of [[7, 13], [22, 22], [26, 25], [43, 14], [10, 4], [15, 29], [36, 29]]) at('bush', x, y);
-for (const [x, y] of [[13, 13], [34, 13], [11, 20], [32, 20]]) at('sign', x, y);
+for (const [x, y] of [[13, 13], [34, 13], [11, 18], [32, 20]]) at('sign', x, y);
 for (const [x, y] of [[22, 9], [25, 11], [22, 25], [25, 25]]) at('lamp', x, y);
 for (const [x, y] of [[17, 14], [7, 14], [29, 19], [39, 19]]) prop('bench', (x + 1) * T, (y + 1) * T);
 prop('flowerbed', 22 * T, 5 * T);

@@ -6,7 +6,7 @@ import { pickRandom, planWander, walkableTiles, type Rng } from '../core/wander'
 import { createVisitor, type Walker } from './Actors';
 
 const VISITOR_EMOJIS = ['🧒', '👧', '👦', '👩', '👨', '🧓', '👵', '👴'];
-/** Más lentos que el cuidador (64 px/s). */
+/** Más lentos que la cuidadora (64 px/s). */
 const VISITOR_SPEED = 28;
 
 interface Visitor {

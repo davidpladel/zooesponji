@@ -1,5 +1,5 @@
 // Genera public/audio/paso.wav: un paso suave sobre suelo de madera (obra propia, sintetizada).
-// Va flojito a propósito: suena en cada paso del cuidador dentro de la tienda.
+// Va flojito a propósito: suena en cada paso de la cuidadora dentro de la tienda.
 import { writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';

@@ -39,6 +39,17 @@ describe('parseSave', () => {
       version: 2,
       state: { coins: 5, counts: { leon: 1, cabra: 1, pantera: 0, panda: 1 }, shopUnlocked: true },
       settings: { music: true, sfx: false, joystick: false },
+      book: { seen: [], hinted: false, page: null },
+    });
+  });
+
+  it('libro: partidas sin libro empiezan vacías; se guardan solo ids sin repetir', () => {
+    const base = { version: 2, state: { coins: 0, counts: {}, shopUnlocked: false }, settings: {} };
+    expect(parseSave(base)?.book).toEqual({ seen: [], hinted: false, page: null });
+    expect(parseSave({ ...base, book: { seen: ['mary', 'mary', 3, 'noche'], hinted: true, page: 'mary' } })?.book).toEqual({
+      seen: ['mary', 'noche'],
+      hinted: true,
+      page: 'mary',
     });
   });
 
