@@ -201,6 +201,7 @@ export class ShopScene extends Phaser.Scene {
     const zone = this.add.zone(shelf.x, shelf.y, 32 * s, 32 * s).setDepth(1900).setInteractive({ useHandCursor: true });
     zone.on('pointerup', (pointer: Phaser.Input.Pointer) => {
       if (!this.isTap(pointer)) return;
+      this.endEntry();
       if (this.bookOut) this.openBook();
       else this.keeper.goTo(BOOK_APPROACH(spot));
     });
