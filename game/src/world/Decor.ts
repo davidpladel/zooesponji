@@ -69,9 +69,9 @@ export const Decor = {
 
       if (p.prop === 'sign') {
         const enclosure = nearestEnclosure(enclosures, p.x, p.y);
-        if (enclosure && isPenId(enclosure.animalId)) {
+        if (enclosure && isPenId(enclosure.penId)) {
           scene.add
-            .text(p.x, p.y - TILE - 2, t(PENS[enclosure.animalId].nameKey), {
+            .text(p.x, p.y - TILE - 2, t(PENS[enclosure.penId].nameKey), {
               fontFamily: 'sans-serif',
               fontSize: '6px',
               color: '#ffffff',

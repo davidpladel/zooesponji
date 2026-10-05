@@ -29,7 +29,7 @@ describe('pickWanderTarget con otros animales', () => {
 });
 
 describe('cinco cabras en su recinto', () => {
-  const enclosure = readEnclosures(map).find((e) => e.animalId === 'cabra')!;
+  const enclosure = readEnclosures(map).find((e) => e.penId === 'cabra')!;
   const space = penSpace(enclosure, readProps(map), 16);
 
   it('las posiciones iniciales no se solapan ni caen en obstáculos', () => {

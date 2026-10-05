@@ -53,7 +53,7 @@ export interface ZooTestApi {
   keeperInPen(penId: PenId): boolean;
   goToTile(x: number, y: number): boolean;
   artMode(): boolean;
-  gateApproachTile(animalId: string): { x: number; y: number } | null;
+  gateApproachTile(penId: string): { x: number; y: number } | null;
   shopDoorTile(): { x: number; y: number } | null;
   spawnTile(): { x: number; y: number } | null;
 }
@@ -122,7 +122,7 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
     keeperInPen: (penId) => game.scene.getScene<WorldScene>('World').keeperInPen(penId),
     goToTile: (x, y) => activeScene<WorldScene>('World')?.goToTile(x, y) ?? false,
     artMode: () => getArt() !== null,
-    gateApproachTile: (animalId) => activeScene<WorldScene>('World')?.gateApproachTile(animalId) ?? null,
+    gateApproachTile: (penId) => activeScene<WorldScene>('World')?.gateApproachTile(penId) ?? null,
     shopDoorTile: () => activeScene<WorldScene>('World')?.shopDoorTile() ?? null,
     spawnTile: () => activeScene<WorldScene>('World')?.spawnTile() ?? null,
   };

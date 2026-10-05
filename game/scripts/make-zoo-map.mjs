@@ -44,10 +44,10 @@ const DEFAULT_EH = 8;
 // ew: ancho; gateRow: fila de la valla con la puerta; link: filas de camino hasta la cruz.
 // Los de arriba ocupan las filas 5-12 y los de abajo 21-28; entre medias, la plaza.
 const enclosures = [
-  { animalId: 'leon', biome: 'savannah', x: 9, y: 5, ew: 12, gateX: 14, gateRow: 12, link: [13, 15] },
-  { animalId: 'cabra', biome: 'alpine', x: 30, y: 5, ew: 12, gateX: 35, gateRow: 12, link: [13, 15] },
-  { animalId: 'pantera', biome: 'rainforest', x: 6, y: 19, ew: 15, eh: 10, gateX: 12, gateRow: 19, link: [18, 18] },
-  { animalId: 'panda', biome: 'bamboo', x: 27, y: 21, ew: 15, gateX: 33, gateRow: 21, link: [18, 20] },
+  { penId: 'leon', biome: 'savannah', x: 9, y: 5, ew: 12, gateX: 14, gateRow: 12, link: [13, 15] },
+  { penId: 'cabra', biome: 'alpine', x: 30, y: 5, ew: 12, gateX: 35, gateRow: 12, link: [13, 15] },
+  { penId: 'pantera', biome: 'rainforest', x: 6, y: 19, ew: 15, eh: 10, gateX: 12, gateRow: 19, link: [18, 18] },
+  { penId: 'panda', biome: 'bamboo', x: 27, y: 21, ew: 15, gateX: 33, gateRow: 21, link: [18, 20] },
 ];
 for (const e of enclosures) {
   const EW = e.ew;
@@ -58,15 +58,15 @@ for (const e of enclosures) {
   fill(e.x + EW - 1, e.y, e.x + EW - 1, e.y + EH - 1, FENCE);
   fill(e.gateX, e.gateRow, e.gateX + 1, e.gateRow, GATE);
   fill(e.gateX, e.link[0], e.gateX + 1, e.link[1], PATH);
-  const animalProp = [{ name: 'animalId', type: 'string', value: e.animalId }];
+  const penProp = [{ name: 'penId', type: 'string', value: e.penId }];
   objects.push({
-    id: nextId++, name: `recinto-${e.animalId}`, type: 'recinto',
+    id: nextId++, name: `recinto-${e.penId}`, type: 'recinto',
     x: e.x * T, y: e.y * T, width: EW * T, height: EH * T, rotation: 0, visible: true,
-    properties: [...animalProp, { name: 'biome', type: 'string', value: e.biome }],
+    properties: [...penProp, { name: 'biome', type: 'string', value: e.biome }],
   });
   objects.push({
-    id: nextId++, name: `puerta-${e.animalId}`, type: 'puerta',
-    x: e.gateX * T, y: e.gateRow * T, width: 2 * T, height: T, rotation: 0, visible: true, properties: animalProp,
+    id: nextId++, name: `puerta-${e.penId}`, type: 'puerta',
+    x: e.gateX * T, y: e.gateRow * T, width: 2 * T, height: T, rotation: 0, visible: true, properties: penProp,
   });
 }
 

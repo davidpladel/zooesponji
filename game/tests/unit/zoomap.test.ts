@@ -21,8 +21,8 @@ describe('mapa del zoo', () => {
     const enclosures = readEnclosures(map);
     const gates = readGates(map);
     for (const id of ANIMAL_IDS) {
-      const enclosure = enclosures.find((e) => e.animalId === id);
-      const gate = gates.find((g) => g.animalId === id);
+      const enclosure = enclosures.find((e) => e.penId === id);
+      const gate = gates.find((g) => g.penId === id);
       expect(enclosure, id).toBeDefined();
       expect(gate, id).toBeDefined();
       const approach = approachTile(gate!.tile, enclosure!, 16, grid);
@@ -71,7 +71,7 @@ describe('mapa del zoo', () => {
       const blocked = props
         .filter((p) => p.block && p.x > inner.x && p.x < inner.x + inner.width && p.y > inner.y && p.y <= inner.y + inner.height)
         .reduce((sum, p) => sum + p.block!.width * p.block!.height, 0);
-      expect(blocked, e.animalId).toBeLessThanOrEqual(inner.width * inner.height * 0.6);
+      expect(blocked, e.penId).toBeLessThanOrEqual(inner.width * inner.height * 0.6);
     }
   });
 
@@ -83,7 +83,7 @@ describe('mapa del zoo', () => {
       const inside = props.filter((p) => p.x > inner.x && p.x < inner.x + inner.width && p.y > inner.y && p.y <= inner.y + inner.height);
       for (const p of inside) {
         if (p.flat || walkable.test(p.prop)) continue;
-        expect(p.block, `${p.prop} en ${e.animalId}`).not.toBeNull();
+        expect(p.block, `${p.prop} en ${e.penId}`).not.toBeNull();
       }
     }
   });

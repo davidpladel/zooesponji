@@ -12,7 +12,6 @@ import {
   readSpawn,
   type TiledMap,
 } from '../../src/core/tiledmap';
-import { ANIMAL_IDS, isAnimalId } from '../../src/data/animals';
 
 function loadTestMap(): TiledMap {
   const url = new URL('../../public/assets/maps/test-map.tmj', import.meta.url);
@@ -103,24 +102,22 @@ describe('mapa de prueba', () => {
     expect(isWalkable(grid, spawn.x, spawn.y)).toBe(true);
   });
 
-  it('cada animal del juego tiene exactamente un recinto y una puerta', () => {
-    const enclosureIds = readEnclosures(map).map((e) => e.animalId).sort();
-    const gateIds = readGates(map).map((g) => g.animalId).sort();
-    expect(enclosureIds).toEqual([...ANIMAL_IDS].sort());
-    expect(gateIds).toEqual([...ANIMAL_IDS].sort());
-    expect(enclosureIds.every(isAnimalId)).toBe(true);
+  it('el mapa de prueba tiene exactamente un recinto y una puerta por cada uno de sus 4 recintos', () => {
+    const expected = ['cabra', 'leon', 'panda', 'pantera'];
+    expect(readEnclosures(map).map((e) => e.penId).sort()).toEqual(expected);
+    expect(readGates(map).map((g) => g.penId).sort()).toEqual(expected);
   });
 
   it('se puede llegar andando desde el inicio a todas las puertas', () => {
     const spawn = readSpawn(map);
     for (const gate of readGates(map)) {
-      expect(findPath(grid, spawn, gate.tile), `puerta de ${gate.animalId}`).not.toBeNull();
+      expect(findPath(grid, spawn, gate.tile), `puerta de ${gate.penId}`).not.toBeNull();
     }
   });
 
   it('los recintos están en píxeles', () => {
-    const leon = readEnclosures(map).find((e) => e.animalId === 'leon');
-    expect(leon).toEqual({ animalId: 'leon', biome: null, x: 80, y: 80, width: 176, height: 112 });
+    const leon = readEnclosures(map).find((e) => e.penId === 'leon');
+    expect(leon).toEqual({ penId: 'leon', biome: null, x: 80, y: 80, width: 176, height: 112 });
   });
 
   it('tiene tienda con puerta alcanzable desde el inicio', () => {

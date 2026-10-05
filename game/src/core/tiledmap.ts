@@ -57,8 +57,9 @@ export interface TiledMap {
 }
 
 export interface EnclosureInfo {
-  animalId: string;
-  /** Ambiente del recinto (savannah, alpine, rainforest, bamboo) o null si no tiene. */
+  /** Id del recinto (`PenId`). */
+  penId: string;
+  /** Ambiente del recinto (savannah, alpine, rainforest, bamboo, tundra, grassland) o null si no tiene. */
   biome: string | null;
   x: number;
   y: number;
@@ -67,7 +68,7 @@ export interface EnclosureInfo {
 }
 
 export interface GateInfo {
-  animalId: string;
+  penId: string;
   tile: Point;
 }
 
@@ -92,8 +93,8 @@ function objectsOf(map: TiledMap): TiledObject[] {
   return layer?.objects ?? [];
 }
 
-function animalIdOf(object: TiledObject): string | null {
-  const value = getProperty(object.properties, 'animalId');
+function penIdOf(object: TiledObject): string | null {
+  const value = getProperty(object.properties, 'penId');
   return typeof value === 'string' ? value : null;
 }
 
@@ -118,11 +119,11 @@ export function buildWalkGrid(map: TiledMap): WalkGrid {
 export function readEnclosures(map: TiledMap): EnclosureInfo[] {
   const result: EnclosureInfo[] = [];
   for (const object of objectsOf(map)) {
-    const animalId = animalIdOf(object);
-    if (objectKind(object) !== 'recinto' || !animalId) continue;
+    const penId = penIdOf(object);
+    if (objectKind(object) !== 'recinto' || !penId) continue;
     const biome = getProperty(object.properties, 'biome');
     result.push({
-      animalId,
+      penId,
       biome: typeof biome === 'string' ? biome : null,
       x: object.x,
       y: object.y,
@@ -136,10 +137,10 @@ export function readEnclosures(map: TiledMap): EnclosureInfo[] {
 export function readGates(map: TiledMap): GateInfo[] {
   const result: GateInfo[] = [];
   for (const object of objectsOf(map)) {
-    const animalId = animalIdOf(object);
-    if (objectKind(object) !== 'puerta' || !animalId) continue;
+    const penId = penIdOf(object);
+    if (objectKind(object) !== 'puerta' || !penId) continue;
     result.push({
-      animalId,
+      penId,
       tile: { x: Math.floor(object.x / map.tilewidth), y: Math.floor(object.y / map.tileheight) },
     });
   }

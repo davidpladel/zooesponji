@@ -9,7 +9,7 @@ export interface Rect {
 }
 
 export interface GateRef {
-  animalId: string;
+  penId: string;
   tile: Point;
 }
 

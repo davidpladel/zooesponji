@@ -3,15 +3,15 @@ import { approachTile, gateAtDoorstep, isDropOnTarget, nearestWithin, rectContai
 import { gridFromAscii } from './helpers';
 
 const gates = [
-  { animalId: 'leon', tile: { x: 10, y: 11 } },
-  { animalId: 'cabra', tile: { x: 29, y: 11 } },
+  { penId: 'leon', tile: { x: 10, y: 11 } },
+  { penId: 'cabra', tile: { x: 29, y: 11 } },
 ];
 
 describe('gateAtDoorstep', () => {
   it('pisando el camino justo delante de la puerta (de 2 casillas)', () => {
-    expect(gateAtDoorstep({ x: 10, y: 12 }, gates)?.animalId).toBe('leon');
-    expect(gateAtDoorstep({ x: 11, y: 12 }, gates)?.animalId).toBe('leon');
-    expect(gateAtDoorstep({ x: 10, y: 10 }, gates)?.animalId).toBe('leon'); // puerta de un recinto de abajo
+    expect(gateAtDoorstep({ x: 10, y: 12 }, gates)?.penId).toBe('leon');
+    expect(gateAtDoorstep({ x: 11, y: 12 }, gates)?.penId).toBe('leon');
+    expect(gateAtDoorstep({ x: 10, y: 10 }, gates)?.penId).toBe('leon'); // puerta de un recinto de abajo
   });
 
   it('null a un lado o más lejos', () => {
