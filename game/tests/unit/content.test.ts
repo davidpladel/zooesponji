@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { ANIMAL_IDS, ANIMALS, isAnimalId } from '../../src/data/animals';
+import { ANIMAL_IDS, ANIMALS, isAnimalId, trayFoods } from '../../src/data/animals';
 import { FOOD_IDS, FOODS } from '../../src/data/foods';
 import { SHOP_ITEMS, SHOP_UNLOCK_COINS, getShopItem, shopItemForAnimal } from '../../src/data/shop';
 import { STRINGS_ES, t } from '../../src/data/strings';
@@ -9,10 +9,11 @@ describe('contenido: animales', () => {
     expect([...ANIMAL_IDS]).toEqual(['leon', 'cabra', 'pantera', 'panda']);
   });
 
-  it.each(ANIMAL_IDS)('%s tiene reacción para todas las comidas', (id) => {
-    for (const food of FOOD_IDS) {
-      expect(['come', 'rechaza', 'especial']).toContain(ANIMALS[id].reactions[food]);
-    }
+  it.each(ANIMAL_IDS)('%s enseña entre 4 y 5 comidas, todas con reacción válida', (id) => {
+    const tray = trayFoods(id);
+    expect(tray.length).toBeGreaterThanOrEqual(4);
+    expect(tray.length).toBeLessThanOrEqual(5);
+    for (const food of tray) expect(['come', 'rechaza', 'especial']).toContain(ANIMALS[id].reactions[food]);
   });
 
   it.each(ANIMAL_IDS)('%s da monedas por comer y, si tiene especial, por especial', (id) => {

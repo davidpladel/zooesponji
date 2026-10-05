@@ -66,7 +66,7 @@ test('soltar la comida lejos no da monedas', async ({ page }) => {
   await page.waitForFunction(() => window.__ZOO__?.activeScenes().includes('Feed'));
   const targets = await page.evaluate(() => window.__ZOO__!.feedTargets());
   const box = await canvasBox(page);
-  await page.mouse.move(box.x + targets!.foods.carne.x, box.y + targets!.foods.carne.y);
+  await page.mouse.move(box.x + targets!.foods.carne!.x, box.y + targets!.foods.carne!.y);
   await page.mouse.down();
   await page.mouse.move(box.x + 20, box.y + box.height - 20, { steps: 8 });
   await page.mouse.up();

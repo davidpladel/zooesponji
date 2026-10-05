@@ -20,7 +20,7 @@ export interface ZooTestApi {
   addCoins(amount: number): Promise<void>;
   hudCoinsText(): string | null;
   openFeed(animalId: AnimalId): void;
-  feedTargets(): { animal: Vec; foods: Record<FoodId, Vec> } | null;
+  feedTargets(): { animal: Vec; foods: Partial<Record<FoodId, Vec>> } | null;
   isFeedBusy(): boolean;
   openShop(): void;
   shopCardScreenPos(itemId: string): Vec | null;
