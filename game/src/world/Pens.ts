@@ -2,12 +2,13 @@ import * as Phaser from 'phaser';
 import { getArt } from '../art/art';
 import { TILE_SIZE } from '../config';
 import { penCount, isPenOpen, type GameState } from '../core/economy';
-import { penSpace, spreadPositions, stepRoamer, type PenSpace, type Roamer } from '../core/flock';
-import { gateAtDoorstep, nearestWithin, rectContains, type Rect } from '../core/interaction';
+import { BODY_RADIUS, penSpace, spreadPositions, stepRoamer, type PenSpace, type Roamer } from '../core/flock';
+import { gateAtDoorstep, rectContains, rectsOverlap, tapDistance, type Rect } from '../core/interaction';
+import { MIN_GAP } from '../core/obstacles';
 import type { Vec } from '../core/movement';
 import type { Point } from '../core/pathfinding';
 import type { EnclosureInfo, GateInfo, PropInfo } from '../core/tiledmap';
-import type { AnimalId, Reaction } from '../data/animals';
+import { ANIMALS, type AnimalId, type Reaction } from '../data/animals';
 import { PENS, isPenId, residentsIn, type PenId, type ResidentDef } from '../data/pens';
 import { shopItemForPen } from '../data/shop';
 import { t } from '../data/strings';
@@ -20,6 +21,8 @@ interface Wanderer {
   residentId: string | null;
   /** Su especie; null en los acompañantes. */
   species: AnimalId | null;
+  /** Radio del cuerpo (px). */
+  radius: number;
   roam: Roamer;
   /** Sin arte: punto alrededor del que se balancea, y desfase del balanceo. */
   base: Vec;
@@ -52,14 +55,17 @@ const LABEL_STYLE: Phaser.Types.GameObjects.Text.TextStyle = {
   strokeThickness: 2,
 };
 
-const wanderer = (walker: Walker, residentId: string | null, species: AnimalId | null, rest = Math.random() * 2000): Wanderer => ({
+const wanderer = (walker: Walker, residentId: string | null, species: AnimalId | null, radius: number, rest = Math.random() * 2000): Wanderer => ({
   walker,
   residentId,
   species,
-  roam: { pos: { x: walker.x, y: walker.y }, target: null, rest },
+  radius,
+  roam: { pos: { x: walker.x, y: walker.y }, target: null, rest, radius },
   base: { x: walker.x, y: walker.y },
   phase: Math.random() * Math.PI * 2,
 });
+
+const radiusOf = (species: AnimalId): number => ANIMALS[species].radius ?? BODY_RADIUS;
 
 /** Recintos: animales, candado con precio y la puerta donde se da de comer. */
 export class Pens {
@@ -110,25 +116,31 @@ export class Pens {
       // El acompañante es el de la especie del primer residente (un recinto ya no es una especie).
       const lead = def.residents[0]!.species;
       const hasCompanion = Boolean(getArt()?.companions[lead]);
-      const spots = spreadPositions(space, count + (hasCompanion ? 1 : 0), Math.random);
+      // Los grandes empiezan más separados y más lejos de la valla.
+      const biggest = Math.max(...def.residents.map((r) => radiusOf(r.species)));
+      const spots = spreadPositions(space, count + (hasCompanion ? 1 : 0), Math.random, Math.max(8, biggest), Math.max(MIN_GAP * 1.5, biggest * 3));
       const spot = (i: number): Vec => spots[i] ?? home;
       const animals = here.map((resident, i) => {
         const p = spot(i);
-        return wanderer(createAnimal(scene, resident.species, p.x, p.y, resident.look), resident.id, resident.species);
+        return wanderer(createAnimal(scene, resident.species, p.x, p.y, resident.look), resident.id, resident.species, radiusOf(resident.species));
       });
       const companionAt = spot(count);
       const companionWalker = hasCompanion ? createCompanion(scene, lead, companionAt.x, companionAt.y) : null;
-      const companion = companionWalker ? wanderer(companionWalker, null, null, 500 + Math.random() * 1500) : null;
+      const companion = companionWalker ? wanderer(companionWalker, null, null, radiusOf(lead), 500 + Math.random() * 1500) : null;
       for (const w of [...animals, ...(companion ? [companion] : [])]) w.walker.object.setAlpha(unlocked ? 1 : LOCKED_ALPHA);
 
       this.pens.push({ id, rect, space, gate: gate.tile, home, animals, companion, lock, shown: unlocked });
     }
   }
 
-  /** Con arte, los animales pasean por su recinto sin pisarse; sin arte, se balancean en su sitio. */
-  update(time: number, delta: number): void {
+  /**
+   * Con arte, los animales pasean por su recinto sin pisarse; sin arte, se balancean en su sitio.
+   * Los de los recintos que no se ven (`view`: la zona de la cámara) no se actualizan.
+   */
+  update(time: number, delta: number, view: Rect): void {
     const art = getArt() !== null;
     for (const pen of this.pens) {
+      if (!rectsOverlap(view, pen.rect, TILE_SIZE * 2)) continue;
       const all = this.members(pen);
       for (const w of all) {
         if (w.residentId !== null && w.residentId === this.held) {
@@ -175,17 +187,22 @@ export class Pens {
     return this.pens.filter((pen) => isPenOpen(state, pen.id)).map((pen) => pen.space);
   }
 
-  /** El residente de un recinto abierto más cercano a `point`, a no más de `radius`. */
+  /** El residente de un recinto abierto más cercano a `point`, a no más de `radius` de su cuerpo. */
   residentAt(point: Vec, state: GameState, radius: number): { penId: PenId; residentId: string } | null {
-    const candidates = this.pens
-      .filter((pen) => isPenOpen(state, pen.id))
-      .flatMap((pen) =>
-        pen.animals.flatMap((w) =>
-          w.residentId === null ? [] : [{ x: w.walker.x, y: w.walker.y, penId: pen.id, residentId: w.residentId }],
-        ),
-      );
-    const hit = nearestWithin(candidates, point, radius);
-    return hit ? { penId: hit.penId, residentId: hit.residentId } : null;
+    let best: { penId: PenId; residentId: string } | null = null;
+    let bestDistance = radius;
+    for (const pen of this.pens) {
+      if (!isPenOpen(state, pen.id)) continue;
+      for (const w of pen.animals) {
+        if (w.residentId === null) continue;
+        const distance = tapDistance({ x: w.walker.x, y: w.walker.y }, w.radius, point);
+        if (distance <= bestDistance) {
+          best = { penId: pen.id, residentId: w.residentId };
+          bestDistance = distance;
+        }
+      }
+    }
+    return best;
   }
 
   positionOf(residentId: string): Vec | null {
@@ -196,7 +213,7 @@ export class Pens {
   /** Punto sobre la cabeza del animal, donde irán los iconos de estado (hambre, enfermo). */
   anchorOf(residentId: string): Vec | null {
     const w = this.find(residentId);
-    return w ? { x: w.walker.x, y: w.walker.y - 16 } : null;
+    return w ? { x: w.walker.x, y: w.walker.y - 16 - (w.radius - BODY_RADIUS) * 2 } : null;
   }
 
   hold(residentId: string): void {
@@ -267,7 +284,7 @@ export class Pens {
     };
     const resident = PENS[pen.id].residents[pen.animals.length];
     if (!resident) return;
-    const w = wanderer(createAnimal(this.scene, resident.species, entry.x, entry.y, resident.look), resident.id, resident.species, 800);
+    const w = wanderer(createAnimal(this.scene, resident.species, entry.x, entry.y, resident.look), resident.id, resident.species, radiusOf(resident.species), 800);
     pen.animals.push(w);
     w.walker.object.setScale(0);
     this.scene.tweens.add({ targets: w.walker.object, scale: 1, duration: 600, delay: 300, ease: 'Back.easeOut' });

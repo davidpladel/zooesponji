@@ -79,6 +79,11 @@ describe('contenido: animales', () => {
     }
   });
 
+  it('los animales grandes dicen su radio', () => {
+    const radius = (id: string) => (isAnimalId(id) ? ANIMALS[id].radius : undefined);
+    expect(['jirafa', 'elefante-africano', 'elefante-asiatico', 'cebra', 'caballo', 'cabra', 'pato'].map(radius)).toEqual([16, 18, 18, 11, 11, undefined, undefined]);
+  });
+
   it('isAnimalId distingue ids válidos', () => {
     expect(isAnimalId('leon')).toBe(true);
     expect(isAnimalId('tigre')).toBe(false);

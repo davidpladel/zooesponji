@@ -20,6 +20,8 @@ export interface AnimalDef {
   extraCost?: number;
   /** Texto del artículo extra ("Otra cabra"). */
   extraNameKey?: StringKey;
+  /** Radio del cuerpo en px (por defecto 7): separa a los grandes al pasear y agranda su zona de toque. */
+  radius?: number;
 }
 
 export const ANIMALS: Record<AnimalId, AnimalDef> = {
@@ -65,6 +67,7 @@ export const ANIMALS: Record<AnimalId, AnimalDef> = {
     coins: { come: 8, especial: 12 },
     extraCost: 150,
     extraNameKey: 'shop.extra.jirafa',
+    radius: 16,
   },
   cebra: {
     id: 'cebra',
@@ -74,6 +77,7 @@ export const ANIMALS: Record<AnimalId, AnimalDef> = {
     coins: { come: 6, especial: 9 },
     extraCost: 120,
     extraNameKey: 'shop.extra.cebra',
+    radius: 11,
   },
   gacela: {
     id: 'gacela',
@@ -110,6 +114,7 @@ export const ANIMALS: Record<AnimalId, AnimalDef> = {
     coins: { come: 5, especial: 8 },
     extraCost: 60,
     extraNameKey: 'shop.extra.caballo',
+    radius: 11,
   },
   gallina: {
     id: 'gallina',
@@ -146,6 +151,7 @@ export const ANIMALS: Record<AnimalId, AnimalDef> = {
     coins: { come: 10, especial: 15 },
     extraCost: 200,
     extraNameKey: 'shop.extra.elefante-africano',
+    radius: 18,
   },
   'elefante-asiatico': {
     id: 'elefante-asiatico',
@@ -155,6 +161,7 @@ export const ANIMALS: Record<AnimalId, AnimalDef> = {
     coins: { come: 10, especial: 15 },
     extraCost: 200,
     extraNameKey: 'shop.extra.elefante-asiatico',
+    radius: 18,
   },
 };
 
