@@ -242,6 +242,17 @@
       "w": 16,
       "h": 16
     },
+    "ground-tundra": { "zip": "biomeA", "file": "Original/16x16/tundra/tilesets/vectoraith_tileset_full_terrain_tundra.png", "x": 0, "y": 16, "w": 16, "h": 16 },
+    "ground-grassland": { "zip": "biomeB", "file": "16x16/grassland/tilesets/vectoraith_tileset_full_terrain_grassland.png", "x": 0, "y": 16, "w": 16, "h": 16 },
+    "pond-tundra": { "zip": "biomeA", "file": "Original/16x16/tundra/tilesets/vectoraith_tileset_full_terrain_tundra.png", "x": 0, "y": 128, "w": 48, "h": 48, "animate": { "step": 80, "count": 3, "fps": 3 } },
+    "pond-grassland": { "zip": "biomeB", "file": "16x16/grassland/tilesets/vectoraith_tileset_full_terrain_grassland.png", "x": 0, "y": 128, "w": 48, "h": 48, "animate": { "step": 80, "count": 3, "fps": 3 } },
+    "rock-snow": { "zip": "biomeA", "file": "Original/16x16/tundra/tilesets/vectoraith_tileset_details_tundra.png", "x": 0, "y": 96, "w": 16, "h": 16 },
+    "rock-snow-big": { "zip": "biomeA", "file": "Original/16x16/tundra/tilesets/vectoraith_tileset_details_tundra.png", "x": 0, "y": 112, "w": 32, "h": 32 },
+    "pine-snow": { "zip": "biomeA", "file": "Original/16x16/tundra/tilesets/vectoraith_tileset_details_tundra.png", "x": 48, "y": 0, "w": 32, "h": 48 },
+    "pine-snow-small": { "zip": "biomeA", "file": "Original/16x16/tundra/tilesets/vectoraith_tileset_details_tundra.png", "x": 32, "y": 16, "w": 16, "h": 32 },
+    "sunflowers": { "zip": "biomeB", "file": "16x16/grassland/tilesets/vectoraith_tileset_details_grassland.png", "x": 16, "y": 0, "w": 16, "h": 32 },
+    "stump": { "zip": "biomeB", "file": "16x16/grassland/tilesets/vectoraith_tileset_details_grassland.png", "x": 0, "y": 64, "w": 32, "h": 32 },
+    "sign-zone": { "zip": "wooden", "file": "Original/16x16/vectoraith_tileset_buildings_wooden_1.png", "x": 80, "y": 48, "w": 16, "h": 16 },
     "acacia": {
       "zip": "biomeB",
       "file": "16x16/savannah/tilesets/vectoraith_tileset_details_savannah.png",

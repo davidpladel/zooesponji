@@ -1,9 +1,9 @@
 import * as Phaser from 'phaser';
 import { getArt, propAnimKey, propKey } from '../art/art';
 import { depthForY } from '../core/depth';
-import { readEnclosures, readProps, type EnclosureInfo, type TiledMap } from '../core/tiledmap';
+import { readEnclosures, readProps, type EnclosureInfo, type PropInfo, type TiledMap } from '../core/tiledmap';
 import { PENS, isPenId } from '../data/pens';
-import { t } from '../data/strings';
+import { STRINGS_ES, t, type StringKey } from '../data/strings';
 
 /** Suelo del bioma: por encima del césped (0) y por debajo de las vallas (2). */
 const GROUND_DEPTH = 1;
@@ -22,6 +22,17 @@ function nearestEnclosure(enclosures: EnclosureInfo[], x: number, y: number): En
     }
   }
   return best;
+}
+
+/** Texto de un cartel: el nombre de su zona, o el del recinto que tiene más cerca. Null si no es un cartel. */
+function signLabel(p: PropInfo, enclosures: EnclosureInfo[]): string | null {
+  if (p.prop === 'sign-zone') {
+    const key = `zone.${p.zone}`;
+    return key in STRINGS_ES ? t(key as StringKey) : null;
+  }
+  if (p.prop !== 'sign') return null;
+  const enclosure = nearestEnclosure(enclosures, p.x, p.y);
+  return enclosure && isPenId(enclosure.penId) ? t(PENS[enclosure.penId].nameKey) : null;
 }
 
 export const Decor = {
@@ -67,21 +78,20 @@ export const Decor = {
           .setDepth(depthForY(p.y) + 1);
       }
 
-      if (p.prop === 'sign') {
-        const enclosure = nearestEnclosure(enclosures, p.x, p.y);
-        if (enclosure && isPenId(enclosure.penId)) {
-          scene.add
-            .text(p.x, p.y - TILE - 2, t(PENS[enclosure.penId].nameKey), {
-              fontFamily: 'sans-serif',
-              fontSize: '6px',
-              color: '#ffffff',
-              stroke: '#3e2723',
-              strokeThickness: 3,
-            })
-            .setOrigin(0.5, 1)
-            .setResolution(4)
-            .setDepth(depthForY(p.y) + 1);
-        }
+      const label = signLabel(p, enclosures);
+      if (label) {
+        scene.add
+          .text(p.x, p.y - TILE - 2, label, {
+            fontFamily: 'sans-serif',
+            fontSize: p.zone ? '7px' : '6px',
+            fontStyle: p.zone ? 'bold' : 'normal',
+            color: '#ffffff',
+            stroke: '#3e2723',
+            strokeThickness: 3,
+          })
+          .setOrigin(0.5, 1)
+          .setResolution(4)
+          .setDepth(depthForY(p.y) + 1);
       }
     }
   },
