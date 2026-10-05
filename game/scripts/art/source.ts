@@ -1,7 +1,7 @@
 // Lectura de la configuración de arte y de las hojas dentro de los zips del repo privado.
 import AdmZip from 'adm-zip';
 import { PNG } from 'pngjs';
-import type { Animate, Compose } from './pngTools.ts';
+import type { Animate, Compose, SheetEdit } from './pngTools.ts';
 import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -18,6 +18,16 @@ export interface CropRect {
   /** Zonas del recorte (relativas a él) que se dejan transparentes: restos de piezas vecinas. */
   erase?: [number, number, number, number][];
 }
+/** Un aspecto de animal: hoja del pack, retoques encima y, si existe, el dibujo de los niños. */
+export type LookSource = Source & {
+  recolor?: 'panther';
+  edits?: SheetEdit[];
+  /** Lado (px) al que se reduce cada fotograma: un animal más pequeño que los de su especie. */
+  shrink?: number;
+  /** Archivo en `art-work/terminados/` que sustituye a todo lo demás. */
+  override?: string;
+  overrideRows?: number[];
+};
 export interface ArtConfig {
   privateRepo: string;
   zips: Record<string, string>;
@@ -26,7 +36,8 @@ export interface ArtConfig {
   keeper: Source & { character: number };
   shopkeeper: Source & { character: number };
   visitors: (Source & { character: number })[];
-  animals: Record<string, Source & { recolor?: 'panther'; override?: string; overrideRows?: number[] }>;
+  /** Por aspecto: el de la especie (`cabra`) y los de cada animal distinto (`cabra-gordi`). */
+  animals: Record<string, LookSource>;
   props?: Record<string, Source & CropRect & { animate?: Animate; compose?: Compose }>;
   foods?: Record<string, (Source & CropRect) | { override: string }>;
   companions?: Record<string, Source>;

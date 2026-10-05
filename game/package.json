@@ -19,6 +19,7 @@
     "make:campanita": "node scripts/make-campanita.mjs",
     "make:paso": "node scripts/make-paso.mjs",
     "art:grid": "node scripts/art/grid.ts",
+    "art:preview": "node scripts/art/preview.ts",
     "art:props-sheet": "node scripts/art/propsSheet.ts"
   },
   "dependencies": {
