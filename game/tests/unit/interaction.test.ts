@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { approachTile, gateAtDoorstep, isDropOnTarget, rectContains } from '../../src/core/interaction';
+import { approachTile, gateAtDoorstep, isDropOnTarget, nearestWithin, rectContains } from '../../src/core/interaction';
 import { gridFromAscii } from './helpers';
 
 const gates = [
@@ -54,5 +54,21 @@ describe('approachTile', () => {
 
   it('null si no hay salida', () => {
     expect(approachTile({ x: 1, y: 2 }, rect, 16, gridFromAscii(['xxx', 'xxx', 'x.x', 'xxx']))).toBeNull();
+  });
+});
+
+describe('nearestWithin', () => {
+  const items = [
+    { id: 'a', x: 0, y: 0 },
+    { id: 'b', x: 10, y: 0 },
+  ];
+
+  it('da el más cercano dentro del radio', () => {
+    expect(nearestWithin(items, { x: 7, y: 0 }, 14)?.id).toBe('b');
+  });
+
+  it('da null si ninguno está dentro del radio', () => {
+    expect(nearestWithin(items, { x: 50, y: 0 }, 14)).toBeNull();
+    expect(nearestWithin([], { x: 0, y: 0 }, 14)).toBeNull();
   });
 });
