@@ -3,7 +3,7 @@ import { getArt } from '../art/art';
 import { TILE_SIZE } from '../config';
 import { penCount, isPenOpen, type GameState } from '../core/economy';
 import { penSpace, spreadPositions, stepRoamer, type PenSpace, type Roamer } from '../core/flock';
-import { gateAtDoorstep, rectContains, type Rect } from '../core/interaction';
+import { gateAtDoorstep, nearestWithin, rectContains, type Rect } from '../core/interaction';
 import type { Vec } from '../core/movement';
 import type { Point } from '../core/pathfinding';
 import type { EnclosureInfo, GateInfo, PropInfo } from '../core/tiledmap';
@@ -58,18 +58,14 @@ const wanderer = (walker: Walker, residentId: string | null, rest = Math.random(
   phase: Math.random() * Math.PI * 2,
 });
 
-/** Lo que pasa al pisar el camino delante de la puerta de un recinto. */
-export interface DoorstepEvent {
-  penId: PenId;
-  locked: boolean;
-}
-
 /** Recintos: animales, candado con precio y la puerta donde se da de comer. */
 export class Pens {
   private readonly pens: Pen[] = [];
   private readonly sparklePool: Phaser.GameObjects.Text[] = [];
   /** Recinto en cuya puerta está la cuidadora (para avisar solo al llegar, no en cada fotograma). */
   private atDoorstep: PenId | null = null;
+  /** Residente al que va a dar de comer la cuidadora: se queda quieto esperándola. */
+  private held: string | null = null;
 
   constructor(
     private readonly scene: Phaser.Scene,
@@ -130,6 +126,10 @@ export class Pens {
     for (const pen of this.pens) {
       const all = this.members(pen);
       for (const w of all) {
+        if (w.residentId !== null && w.residentId === this.held) {
+          w.walker.stop();
+          continue;
+        }
         if (art) this.roam(pen, w, all, delta);
         else
           w.walker.moveTo(
@@ -154,15 +154,64 @@ export class Pens {
   }
 
   /**
-   * Al llegar al camino pegado a la puerta de un recinto: su animal (y si está cerrado).
-   * Solo al llegar; no se repite hasta que la cuidadora se aparte de la puerta.
+   * Recinto cerrado delante de cuya puerta acaba de llegar la cuidadora (para avisar de que se compra
+   * en la tienda). Solo al llegar; no se repite hasta que se aparte de la puerta.
    */
-  onKeeperTile(keeperTile: Point, state: GameState): DoorstepEvent | null {
+  lockedDoorstep(keeperTile: Point, state: GameState): PenId | null {
     const gate = gateAtDoorstep(keeperTile, this.pens.map((pen) => ({ animalId: pen.id, tile: pen.gate })));
     const id = gate?.animalId ?? null;
     if (id === this.atDoorstep) return null;
     this.atDoorstep = id;
-    return id ? { penId: id, locked: !isPenOpen(state, id) } : null;
+    return id && !isPenOpen(state, id) ? id : null;
+  }
+
+  /** Interior de los recintos abiertos: por ahí puede andar la cuidadora. */
+  openSpaces(state: GameState): PenSpace[] {
+    return this.pens.filter((pen) => isPenOpen(state, pen.id)).map((pen) => pen.space);
+  }
+
+  /** El residente de un recinto abierto más cercano a `point`, a no más de `radius`. */
+  residentAt(point: Vec, state: GameState, radius: number): { penId: PenId; residentId: string } | null {
+    const candidates = this.pens
+      .filter((pen) => isPenOpen(state, pen.id))
+      .flatMap((pen) =>
+        pen.animals.flatMap((w) =>
+          w.residentId === null ? [] : [{ x: w.walker.x, y: w.walker.y, penId: pen.id, residentId: w.residentId }],
+        ),
+      );
+    const hit = nearestWithin(candidates, point, radius);
+    return hit ? { penId: hit.penId, residentId: hit.residentId } : null;
+  }
+
+  positionOf(residentId: string): Vec | null {
+    const w = this.find(residentId);
+    return w ? { x: w.walker.x, y: w.walker.y } : null;
+  }
+
+  /** Punto sobre la cabeza del animal, donde irán los iconos de estado (hambre, enfermo). */
+  anchorOf(residentId: string): Vec | null {
+    const w = this.find(residentId);
+    return w ? { x: w.walker.x, y: w.walker.y - 16 } : null;
+  }
+
+  hold(residentId: string): void {
+    this.held = residentId;
+  }
+
+  release(): void {
+    this.held = null;
+  }
+
+  contains(penId: PenId, point: Vec): boolean {
+    return rectContains(this.pen(penId).rect, point);
+  }
+
+  private find(residentId: string): Wanderer | null {
+    for (const pen of this.pens) {
+      const w = pen.animals.find((a) => a.residentId === residentId);
+      if (w) return w;
+    }
+    return null;
   }
 
   lockedPenAt(point: Vec, state: GameState): PenId | null {
