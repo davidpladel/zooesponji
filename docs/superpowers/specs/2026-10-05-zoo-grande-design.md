@@ -134,24 +134,38 @@ el repo público.
 
 Siguen las 4 de ahora (piedra, carne, conejo, zanahoria) y entran 7, todas con icono ya
 disponible en el pack de iconos: **pescado, manzana, plátano, lechuga, maíz, pan y huevo**.
-Total: 11. Cada especie enseña 4 o 5 en su bandeja.
+Además entran una **gallina**, que no se come sino que se hace amiga (como el conejo), y una
+cosa rara: un **calcetín**, dibujado por Claude. Total: 13.
+Cada especie enseña 4 o 5 en su bandeja.
 
-| Especie | Come | Especial | Rechaza |
-|---|---|---|---|
-| Jirafa | lechuga, manzana | plátano | carne |
-| Cebra | lechuga, zanahoria | manzana | pescado |
-| Gacela | lechuga, zanahoria | maíz | carne |
-| Pingüino | pescado | piedra (los pingüinos regalan piedrecitas) | zanahoria, pan |
-| Oveja | lechuga, maíz | manzana | carne |
-| Caballo | zanahoria, maíz | manzana | huevo |
-| Gallina | maíz, lechuga | pan | piedra |
-| Gallo | maíz, pan | — | huevo, piedra |
-| Pato | maíz, lechuga | pescado | pan (el pan les sienta mal: lo cuenta el libro) |
-| Elefante africano | lechuga, manzana, zanahoria | plátano | carne |
-| Elefante asiático | lechuga, plátano, zanahoria | manzana | pescado |
-| Cabra (como ahora, más una) | piedra, zanahoria, lechuga | conejo | carne |
+**Regla de las bandejas** (decidida con David):
 
-León, pantera y panda no cambian.
+- En cada bandeja hay al menos una comida de verdad que ese animal **rechaza** y que otro animal
+  sí come. Así el niño aprende que no todo vale para todos.
+- Hay **cosas raras** (piedra, calcetín) que dan error casi siempre. La gracia es que a algún
+  animal sí le gustan: la cabra come piedras y al pingüino le encantan.
+
+| Especie | Come | Especial | Rechaza (comida de otros) | Rechaza (cosa rara) |
+|---|---|---|---|---|
+| Jirafa | lechuga, manzana | plátano | carne | calcetín |
+| Cebra | lechuga, zanahoria | manzana | pescado | piedra |
+| Gacela | lechuga, zanahoria | maíz | carne, huevo | — |
+| Pingüino | pescado | piedra (regalan piedrecitas) | zanahoria, pan | calcetín |
+| Oveja | lechuga, maíz | gallina (se hacen amigas) | carne | calcetín |
+| Caballo | zanahoria, maíz | manzana | huevo | piedra |
+| Gallina | maíz, lechuga | pan | pescado | piedra |
+| Gallo | maíz, pan | — | huevo, carne | calcetín |
+| Pato | maíz, lechuga | pescado | pan (les sienta mal: lo cuenta el libro) | piedra |
+| Elefante africano | lechuga, manzana | plátano | carne | calcetín |
+| Elefante asiático | lechuga, plátano | manzana | pescado | piedra |
+| Cabra | piedra, zanahoria, lechuga | conejo | carne | — |
+
+**Amigos:** el conejo y la gallina no se comen. Cuando son la reacción especial (cabra y panda
+con el conejo, oveja con la gallina), aparecen al lado del animal, saltan juntos, se dan un
+achuchón y salen corazones. Las demás reacciones especiales se celebran con saltos y corazones.
+
+León, pantera y panda no cambian: ya cumplen la regla (rechazan la zanahoria o la carne, y la
+piedra).
 
 ## Monedas y precios
 
@@ -265,6 +279,9 @@ Cuatro planes, cada uno deja el juego funcionando:
 - Claude dibuja todas las variantes de aspecto.
 - Corazoncitos cuando un visitante se junta con una oveja.
 - Cada recinto se compra con 1 animal; los demás se compran después.
+- Gordi pasa a ser tostada (la blanca es Nube); Chispa se dibuja más pequeña.
+- Regla de las bandejas: al menos una comida de otros que el animal rechaza, y cosas raras.
+- La oveja se hace amiga de una gallina (igual que la cabra del conejo).
 
 ## Multi-idioma (bloque aparte, antes de Play)
 
