@@ -65,7 +65,7 @@ export const Decor = {
       if (p.prop === 'park-gate') {
         // El nombre del zoo en el tejadillo del portón, como el arco del parque de la v1.
         scene.add
-          .text(p.x, p.y - info.height + 15, 'Zoo Esponji', {
+          .text(p.x, p.y - info.height + 15, t('title.name'), {
             fontFamily: 'sans-serif',
             fontSize: '9px',
             fontStyle: 'bold',

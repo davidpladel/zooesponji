@@ -2,6 +2,7 @@ import type * as Phaser from 'phaser';
 import { getArt } from '../art/art';
 import { openPens } from '../core/economy';
 import type { Vec } from '../core/movement';
+import { BOOK_CHAPTERS } from '../data/book';
 import type { FoodId } from '../data/foods';
 import type { PenId } from '../data/pens';
 import type { FeedScene } from '../scenes/FeedScene';
@@ -38,6 +39,10 @@ export interface ZooTestApi {
   bookPage(): string | null;
   bookText(): string | null;
   bookNext(): void;
+  /** Abre el libro por una página, sin pasar por la estantería de la tienda. */
+  openBook(page?: string): void;
+  /** Con el índice abierto: dónde tocar para abrir un capítulo. */
+  bookIndexPos(chapter: string): Vec | null;
   unlocked(): string[];
   /** Simula el botón atrás de Android; devuelve la acción aplicada. */
   back(): Promise<string>;
@@ -114,6 +119,14 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
     bookPage: () => activeScene<BookScene>('Book')?.pageId() ?? null,
     bookText: () => activeScene<BookScene>('Book')?.pageText() ?? null,
     bookNext: () => activeScene<BookScene>('Book')?.next(),
+    openBook: (page) => {
+      if (game.scene.isActive('World')) game.scene.pause('World');
+      game.scene.start('Book', { page });
+    },
+    bookIndexPos: (chapter) => {
+      const id = BOOK_CHAPTERS.find((c) => c === chapter);
+      return id ? (activeScene<BookScene>('Book')?.indexPos(id) ?? null) : null;
+    },
     openSettings: () => game.scene.getScene<HudScene>('Hud').openSettings(),
     settingsTogglePos: (key) => activeScene<SettingsScene>('Settings')?.togglePos(key) ?? null,
     settings: () => ({ ...getSession().settings }),

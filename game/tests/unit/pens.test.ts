@@ -32,9 +32,8 @@ describe('recintos', () => {
     }
   });
 
-  // Las 35 páginas de los animales nuevos llegan con el plan 4 (tienda y libro).
-  it('los animales de los cuatro recintos de siempre tienen página en el libro', () => {
-    for (const penId of ['leon', 'cabra', 'pantera', 'panda'] as const) {
+  it('cada animal tiene su página en el libro', () => {
+    for (const penId of PEN_IDS) {
       for (const r of PENS[penId].residents) expect(BOOK_PAGES.some((p) => p.id === r.id), r.id).toBe(true);
     }
   });

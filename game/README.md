@@ -35,7 +35,7 @@ Sin `public/art/` el juego funciona con arte provisional (emojis y colores plano
 - **Agua animada:** una pieza con `animate: { step, count, area?, fps? }` en `art.config.json` se importa como hoja de fotogramas (`step` = distancia entre fotogramas en la hoja del pack; `area` = zona que cambia).
 - **Carne:** cuando exista `zooesponji-private/art-work/terminados/carne.png`, `art:import` la usa en la bandeja (mientras, emoji 🥩).
 - **Mapa:** `npm run make:zoo-map` regenera `public/assets/maps/zoo.tmj` (mapa lógico de 96×60; el arte lo pone el juego). El parque de siempre queda en el centro y de sus caminos salen tres zonas, cada una con su cartel: sabana y elefantes al norte, polo al oeste y granja al este.
-- **Tienda por dentro:** `npm run make:shop-map` regenera `public/assets/maps/tienda.tmj` (20×12: suelo, pared, muebles, tendero, 5 peanas, felpudo y decoración). `art:import` recorta los muebles del *Interior Tileset Pack – Essentials* (`interior` en `art.config.json`, salen como `interior-*.png`); sin ellos la tienda se pinta con colores. `npm run make:campanita` y `npm run make:paso` vuelven a sintetizar `public/audio/campanita.wav` y `paso.wav`. Dentro, la cuidadora anda por la rejilla de `tienda.tmj` con las peanas bloqueadas (`core/shopWalk.ts`: alcance, punto de aproximación, pista y felpudo). Tienda: una peana por animal (al comprar el recinto pasa a vender "otro animal"), precio o sello AGOTADO. En la estantería hay un **libro secreto** (`BookScene`, `core/book.ts`): 14 páginas con la historia, Mary y cada animal con nombre; se guardan los ids leídos en `book` del guardado.
+- **Tienda por dentro:** `npm run make:shop-map` regenera `public/assets/maps/tienda.tmj` (20×12: suelo, pared, muebles, tendero, 5 peanas, felpudo y decoración). `art:import` recorta los muebles del *Interior Tileset Pack – Essentials* (`interior` en `art.config.json`, salen como `interior-*.png`); sin ellos la tienda se pinta con colores. `npm run make:campanita` y `npm run make:paso` vuelven a sintetizar `public/audio/campanita.wav` y `paso.wav`. Dentro, la cuidadora anda por la rejilla de `tienda.tmj` con las peanas bloqueadas (`core/shopWalk.ts`: alcance, punto de aproximación, pista y felpudo). Tienda: enseña como mucho 5 artículos, los más baratos que se pueden comprar (recintos por abrir y "otro animal" de los abiertos, mezclados y de menor a mayor precio; `core/shopEntries.ts`). Lo demás va saliendo según se compra, y el sello AGOTADO solo aparece al final, cuando quedan menos de 5 cosas. En la estantería hay un **libro secreto** (`BookScene`, `core/book.ts`, `data/book.ts`): 49 páginas (la historia, Mary y cada animal con nombre) repartidas en capítulos por zona, con un índice tocable y una portadilla por capítulo que no cuentan. Las páginas salen de los recintos de `data/pens.ts`; se guardan los ids leídos en `book` del guardado.
 
 ### Animales distintos dentro de un recinto
 
@@ -74,7 +74,7 @@ siguiente de la lista del recinto al precio de su especie. Las especies grandes 
 ## Añadir un animal
 
 1. Especie en `src/data/animals.ts`: su nombre (clave de `src/data/strings.ts`), reacciones solo para las comidas de su bandeja (4 o 5), monedas y, si se pueden comprar más animales sueltos, `extraCost` + `extraNameKey`.
-2. Recinto en `src/data/pens.ts`: precio (sin precio, viene abierto de inicio) y lista ordenada de residentes (`id`, especie, aspecto). El `id` de cada residente es el de su página en `src/data/book.ts`. La tienda sale de esta tabla.
+2. Recinto en `src/data/pens.ts`: precio (sin precio, viene abierto de inicio) y lista ordenada de residentes (`id`, especie, aspecto). Su capítulo del libro se elige en `CHAPTER_PENS` (`src/data/book.ts`) y las páginas salen solas. El `id` de cada residente es el de su página en `src/data/book.ts`. La tienda sale de esta tabla.
 3. Sprites del aspecto: entrada en `art/art.config.json` (hoja del pack o dibujo de los niños) y `npm run art:import`.
 4. En el mapa de Tiled, capa `objetos`: rectángulo de tipo `recinto` y objeto de tipo `puerta`, ambos con la propiedad `penId`, que lleva el id del recinto.
 
@@ -105,4 +105,4 @@ Girar el móvil: los navegadores avisan del giro antes de dar el tamaño nuevo, 
 
 ## Versión
 
-`version` en `package.json` y `versionName` en `android/app/build.gradle`: **2.2.0**. `versionCode` sube en 1 con cada subida a Play.
+`version` en `package.json` y `versionName` en `android/app/build.gradle`: **2.3.0**. `versionCode` sube en 1 con cada subida a Play.
