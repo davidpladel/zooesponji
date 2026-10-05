@@ -28,7 +28,8 @@ export interface ArtManifest {
   keeper: SheetInfo;
   shopkeeper: SheetInfo;
   visitors: SheetInfo[];
-  animals: Record<AnimalId, SheetInfo>;
+  /** Hojas de animal por aspecto (`cabra`, `cabra-gordi`…). Las de especie están siempre. */
+  animals: Record<string, SheetInfo>;
   decor: Record<DecorKind, ImageInfo>;
   /** Piezas de decoración por nombre (opcional en manifiestos antiguos). */
   props: Record<string, PropImage>;
@@ -66,12 +67,14 @@ export function parseManifest(value: unknown): ArtManifest | null {
   if (visitors.some((v) => v === null)) return null;
 
   if (!isObject(value.animals)) return null;
-  const animals = {} as Record<AnimalId, SheetInfo>;
-  for (const id of ANIMAL_IDS) {
-    const s = asSheet(value.animals[id]);
+  const animals: Record<string, SheetInfo> = {};
+  for (const [look, raw] of Object.entries(value.animals)) {
+    const s = asSheet(raw);
     if (!s) return null;
-    animals[id] = s;
+    animals[look] = s;
   }
+  // La hoja de cada especie es obligatoria; las de aspectos concretos, no (ver `resolveLook`).
+  if (ANIMAL_IDS.some((id) => !animals[id])) return null;
 
   if (!isObject(value.decor)) return null;
   const decor = {} as Record<DecorKind, ImageInfo>;
@@ -137,4 +140,9 @@ export function parseManifest(value: unknown): ArtManifest | null {
     animals,
     decor,
   };
+}
+
+/** El aspecto si su hoja está en el manifiesto; si no, el de su especie (arte importado antes de añadirlo). */
+export function resolveLook(m: ArtManifest | null, look: string, species: AnimalId): string {
+  return m?.animals[look] ? look : species;
 }

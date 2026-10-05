@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { parseManifest } from '../../src/art/manifest';
+import { parseManifest, resolveLook } from '../../src/art/manifest';
 
 const sheet = (w: number, h: number) => ({ file: 'x.png', frameWidth: w, frameHeight: h });
 const image = { file: 'd.png', width: 16, height: 16 };
@@ -71,5 +71,33 @@ describe('parseManifest', () => {
 
   it('rechaza una pieza de interior mal formada', () => {
     expect(parseManifest({ ...valid(), interior: { counter: { file: 'x.png' } } })).toBeNull();
+  });
+
+  it('conserva las hojas de aspectos además de las de especie', () => {
+    const m = parseManifest({ ...valid(), animals: { ...valid().animals, 'cabra-gordi': sheet(16, 16) } });
+    expect(m?.animals['cabra-gordi']?.frameWidth).toBe(16);
+  });
+
+  it('sigue siendo válido sin hojas de aspectos: bastan las de especie', () => {
+    expect(parseManifest(valid())).not.toBeNull();
+  });
+
+  it('rechaza una hoja de aspecto mal formada', () => {
+    expect(parseManifest({ ...valid(), animals: { ...valid().animals, 'cabra-gordi': { file: 1 } } })).toBeNull();
+  });
+});
+
+describe('resolveLook', () => {
+  it('usa el aspecto si su hoja está en el manifiesto', () => {
+    const m = parseManifest({ ...valid(), animals: { ...valid().animals, 'cabra-gordi': sheet(16, 16) } });
+    expect(resolveLook(m, 'cabra-gordi', 'cabra')).toBe('cabra-gordi');
+  });
+
+  it('cae a la hoja de la especie si falta la del aspecto', () => {
+    expect(resolveLook(parseManifest(valid()), 'cabra-gordi', 'cabra')).toBe('cabra');
+  });
+
+  it('sin arte devuelve la especie', () => {
+    expect(resolveLook(null, 'cabra-gordi', 'cabra')).toBe('cabra');
   });
 });

@@ -383,7 +383,7 @@ export class ShopScene extends Phaser.Scene {
     const done = entry.status !== 'buy';
     const affordable = getSession().state.coins >= entry.cost;
 
-    const animal = animalPortrait(this, entry.species, pos.x, pos.y, 28 * s).setOrigin(0.5, 1).setDepth(base.y);
+    const animal = animalPortrait(this, entry.species, pos.x, pos.y, 28 * s, entry.look).setOrigin(0.5, 1).setDepth(base.y);
     if (done) {
       animal.setAlpha(0.5);
       if (animal instanceof Phaser.GameObjects.Sprite) animal.setTint(0x9e9e9e);

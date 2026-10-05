@@ -1,8 +1,9 @@
 import * as Phaser from 'phaser';
-import { ART_KEYS, animalKey, companionKey, getArt, idleFrame, propKey } from '../art/art';
+import { ART_KEYS, animalKey, companionKey, getArt, idleFrame, lookOr, propKey } from '../art/art';
 import { isBookComplete, isPageUnlocked } from '../core/book';
 import { ANIMALS } from '../data/animals';
 import { BOOK_BACK_ID, BOOK_PAGES, type BookPage } from '../data/book';
+import { findResident } from '../data/pens';
 import { t, type StringKey } from '../data/strings';
 import { sfx } from '../systems/audio';
 import { getSession } from '../systems/session';
@@ -196,7 +197,9 @@ export class BookScene extends Phaser.Scene {
     const pic = page.picture;
     let obj: Phaser.GameObjects.Sprite | Phaser.GameObjects.Image | Phaser.GameObjects.Text;
     if (art && pic.kind === 'animal') {
-      obj = this.add.sprite(x, y, animalKey(pic.animalId), idleFrame('right'));
+      // Cada página enseña a su animal, no a uno cualquiera de la especie.
+      const look = lookOr(findResident(page.id)?.resident.look ?? pic.animalId, pic.animalId);
+      obj = this.add.sprite(x, y, animalKey(look), idleFrame('right'));
     } else if (art && pic.kind === 'companion' && art.companions[pic.animalId]) {
       obj = this.add.sprite(x, y, companionKey(pic.animalId), idleFrame('left'));
     } else if (art && pic.kind === 'keeper') {

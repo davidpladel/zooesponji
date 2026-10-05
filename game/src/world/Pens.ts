@@ -109,7 +109,7 @@ export class Pens {
       const spot = (i: number): Vec => spots[i] ?? home;
       const animals = here.map((resident, i) => {
         const p = spot(i);
-        return wanderer(createAnimal(scene, resident.species, p.x, p.y), resident.id);
+        return wanderer(createAnimal(scene, resident.species, p.x, p.y, resident.look), resident.id);
       });
       const companionAt = spot(count);
       const companionWalker = hasCompanion ? createCompanion(scene, id, companionAt.x, companionAt.y) : null;
@@ -261,7 +261,7 @@ export class Pens {
     };
     const resident = PENS[pen.id].residents[pen.animals.length];
     if (!resident) return;
-    const w = wanderer(createAnimal(this.scene, resident.species, entry.x, entry.y), resident.id, 800);
+    const w = wanderer(createAnimal(this.scene, resident.species, entry.x, entry.y, resident.look), resident.id, 800);
     pen.animals.push(w);
     w.walker.object.setScale(0);
     this.scene.tweens.add({ targets: w.walker.object, scale: 1, duration: 600, delay: 300, ease: 'Back.easeOut' });

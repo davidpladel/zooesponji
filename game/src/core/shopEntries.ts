@@ -12,6 +12,8 @@ export interface ShopEntry {
   penId: PenId;
   /** Especie que se dibuja en la peana: el animal que llegaría (o el último, si ya no cabe más). */
   species: AnimalId;
+  /** Hoja de sprites que se dibuja en la peana: la del animal que llegaría. */
+  look: string;
   cost: number;
   status: ShopEntryStatus;
   /** Solo en extras: animales que hay y máximo del recinto. */
@@ -35,7 +37,7 @@ export function shopEntries(state: GameState): ShopEntry[] {
     const extraCost = ANIMALS[coming.species].extraCost;
     const hasExtra = open && max > 1 && extraCost !== undefined;
     if (pen && !hasExtra) {
-      entries.push({ id: pen.id, kind: 'pen', penId, species: residents[0]!.species, cost: pen.cost, status: open ? 'owned' : 'buy' });
+      entries.push({ id: pen.id, kind: 'pen', penId, species: residents[0]!.species, look: residents[0]!.look, cost: pen.cost, status: open ? 'owned' : 'buy' });
     }
     if (hasExtra && extraCost !== undefined) {
       entries.push({
@@ -43,6 +45,7 @@ export function shopEntries(state: GameState): ShopEntry[] {
         kind: 'extra',
         penId,
         species: coming.species,
+        look: coming.look,
         cost: extraCost,
         status: count >= max ? 'full' : 'buy',
         count,

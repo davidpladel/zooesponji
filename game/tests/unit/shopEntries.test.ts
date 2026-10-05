@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { initialState, type GameState } from '../../src/core/economy';
 import { shopEntries } from '../../src/core/shopEntries';
+import { PENS } from '../../src/data/pens';
 
 const withCounts = (counts: Partial<GameState['counts']>): GameState => ({
   ...initialState(),
@@ -30,5 +31,13 @@ describe('shopEntries', () => {
     const entries = shopEntries(state);
     expect(entries.find((e) => e.id === 'pantera')).toMatchObject({ kind: 'pen', penId: 'pantera', species: 'pantera' });
     expect(entries.find((e) => e.id === 'extra-cabra')).toMatchObject({ kind: 'extra', penId: 'cabra', species: 'cabra', count: 1, max: 5 });
+  });
+
+
+  it('cada artículo dice qué aspecto dibujar: el del animal que llegaría', () => {
+    const state = { ...initialState(), coins: 0, shopUnlocked: true };
+    const entries = shopEntries(state);
+    expect(entries.find((e) => e.id === 'pantera')?.look).toBe(PENS.pantera.residents[0]!.look);
+    expect(entries.find((e) => e.id === 'extra-cabra')?.look).toBe(PENS.cabra.residents[1]!.look);
   });
 });

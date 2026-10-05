@@ -1,4 +1,4 @@
-import type { AnimalId } from './animals';
+import { ANIMAL_IDS, type AnimalId } from './animals';
 import type { StringKey } from './strings';
 
 export const PEN_IDS = ['leon', 'cabra', 'pantera', 'panda'] as const;
@@ -59,4 +59,11 @@ export function findResident(residentId: string): { penId: PenId; index: number;
     if (index >= 0) return { penId, index, resident: PENS[penId].residents[index]! };
   }
   return null;
+}
+
+/** Aspectos que el juego dibuja: el de cada especie (retratos genéricos) y el de cada residente. */
+export function allLooks(): string[] {
+  const looks = new Set<string>(ANIMAL_IDS);
+  for (const id of PEN_IDS) for (const r of PENS[id].residents) looks.add(r.look);
+  return [...looks];
 }

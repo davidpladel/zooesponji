@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { ANIMALS } from '../../src/data/animals';
 import { BOOK_PAGES } from '../../src/data/book';
-import { PEN_IDS, PENS, findResident, isPenId, nextResident, penCapacity, residentsIn } from '../../src/data/pens';
+import { PEN_IDS, PENS, allLooks, findResident, isPenId, nextResident, penCapacity, residentsIn } from '../../src/data/pens';
 import { STRINGS_ES } from '../../src/data/strings';
 
 describe('recintos', () => {
@@ -52,5 +52,12 @@ describe('recintos', () => {
   it('isPenId distingue ids válidos', () => {
     expect(isPenId('panda')).toBe(true);
     expect(isPenId('tigre')).toBe(false);
+  });
+
+  it('allLooks: un aspecto por especie más los de cada residente, sin repetir', () => {
+    const looks = allLooks();
+    expect(new Set(looks).size).toBe(looks.length);
+    for (const species of ['leon', 'cabra', 'pantera', 'panda']) expect(looks).toContain(species);
+    for (const penId of PEN_IDS) for (const r of PENS[penId].residents) expect(looks).toContain(r.look);
   });
 });
