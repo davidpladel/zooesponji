@@ -1,6 +1,6 @@
 import { rectContains, type Rect } from './interaction';
 import type { Vec } from './movement';
-import { MIN_GAP, pickWanderTarget } from './obstacles';
+import { MIN_GAP, pickWanderTarget, segmentHitsRects } from './obstacles';
 import type { EnclosureInfo, PropInfo } from './tiledmap';
 import type { Rng } from './wander';
 
@@ -98,4 +98,38 @@ export function stepRoamer(
   if (blocked) return { ...roamer, target: null, rest: 400 + rng() * 800 };
   if (next === roamer.target) return { ...roamer, pos: next, target: null, rest: 1000 + rng() * 2000 };
   return { ...roamer, pos: next };
+}
+
+/** ¿Se puede estar en `p`? Dentro del recinto, a `margin` de la valla y fuera de los obstáculos. */
+function freeSpot(p: Vec, space: PenSpace, margin: number): boolean {
+  const { inner, obstacles } = space;
+  return (
+    p.x >= inner.x + margin &&
+    p.x <= inner.x + inner.width - margin &&
+    p.y >= inner.y + margin &&
+    p.y <= inner.y + inner.height - margin &&
+    !obstacles.some((r) => rectContains(r, p))
+  );
+}
+
+function reachable(pos: Vec, p: Vec, space: PenSpace, margin: number): Vec | null {
+  return freeSpot(p, space, margin) && !segmentHitsRects(pos, p, space.obstacles) ? p : null;
+}
+
+/** Destino para apartarse de `from`: `distance` px en dirección contraria. Null si ahí no se puede estar. */
+export function fleeTarget(pos: Vec, from: Vec, space: PenSpace, distance = 20, margin = 8): Vec | null {
+  const dx = pos.x - from.x;
+  const dy = pos.y - from.y;
+  const d = Math.hypot(dx, dy);
+  if (d === 0) return null;
+  return reachable(pos, { x: pos.x + (dx / d) * distance, y: pos.y + (dy / d) * distance }, space, margin);
+}
+
+/** Destino para acercarse a `to` quedándose a `keep` px. Null si ya está al lado o no hay paso. */
+export function followTarget(pos: Vec, to: Vec, space: PenSpace, keep = 20, margin = 8): Vec | null {
+  const dx = to.x - pos.x;
+  const dy = to.y - pos.y;
+  const d = Math.hypot(dx, dy);
+  if (d <= keep) return null;
+  return reachable(pos, { x: pos.x + (dx / d) * (d - keep), y: pos.y + (dy / d) * (d - keep) }, space, margin);
 }

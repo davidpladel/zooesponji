@@ -2,8 +2,8 @@ import * as Phaser from 'phaser';
 import { getArt } from '../art/art';
 import { TILE_SIZE } from '../config';
 import { penCount, isPenOpen, type GameState } from '../core/economy';
-import { BODY_RADIUS, penSpace, spreadPositions, stepRoamer, type PenSpace, type Roamer } from '../core/flock';
-import { gateAtDoorstep, rectContains, rectsOverlap, tapDistance, type Rect } from '../core/interaction';
+import { BODY_RADIUS, fleeTarget, followTarget, penSpace, spreadPositions, stepRoamer, type PenSpace, type Roamer } from '../core/flock';
+import { gateAtDoorstep, nearestWithin, rectContains, rectsOverlap, tapDistance, type Rect } from '../core/interaction';
 import { MIN_GAP } from '../core/obstacles';
 import type { Vec } from '../core/movement';
 import type { Point } from '../core/pathfinding';
@@ -13,6 +13,7 @@ import { PENS, isPenId, residentsIn, type PenId, type ResidentDef } from '../dat
 import { shopItemForPen } from '../data/shop';
 import { t } from '../data/strings';
 import { createAnimal, createCompanion, type Walker } from './Actors';
+import type { Petting } from './VisitorCrowd';
 
 /** Algo que pasea dentro de un recinto: un animal o su acompañante (la leona). */
 interface Wanderer {
@@ -23,6 +24,8 @@ interface Wanderer {
   species: AnimalId | null;
   /** Radio del cuerpo (px). */
   radius: number;
+  /** Última vez (ms) que le salieron corazones. */
+  heartAt: number;
   roam: Roamer;
   /** Sin arte: punto alrededor del que se balancea, y desfase del balanceo. */
   base: Vec;
@@ -39,12 +42,33 @@ interface Pen {
   animals: Wanderer[];
   companion: Wanderer | null;
   lock: Phaser.GameObjects.Text;
+  /** Granja de contacto: entran visitantes y los animales reaccionan a la gente. */
+  petting: boolean;
+  keeperInside: boolean;
+  /** Ms que les quedan de seguir a la cuidadora. */
+  followLeft: number;
   shown: boolean;
 }
 
 /** Por encima de cualquier cosa del mundo ordenada por Y. */
 const UI_DEPTH = 10000;
 const LOCKED_ALPHA = 0.25;
+/** Una oveja se aparta de quien pasa andando a menos de esto (px). */
+const FLEE_RADIUS = 14;
+/** Y se acerca a quien se queda quieto a menos de esto. */
+const CURIOUS_RADIUS = 64;
+/** Tiempo (ms) que siguen a la cuidadora desde que entra. */
+const FOLLOW_MS = 5000;
+/** Un visitante y una oveja a menos de esto están juntos: salen corazones, como mucho cada HEART_EVERY ms. */
+const HEART_RADIUS = 22;
+const HEART_EVERY = 5000;
+
+/** Quién anda por el mundo, para los recintos donde los animales reaccionan a la gente. */
+export interface People {
+  keeper: Vec;
+  walking: Vec[];
+  standing: Vec[];
+}
 const REACTION_EMOJI: Record<Reaction, string> = { come: '😋', rechaza: '🤢', especial: '🤩' };
 
 const LABEL_STYLE: Phaser.Types.GameObjects.Text.TextStyle = {
@@ -60,6 +84,7 @@ const wanderer = (walker: Walker, residentId: string | null, species: AnimalId |
   residentId,
   species,
   radius,
+  heartAt: -HEART_EVERY,
   roam: { pos: { x: walker.x, y: walker.y }, target: null, rest, radius },
   base: { x: walker.x, y: walker.y },
   phase: Math.random() * Math.PI * 2,
@@ -75,6 +100,8 @@ export class Pens {
   private atDoorstep: PenId | null = null;
   /** Residente al que va a dar de comer la cuidadora: se queda quieto esperándola. */
   private held: string | null = null;
+  /** Veces que han salido corazones entre un visitante y un animal (para pruebas). */
+  heartsShown = 0;
 
   constructor(
     private readonly scene: Phaser.Scene,
@@ -129,7 +156,7 @@ export class Pens {
       const companion = companionWalker ? wanderer(companionWalker, null, null, radiusOf(lead), 500 + Math.random() * 1500) : null;
       for (const w of [...animals, ...(companion ? [companion] : [])]) w.walker.object.setAlpha(unlocked ? 1 : LOCKED_ALPHA);
 
-      this.pens.push({ id, rect, space, gate: gate.tile, home, animals, companion, lock, shown: unlocked });
+      this.pens.push({ id, rect, space, gate: gate.tile, home, animals, companion, lock, petting: def.visitors === true, keeperInside: false, followLeft: 0, shown: unlocked });
     }
   }
 
@@ -137,10 +164,11 @@ export class Pens {
    * Con arte, los animales pasean por su recinto sin pisarse; sin arte, se balancean en su sitio.
    * Los de los recintos que no se ven (`view`: la zona de la cámara) no se actualizan.
    */
-  update(time: number, delta: number, view: Rect): void {
+  update(time: number, delta: number, view: Rect, people: People): void {
     const art = getArt() !== null;
     for (const pen of this.pens) {
       if (!rectsOverlap(view, pen.rect, TILE_SIZE * 2)) continue;
+      if (pen.petting && pen.shown) this.pet(pen, time, delta, people, art);
       const all = this.members(pen);
       for (const w of all) {
         if (w.residentId !== null && w.residentId === this.held) {
@@ -226,6 +254,82 @@ export class Pens {
 
   contains(penId: PenId, point: Vec): boolean {
     return rectContains(this.pen(penId).rect, point);
+  }
+
+  /** Interior de los recintos abiertos donde entran visitantes. */
+  visitorSpaces(state: GameState): PenSpace[] {
+    return this.pens.filter((pen) => pen.petting && isPenOpen(state, pen.id)).map((pen) => pen.space);
+  }
+
+  /** La granja de contacto, si está abierta: su zona y dónde están sus animales. */
+  petting(state: GameState): Petting | null {
+    const pen = this.pens.find((p) => p.petting && isPenOpen(state, p.id));
+    if (!pen) return null;
+    return { area: pen.rect, spots: () => pen.animals.map((w) => ({ x: w.walker.x, y: w.walker.y })) };
+  }
+
+  rectOf(penId: PenId): Rect {
+    return this.pen(penId).rect;
+  }
+
+  /**
+   * Granja de contacto. Cada animal, por orden: se aparta de quien pasa andando; sigue un rato a la
+   * cuidadora cuando entra; el más cercano a un visitante parado se le acerca. Y cuando un visitante
+   * parado y un animal están juntos, salen corazones.
+   */
+  private pet(pen: Pen, time: number, delta: number, people: People, art: boolean): void {
+    const keeperInside = rectContains(pen.rect, people.keeper);
+    if (keeperInside && !pen.keeperInside) pen.followLeft = FOLLOW_MS;
+    pen.keeperInside = keeperInside;
+    if (keeperInside) pen.followLeft = Math.max(0, pen.followLeft - delta);
+    const standing = people.standing.filter((p) => rectContains(pen.rect, p));
+
+    for (const w of art ? pen.animals : []) {
+      if (w.residentId === this.held) continue;
+      const pos = w.roam.pos;
+      const passer = nearestWithin(people.walking, pos, FLEE_RADIUS);
+      // undefined: pasea a su aire. null: se queda donde está.
+      let target: Vec | null | undefined;
+      if (passer) target = fleeTarget(pos, passer, pen.space) ?? undefined;
+      else if (keeperInside && pen.followLeft > 0) target = followTarget(pos, people.keeper, pen.space, 22);
+      else {
+        const visitor = nearestWithin(standing, pos, CURIOUS_RADIUS);
+        if (visitor && this.closest(pen, visitor) === w) target = followTarget(pos, visitor, pen.space, 14);
+      }
+      if (target === undefined) continue;
+      w.roam = target ? { ...w.roam, target, rest: 0 } : { ...w.roam, target: null, rest: 300 };
+    }
+
+    for (const visitor of standing) {
+      const w = this.closest(pen, visitor);
+      if (!w || Math.hypot(w.walker.x - visitor.x, w.walker.y - visitor.y) > HEART_RADIUS) continue;
+      if (time - w.heartAt < HEART_EVERY) continue;
+      w.heartAt = time;
+      this.heartsShown++;
+      this.hearts({ x: w.walker.x, y: w.walker.y });
+      this.hearts(visitor);
+    }
+  }
+
+  private closest(pen: Pen, point: Vec): Wanderer | null {
+    let best: Wanderer | null = null;
+    let bestDistance = Number.POSITIVE_INFINITY;
+    for (const w of pen.animals) {
+      const d = Math.hypot(w.walker.x - point.x, w.walker.y - point.y);
+      if (d < bestDistance) {
+        best = w;
+        bestDistance = d;
+      }
+    }
+    return best;
+  }
+
+  /** Corazones que suben, como en la reacción especial de la ventana de dar de comer. */
+  private hearts(at: Vec): void {
+    ['❤️', '💕', '💖'].forEach((shape, i) => {
+      const heart = this.sparkle(shape).setPosition(at.x + (i - 1) * 6, at.y - 14);
+      this.scene.tweens.add({ targets: heart, y: heart.y - 16, alpha: 0, delay: i * 120, duration: 900, onComplete: () => heart.setVisible(false) });
+    });
   }
 
   private find(residentId: string): Wanderer | null {

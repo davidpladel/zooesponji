@@ -23,6 +23,8 @@ export interface PenDef {
   cost?: number;
   /** Por orden de llegada: el primero viene con el recinto, el resto se compran de uno en uno. */
   residents: readonly ResidentDef[];
+  /** Granja de contacto: los visitantes también entran. */
+  visitors?: boolean;
 }
 
 const residents = (species: AnimalId, ...ids: string[]): ResidentDef[] =>
@@ -56,6 +58,7 @@ export const PENS: Record<PenId, PenDef> = {
     id: 'ovejas',
     nameKey: 'pen.ovejas',
     cost: 250,
+    visitors: true,
     residents: [one('lana', 'oveja'), one('bolita', 'oveja', 'bolita'), one('trueno', 'oveja', 'trueno'), one('algodon', 'oveja', 'algodon'), one('rizos', 'oveja', 'rizos')],
   },
   establo: {

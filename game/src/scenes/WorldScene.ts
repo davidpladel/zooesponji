@@ -78,6 +78,7 @@ export class WorldScene extends Phaser.Scene {
     const shopInfo = readShop(mapData);
     this.shop = shopInfo ? new ShopBuilding(this, shopInfo, state) : null;
     this.visitors = new VisitorCrowd(this, this.pathGrid);
+    this.syncVisitors(state);
 
     const spawn = tileCenter(readSpawn(mapData), TILE_SIZE);
     this.marker = this.add.image(0, 0, TEXTURES.marker).setVisible(false).setDepth(3);
@@ -114,7 +115,7 @@ export class WorldScene extends Phaser.Scene {
 
   update(time: number, delta: number): void {
     this.visitors.update(delta);
-    this.pens.update(time, delta, this.cameras.main.worldView);
+    this.pens.update(time, delta, this.cameras.main.worldView, { keeper: this.keeperPosition(), ...this.visitors.people() });
     const before = this.keeperPosition();
     this.moveKeeper(delta);
     const pos = this.keeperPosition();
@@ -229,6 +230,26 @@ export class WorldScene extends Phaser.Scene {
     return this.pens.animalsIn(penId);
   }
 
+  /** Los visitantes andan por los caminos y, si está abierta, por dentro de la granja de contacto. */
+  private syncVisitors(state: GameState): void {
+    this.visitors.setGrid(withPenInteriors(this.pathGrid, this.pens.visitorSpaces(state), TILE_SIZE));
+    this.visitors.setPetting(this.pens.petting(state));
+  }
+
+  visitorsInPen(penId: PenId): number {
+    return this.visitors.insideCount(this.pens.rectOf(penId));
+  }
+
+  /** Para pruebas: un visitante aparece delante de la puerta del recinto y entra a acariciar. */
+  sendVisitorInside(penId: PenId): boolean {
+    const tile = this.gateApproachTile(penId);
+    return tile ? this.visitors.sendInside(tileCenter(tile, TILE_SIZE)) : false;
+  }
+
+  petHearts(): number {
+    return this.pens.heartsShown;
+  }
+
   private moveKeeper(delta: number): void {
     const direction = this.inputDirection();
     const length = Math.hypot(direction.x, direction.y);
@@ -309,13 +330,19 @@ export class WorldScene extends Phaser.Scene {
     this.marker.setVisible(false);
   }
 
-  private onResume(_sys: Phaser.Scenes.Systems, data?: { from?: string }): void {
-    if (data?.from === 'shop') this.leaveShop();
+  /** Pone el mundo al día con el estado: recintos recién abiertos, animales nuevos y por dónde se anda. */
+  refresh(): void {
     const state = getSession().state;
     this.pens.release();
     this.pens.syncUnlocks(state);
     this.grid = withPenInteriors(this.pathGrid, this.pens.openSpaces(state), TILE_SIZE);
+    this.syncVisitors(state);
     this.shop?.sync(state);
+  }
+
+  private onResume(_sys: Phaser.Scenes.Systems, data?: { from?: string }): void {
+    if (data?.from === 'shop') this.leaveShop();
+    this.refresh();
   }
 
   /** Al salir de la tienda la cuidadora aparece delante de la puerta, mirando hacia abajo (y no vuelve a entrar). */
