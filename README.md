@@ -13,7 +13,7 @@ Pensado para niños de 6 a 9 años: sin textos largos, sin perder y sin anuncios
 ## Cómo se juega
 
 - **Moverse:** tocar el suelo y la cuidadora va andando (también teclado, o joystick opcional desde el menú ⚙️, abajo a la izquierda).
-- **Dar de comer:** al llegar al camino pegado a la puerta de un recinto se abre la ventana de comida; arrastra la comida (piedra, carne, conejo o zanahoria) hasta el animal.
+- **Dar de comer:** toca un animal: la cuidadora entra en su recinto y, al llegar, se abre la bandeja de comida de ese animal. Arrastra la comida (piedra, carne, conejo o zanahoria) hasta el animal.
 - **Tienda:** se abre al tener 20 monedas; pisa la puerta del puesto para entrar. Dentro suena la campanita, la cuidadora entra andando, el tendero la saluda y los animales esperan en peanas: acércate a uno (o tócalo y va sola), toca el bocadillo "¡Comprar!" y sal pisando el felpudo. Si un peque se queda quieto, unas huellas le señalan qué puede comprar. Pantera 50 🪙, panda 100 🪙, y animales extra: hasta 5 cabras (10 🪙 cada una), 2 panteras y 2 pandas (20 🪙).
 - **Menú ⚙️:** música, efectos, joystick y créditos.
 

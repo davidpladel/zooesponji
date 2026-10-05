@@ -14,7 +14,7 @@
 
 | Plan | Qué entrega | Estado |
 |---|---|---|
-| **1. Cimientos (este)** | Modelo recinto/especie/residente, bandeja por especie, la cuidadora entra a dar de comer | Escrito |
+| **1. Cimientos (este)** | Modelo recinto/especie/residente, bandeja por especie, la cuidadora entra a dar de comer | Hecho |
 | 2. Arte y comidas | Importador con variantes, recolor genérico, capa de marcas, cabras distintas, 7 comidas nuevas | Se escribe al cerrar el 1 |
 | 3. Mapa y recintos | Mapa 96×60, 7 recintos nuevos, recintos mixtos, visitantes y corazones en `ovejas` | Se escribe al cerrar el 2 |
 | 4. Tienda y libro | "Los 3 siguientes", precios, libro por capítulos con 35 textos, test de textos, docs, 2.3.0 | Se escribe al cerrar el 3 |

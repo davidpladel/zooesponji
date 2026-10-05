@@ -130,14 +130,14 @@ tests/                      — Vitest (core, data) + Playwright (humo)
 
 ### Añadir un animal (contrato de contenido)
 
-1. Entrada en `data/animals.ts`: id, nombre (clave de `strings.ts`),
-   reacciones por comida, monedas por reacción, precio de desbloqueo.
-2. Sprites en el atlas con las animaciones `<id>-idle`, `<id>-come`,
-   `<id>-rechaza`, `<id>-especial`.
-3. En Tiled, capa de objetos `recintos`: rectángulo con propiedad `animalId`
-   y objeto `puerta` asociado.
+1. Especie en `data/animals.ts`: nombre (clave de `strings.ts`), reacciones solo para las comidas
+   de su bandeja (4 o 5), monedas y precio del animal suelto.
+2. Recinto en `data/pens.ts`: precio y lista ordenada de residentes (`id`, especie, aspecto). El
+   `id` del residente es el de su página en `data/book.ts`.
+3. Hoja de sprites del aspecto en el manifiesto de arte.
+4. En el mapa, rectángulo `recinto` y objeto `puerta` con el id del recinto.
 
-Sin tocar código del motor. Un test de coherencia valida que los tres existen.
+Sin tocar código del motor. Un test de coherencia valida que las piezas existen.
 
 ## Flujos de juego
 
@@ -150,12 +150,15 @@ Sin tocar código del motor. Un test de coherencia valida que los tres existen.
   marcador en el destino. Destino inalcanzable → va al punto alcanzable más
   cercano.
 - Cámara sigue al cuidador con límites del mapa.
-- Cerca de la puerta de un recinto desbloqueado aparece un **bocadillo con un
-  cuenco** sobre el animal; tocarlo abre `Feed`.
+- Tocar un animal lleva a la cuidadora dentro de su recinto; al llegar junto a él se abre
+  `Feed` con ese animal.
 - Recinto bloqueado: candado + precio; al tocarlo el cuidador sugiere ir a la
   tienda.
 
 ### Dar de comer
+Tocar un animal lleva a la cuidadora dentro de su recinto; al llegar junto a él se abre
+`Feed` con ese animal.
+
 1. `World` pausada y oscurecida; primer plano del animal; bandeja de comidas
    abajo.
 2. El niño arrastra una comida (sigue al dedo con retardo elástico). Al
