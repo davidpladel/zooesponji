@@ -21,12 +21,16 @@ export interface ShopEntry {
   max?: number;
 }
 
+/** Recintos por comprar que se ofrecen a la vez: los siguientes de la lista, para no llenar la tienda. */
+export const PENS_ON_SALE = 3;
+
 /**
  * Un artículo por recinto, como en las tiendas de otros juegos: el recinto mientras no se tenga y,
  * al comprarlo, su "otro animal" ocupa su sitio (así no quedan peanas "ya compradas" que confunden).
  */
 export function shopEntries(state: GameState): ShopEntry[] {
   const entries: ShopEntry[] = [];
+  let onSale = 0;
   for (const penId of PEN_IDS) {
     const residents = PENS[penId].residents;
     const open = isPenOpen(state, penId);
@@ -37,6 +41,8 @@ export function shopEntries(state: GameState): ShopEntry[] {
     const extraCost = ANIMALS[coming.species].extraCost;
     const hasExtra = open && max > 1 && extraCost !== undefined;
     if (pen && !hasExtra) {
+      if (!open && onSale >= PENS_ON_SALE) continue;
+      if (!open) onSale++;
       entries.push({ id: pen.id, kind: 'pen', penId, species: residents[0]!.species, look: residents[0]!.look, cost: pen.cost, status: open ? 'owned' : 'buy' });
     }
     if (hasExtra && extraCost !== undefined) {

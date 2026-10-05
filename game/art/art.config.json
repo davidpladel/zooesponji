@@ -174,7 +174,71 @@
     "gallo": { "zip": "farm", "file": "16x16/Default Format/$chicken_rooster.png", "override": "gallo.png" },
     "pato": { "zip": "farm", "file": "16x16/Default Format/$duck.png", "override": "pato.png" },
     "elefante-africano": { "zip": "wild", "file": "16x16/Default format/$elephant_african.png", "override": "elefante-africano.png" },
-    "elefante-asiatico": { "zip": "wild", "file": "16x16/Default format/$elephant_asian.png", "override": "elefante-asiatico.png" }
+    "elefante-asiatico": { "zip": "wild", "file": "16x16/Default format/$elephant_asian.png", "override": "elefante-asiatico.png" },
+    "pato-charco": { "zip": "farm", "file": "16x16/Default Format/$duck_mallard_m.png", "override": "pato-charco.png" },
+    "pato-pluma": { "zip": "farm", "file": "16x16/Default Format/$duck_mallard_f.png", "override": "pato-pluma.png" },
+    "pato-remo": {
+      "zip": "farm", "file": "16x16/Default Format/$duck.png", "override": "pato-remo.png",
+      "edits": [{ "swap": { "f4f3f2": "f0d9a8", "e6e3e0": "e0c692", "c5beba": "c4a874", "aba19c": "a88d5e" } }]
+    },
+    "pato-pio": { "zip": "farm", "file": "16x16/Default Format/$duck_chick.png", "override": "pato-pio.png" },
+    "oveja-bolita": {
+      "zip": "farm", "file": "16x16/Default Format/$sheep.png", "override": "oveja-bolita.png",
+      "edits": [{ "swap": { "f4f3f2": "e8c9a0", "e6e3e0": "d9b88c", "c5beba": "c09a6e", "aba19c": "a07a52" } }]
+    },
+    "oveja-trueno": {
+      "zip": "farm", "file": "16x16/Default Format/$sheep.png", "override": "oveja-trueno.png",
+      "edits": [{ "swap": { "f4f3f2": "4a4542", "e6e3e0": "3f3a38", "c5beba": "383432", "aba19c": "2e2a29", "ffdab2": "6b5a50" } }]
+    },
+    "oveja-algodon": {
+      "zip": "farm", "file": "16x16/Default Format/$sheep.png", "override": "oveja-algodon.png",
+      "edits": [{ "swap": { "f4f3f2": "fff6e6", "e6e3e0": "f3e6cf", "aba19c": "c9b79f" } }]
+    },
+    "oveja-rizos": {
+      "zip": "farm", "file": "16x16/Default Format/$sheep.png", "override": "oveja-rizos.png",
+      "edits": [{ "swap": { "f4f3f2": "cfd2d8", "e6e3e0": "bfc3cb", "c5beba": "a9aeb8", "aba19c": "8f95a1" } }]
+    },
+    "caballo-lucero": { "zip": "farm", "file": "16x16/Default Format/$horse_arabian_blaze.png", "override": "caballo-lucero.png" },
+    "caballo-tizon": { "zip": "farm", "file": "16x16/Default Format/$horse_friesian.png", "override": "caballo-tizon.png" },
+    "caballo-mancha": { "zip": "farm", "file": "16x16/Default Format/$horse_clydesdale.png", "override": "caballo-mancha.png" },
+    "gallina-clo": { "zip": "farm", "file": "16x16/Default Format/$chicken_wild_hen.png", "override": "gallina-clo.png" },
+    "gallina-miga": { "zip": "farm", "file": "16x16/Default Format/$chicken_silkie_hen.png", "override": "gallina-miga.png" },
+    "pinguino-copito": { "zip": "wild", "file": "16x16/Default format/$penguin_african.png", "override": "pinguino-copito.png" },
+    "pinguino-frac": {
+      "zip": "wild", "file": "16x16/Default format/$penguin_emperor.png", "override": "pinguino-frac.png",
+      "edits": [{ "swap": { "d8b637": "f4f3f2", "ead59f": "f4f3f2", "756435": "8d97a3" } }]
+    },
+    "pinguino-tobogan": {
+      "zip": "wild", "file": "16x16/Default format/$penguin_african.png", "override": "pinguino-tobogan.png",
+      "edits": [{ "swap": { "586473": "3f4a5c", "8d97a3": "6f7a88", "af908c": "e08a7a" } }]
+    },
+    "pinguino-hielo": {
+      "zip": "wild", "file": "16x16/Default format/$penguin_emperor.png", "override": "pinguino-hielo.png",
+      "shrink": 13,
+      "edits": [{ "swap": { "586473": "7d8fa6", "45494f": "5f6f85" } }]
+    },
+    "jirafa-pecas": {
+      "zip": "wild", "file": "16x16/Default format/$giraffe.png", "override": "jirafa-pecas.png",
+      "edits": [{ "swap": { "a6644a": "74381f", "6c493b": "4a2a1c", "f0d7a0": "f8ecc8", "d8b974": "e8d29c" } }]
+    },
+    "cebra-zigzag": {
+      "zip": "wild", "file": "16x16/Default format/$zebra.png", "override": "cebra-zigzag.png",
+      "edits": [{ "swap": { "f4f3f2": "efe2c8", "e6e3e0": "e2d3b4", "c5beba": "cdbb9a", "45494f": "5a4636" } }]
+    },
+    "gacela-salto": {
+      "zip": "wild", "file": "16x16/Default format/$gazelle_thomson.png", "override": "gacela-salto.png",
+      "edits": [{ "swap": { "f1bd74": "c8823c", "bc8651": "8f5a2c" } }]
+    },
+    "gacela-miel": {
+      "zip": "wild", "file": "16x16/Default format/$gazelle_thomson.png", "override": "gacela-miel.png",
+      "edits": [{ "swap": { "f1bd74": "f8e4b4", "bc8651": "e0bc80" } }]
+    },
+    "gacela-pipa": { "zip": "wild", "file": "16x16/Default format/$gazelle_thomson.png", "override": "gacela-pipa.png", "shrink": 13 },
+    "elefante-africano-kali": {
+      "zip": "wild", "file": "16x16/Default format/$elephant_african.png", "override": "elefante-africano-kali.png",
+      "edits": [{ "swap": { "a0a1a3": "b3a89a", "86888a": "978c7f", "c1c1c2": "d0c6b8", "77787a": "847a6e", "b1b2b4": "c2b8aa" } }]
+    },
+    "elefante-asiatico-mali": { "zip": "wild", "file": "16x16/Default format/$elephant_asian_brown.png", "override": "elefante-asiatico-mali.png" }
   },
   "companions": {
     "leon": {

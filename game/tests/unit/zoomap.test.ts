@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
+import { PEN_IDS } from '../../src/data/pens';
 import { approachTile } from '../../src/core/interaction';
 import { findPath, isWalkable } from '../../src/core/pathfinding';
 import { buildWalkGrid, isShopDoor, readEnclosures, readGates, readProps, readShop, readSpawn, type TiledMap } from '../../src/core/tiledmap';
@@ -65,6 +66,10 @@ describe('mapa del zoo', () => {
         expect(thinV, `(${x},${y}) columna de 1 de ancho`).toBe(false);
       }
     }
+  });
+
+  it('los recintos del mapa son los del juego', () => {
+    expect([...MAP_PENS].sort()).toEqual([...PEN_IDS].sort());
   });
 
   it('cada recinto tiene bioma', () => {
