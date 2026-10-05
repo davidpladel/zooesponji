@@ -21,6 +21,7 @@
     "make:calcetin": "node scripts/make-calcetin.ts",
     "art:grid": "node scripts/art/grid.ts",
     "art:preview": "node scripts/art/preview.ts",
+    "art:compare": "node scripts/art/compare.ts",
     "art:props-sheet": "node scripts/art/propsSheet.ts"
   },
   "dependencies": {
