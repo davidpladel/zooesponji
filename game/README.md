@@ -37,6 +37,24 @@ Sin `public/art/` el juego funciona con arte provisional (emojis y colores plano
 - **Mapa:** `npm run make:zoo-map` regenera `public/assets/maps/zoo.tmj` (mapa lógico; el arte lo pone el juego).
 - **Tienda por dentro:** `npm run make:shop-map` regenera `public/assets/maps/tienda.tmj` (20×12: suelo, pared, muebles, tendero, 5 peanas, felpudo y decoración). `art:import` recorta los muebles del *Interior Tileset Pack – Essentials* (`interior` en `art.config.json`, salen como `interior-*.png`); sin ellos la tienda se pinta con colores. `npm run make:campanita` y `npm run make:paso` vuelven a sintetizar `public/audio/campanita.wav` y `paso.wav`. Dentro, la cuidadora anda por la rejilla de `tienda.tmj` con las peanas bloqueadas (`core/shopWalk.ts`: alcance, punto de aproximación, pista y felpudo). Tienda: una peana por animal (al comprar el recinto pasa a vender "otro animal"), precio o sello AGOTADO. En la estantería hay un **libro secreto** (`BookScene`, `core/book.ts`): 14 páginas con la historia, Mary y cada animal con nombre; se guardan los ids leídos en `book` del guardado.
 
+### Animales distintos dentro de un recinto
+
+Cada animal puede tener su propio **aspecto**: una entrada en `animals` de `art/art.config.json`
+con la hoja del pack y una lista de `edits` (retoques):
+
+- `swap`: cambia colores exactos (`"f4f3f2": "e8c9a0"`), opcionalmente solo en una `area`
+  `[x, y, ancho, alto]` del fotograma.
+- `dots`: pinta píxeles sueltos `[x, y, color]`.
+- `rows`: a qué filas se aplica (0 de frente, 1 izquierda, 2 derecha, 3 de espaldas).
+- `cols`: a qué fotogramas del paso (0, 1, 2); el central va 1 px más alto en la cabra.
+
+`shrink` reduce cada fotograma a ese lado en píxeles (Chispa, 13). `npm run art:preview -- <aspecto>`
+deja una vista ×8 en el repo privado para ajustarlos. El aspecto se asigna al animal en
+`src/data/pens.ts` (`look`). Tras cambiar la configuración hay que ejecutar `npm run art:import`.
+
+- **Calcetín:** `npm run make:calcetin` dibuja el icono en `art-work/terminados/calcetin.png` del
+  repo privado si no existe; si los niños pintan el suyo, no se toca.
+
 ## Estructura
 
 - `src/core/` — lógica pura sin Phaser (reacciones, economía y extras, guardado, A*, mapas, movimiento, `flock` para que los animales no se pisen, `back` para el botón atrás). Todo con tests.

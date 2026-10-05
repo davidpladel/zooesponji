@@ -301,7 +301,7 @@ Un test comprueba que no queda ningún texto visible fuera de `strings.ts`.
 | Plan | Estado | Archivo |
 |---|---|---|
 | 1. Cimientos | ✅ Hecho | `docs/superpowers/plans/2026-10-05-zoo-grande-1-cimientos.md` |
-| 2. Arte y comidas | ⬜ Plan por escribir | — |
+| 2. Arte y comidas | ✅ Hecho | `docs/superpowers/plans/2026-10-05-zoo-grande-2-arte-y-comidas.md` |
 | 3. Mapa y recintos | ⬜ Plan por escribir | — |
 | 4. Tienda y libro | ⬜ Plan por escribir | — |
 
@@ -316,3 +316,25 @@ Un test comprueba que no queda ningún texto visible fuera de `strings.ts`.
   usan la de caminos.
 - En el mapa, la propiedad de recintos y puertas sigue llamándose `animalId` hasta que el plan 3
   regenere el mapa.
+
+### Decisiones tomadas durante la implementación (plan 2)
+
+- Las "marcas" no son una capa pintada a mano sino **retoques declarados** en `art.config.json`:
+  cambio de colores exactos dentro de una zona del fotograma (calcetines, lomo) y puntos sueltos
+  (la campanita). Se ajustan mirando `npm run art:preview -- <aspecto>`.
+- El dibujo de los niños sigue mandando: `art-work/terminados/<aspecto>.png` sustituye a la hoja
+  del pack y a sus retoques.
+- El manifiesto de arte va por aspecto (`cabra`, `cabra-gordi`…). Si falta la hoja de un aspecto,
+  ese animal se dibuja con la de su especie; para verlo distinto hay que volver a ejecutar
+  `npm run art:import`.
+- Cabras: Gordi tostada, Nube blanca (la del pack), Galleta marrón con calcetines, Tolón gris con
+  campanita, Chispa oscura y más pequeña.
+- La campanita de Tolón son 2 px bajo la barbilla. El fotograma central del paso va 1 px más alto
+  que los otros dos, así que sus puntos se declaran aparte con `cols`.
+- Chispa se reduce a 13 px con `shrink` en su aspecto. La reducción se queda con el píxel más
+  oscuro de los que cubre cada punto: con un muestreo simple se perdían un ojo y el contorno.
+- De las comidas nuevas, en este plan solo se usa la lechuga (cabra). El resto, y el calcetín,
+  entran con las especies del plan 3.
+- La animación de amistad dibuja al amigo que se ha dado (conejo o gallina, `FoodDef.friend`); una
+  reacción especial con otra comida se celebra con saltos y corazones.
+- Regla de las bandejas, con test: cada animal rechaza al menos una comida que otro sí come.
