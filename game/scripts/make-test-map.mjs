@@ -36,10 +36,10 @@ vLine(19, 2, 27, PATH);
 vLine(20, 2, 27, PATH);
 
 const enclosures = [
-  { animalId: 'leon', x: 5, y: 5, gate: { x: 10, y: 11 }, link: [{ x: 10, y: 12 }, { x: 10, y: 13 }] },
-  { animalId: 'cabra', x: 24, y: 5, gate: { x: 29, y: 11 }, link: [{ x: 29, y: 12 }, { x: 29, y: 13 }] },
-  { animalId: 'pantera', x: 5, y: 18, gate: { x: 10, y: 18 }, link: [{ x: 10, y: 16 }, { x: 10, y: 17 }] },
-  { animalId: 'panda', x: 24, y: 18, gate: { x: 29, y: 18 }, link: [{ x: 29, y: 16 }, { x: 29, y: 17 }] },
+  { penId: 'leon', x: 5, y: 5, gate: { x: 10, y: 11 }, link: [{ x: 10, y: 12 }, { x: 10, y: 13 }] },
+  { penId: 'cabra', x: 24, y: 5, gate: { x: 29, y: 11 }, link: [{ x: 29, y: 12 }, { x: 29, y: 13 }] },
+  { penId: 'pantera', x: 5, y: 18, gate: { x: 10, y: 18 }, link: [{ x: 10, y: 16 }, { x: 10, y: 17 }] },
+  { penId: 'panda', x: 24, y: 18, gate: { x: 29, y: 18 }, link: [{ x: 29, y: 16 }, { x: 29, y: 17 }] },
 ];
 const EW = 11;
 const EH = 7;
@@ -54,16 +54,16 @@ for (const e of enclosures) {
   set(e.gate.x, e.gate.y, GATE);
   for (const p of e.link) set(p.x, p.y, PATH);
 
-  const animalProp = [{ name: 'animalId', type: 'string', value: e.animalId }];
+  const penProp = [{ name: 'penId', type: 'string', value: e.penId }];
   objects.push({
-    id: nextId++, name: `recinto-${e.animalId}`, type: 'recinto',
+    id: nextId++, name: `recinto-${e.penId}`, type: 'recinto',
     x: e.x * T, y: e.y * T, width: EW * T, height: EH * T,
-    rotation: 0, visible: true, properties: animalProp,
+    rotation: 0, visible: true, properties: penProp,
   });
   objects.push({
-    id: nextId++, name: `puerta-${e.animalId}`, type: 'puerta',
+    id: nextId++, name: `puerta-${e.penId}`, type: 'puerta',
     x: e.gate.x * T, y: e.gate.y * T, width: T, height: T,
-    rotation: 0, visible: true, properties: animalProp,
+    rotation: 0, visible: true, properties: penProp,
   });
 }
 // Tienda: edificio 3x3 junto a la cruz central, con la puerta hacia el camino (col 19).

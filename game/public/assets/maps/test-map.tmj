@@ -1248,7 +1248,7 @@
      "visible": true,
      "properties": [
       {
-       "name": "animalId",
+       "name": "penId",
        "type": "string",
        "value": "leon"
       }
@@ -1266,7 +1266,7 @@
      "visible": true,
      "properties": [
       {
-       "name": "animalId",
+       "name": "penId",
        "type": "string",
        "value": "leon"
       }
@@ -1284,7 +1284,7 @@
      "visible": true,
      "properties": [
       {
-       "name": "animalId",
+       "name": "penId",
        "type": "string",
        "value": "cabra"
       }
@@ -1302,7 +1302,7 @@
      "visible": true,
      "properties": [
       {
-       "name": "animalId",
+       "name": "penId",
        "type": "string",
        "value": "cabra"
       }
@@ -1320,7 +1320,7 @@
      "visible": true,
      "properties": [
       {
-       "name": "animalId",
+       "name": "penId",
        "type": "string",
        "value": "pantera"
       }
@@ -1338,7 +1338,7 @@
      "visible": true,
      "properties": [
       {
-       "name": "animalId",
+       "name": "penId",
        "type": "string",
        "value": "pantera"
       }
@@ -1356,7 +1356,7 @@
      "visible": true,
      "properties": [
       {
-       "name": "animalId",
+       "name": "penId",
        "type": "string",
        "value": "panda"
       }
@@ -1374,7 +1374,7 @@
      "visible": true,
      "properties": [
       {
-       "name": "animalId",
+       "name": "penId",
        "type": "string",
        "value": "panda"
       }

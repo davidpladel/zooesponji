@@ -68,7 +68,7 @@ deja una vista ×8 en el repo privado para ajustarlos. El aspecto se asigna al a
 1. Especie en `src/data/animals.ts`: su nombre (clave de `src/data/strings.ts`), reacciones solo para las comidas de su bandeja (4 o 5), monedas y, si se pueden comprar más animales sueltos, `extraCost` + `extraNameKey`.
 2. Recinto en `src/data/pens.ts`: precio (sin precio, viene abierto de inicio) y lista ordenada de residentes (`id`, especie, aspecto). El `id` de cada residente es el de su página en `src/data/book.ts`. La tienda sale de esta tabla.
 3. Sprites del aspecto: entrada en `art/art.config.json` (hoja del pack o dibujo de los niños) y `npm run art:import`.
-4. En el mapa de Tiled, capa `objetos`: rectángulo de tipo `recinto` y objeto de tipo `puerta`, ambos con la propiedad `animalId`, que lleva el id del recinto.
+4. En el mapa de Tiled, capa `objetos`: rectángulo de tipo `recinto` y objeto de tipo `puerta`, ambos con la propiedad `penId`, que lleva el id del recinto.
 
 Los tests de contenido fallan si falta alguna de estas piezas.
 

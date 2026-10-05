@@ -75,9 +75,9 @@ export class Pens {
     props: PropInfo[] = [],
   ) {
     for (const enclosure of enclosures) {
-      if (!isPenId(enclosure.animalId)) continue;
-      const id = enclosure.animalId;
-      const gate = gates.find((g) => g.animalId === id);
+      if (!isPenId(enclosure.penId)) continue;
+      const id = enclosure.penId;
+      const gate = gates.find((g) => g.penId === id);
       if (!gate) continue;
       const def = PENS[id];
       const home = { x: enclosure.x + enclosure.width / 2, y: enclosure.y + enclosure.height / 2 };
@@ -158,8 +158,8 @@ export class Pens {
    * en la tienda). Solo al llegar; no se repite hasta que se aparte de la puerta.
    */
   lockedDoorstep(keeperTile: Point, state: GameState): PenId | null {
-    const gate = gateAtDoorstep(keeperTile, this.pens.map((pen) => ({ animalId: pen.id, tile: pen.gate })));
-    const id = gate?.animalId ?? null;
+    const gate = gateAtDoorstep(keeperTile, this.pens.map((pen) => ({ penId: pen.id, tile: pen.gate })));
+    const id = gate?.penId ?? null;
     if (id === this.atDoorstep) return null;
     this.atDoorstep = id;
     return id && !isPenOpen(state, id) ? id : null;

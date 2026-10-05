@@ -194,9 +194,9 @@ export class WorldScene extends Phaser.Scene {
     return this.goTo(tileCenter({ x, y }, TILE_SIZE));
   }
 
-  gateApproachTile(animalId: string): Point | null {
-    const enclosure = readEnclosures(this.mapData).find((e) => e.animalId === animalId);
-    const gate = readGates(this.mapData).find((g) => g.animalId === animalId);
+  gateApproachTile(penId: string): Point | null {
+    const enclosure = readEnclosures(this.mapData).find((e) => e.penId === penId);
+    const gate = readGates(this.mapData).find((g) => g.penId === penId);
     return enclosure && gate ? approachTile(gate.tile, enclosure, TILE_SIZE, this.pathGrid) : null;
   }
 
