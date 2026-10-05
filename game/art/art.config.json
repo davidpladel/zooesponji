@@ -188,6 +188,15 @@
       "w": 16,
       "h": 16
     },
+    "lechuga": { "zip": "icons", "file": "vectoraith_16x16_iconset_farming.png", "x": 224, "y": 240, "w": 16, "h": 16 },
+    "maiz": { "zip": "icons", "file": "vectoraith_16x16_iconset_farming.png", "x": 112, "y": 240, "w": 16, "h": 16 },
+    "platano": { "zip": "icons", "file": "vectoraith_16x16_iconset_farming.png", "x": 176, "y": 256, "w": 16, "h": 16 },
+    "manzana": { "zip": "icons", "file": "vectoraith_16x16_iconset_farming.png", "x": 208, "y": 256, "w": 16, "h": 16 },
+    "pan": { "zip": "icons", "file": "vectoraith_16x16_iconset_farming.png", "x": 176, "y": 272, "w": 16, "h": 16 },
+    "huevo": { "zip": "icons", "file": "vectoraith_16x16_iconset_farming.png", "x": 16, "y": 288, "w": 16, "h": 16 },
+    "pescado": { "zip": "icons", "file": "vectoraith_16x16_iconset_farming.png", "x": 32, "y": 304, "w": 16, "h": 16 },
+    "calcetin": { "override": "calcetin.png" },
+    "gallina": { "zip": "farm", "file": "16x16/Default Format/$chicken_hen.png", "x": 16, "y": 32, "w": 16, "h": 16 },
     "conejo": {
       "zip": "farm",
       "file": "16x16/Default Format/$rabbit.png",

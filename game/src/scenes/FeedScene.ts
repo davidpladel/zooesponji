@@ -174,7 +174,7 @@ export class FeedScene extends Phaser.Scene {
     this.busy = true;
     this.tweens.add({ targets: food, x: this.animal.x, y: this.animal.y, scale: 0, duration: 180, ease: 'Quad.easeIn' });
     const result = await getSession().feed(this.residentId, id);
-    this.playReaction(result);
+    this.playReaction(result, id);
     this.time.delayedCall(result.reaction === 'especial' ? 1900 : 1000, () => {
       this.returnHome(id, food, true);
       this.busy = false;
@@ -188,7 +188,7 @@ export class FeedScene extends Phaser.Scene {
     this.tweens.add({ targets: food, x: home.x, y: home.y, scale: baseScaleOf(food), duration: 250, ease: 'Back.easeOut' });
   }
 
-  private playReaction(result: FeedResult): void {
+  private playReaction(result: FeedResult, foodId: FoodId): void {
     const animal = this.animal;
     const baseX = this.scale.width / 2;
     this.tweens.killTweensOf(animal);
@@ -212,7 +212,8 @@ export class FeedScene extends Phaser.Scene {
     } else {
       sfx.play('especial');
       this.say(`${t('feed.wow')} 🤩`);
-      this.friendship();
+      if (FOODS[foodId].friend) this.friendship(foodId);
+      else this.delight();
     }
     this.flyCoins(result.coins);
   }
@@ -244,16 +245,16 @@ export class FeedScene extends Phaser.Scene {
   }
 
   /**
-   * Reacción especial (como en la v1): el conejo no se come, se hace amigo. Aparece al lado,
-   * saltan juntos, se dan un achuchón y salen corazones.
+   * Reacción especial con un amigo (como en la v1): el conejo o la gallina no se comen, se hacen
+   * amigos. Aparece al lado, saltan juntos, se dan un achuchón y salen corazones.
    */
-  private friendship(): void {
+  private friendship(friendId: FoodId): void {
     const animal = this.animal;
     const size = animal.displayHeight * 0.55;
-    const icon = getArt()?.foods.conejo;
+    const icon = getArt()?.foods[friendId];
     const bunny: Food = icon
-      ? this.add.image(0, 0, foodKey('conejo')).setScale(Math.max(1, Math.floor(size / icon.height)))
-      : this.add.text(0, 0, FOODS.conejo.emoji, { fontSize: `${Math.round(size)}px` }).setOrigin(0.5);
+      ? this.add.image(0, 0, foodKey(friendId)).setScale(Math.max(1, Math.floor(size / icon.height)))
+      : this.add.text(0, 0, FOODS[friendId].emoji, { fontSize: `${Math.round(size)}px` }).setOrigin(0.5);
     const bunnyScale = bunny.scaleX;
     const groundY = animal.y + animal.displayHeight / 2 - bunny.displayHeight / 2;
     const sideX = animal.x + animal.displayWidth / 2 + bunny.displayWidth * 0.3;
@@ -278,6 +279,13 @@ export class FeedScene extends Phaser.Scene {
       ease: 'Quad.easeOut',
     });
     this.hearts((animal.x + sideX) / 2, animal.y - animal.displayHeight * 0.2);
+  }
+
+  /** Reacción especial con una comida que le encanta: salta de alegría y salen corazones. */
+  private delight(): void {
+    const animal = this.animal;
+    this.tweens.add({ targets: animal, y: animal.y - 24, duration: 160, yoyo: true, repeat: 2, ease: 'Quad.easeOut' });
+    this.hearts(animal.x, animal.y - animal.displayHeight * 0.2);
   }
 
   private hearts(x: number, y: number): void {

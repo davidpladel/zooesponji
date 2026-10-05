@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
+import { FOOD_IDS } from '../../src/data/foods';
 import { allLooks } from '../../src/data/pens';
 
 interface Look {
@@ -10,6 +11,7 @@ interface Look {
 const config = JSON.parse(readFileSync(new URL('../../art/art.config.json', import.meta.url), 'utf8')) as {
   zips: Record<string, string>;
   animals: Record<string, Look>;
+  foods: Record<string, unknown>;
 };
 const HEX = /^[0-9a-f]{6}$/;
 
@@ -32,5 +34,11 @@ describe('configuración de arte: aspectos', () => {
         if (edit.area) expect(edit.area).toHaveLength(4);
       }
     }
+  });
+});
+
+describe('configuración de arte: comidas', () => {
+  it.each(FOOD_IDS)('la comida %s tiene icono en art.config.json', (id) => {
+    expect(config.foods[id]).toBeDefined();
   });
 });

@@ -31,7 +31,7 @@ export const ANIMALS: Record<AnimalId, AnimalDef> = {
     id: 'cabra',
     nameKey: 'animal.cabra',
     emoji: '🐐',
-    reactions: { carne: 'rechaza', conejo: 'especial', piedra: 'come', zanahoria: 'come' },
+    reactions: { carne: 'rechaza', conejo: 'especial', piedra: 'come', zanahoria: 'come', lechuga: 'come' },
     coins: { come: 1, especial: 2 },
     extraCost: 10,
     extraNameKey: 'shop.extra.cabra',
