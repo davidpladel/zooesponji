@@ -8,7 +8,7 @@ export type PenId = (typeof PEN_IDS)[number];
 export interface ResidentDef {
   id: string;
   species: AnimalId;
-  /** Hoja de sprites que usa (hoy, la de su especie). */
+  /** Hoja de sprites que usa: la de su especie o la suya propia (`cabra-gordi`). */
   look: string;
 }
 
@@ -29,7 +29,13 @@ export const PENS: Record<PenId, PenDef> = {
   cabra: {
     id: 'cabra',
     nameKey: 'animal.cabra',
-    residents: residents('cabra', 'gordi', 'nube', 'galleta', 'tolon', 'chispa'),
+    residents: [
+      { id: 'gordi', species: 'cabra', look: 'cabra-gordi' },
+      { id: 'nube', species: 'cabra', look: 'cabra' },
+      { id: 'galleta', species: 'cabra', look: 'cabra-galleta' },
+      { id: 'tolon', species: 'cabra', look: 'cabra-tolon' },
+      { id: 'chispa', species: 'cabra', look: 'cabra-chispa' },
+    ],
   },
   pantera: { id: 'pantera', nameKey: 'animal.pantera', cost: 50, residents: residents('pantera', 'noche', 'sombra') },
   panda: { id: 'panda', nameKey: 'animal.panda', cost: 100, residents: residents('panda', 'mochi', 'pompon') },

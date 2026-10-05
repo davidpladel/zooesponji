@@ -113,6 +113,45 @@
       "zip": "farm",
       "file": "16x16/Default Format/$goat.png"
     },
+    "cabra-gordi": {
+      "zip": "farm",
+      "file": "16x16/Default Format/$goat.png",
+      "override": "cabra-gordi.png",
+      "edits": [
+        { "swap": { "f4f3f2": "e8c9a0", "e6e3e0": "d9b88c", "c5beba": "c09a6e", "aba19c": "a07a52" } }
+      ]
+    },
+    "cabra-galleta": {
+      "zip": "farm",
+      "file": "16x16/Default Format/$goat.png",
+      "override": "cabra-galleta.png",
+      "edits": [
+        { "swap": { "f4f3f2": "b8824e", "e6e3e0": "a87444", "c5beba": "8f5f36", "aba19c": "7a4e2c" }, "area": [0, 0, 16, 13] }
+      ]
+    },
+    "cabra-tolon": {
+      "zip": "farm",
+      "file": "16x16/Default Format/$goat.png",
+      "override": "cabra-tolon.png",
+      "edits": [
+        { "swap": { "f4f3f2": "c9ccd4", "e6e3e0": "b9bcc6", "c5beba": "9ea2ae", "aba19c": "858a98" } },
+        { "dots": [[8, 14, "f2c230"], [8, 15, "c8961e"]], "rows": [0], "cols": [0, 2] },
+        { "dots": [[8, 13, "f2c230"], [8, 14, "c8961e"]], "rows": [0], "cols": [1] },
+        { "dots": [[4, 12, "f2c230"], [5, 12, "c8961e"]], "rows": [1], "cols": [0, 2] },
+        { "dots": [[4, 11, "f2c230"], [5, 11, "c8961e"]], "rows": [1], "cols": [1] },
+        { "dots": [[11, 12, "f2c230"], [10, 12, "c8961e"]], "rows": [2], "cols": [0, 2] },
+        { "dots": [[11, 11, "f2c230"], [10, 11, "c8961e"]], "rows": [2], "cols": [1] }
+      ]
+    },
+    "cabra-chispa": {
+      "zip": "farm",
+      "file": "16x16/Default Format/$goat.png",
+      "override": "cabra-chispa.png",
+      "shrink": 13,
+      "edits": [
+        { "swap": { "f4f3f2": "7a706a", "e6e3e0": "6e655f", "c5beba": "5f5751", "aba19c": "4f4843", "414040": "2a2625" } }
+      ]
+    },
     "pantera": {
       "zip": "wild",
       "file": "16x16/Default format/$leopard_snow.png",

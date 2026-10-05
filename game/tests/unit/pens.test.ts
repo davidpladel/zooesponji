@@ -60,4 +60,9 @@ describe('recintos', () => {
     for (const species of ['leon', 'cabra', 'pantera', 'panda']) expect(looks).toContain(species);
     for (const penId of PEN_IDS) for (const r of PENS[penId].residents) expect(looks).toContain(r.look);
   });
+
+  it('las cinco cabras tienen cada una su aspecto', () => {
+    const looks = PENS.cabra.residents.map((r) => r.look);
+    expect(looks).toEqual(['cabra-gordi', 'cabra', 'cabra-galleta', 'cabra-tolon', 'cabra-chispa']);
+  });
 });

@@ -156,6 +156,19 @@ describe('shrinkFrames', () => {
     expect(pixel(out, 8, 15)[3]).toBe(0);
   });
 
+  it('conserva el contorno y los ojos: de lo que cubre cada punto gana lo más oscuro', () => {
+    // Hoja 3×4 de fotogramas de 16×16 clara, con el borde derecho y un ojo oscuros en el primero.
+    const src = solid(48, 64, [244, 243, 242, 255]);
+    for (let y = 0; y < 16; y++) src.data.set([65, 64, 64, 255], (y * 48 + 15) * 4);
+    src.data.set([65, 64, 64, 255], (8 * 48 + 5) * 4);
+    const out = shrinkFrames(src, 13);
+    // El dibujo de 13 px ocupa x 1..13, y 3..15.
+    expect(pixel(out, 13, 9)).toEqual([65, 64, 64, 255]);
+    expect(pixel(out, 12, 9)).toEqual([244, 243, 242, 255]);
+    const darkInRow = (y: number) => Array.from({ length: 12 }, (_v, x) => pixel(out, x + 1, y)[0]).filter((r) => r === 65);
+    expect([3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].some((y) => darkInRow(y).length === 1)).toBe(true);
+  });
+
   it('con el tamaño del fotograma no cambia nada', () => {
     const src = solid(12, 16, [9, 9, 9, 255]);
     expect([...shrinkFrames(src, 4).data]).toEqual([...src.data]);
