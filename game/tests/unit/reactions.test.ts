@@ -13,6 +13,7 @@ describe('resolveFeeding', () => {
     ['cabra', 'conejo', 'especial', 2],
     ['cabra', 'piedra', 'come', 1],
     ['cabra', 'zanahoria', 'come', 1],
+    ['cabra', 'lechuga', 'come', 1],
     ['pantera', 'carne', 'come', 2],
     ['pantera', 'conejo', 'come', 2],
     ['pantera', 'piedra', 'rechaza', 0],
@@ -27,8 +28,9 @@ describe('resolveFeeding', () => {
 });
 
 describe('bandeja por especie', () => {
-  it('hoy cada especie enseña las 4 comidas, en el orden de FOOD_IDS', () => {
+  it('la bandeja sigue el orden de FOOD_IDS y solo trae lo que la especie lista', () => {
     expect(trayFoods('leon')).toEqual(['piedra', 'carne', 'conejo', 'zanahoria']);
+    expect(trayFoods('cabra')).toEqual(['piedra', 'carne', 'conejo', 'zanahoria', 'lechuga']);
   });
 
   it('una comida sin reacción no sale en la bandeja y, si llega, se rechaza sin monedas', () => {

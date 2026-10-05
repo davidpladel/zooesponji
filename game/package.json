@@ -18,6 +18,7 @@
     "make:shop-map": "node scripts/make-shop-map.mjs",
     "make:campanita": "node scripts/make-campanita.mjs",
     "make:paso": "node scripts/make-paso.mjs",
+    "make:calcetin": "node scripts/make-calcetin.ts",
     "art:grid": "node scripts/art/grid.ts",
     "art:preview": "node scripts/art/preview.ts",
     "art:props-sheet": "node scripts/art/propsSheet.ts"

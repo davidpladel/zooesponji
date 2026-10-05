@@ -140,3 +140,13 @@ test('sin 20 monedas la tienda no se abre', async ({ page }) => {
   await page.waitForTimeout(500);
   expect(await page.evaluate(() => window.__ZOO__!.activeScenes())).not.toContain('Shop');
 });
+
+test('la cabra tiene lechuga en su bandeja y se la come', async ({ page }) => {
+  await startGame(page);
+  await page.evaluate(() => window.__ZOO__!.openFeed('gordi'));
+  await page.waitForFunction(() => window.__ZOO__?.activeScenes().includes('Feed'));
+  const targets = await page.evaluate(() => window.__ZOO__!.feedTargets());
+  expect(Object.keys(targets!.foods)).toHaveLength(5);
+  await dragFood(page, 'lechuga');
+  await expect.poll(() => page.evaluate(() => window.__ZOO__!.hudCoinsText())).toBe('🪙 1');
+});
