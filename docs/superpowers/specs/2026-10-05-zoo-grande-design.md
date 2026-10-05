@@ -1,7 +1,9 @@
 # Zoo grande — más zonas, animales y comidas (diseño)
 
 **Estado:** aprobado por David (5-oct-2026). Planes: cuatro, el primero en
-`docs/superpowers/plans/2026-10-05-zoo-grande-1-cimientos.md`. Sin código todavía.
+`docs/superpowers/plans/2026-10-05-zoo-grande-1-cimientos.md`. El plan 1 (cimientos) está hecho
+en la rama `zoo-grande-1-cimientos`; los planes 2 a 4 están por escribir (ver «Estado de
+implementación» al final).
 **Versión prevista:** 2.3.0.
 
 ## Idea
@@ -276,3 +278,24 @@ Un test comprueba que no queda ningún texto visible fuera de `strings.ts`.
 
 - Elefantes: 2 africanos y 2 asiáticos.
 - Nombres de los 35 animales: aprobados los propuestos.
+
+## Estado de implementación
+
+| Plan | Estado | Archivo |
+|---|---|---|
+| 1. Cimientos | ✅ Hecho | `docs/superpowers/plans/2026-10-05-zoo-grande-1-cimientos.md` |
+| 2. Arte y comidas | ⬜ Plan por escribir | — |
+| 3. Mapa y recintos | ⬜ Plan por escribir | — |
+| 4. Tienda y libro | ⬜ Plan por escribir | — |
+
+### Decisiones tomadas durante la implementación (plan 1)
+
+- `data/animals.ts` se queda como tabla de especies (no se renombra a `species.ts`): `AnimalId` es
+  la especie y `PenId` (`data/pens.ts`) el recinto.
+- Al llegar junto al animal la ventana de comer se abre sola, sin bocadillo intermedio, igual que
+  antes pasaba al llegar a la puerta. `Pens.anchorOf(residente)` da el punto sobre la cabeza para
+  los futuros iconos de hambre o enfermedad.
+- La cuidadora tiene su propia rejilla (caminos más interior de recintos abiertos); los visitantes
+  usan la de caminos.
+- En el mapa, la propiedad de recintos y puertas sigue llamándose `animalId` hasta que el plan 3
+  regenere el mapa.
