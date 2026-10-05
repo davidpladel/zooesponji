@@ -1,10 +1,11 @@
-import { ANIMAL_IDS, ANIMALS, type AnimalId } from '../data/animals';
+import { ANIMALS } from '../data/animals';
+import { PEN_IDS, PENS, nextResident, type PenId } from '../data/pens';
 import { SHOP_UNLOCK_COINS, getShopItem, parseExtraItemId } from '../data/shop';
 
 export interface GameState {
   readonly coins: number;
-  /** Animales en cada recinto (0 = recinto cerrado). */
-  readonly counts: Readonly<Record<AnimalId, number>>;
+  /** Residentes que han llegado a cada recinto (0 = recinto cerrado). */
+  readonly counts: Readonly<Record<PenId, number>>;
   readonly shopUnlocked: boolean;
 }
 
@@ -17,9 +18,9 @@ export type PurchaseError =
   | 'pen-full';
 export type PurchaseResult = { ok: true; state: GameState } | { ok: false; error: PurchaseError };
 
-export function initialCounts(): Record<AnimalId, number> {
-  const counts = {} as Record<AnimalId, number>;
-  for (const id of ANIMAL_IDS) counts[id] = ANIMALS[id].unlockedByDefault ? 1 : 0;
+export function initialCounts(): Record<PenId, number> {
+  const counts = {} as Record<PenId, number>;
+  for (const id of PEN_IDS) counts[id] = PENS[id].cost === undefined ? 1 : 0;
   return counts;
 }
 
@@ -35,31 +36,32 @@ export function addCoins(state: GameState, amount: number): GameState {
   return { ...state, coins, shopUnlocked: state.shopUnlocked || coins >= SHOP_UNLOCK_COINS };
 }
 
-export function animalCount(state: GameState, id: AnimalId): number {
+export function penCount(state: GameState, id: PenId): number {
   return state.counts[id] ?? 0;
 }
 
-export function isAnimalUnlocked(state: GameState, id: AnimalId): boolean {
-  return animalCount(state, id) > 0;
+export function isPenOpen(state: GameState, id: PenId): boolean {
+  return penCount(state, id) > 0;
 }
 
-export function unlockedAnimals(state: GameState): AnimalId[] {
-  return ANIMAL_IDS.filter((id) => isAnimalUnlocked(state, id));
+export function openPens(state: GameState): PenId[] {
+  return PEN_IDS.filter((id) => isPenOpen(state, id));
 }
 
-function withCount(state: GameState, id: AnimalId, count: number, cost: number): GameState {
+function withCount(state: GameState, id: PenId, count: number, cost: number): GameState {
   return { ...state, coins: state.coins - cost, counts: { ...state.counts, [id]: count } };
 }
 
-/** Otro animal para un recinto ya abierto, hasta su máximo. */
-export function buyExtra(state: GameState, id: AnimalId): PurchaseResult {
-  const def = ANIMALS[id];
+/** El siguiente residente de un recinto ya abierto. Su precio lo marca su especie. */
+export function buyExtra(state: GameState, id: PenId): PurchaseResult {
   if (!state.shopUnlocked) return { ok: false, error: 'shop-locked' };
-  const count = animalCount(state, id);
+  const count = penCount(state, id);
   if (count === 0) return { ok: false, error: 'pen-closed' };
-  if (count >= def.maxCount || def.extraCost === undefined) return { ok: false, error: 'pen-full' };
-  if (state.coins < def.extraCost) return { ok: false, error: 'not-enough-coins' };
-  return { ok: true, state: withCount(state, id, count + 1, def.extraCost) };
+  const next = nextResident(id, count);
+  const cost = next ? ANIMALS[next.species].extraCost : undefined;
+  if (!next || cost === undefined) return { ok: false, error: 'pen-full' };
+  if (state.coins < cost) return { ok: false, error: 'not-enough-coins' };
+  return { ok: true, state: withCount(state, id, count + 1, cost) };
 }
 
 /** Compra un artículo de la tienda: un recinto (`pantera`) o un animal extra (`extra-cabra`). */
@@ -69,7 +71,7 @@ export function purchase(state: GameState, itemId: string): PurchaseResult {
   const item = getShopItem(itemId);
   if (!item) return { ok: false, error: 'unknown-item' };
   if (!state.shopUnlocked) return { ok: false, error: 'shop-locked' };
-  if (isAnimalUnlocked(state, item.animalId)) return { ok: false, error: 'already-owned' };
+  if (isPenOpen(state, item.penId)) return { ok: false, error: 'already-owned' };
   if (state.coins < item.cost) return { ok: false, error: 'not-enough-coins' };
-  return { ok: true, state: withCount(state, item.animalId, 1, item.cost) };
+  return { ok: true, state: withCount(state, item.penId, 1, item.cost) };
 }

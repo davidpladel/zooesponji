@@ -62,7 +62,7 @@ test('ir al león: al llegar a su puerta se abre la comida y se le da arrastrand
 
 test('soltar la comida lejos no da monedas', async ({ page }) => {
   await startGame(page);
-  await page.evaluate(() => window.__ZOO__!.openFeed('leon'));
+  await page.evaluate(() => window.__ZOO__!.openFeed('bills'));
   await page.waitForFunction(() => window.__ZOO__?.activeScenes().includes('Feed'));
   const targets = await page.evaluate(() => window.__ZOO__!.feedTargets());
   const box = await canvasBox(page);

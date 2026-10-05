@@ -1,9 +1,9 @@
 import type * as Phaser from 'phaser';
 import { getArt } from '../art/art';
-import { unlockedAnimals } from '../core/economy';
+import { openPens } from '../core/economy';
 import type { Vec } from '../core/movement';
-import type { AnimalId } from '../data/animals';
 import type { FoodId } from '../data/foods';
+import type { PenId } from '../data/pens';
 import type { FeedScene } from '../scenes/FeedScene';
 import type { HudScene } from '../scenes/HudScene';
 import type { BookScene } from '../scenes/BookScene';
@@ -19,7 +19,7 @@ export interface ZooTestApi {
   tileToScreen(x: number, y: number): Vec | null;
   addCoins(amount: number): Promise<void>;
   hudCoinsText(): string | null;
-  openFeed(animalId: AnimalId): void;
+  openFeed(residentId: string): void;
   feedTargets(): { animal: Vec; foods: Partial<Record<FoodId, Vec>> } | null;
   isFeedBusy(): boolean;
   openShop(): void;
@@ -45,8 +45,8 @@ export interface ZooTestApi {
   settingsTogglePos(key: 'music' | 'sfx' | 'joystick'): Vec | null;
   settings(): { music: boolean; sfx: boolean; joystick: boolean };
   settingsCredits(): string | null;
-  counts(): Record<AnimalId, number>;
-  animalsInPen(animalId: AnimalId): number;
+  counts(): Record<PenId, number>;
+  animalsInPen(penId: PenId): number;
   goToTile(x: number, y: number): boolean;
   artMode(): boolean;
   gateApproachTile(animalId: string): { x: number; y: number } | null;
@@ -76,9 +76,9 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
     tileToScreen: (x, y) => activeScene<WorldScene>('World')?.tileToScreen({ x, y }) ?? null,
     addCoins: (amount) => getSession().earnCoins(amount),
     hudCoinsText: () => activeScene<HudScene>('Hud')?.coinsLabel() ?? null,
-    openFeed: (animalId) => {
+    openFeed: (residentId) => {
       if (game.scene.isActive('World')) game.scene.pause('World');
-      game.scene.start('Feed', { animalId });
+      game.scene.start('Feed', { residentId });
     },
     feedTargets: () => activeScene<FeedScene>('Feed')?.targetsOnScreen() ?? null,
     isFeedBusy: () => activeScene<FeedScene>('Feed')?.isBusy() ?? false,
@@ -109,9 +109,9 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
         throw new Error('Error de prueba');
       });
     },
-    unlocked: () => unlockedAnimals(getSession().state),
+    unlocked: () => openPens(getSession().state),
     counts: () => ({ ...getSession().state.counts }),
-    animalsInPen: (animalId) => game.scene.getScene<WorldScene>('World').animalsInPen(animalId),
+    animalsInPen: (penId) => game.scene.getScene<WorldScene>('World').animalsInPen(penId),
     goToTile: (x, y) => activeScene<WorldScene>('World')?.goToTile(x, y) ?? false,
     artMode: () => getArt() !== null,
     gateApproachTile: (animalId) => activeScene<WorldScene>('World')?.gateApproachTile(animalId) ?? null,

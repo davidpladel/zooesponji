@@ -2,9 +2,10 @@ import * as Phaser from 'phaser';
 import { isDropOnTarget, type Rect } from '../core/interaction';
 import type { Vec } from '../core/movement';
 import type { FeedResult } from '../core/reactions';
-import { ANIMALS, trayFoods, type AnimalId } from '../data/animals';
+import { trayFoods, type AnimalId } from '../data/animals';
 import { FOODS, type FoodId } from '../data/foods';
-import { t } from '../data/strings';
+import { findResident } from '../data/pens';
+import { t, type StringKey } from '../data/strings';
 import { sfx } from '../systems/audio';
 import { getSession } from '../systems/session';
 import { foodKey, getArt } from '../art/art';
@@ -12,7 +13,7 @@ import { animalPortrait } from '../world/Actors';
 import { addCloseButton, restartOnResize, textStyle } from './ui';
 
 export interface FeedSceneData {
-  animalId: AnimalId;
+  residentId: string;
 }
 
 /** Margen (px) alrededor del animal para que soltar "cerca" cuente. */
@@ -30,6 +31,7 @@ function baseScaleOf(food: Food): number {
 }
 
 export class FeedScene extends Phaser.Scene {
+  private residentId = 'bills';
   private animalId: AnimalId = 'leon';
   private animal!: Phaser.GameObjects.Sprite | Phaser.GameObjects.Text;
   private baseScale = 1;
@@ -45,7 +47,10 @@ export class FeedScene extends Phaser.Scene {
   }
 
   init(data: FeedSceneData): void {
-    this.animalId = data.animalId;
+    const found = findResident(data.residentId);
+    if (!found) throw new Error(`Residente desconocido: ${data.residentId}`);
+    this.residentId = data.residentId;
+    this.animalId = found.resident.species;
     this.foods.clear();
     this.homes.clear();
     this.dragging = null;
@@ -55,7 +60,6 @@ export class FeedScene extends Phaser.Scene {
 
   create(): void {
     const { width, height } = this.scale;
-    const def = ANIMALS[this.animalId];
 
     // Fondo oscuro que además bloquea los toques al mundo.
     this.add.rectangle(0, 0, width, height, 0x000000, 0.6).setOrigin(0).setInteractive();
@@ -64,7 +68,8 @@ export class FeedScene extends Phaser.Scene {
       .setStrokeStyle(6, 0x33691e);
     this.animal = animalPortrait(this, this.animalId, width / 2, height * 0.36, height * 0.3);
     this.baseScale = this.animal.scaleX;
-    this.add.text(width / 2, height * 0.64, t(def.nameKey), textStyle(Math.round(height * 0.05))).setOrigin(0.5);
+    const title = t(`book.page.${this.residentId}.title` as StringKey);
+    this.add.text(width / 2, height * 0.64, title, textStyle(Math.round(height * 0.05))).setOrigin(0.5);
     this.speech = this.add
       .text(width / 2 + height * 0.22, height * 0.16, '', textStyle(Math.round(height * 0.06), '#ffffff', '#4e342e'))
       .setOrigin(0.5)
@@ -166,7 +171,7 @@ export class FeedScene extends Phaser.Scene {
   private async feed(id: FoodId, food: Food): Promise<void> {
     this.busy = true;
     this.tweens.add({ targets: food, x: this.animal.x, y: this.animal.y, scale: 0, duration: 180, ease: 'Quad.easeIn' });
-    const result = await getSession().feed(this.animalId, id);
+    const result = await getSession().feed(this.residentId, id);
     this.playReaction(result);
     this.time.delayedCall(result.reaction === 'especial' ? 1900 : 1000, () => {
       this.returnHome(id, food, true);

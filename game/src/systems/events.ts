@@ -1,5 +1,6 @@
 import type { Settings } from '../core/save';
-import type { AnimalId, Reaction } from '../data/animals';
+import type { Reaction } from '../data/animals';
+import type { PenId } from '../data/pens';
 
 type Handler<T> = (payload: T) => void;
 
@@ -35,11 +36,11 @@ export class EventBus<E extends object> {
 export interface GameEvents {
   'coins-changed': { coins: number };
   'shop-unlocked': Record<string, never>;
-  'animal-unlocked': { animalId: AnimalId };
-  /** Un animal más en un recinto que ya estaba abierto. */
-  'animal-added': { animalId: AnimalId; count: number };
-  /** Se ha dado de comer a un recinto: todos sus animales reaccionan. */
-  'animal-fed': { animalId: AnimalId; reaction: Reaction };
+  'animal-unlocked': { penId: PenId };
+  /** Un residente más en un recinto que ya estaba abierto. */
+  'animal-added': { penId: PenId; count: number; residentId: string };
+  /** Se ha dado de comer a un residente: su recinto entero lo celebra. */
+  'animal-fed': { penId: PenId; residentId: string; reaction: Reaction };
   'settings-changed': { settings: Settings };
   toast: { text: string };
 }

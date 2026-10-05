@@ -2,7 +2,7 @@ import * as Phaser from 'phaser';
 import { getArt, propAnimKey, propKey } from '../art/art';
 import { depthForY } from '../core/depth';
 import { readEnclosures, readProps, type EnclosureInfo, type TiledMap } from '../core/tiledmap';
-import { ANIMALS, isAnimalId } from '../data/animals';
+import { PENS, isPenId } from '../data/pens';
 import { t } from '../data/strings';
 
 /** Suelo del bioma: por encima del césped (0) y por debajo de las vallas (2). */
@@ -69,9 +69,9 @@ export const Decor = {
 
       if (p.prop === 'sign') {
         const enclosure = nearestEnclosure(enclosures, p.x, p.y);
-        if (enclosure && isAnimalId(enclosure.animalId)) {
+        if (enclosure && isPenId(enclosure.animalId)) {
           scene.add
-            .text(p.x, p.y - TILE - 2, t(ANIMALS[enclosure.animalId].nameKey), {
+            .text(p.x, p.y - TILE - 2, t(PENS[enclosure.animalId].nameKey), {
               fontFamily: 'sans-serif',
               fontSize: '6px',
               color: '#ffffff',

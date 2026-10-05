@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { addCoins, animalCount, buyExtra, initialState, isAnimalUnlocked, purchase, unlockedAnimals, type GameState } from '../../src/core/economy';
+import { addCoins, penCount, buyExtra, initialState, isPenOpen, purchase, openPens, type GameState } from '../../src/core/economy';
+import { PENS } from '../../src/data/pens';
 
 function withCoins(coins: number, extra: Partial<GameState> = {}): GameState {
   return { ...initialState(), coins, shopUnlocked: coins >= 20, ...extra };
@@ -32,11 +33,11 @@ describe('addCoins', () => {
   });
 });
 
-describe('isAnimalUnlocked', () => {
+describe('isPenOpen', () => {
   it('un recinto está abierto si tiene al menos un animal', () => {
-    expect(isAnimalUnlocked(initialState(), 'leon')).toBe(true);
-    expect(isAnimalUnlocked(initialState(), 'panda')).toBe(false);
-    expect(unlockedAnimals(initialState())).toEqual(['leon', 'cabra']);
+    expect(isPenOpen(initialState(), 'leon')).toBe(true);
+    expect(isPenOpen(initialState(), 'panda')).toBe(false);
+    expect(openPens(initialState())).toEqual(['leon', 'cabra']);
   });
 });
 
@@ -46,7 +47,7 @@ describe('purchase', () => {
     expect(result.ok).toBe(true);
     if (!result.ok) return;
     expect(result.state.coins).toBe(10);
-    expect(animalCount(result.state, 'pantera')).toBe(1);
+    expect(penCount(result.state, 'pantera')).toBe(1);
   });
 
   it('la tienda sigue abierta después de gastar por debajo de 20', () => {
@@ -78,7 +79,7 @@ describe('purchase', () => {
     const state = withCoins(60);
     purchase(state, 'pantera');
     expect(state.coins).toBe(60);
-    expect(unlockedAnimals(state)).toEqual(['leon', 'cabra']);
+    expect(openPens(state)).toEqual(['leon', 'cabra']);
   });
 });
 
@@ -88,7 +89,7 @@ describe('buyExtra', () => {
     expect(result.ok).toBe(true);
     if (!result.ok) return;
     expect(result.state.coins).toBe(15);
-    expect(animalCount(result.state, 'cabra')).toBe(2);
+    expect(penCount(result.state, 'cabra')).toBe(2);
   });
 
   it('no deja pasar del máximo (5 cabras)', () => {
@@ -113,5 +114,26 @@ describe('buyExtra', () => {
 
   it('falla si la tienda está cerrada', () => {
     expect(buyExtra(withCoins(50, { shopUnlocked: false }), 'cabra')).toEqual({ ok: false, error: 'shop-locked' });
+  });
+});
+
+describe('comprar por recinto', () => {
+  const rich = (): GameState => ({ ...initialState(), coins: 1000, shopUnlocked: true });
+
+  it('comprar un recinto trae solo su primer residente', () => {
+    const result = purchase(rich(), 'pantera');
+    expect(result.ok && result.state.counts.pantera).toBe(1);
+  });
+
+  it('el extra cuesta lo que marca la especie del siguiente residente', () => {
+    const result = buyExtra(rich(), 'cabra');
+    expect(result.ok && result.state.coins).toBe(1000 - 10);
+    expect(result.ok && result.state.counts.cabra).toBe(2);
+  });
+
+  it('un recinto lleno no admite más', () => {
+    const full = { ...rich(), counts: { ...rich().counts, cabra: PENS.cabra.residents.length } };
+    expect(buyExtra(full, 'cabra')).toEqual({ ok: false, error: 'pen-full' });
+    expect(buyExtra(rich(), 'leon')).toEqual({ ok: false, error: 'pen-full' });
   });
 });

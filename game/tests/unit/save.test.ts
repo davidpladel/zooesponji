@@ -70,6 +70,16 @@ describe('parseSave', () => {
     });
     expect(parsed?.settings).toEqual({ music: false, sfx: true, joystick: false });
   });
+
+  it('una partida de la 2.2.0 se lee igual tras separar recintos y especies', () => {
+    const old = {
+      version: 2,
+      state: { coins: 77, counts: { leon: 1, cabra: 3, pantera: 2, panda: 0 }, shopUnlocked: true },
+      settings: { music: false, sfx: true, joystick: true },
+      book: { seen: ['cover', 'gordi'], hinted: true, page: 'gordi' },
+    };
+    expect(parseSave(old)).toEqual(old);
+  });
 });
 
 describe('migrateLegacy (partidas de la v1.1)', () => {

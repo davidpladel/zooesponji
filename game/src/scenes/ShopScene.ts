@@ -383,7 +383,7 @@ export class ShopScene extends Phaser.Scene {
     const done = entry.status !== 'buy';
     const affordable = getSession().state.coins >= entry.cost;
 
-    const animal = animalPortrait(this, entry.animalId, pos.x, pos.y, 28 * s).setOrigin(0.5, 1).setDepth(base.y);
+    const animal = animalPortrait(this, entry.species, pos.x, pos.y, 28 * s).setOrigin(0.5, 1).setDepth(base.y);
     if (done) {
       animal.setAlpha(0.5);
       if (animal instanceof Phaser.GameObjects.Sprite) animal.setTint(0x9e9e9e);
@@ -449,7 +449,7 @@ export class ShopScene extends Phaser.Scene {
     if (!quiet) {
       this.greet(product);
       const entry = product.entry;
-      const line: StringKey = entry.status === 'owned' ? 'shop.owned' : entry.status === 'full' ? 'shop.full' : (`shop.about.${entry.animalId}` as StringKey);
+      const line: StringKey = entry.status === 'owned' ? 'shop.owned' : entry.status === 'full' ? 'shop.full' : (`shop.about.${entry.species}` as StringKey);
       this.shopkeeper.say(t(line), 2400);
     }
     if (product.entry.status === 'buy') this.showBuyBubble(product);

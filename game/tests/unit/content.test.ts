@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { ANIMAL_IDS, ANIMALS, isAnimalId, trayFoods } from '../../src/data/animals';
 import { FOOD_IDS, FOODS } from '../../src/data/foods';
-import { SHOP_ITEMS, SHOP_UNLOCK_COINS, getShopItem, shopItemForAnimal } from '../../src/data/shop';
+import { PEN_IDS, PENS } from '../../src/data/pens';
+import { SHOP_ITEMS, SHOP_UNLOCK_COINS, getShopItem, shopItemForPen } from '../../src/data/shop';
 import { STRINGS_ES, t } from '../../src/data/strings';
 
 describe('contenido: animales', () => {
@@ -27,11 +28,12 @@ describe('contenido: animales', () => {
     expect(STRINGS_ES[ANIMALS[id].nameKey]).toBeTruthy();
   });
 
-  it.each(ANIMAL_IDS)('%s: si admite extras, tiene precio y texto', (id) => {
-    const def = ANIMALS[id];
-    if (def.maxCount === 1) return;
-    expect(def.extraCost).toBeGreaterThan(0);
-    expect(def.extraNameKey && STRINGS_ES[def.extraNameKey]).toBeTruthy();
+  it.each(PEN_IDS)('%s: si admite extras, tiene precio y texto', (id) => {
+    for (const r of PENS[id].residents.slice(1)) {
+      const def = ANIMALS[r.species];
+      expect(def.extraCost).toBeGreaterThan(0);
+      expect(def.extraNameKey && STRINGS_ES[def.extraNameKey]).toBeTruthy();
+    }
   });
 
   it('isAnimalId distingue ids válidos', () => {
@@ -40,10 +42,10 @@ describe('contenido: animales', () => {
   });
 
   it('león y cabra vienen desbloqueados; pantera y panda no', () => {
-    expect(ANIMALS.leon.unlockedByDefault).toBe(true);
-    expect(ANIMALS.cabra.unlockedByDefault).toBe(true);
-    expect(ANIMALS.pantera.unlockedByDefault).toBe(false);
-    expect(ANIMALS.panda.unlockedByDefault).toBe(false);
+    expect(PENS.leon.cost === undefined).toBe(true);
+    expect(PENS.cabra.cost === undefined).toBe(true);
+    expect(PENS.pantera.cost === undefined).toBe(false);
+    expect(PENS.panda.cost === undefined).toBe(false);
   });
 });
 
@@ -65,8 +67,8 @@ describe('contenido: tienda', () => {
   });
 
   it('todo animal no desbloqueado de inicio se puede comprar, y solo esos', () => {
-    const lockedAnimals = ANIMAL_IDS.filter((id) => !ANIMALS[id].unlockedByDefault).sort();
-    const sold = SHOP_ITEMS.map((item) => item.animalId).sort();
+    const lockedAnimals = PEN_IDS.filter((id) => PENS[id].cost !== undefined).sort();
+    const sold = SHOP_ITEMS.map((item) => item.penId).sort();
     expect(sold).toEqual(lockedAnimals);
   });
 
@@ -84,11 +86,11 @@ describe('textos con variables', () => {
   });
 });
 
-describe('shopItemForAnimal', () => {
+describe('shopItemForPen', () => {
   it('encuentra el producto de un animal comprable', () => {
-    expect(shopItemForAnimal('pantera')?.cost).toBe(50);
+    expect(shopItemForPen('pantera')?.cost).toBe(50);
   });
   it('undefined para animales de inicio', () => {
-    expect(shopItemForAnimal('leon')).toBeUndefined();
+    expect(shopItemForPen('leon')).toBeUndefined();
   });
 });
