@@ -114,7 +114,7 @@ export class WorldScene extends Phaser.Scene {
 
   update(time: number, delta: number): void {
     this.visitors.update(delta);
-    this.pens.update(time, delta);
+    this.pens.update(time, delta, this.cameras.main.worldView);
     const before = this.keeperPosition();
     this.moveKeeper(delta);
     const pos = this.keeperPosition();

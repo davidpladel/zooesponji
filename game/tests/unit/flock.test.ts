@@ -3,7 +3,7 @@ import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { rectContains } from '../../src/core/interaction';
 import { MIN_GAP, pickWanderTarget } from '../../src/core/obstacles';
-import { penSpace, spreadPositions, stepRoamer, type Roamer } from '../../src/core/flock';
+import { BODY_RADIUS, gapBetween, penSpace, spreadPositions, stepRoamer, type Roamer } from '../../src/core/flock';
 import { readEnclosures, readProps, type TiledMap } from '../../src/core/tiledmap';
 
 const url = new URL('../../public/assets/maps/zoo.tmj', import.meta.url);
@@ -58,5 +58,45 @@ describe('cinco cabras en su recinto', () => {
       }
     }
     expect(moved).toBeGreaterThan(500);
+  });
+});
+
+describe('animales grandes', () => {
+  const space = { inner: { x: 0, y: 0, width: 200, height: 120 }, obstacles: [] };
+
+  it('la separación entre dos animales es la suma de sus radios; sin radio, la de siempre', () => {
+    expect(gapBetween({}, {})).toBe(MIN_GAP);
+    expect(gapBetween({ radius: 18 }, { radius: 18 })).toBe(36);
+    expect(gapBetween({ radius: 18 }, {})).toBe(18 + BODY_RADIUS);
+  });
+
+  it('dos elefantes que van uno hacia el otro se paran antes de pisarse', () => {
+    const rng = seeded(5);
+    let a: Roamer = { pos: { x: 40, y: 60 }, target: { x: 160, y: 60 }, rest: 0, radius: 18 };
+    let b: Roamer = { pos: { x: 160, y: 60 }, target: { x: 40, y: 60 }, rest: 0, radius: 18 };
+    for (let step = 0; step < 400; step++) {
+      a = stepRoamer(a, [b], space, 50, rng);
+      b = stepRoamer(b, [a], space, 50, rng);
+      expect(distance(a.pos, b.pos)).toBeGreaterThanOrEqual(36 - 1e-9);
+    }
+  });
+
+  it('un animal grande no elige destinos pegados a la valla', () => {
+    const rng = seeded(9);
+    let r: Roamer = { pos: { x: 100, y: 60 }, target: null, rest: 0, radius: 18 };
+    for (let step = 0; step < 2000; step++) {
+      r = stepRoamer(r, [], space, 50, rng);
+      if (!r.target) continue;
+      expect(r.target.x).toBeGreaterThanOrEqual(18);
+      expect(r.target.x).toBeLessThanOrEqual(200 - 18);
+      expect(r.target.y).toBeGreaterThanOrEqual(18);
+      expect(r.target.y).toBeLessThanOrEqual(120 - 18);
+    }
+  });
+
+  it('spreadPositions separa más si se le pide', () => {
+    const points = spreadPositions(space, 2, seeded(3), 18, 54);
+    expect(points).toHaveLength(2);
+    expect(distance(points[0]!, points[1]!)).toBeGreaterThanOrEqual(36);
   });
 });

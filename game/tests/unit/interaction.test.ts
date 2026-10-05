@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { approachTile, gateAtDoorstep, isDropOnTarget, nearestWithin, rectContains } from '../../src/core/interaction';
+import { approachTile, gateAtDoorstep, isDropOnTarget, nearestWithin, rectContains, rectsOverlap, tapDistance } from '../../src/core/interaction';
 import { gridFromAscii } from './helpers';
 
 const gates = [
@@ -70,5 +70,34 @@ describe('nearestWithin', () => {
   it('da null si ninguno está dentro del radio', () => {
     expect(nearestWithin(items, { x: 50, y: 0 }, 14)).toBeNull();
     expect(nearestWithin([], { x: 0, y: 0 }, 14)).toBeNull();
+  });
+});
+
+describe('tapDistance', () => {
+  const feet = { x: 100, y: 100 };
+
+  it('en un animal pequeño es la distancia a sus pies', () => {
+    expect(tapDistance(feet, 7, { x: 103, y: 96 })).toBeCloseTo(5);
+  });
+
+  it('en uno grande se toca el cuerpo: el centro sube y el radio crece', () => {
+    // Jirafa (radio 16): tocar 20 px por encima de los pies cuenta como tocarla de lleno.
+    expect(tapDistance(feet, 16, { x: 100, y: 80 })).toBeLessThanOrEqual(14);
+    // A un animal pequeño ese mismo toque no le llega.
+    expect(tapDistance(feet, 7, { x: 100, y: 80 })).toBeGreaterThan(14);
+  });
+});
+
+describe('rectsOverlap', () => {
+  const view = { x: 100, y: 100, width: 200, height: 100 };
+
+  it('dentro, a medias y fuera', () => {
+    expect(rectsOverlap(view, { x: 150, y: 120, width: 20, height: 20 })).toBe(true);
+    expect(rectsOverlap(view, { x: 290, y: 190, width: 50, height: 50 })).toBe(true);
+    expect(rectsOverlap(view, { x: 320, y: 100, width: 50, height: 50 })).toBe(false);
+  });
+
+  it('con margen entra lo que está cerca del borde', () => {
+    expect(rectsOverlap(view, { x: 320, y: 100, width: 50, height: 50 }, 32)).toBe(true);
   });
 });

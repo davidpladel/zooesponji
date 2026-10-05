@@ -71,3 +71,18 @@ export function nearestWithin<T extends Vec>(items: readonly T[], point: Vec, ra
   }
   return best;
 }
+
+/**
+ * Distancia de un toque a un animal. A los grandes se les toca el cuerpo, no los pies: el centro
+ * sube y la distancia se descuenta en lo que su radio pasa de `base` (el de un animal de 16 px).
+ */
+export function tapDistance(feet: Vec, radius: number, point: Vec, base = 7): number {
+  const extra = Math.max(0, radius - base);
+  return Math.hypot(feet.x - point.x, feet.y - extra - point.y) - extra;
+}
+
+export function rectsOverlap(a: Rect, b: Rect, margin = 0): boolean {
+  return (
+    a.x - margin < b.x + b.width && a.x + a.width + margin > b.x && a.y - margin < b.y + b.height && a.y + a.height + margin > b.y
+  );
+}

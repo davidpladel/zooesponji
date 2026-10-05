@@ -15,6 +15,16 @@ export interface Roamer {
   pos: Vec;
   target: Vec | null;
   rest: number;
+  /** Radio del cuerpo (px). Sin él, `BODY_RADIUS`. */
+  radius?: number;
+}
+
+/** Radio de un animal de 16 px: dos de ellos se separan MIN_GAP. */
+export const BODY_RADIUS = MIN_GAP / 2;
+
+/** Distancia mínima entre dos animales: la suma de sus radios. */
+export function gapBetween(a: Pick<Roamer, 'radius'>, b: Pick<Roamer, 'radius'>): number {
+  return (a.radius ?? BODY_RADIUS) + (b.radius ?? BODY_RADIUS);
 }
 
 export const ROAM_SPEED = 14;
@@ -37,16 +47,16 @@ export function tooClose(p: Vec, others: readonly Vec[], gap = MIN_GAP): boolean
 }
 
 /** `n` puntos del recinto separados entre sí y fuera de los obstáculos (si no caben, se relaja la separación). */
-export function spreadPositions(space: PenSpace, n: number, rng: Rng, margin = 8): Vec[] {
+export function spreadPositions(space: PenSpace, n: number, rng: Rng, margin = 8, gap = MIN_GAP * 1.5): Vec[] {
   const { inner, obstacles } = space;
   const points: Vec[] = [];
-  for (let gap = MIN_GAP * 1.5; points.length < n && gap > 0; gap -= 2) {
+  for (let g = gap; points.length < n && g > 0; g -= 2) {
     for (let attempt = 0; attempt < 200 && points.length < n; attempt++) {
       const p = {
         x: inner.x + margin + rng() * (inner.width - margin * 2),
         y: inner.y + margin + rng() * (inner.height - margin * 2),
       };
-      if (obstacles.some((r) => rectContains(r, p, 2)) || tooClose(p, points, gap)) continue;
+      if (obstacles.some((r) => rectContains(r, p, 2)) || tooClose(p, points, g)) continue;
       points.push(p);
     }
   }
@@ -70,8 +80,9 @@ export function stepRoamer(
     const rest = roamer.rest - delta;
     if (rest > 0) return { ...roamer, rest };
     const occupied = others.flatMap((o) => (o.target ? [o.pos, o.target] : [o.pos]));
-    const target = pickWanderTarget(space.inner, pos, space.obstacles, rng, 8, 12, occupied);
-    return { pos, target, rest: target ? 0 : 1000 };
+    const margin = Math.max(8, roamer.radius ?? 0);
+    const target = pickWanderTarget(space.inner, pos, space.obstacles, rng, margin, 12, occupied);
+    return { ...roamer, target, rest: target ? 0 : 1000 };
   }
 
   const dx = roamer.target.x - pos.x;
@@ -82,9 +93,9 @@ export function stepRoamer(
 
   const blocked = others.some((o) => {
     const after = Math.hypot(o.pos.x - next.x, o.pos.y - next.y);
-    return after < MIN_GAP && after < Math.hypot(o.pos.x - pos.x, o.pos.y - pos.y);
+    return after < gapBetween(roamer, o) && after < Math.hypot(o.pos.x - pos.x, o.pos.y - pos.y);
   });
-  if (blocked) return { pos, target: null, rest: 400 + rng() * 800 };
-  if (next === roamer.target) return { pos: next, target: null, rest: 1000 + rng() * 2000 };
+  if (blocked) return { ...roamer, target: null, rest: 400 + rng() * 800 };
+  if (next === roamer.target) return { ...roamer, pos: next, target: null, rest: 1000 + rng() * 2000 };
   return { ...roamer, pos: next };
 }
