@@ -18,6 +18,8 @@ export interface ZooTestApi {
   keeperPosition(): Vec | null;
   tileToScreen(x: number, y: number): Vec | null;
   addCoins(amount: number): Promise<void>;
+  /** Compra un artículo sin pasar por la tienda (para llegar rápido a un recinto en las pruebas). */
+  buy(itemId: string): Promise<boolean>;
   hudCoinsText(): string | null;
   openFeed(residentId: string): void;
   feedTargets(): { animal: Vec; foods: Partial<Record<FoodId, Vec>> } | null;
@@ -51,6 +53,10 @@ export interface ZooTestApi {
   feedResident(residentId: string): boolean;
   residentScreenPos(residentId: string): Vec | null;
   keeperInPen(penId: PenId): boolean;
+  visitorsInPen(penId: PenId): number;
+  /** Un visitante aparece delante de la puerta del recinto y entra a acariciar. */
+  sendVisitorInside(penId: PenId): boolean;
+  petHearts(): number;
   goToTile(x: number, y: number): boolean;
   artMode(): boolean;
   gateApproachTile(penId: string): { x: number; y: number } | null;
@@ -79,6 +85,11 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
     keeperPosition: () => activeScene<WorldScene>('World')?.keeperPosition() ?? null,
     tileToScreen: (x, y) => activeScene<WorldScene>('World')?.tileToScreen({ x, y }) ?? null,
     addCoins: (amount) => getSession().earnCoins(amount),
+    buy: async (itemId) => {
+      const result = await getSession().buy(itemId);
+      game.scene.getScene<WorldScene>('World').refresh();
+      return result.ok;
+    },
     hudCoinsText: () => activeScene<HudScene>('Hud')?.coinsLabel() ?? null,
     openFeed: (residentId) => {
       if (game.scene.isActive('World')) game.scene.pause('World');
@@ -120,6 +131,9 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
     residentScreenPos: (residentId) => activeScene<WorldScene>('World')?.residentScreenPos(residentId) ?? null,
     // Con getScene: se consulta también con el mundo en pausa (ventana de comer abierta).
     keeperInPen: (penId) => game.scene.getScene<WorldScene>('World').keeperInPen(penId),
+    visitorsInPen: (penId) => activeScene<WorldScene>('World')?.visitorsInPen(penId) ?? 0,
+    sendVisitorInside: (penId) => activeScene<WorldScene>('World')?.sendVisitorInside(penId) ?? false,
+    petHearts: () => activeScene<WorldScene>('World')?.petHearts() ?? 0,
     goToTile: (x, y) => activeScene<WorldScene>('World')?.goToTile(x, y) ?? false,
     artMode: () => getArt() !== null,
     gateApproachTile: (penId) => activeScene<WorldScene>('World')?.gateApproachTile(penId) ?? null,

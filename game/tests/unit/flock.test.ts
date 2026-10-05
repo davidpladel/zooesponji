@@ -3,7 +3,7 @@ import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { rectContains } from '../../src/core/interaction';
 import { MIN_GAP, pickWanderTarget } from '../../src/core/obstacles';
-import { BODY_RADIUS, gapBetween, penSpace, spreadPositions, stepRoamer, type Roamer } from '../../src/core/flock';
+import { BODY_RADIUS, fleeTarget, followTarget, gapBetween, penSpace, spreadPositions, stepRoamer, type Roamer } from '../../src/core/flock';
 import { readEnclosures, readProps, type TiledMap } from '../../src/core/tiledmap';
 
 const url = new URL('../../public/assets/maps/zoo.tmj', import.meta.url);
@@ -98,5 +98,34 @@ describe('animales grandes', () => {
     const points = spreadPositions(space, 2, seeded(3), 18, 54);
     expect(points).toHaveLength(2);
     expect(distance(points[0]!, points[1]!)).toBeGreaterThanOrEqual(36);
+  });
+});
+
+describe('ovejas de la granja de contacto', () => {
+  const space = { inner: { x: 0, y: 0, width: 160, height: 120 }, obstacles: [{ x: 100, y: 40, width: 20, height: 20 }] };
+
+  it('se aparta en dirección contraria a quien pasa', () => {
+    expect(fleeTarget({ x: 60, y: 60 }, { x: 50, y: 60 }, space)).toEqual({ x: 80, y: 60 });
+  });
+
+  it('no se sale del recinto para apartarse (los animales no cruzan la valla ni la puerta)', () => {
+    expect(fleeTarget({ x: 12, y: 60 }, { x: 22, y: 60 }, space)).toBeNull();
+    expect(fleeTarget({ x: 80, y: 110 }, { x: 80, y: 100 }, space)).toBeNull();
+  });
+
+  it('no se aparta hacia una roca', () => {
+    expect(fleeTarget({ x: 90, y: 50 }, { x: 80, y: 50 }, space)).toBeNull();
+  });
+
+  it('se acerca a alguien quedándose a un paso', () => {
+    expect(followTarget({ x: 20, y: 80 }, { x: 80, y: 80 }, space, 20)).toEqual({ x: 60, y: 80 });
+  });
+
+  it('si ya está al lado, no se mueve', () => {
+    expect(followTarget({ x: 70, y: 80 }, { x: 80, y: 80 }, space, 20)).toBeNull();
+  });
+
+  it('no atraviesa una roca para acercarse', () => {
+    expect(followTarget({ x: 80, y: 50 }, { x: 150, y: 50 }, space, 20)).toBeNull();
   });
 });

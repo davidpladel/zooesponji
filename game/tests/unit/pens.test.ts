@@ -68,6 +68,10 @@ describe('recintos', () => {
     for (const penId of PEN_IDS) expect(STRINGS_ES[PENS[penId].nameKey], penId).toBeTruthy();
   });
 
+  it('solo en el recinto de ovejas entran los visitantes', () => {
+    expect(PEN_IDS.filter((id) => PENS[id].visitors)).toEqual(['ovejas']);
+  });
+
   it('residentsIn da los que han llegado, en orden', () => {
     expect(residentsIn('cabra', 2).map((r) => r.id)).toEqual(['gordi', 'nube']);
     expect(residentsIn('cabra', 0)).toEqual([]);
