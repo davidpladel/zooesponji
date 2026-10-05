@@ -1,6 +1,7 @@
 import * as Phaser from 'phaser';
 import { JOYSTICK_RADIUS, inJoystickZone, joystickVector, knobOffset } from '../core/joystick';
 import type { Vec } from '../core/movement';
+import { ANIMALS } from '../data/animals';
 import { PENS } from '../data/pens';
 import { t } from '../data/strings';
 import { sfx } from '../systems/audio';
@@ -56,7 +57,7 @@ export class HudScene extends Phaser.Scene {
         this.showToast(t('toast.shopOpen'));
       }),
       bus.on('animal-unlocked', ({ penId }) =>
-        this.showToast(t('toast.newAnimal', { name: t(PENS[penId].nameKey) })),
+        this.showToast(t('toast.newAnimal', { name: t(ANIMALS[PENS[penId].residents[0]!.species].nameKey) })),
       ),
     ];
 

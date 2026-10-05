@@ -100,7 +100,7 @@ export class WorldScene extends Phaser.Scene {
     }
 
     const offShopUnlocked = bus.on('shop-unlocked', () => this.shop?.sync(getSession().state));
-    const offFed = bus.on('animal-fed', ({ penId, reaction }) => this.pens.celebrate(penId, reaction));
+    const offFed = bus.on('animal-fed', ({ residentId, reaction }) => this.pens.celebrate(residentId, reaction));
     this.events.on(Phaser.Scenes.Events.RESUME, this.onResume, this);
 
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {

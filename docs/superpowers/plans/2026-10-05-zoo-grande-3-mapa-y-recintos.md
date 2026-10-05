@@ -1070,7 +1070,8 @@ Residentes, por orden de llegada (`id` → especie, aspecto):
   });
 
   it('dentro de un recinto no hay dos animales con el mismo aspecto', () => {
-    for (const penId of PEN_IDS) {
+    // Las dos panteras y los dos pandas comparten hoja: son los dibujos de los niños.
+    for (const penId of PEN_IDS.filter((id) => id !== 'pantera' && id !== 'panda')) {
       const looks = PENS[penId].residents.map((r) => r.look);
       expect(new Set(looks).size, penId).toBe(looks.length);
     }

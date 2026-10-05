@@ -7,7 +7,7 @@ import { gateAtDoorstep, nearestWithin, rectContains, type Rect } from '../core/
 import type { Vec } from '../core/movement';
 import type { Point } from '../core/pathfinding';
 import type { EnclosureInfo, GateInfo, PropInfo } from '../core/tiledmap';
-import type { Reaction } from '../data/animals';
+import type { AnimalId, Reaction } from '../data/animals';
 import { PENS, isPenId, residentsIn, type PenId, type ResidentDef } from '../data/pens';
 import { shopItemForPen } from '../data/shop';
 import { t } from '../data/strings';
@@ -18,6 +18,8 @@ interface Wanderer {
   walker: Walker;
   /** Qué animal es; null en los acompañantes (la leona). */
   residentId: string | null;
+  /** Su especie; null en los acompañantes. */
+  species: AnimalId | null;
   roam: Roamer;
   /** Sin arte: punto alrededor del que se balancea, y desfase del balanceo. */
   base: Vec;
@@ -50,9 +52,10 @@ const LABEL_STYLE: Phaser.Types.GameObjects.Text.TextStyle = {
   strokeThickness: 2,
 };
 
-const wanderer = (walker: Walker, residentId: string | null, rest = Math.random() * 2000): Wanderer => ({
+const wanderer = (walker: Walker, residentId: string | null, species: AnimalId | null, rest = Math.random() * 2000): Wanderer => ({
   walker,
   residentId,
+  species,
   roam: { pos: { x: walker.x, y: walker.y }, target: null, rest },
   base: { x: walker.x, y: walker.y },
   phase: Math.random() * Math.PI * 2,
@@ -104,16 +107,18 @@ export class Pens {
       // El primero se dibuja siempre (en fantasma si el recinto está cerrado).
       const here: ResidentDef[] = residentsIn(id, Math.max(1, penCount(state, id)));
       const count = here.length;
-      const hasCompanion = Boolean(getArt()?.companions[id]);
+      // El acompañante es el de la especie del primer residente (un recinto ya no es una especie).
+      const lead = def.residents[0]!.species;
+      const hasCompanion = Boolean(getArt()?.companions[lead]);
       const spots = spreadPositions(space, count + (hasCompanion ? 1 : 0), Math.random);
       const spot = (i: number): Vec => spots[i] ?? home;
       const animals = here.map((resident, i) => {
         const p = spot(i);
-        return wanderer(createAnimal(scene, resident.species, p.x, p.y, resident.look), resident.id);
+        return wanderer(createAnimal(scene, resident.species, p.x, p.y, resident.look), resident.id, resident.species);
       });
       const companionAt = spot(count);
-      const companionWalker = hasCompanion ? createCompanion(scene, id, companionAt.x, companionAt.y) : null;
-      const companion = companionWalker ? wanderer(companionWalker, null, 500 + Math.random() * 1500) : null;
+      const companionWalker = hasCompanion ? createCompanion(scene, lead, companionAt.x, companionAt.y) : null;
+      const companion = companionWalker ? wanderer(companionWalker, null, null, 500 + Math.random() * 1500) : null;
       for (const w of [...animals, ...(companion ? [companion] : [])]) w.walker.object.setAlpha(unlocked ? 1 : LOCKED_ALPHA);
 
       this.pens.push({ id, rect, space, gate: gate.tile, home, animals, companion, lock, shown: unlocked });
@@ -236,11 +241,12 @@ export class Pens {
     }
   }
 
-  /** Todos los animales del recinto reaccionan a la comida que se les ha dado. */
-  celebrate(id: PenId, reaction: Reaction): void {
-    const pen = this.pens.find((p) => p.id === id);
-    if (!pen) return;
-    for (const w of pen.animals) {
+  /** Reacciona el animal que ha comido y, con él, los de su especie que haya en el recinto. */
+  celebrate(residentId: string, reaction: Reaction): void {
+    const pen = this.pens.find((p) => p.animals.some((w) => w.residentId === residentId));
+    const fed = pen?.animals.find((w) => w.residentId === residentId);
+    if (!pen || !fed) return;
+    for (const w of pen.animals.filter((a) => a.species === fed.species)) {
       const object = w.walker.object;
       const emoji = this.sparkle(REACTION_EMOJI[reaction]).setPosition(w.walker.x, w.walker.y - 16);
       this.scene.tweens.add({ targets: emoji, y: emoji.y - 10, alpha: 0, duration: 1200, onComplete: () => emoji.setVisible(false) });
@@ -261,7 +267,7 @@ export class Pens {
     };
     const resident = PENS[pen.id].residents[pen.animals.length];
     if (!resident) return;
-    const w = wanderer(createAnimal(this.scene, resident.species, entry.x, entry.y, resident.look), resident.id, 800);
+    const w = wanderer(createAnimal(this.scene, resident.species, entry.x, entry.y, resident.look), resident.id, resident.species, 800);
     pen.animals.push(w);
     w.walker.object.setScale(0);
     this.scene.tweens.add({ targets: w.walker.object, scale: 1, duration: 600, delay: 300, ease: 'Back.easeOut' });

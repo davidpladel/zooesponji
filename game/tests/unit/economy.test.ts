@@ -8,7 +8,11 @@ function withCoins(coins: number, extra: Partial<GameState> = {}): GameState {
 
 describe('initialState', () => {
   it('empieza con 0 monedas, león y cabra, y tienda cerrada', () => {
-    expect(initialState()).toEqual({ coins: 0, counts: { leon: 1, cabra: 1, pantera: 0, panda: 0 }, shopUnlocked: false });
+    expect(initialState()).toEqual({
+      coins: 0,
+      counts: { leon: 1, cabra: 1, pantera: 0, panda: 0, estanque: 0, ovejas: 0, establo: 0, pinguinos: 0, sabana: 0, 'elefantes-africanos': 0, 'elefantes-asiaticos': 0 },
+      shopUnlocked: false,
+    });
   });
 });
 
@@ -135,5 +139,19 @@ describe('comprar por recinto', () => {
     const full = { ...rich(), counts: { ...rich().counts, cabra: PENS.cabra.residents.length } };
     expect(buyExtra(full, 'cabra')).toEqual({ ok: false, error: 'pen-full' });
     expect(buyExtra(rich(), 'leon')).toEqual({ ok: false, error: 'pen-full' });
+  });
+
+  it('comprar un recinto mixto trae solo su primer animal, y cada extra cuesta lo de su especie', () => {
+    let state: GameState = { ...initialState(), coins: 1000, shopUnlocked: true };
+    const buy = (item: string) => {
+      const result = purchase(state, item);
+      if (!result.ok) throw new Error(result.error);
+      state = result.state;
+    };
+    buy('establo');
+    expect([state.counts.establo, state.coins]).toEqual([1, 600]);
+    buy('extra-establo'); // Pepa, gallina: 30
+    buy('extra-establo'); // Lucero, caballo: 60
+    expect([state.counts.establo, state.coins]).toEqual([3, 510]);
   });
 });
