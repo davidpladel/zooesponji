@@ -4,28 +4,35 @@ import { describe, expect, it } from 'vitest';
 import { approachTile } from '../../src/core/interaction';
 import { findPath, isWalkable } from '../../src/core/pathfinding';
 import { buildWalkGrid, isShopDoor, readEnclosures, readGates, readProps, readShop, readSpawn, type TiledMap } from '../../src/core/tiledmap';
-import { ANIMAL_IDS } from '../../src/data/animals';
 
 const url = new URL('../../public/assets/maps/zoo.tmj', import.meta.url);
 const map = JSON.parse(readFileSync(fileURLToPath(url), 'utf8')) as TiledMap;
 const grid = buildWalkGrid(map);
 const spawn = readSpawn(map);
+const config = JSON.parse(readFileSync(fileURLToPath(new URL('../../art/art.config.json', import.meta.url)), 'utf8')) as {
+  props: Record<string, unknown>;
+};
+/** Recintos que tiene que haber en el mapa. */
+const MAP_PENS = [
+  'leon', 'cabra', 'pantera', 'panda',
+  'sabana', 'elefantes-africanos', 'elefantes-asiaticos', 'pinguinos', 'ovejas', 'estanque', 'establo',
+];
+const enclosure = (id: string) => readEnclosures(map).find((e) => e.penId === id)!;
 
 describe('mapa del zoo', () => {
-  it('mide 48×35 y el inicio es transitable', () => {
-    expect([grid.width, grid.height]).toEqual([48, 35]);
+  it('mide 96×60 y el inicio es transitable', () => {
+    expect([grid.width, grid.height]).toEqual([96, 60]);
     expect(isWalkable(grid, spawn.x, spawn.y)).toBe(true);
   });
 
-  it('cada animal tiene recinto y puerta, y se llega andando a la puerta', () => {
+  it('cada recinto tiene valla y puerta, y se llega andando a la puerta', () => {
     const enclosures = readEnclosures(map);
     const gates = readGates(map);
-    for (const id of ANIMAL_IDS) {
-      const enclosure = enclosures.find((e) => e.penId === id);
+    expect(enclosures.map((e) => e.penId).sort()).toEqual([...MAP_PENS].sort());
+    for (const id of MAP_PENS) {
       const gate = gates.find((g) => g.penId === id);
-      expect(enclosure, id).toBeDefined();
       expect(gate, id).toBeDefined();
-      const approach = approachTile(gate!.tile, enclosure!, 16, grid);
+      const approach = approachTile(gate!.tile, enclosure(id), 16, grid);
       expect(approach, `acceso a ${id}`).not.toBeNull();
       expect(findPath(grid, spawn, approach!), `camino a ${id}`).not.toBeNull();
     }
@@ -61,7 +68,11 @@ describe('mapa del zoo', () => {
   });
 
   it('cada recinto tiene bioma', () => {
-    expect(readEnclosures(map).map((e) => e.biome).sort()).toEqual(['alpine', 'bamboo', 'rainforest', 'savannah']);
+    const biome = (id: string) => enclosure(id).biome;
+    expect(MAP_PENS.map(biome)).toEqual([
+      'savannah', 'alpine', 'rainforest', 'bamboo',
+      'savannah', 'savannah', 'savannah', 'tundra', 'grassland', 'grassland', 'grassland',
+    ]);
   });
 
   it('lo que bloquea deja al menos el 40 % del interior libre (la catarata de la pantera ocupa mucho)', () => {
@@ -96,10 +107,35 @@ describe('mapa del zoo', () => {
     }
   });
 
-  it('hay decoración en los cuatro recintos y en el parque', () => {
+  it('hay decoración en los recintos de siempre, en los nuevos y en el parque', () => {
     const names = new Set(readProps(map).map((p) => p.prop));
-    for (const name of ['acacia', 'plateau', 'waterfall', 'bamboo-mid', 'bench', 'lamp', 'sign', 'fountain']) {
+    for (const name of ['acacia', 'plateau', 'waterfall', 'bamboo-mid', 'bench', 'lamp', 'sign', 'fountain', 'pond-tundra', 'pond-grassland', 'sunflowers']) {
       expect(names.has(name), name).toBe(true);
     }
+  });
+
+  it('el parque de siempre queda en el centro, sin cambios', () => {
+    expect(enclosure('leon')).toMatchObject({ x: (9 + 24) * 16, y: (5 + 20) * 16, width: 12 * 16, height: 8 * 16 });
+    expect(enclosure('pantera')).toMatchObject({ x: (6 + 24) * 16, y: (19 + 20) * 16, width: 15 * 16, height: 10 * 16 });
+    expect(readShop(map)).toMatchObject({ x: (25 + 24) * 16, y: (4 + 20) * 16, door: { x: 27 + 24, y: 9 + 20 } });
+    expect(spawn).toEqual({ x: 47, y: 50 });
+  });
+
+  it('la sabana es el recinto grande y los elefantes van en dos jaulas con un pasillo de césped', () => {
+    expect(enclosure('sabana')).toMatchObject({ width: 22 * 16, height: 12 * 16 });
+    const african = enclosure('elefantes-africanos');
+    const asian = enclosure('elefantes-asiaticos');
+    expect(asian.x - (african.x + african.width)).toBe(2 * 16);
+    for (const x of [64, 65]) for (let y = 5; y <= 14; y++) expect(isWalkable(grid, x, y), `(${x},${y})`).toBe(false);
+  });
+
+  it('cada zona nueva tiene su cartel a la entrada', () => {
+    const zones = readProps(map).flatMap((p) => (p.zone ? [p.zone] : []));
+    expect(zones.sort()).toEqual(['granja', 'polo', 'sabana']);
+  });
+
+  it('toda pieza del mapa y todo suelo de bioma están en art.config.json', () => {
+    for (const p of readProps(map)) expect(config.props[p.prop], p.prop).toBeDefined();
+    for (const e of readEnclosures(map)) expect(config.props[`ground-${e.biome}`], `suelo de ${e.penId}`).toBeDefined();
   });
 });

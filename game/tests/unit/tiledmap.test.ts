@@ -75,7 +75,7 @@ describe('readSpawn', () => {
       },
     ]);
     expect(readProps(map)).toEqual([
-      { prop: 'pond', x: 40, y: 64, flat: true, z: 1, block: { x: 24, y: 48, width: 32, height: 16 } },
+      { prop: 'pond', x: 40, y: 64, flat: true, z: 1, block: { x: 24, y: 48, width: 32, height: 16 }, zone: null },
     ]);
   });
 
@@ -126,5 +126,21 @@ describe('mapa de prueba', () => {
     expect(isWalkable(grid, 18, 6)).toBe(true);
     expect(isWalkable(grid, 17, 6)).toBe(false);
     expect(findPath(grid, readSpawn(map), shop!.door)).not.toBeNull();
+  });
+});
+
+describe('readProps: carteles de zona', () => {
+  const withProp = (properties: { name: string; type: string; value: unknown }[]): TiledMap => ({
+    width: 1, height: 1, tilewidth: 16, tileheight: 16, tilesets: [],
+    layers: [{ type: 'objectgroup', name: 'objetos', objects: [{ id: 1, name: 'p', type: 'prop', x: 8, y: 16, width: 0, height: 0, properties }] }],
+  });
+
+  it('lee la zona del cartel', () => {
+    const map = withProp([{ name: 'prop', type: 'string', value: 'sign-zone' }, { name: 'zone', type: 'string', value: 'polo' }]);
+    expect(readProps(map)[0]).toMatchObject({ prop: 'sign-zone', zone: 'polo' });
+  });
+
+  it('sin zona, null', () => {
+    expect(readProps(withProp([{ name: 'prop', type: 'string', value: 'tree' }]))[0]!.zone).toBeNull();
   });
 });

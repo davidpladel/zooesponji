@@ -214,6 +214,8 @@ export interface PropInfo {
   z: number;
   /** Zona que el animal no puede pisar (centrada en la base) o null. */
   block: { x: number; y: number; width: number; height: number } | null;
+  /** Zona que anuncia (solo los carteles de zona): `sabana`, `polo`, `granja`. */
+  zone: string | null;
 }
 
 export function readProps(map: TiledMap): PropInfo[] {
@@ -226,6 +228,7 @@ export function readProps(map: TiledMap): PropInfo[] {
       return typeof v === 'number' ? v : 0;
     };
     const blocks = getProperty(object.properties, 'blocks') === true;
+    const zone = getProperty(object.properties, 'zone');
     const w = num('blockW');
     const h = num('blockH');
     result.push({
@@ -235,6 +238,7 @@ export function readProps(map: TiledMap): PropInfo[] {
       flat: getProperty(object.properties, 'flat') === true,
       z: num('z'),
       block: blocks && w > 0 && h > 0 ? { x: object.x - w / 2, y: object.y - h, width: w, height: h } : null,
+      zone: typeof zone === 'string' ? zone : null,
     });
   }
   return result;
