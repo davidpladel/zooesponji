@@ -47,6 +47,10 @@ export interface ZooTestApi {
   settingsCredits(): string | null;
   counts(): Record<PenId, number>;
   animalsInPen(penId: PenId): number;
+  /** Manda a la cuidadora a dar de comer a un animal (lo mismo que tocarlo). */
+  feedResident(residentId: string): boolean;
+  residentScreenPos(residentId: string): Vec | null;
+  keeperInPen(penId: PenId): boolean;
   goToTile(x: number, y: number): boolean;
   artMode(): boolean;
   gateApproachTile(animalId: string): { x: number; y: number } | null;
@@ -112,6 +116,10 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
     unlocked: () => openPens(getSession().state),
     counts: () => ({ ...getSession().state.counts }),
     animalsInPen: (penId) => game.scene.getScene<WorldScene>('World').animalsInPen(penId),
+    feedResident: (residentId) => activeScene<WorldScene>('World')?.feedResident(residentId) ?? false,
+    residentScreenPos: (residentId) => activeScene<WorldScene>('World')?.residentScreenPos(residentId) ?? null,
+    // Con getScene: se consulta también con el mundo en pausa (ventana de comer abierta).
+    keeperInPen: (penId) => game.scene.getScene<WorldScene>('World').keeperInPen(penId),
     goToTile: (x, y) => activeScene<WorldScene>('World')?.goToTile(x, y) ?? false,
     artMode: () => getArt() !== null,
     gateApproachTile: (animalId) => activeScene<WorldScene>('World')?.gateApproachTile(animalId) ?? null,

@@ -1,12 +1,14 @@
 import * as Phaser from 'phaser';
 import { getArt } from '../art/art';
 import { KEEPER_SPEED, MAPS, TEXTURES, TILE_SIZE } from '../config';
+import type { GameState } from '../core/economy';
 import { approachTile } from '../core/interaction';
 import { inJoystickZone } from '../core/joystick';
 import { stepAlongPath, tileCenter, tryMove, worldToTile, type Vec } from '../core/movement';
 import { findPathOrNearest, isWalkable, type Point, type WalkGrid } from '../core/pathfinding';
+import { withPenInteriors } from '../core/penGrid';
 import { buildWalkGrid, readEnclosures, readGates, readProps, readShop, readSpawn, type TiledMap } from '../core/tiledmap';
-import { PENS, type PenId } from '../data/pens';
+import type { PenId } from '../data/pens';
 import { SHOP_UNLOCK_COINS } from '../data/shop';
 import { t } from '../data/strings';
 import { sfx } from '../systems/audio';
@@ -24,11 +26,22 @@ import type { FeedSceneData } from './FeedScene';
 
 /** Si el dedo se desplaza más que esto entre pulsar y soltar, no es un toque. */
 const TAP_MAX_DISTANCE = 12;
+/** Radio (px) alrededor de un animal en el que un toque cuenta como tocarlo. */
+const TAP_REACH = 14;
+/** Distancia (px) a la que la cuidadora ya puede dar de comer a un animal. */
+const FEED_REACH = 18;
 
 type WasdKeys = Record<'W' | 'A' | 'S' | 'D', Phaser.Input.Keyboard.Key>;
 
 export class WorldScene extends Phaser.Scene {
+  /** Caminos más el interior de los recintos abiertos: por aquí anda la cuidadora. */
   private grid!: WalkGrid;
+  /** Solo caminos: por aquí andan los visitantes. */
+  private pathGrid!: WalkGrid;
+  /** Residente hacia el que va la cuidadora para darle de comer. */
+  private feedTarget: string | null = null;
+  /** Residente junto al que está (para abrir la comida solo al llegar). */
+  private nearResident: string | null = null;
   private mapData!: TiledMap;
   private keeper!: Walker;
   private marker!: Phaser.GameObjects.Image;
@@ -46,7 +59,7 @@ export class WorldScene extends Phaser.Scene {
   create(): void {
     const mapData = this.cache.tilemap.get(MAPS.zoo).data as TiledMap;
     this.mapData = mapData;
-    this.grid = buildWalkGrid(mapData);
+    this.pathGrid = buildWalkGrid(mapData);
 
     const map = this.make.tilemap({ key: MAPS.zoo });
     const tileset = map.addTilesetImage('placeholder', TEXTURES.tiles);
@@ -61,14 +74,17 @@ export class WorldScene extends Phaser.Scene {
 
     const state = getSession().state;
     this.pens = new Pens(this, readEnclosures(mapData), readGates(mapData), state, readProps(mapData));
+    this.grid = withPenInteriors(this.pathGrid, this.pens.openSpaces(state), TILE_SIZE);
     const shopInfo = readShop(mapData);
     this.shop = shopInfo ? new ShopBuilding(this, shopInfo, state) : null;
-    this.visitors = new VisitorCrowd(this, this.grid);
+    this.visitors = new VisitorCrowd(this, this.pathGrid);
 
     const spawn = tileCenter(readSpawn(mapData), TILE_SIZE);
     this.marker = this.add.image(0, 0, TEXTURES.marker).setVisible(false).setDepth(3);
     this.keeper = createKeeper(this, spawn.x, spawn.y);
     this.route = [];
+    this.feedTarget = null;
+    this.nearResident = null;
 
     const camera = this.cameras.main;
     camera.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
@@ -99,20 +115,65 @@ export class WorldScene extends Phaser.Scene {
   update(time: number, delta: number): void {
     this.visitors.update(delta);
     this.pens.update(time, delta);
+    const before = this.keeperPosition();
     this.moveKeeper(delta);
+    const pos = this.keeperPosition();
+    const moved = pos.x !== before.x || pos.y !== before.y;
+
+    const state = getSession().state;
+    if (this.reachResident(pos, moved, state)) return;
 
     const tile = worldToTile(this.keeper, TILE_SIZE);
-    const state = getSession().state;
-    // Al llegar al camino pegado a la puerta de un recinto se abre la ventana de dar de comer.
-    const doorstep = this.pens.onKeeperTile(tile, state);
-    if (doorstep?.locked) bus.emit('toast', { text: t('toast.needShop') });
-    else if (doorstep) {
-      this.openFeed(PENS[doorstep.penId].residents[0]!.id);
-      return;
-    }
+    if (this.pens.lockedDoorstep(tile, state)) bus.emit('toast', { text: t('toast.needShop') });
     const doorEvent = this.shop?.onKeeperTile(tile, state) ?? null;
     if (doorEvent === 'open') this.openShop();
     else if (doorEvent === 'locked') bus.emit('toast', { text: t('toast.shopLocked', { n: SHOP_UNLOCK_COINS }) });
+  }
+
+  /**
+   * Abre la comida al llegar junto a un animal: el que se ha tocado o, andando con joystick o teclado,
+   * el que quede al lado. Solo al llegar: no se repite hasta que la cuidadora se aparte.
+   */
+  private reachResident(pos: Vec, moved: boolean, state: GameState): boolean {
+    let reached: string | null;
+    if (this.feedTarget) {
+      const at = this.pens.positionOf(this.feedTarget);
+      reached = at && Math.hypot(at.x - pos.x, at.y - pos.y) <= FEED_REACH ? this.feedTarget : null;
+      // No hay camino hasta él: se deja de esperar.
+      if (!reached && this.route.length === 0) this.cancelFeedTarget();
+    } else {
+      reached = this.pens.residentAt(pos, state, FEED_REACH)?.residentId ?? null;
+    }
+    if (reached === this.nearResident) return false;
+    this.nearResident = reached;
+    if (!reached || !(moved || this.feedTarget)) return false;
+    this.openFeed(reached);
+    return true;
+  }
+
+  private cancelFeedTarget(): void {
+    this.feedTarget = null;
+    this.pens.release();
+  }
+
+  /** Manda a la cuidadora a dar de comer a un animal concreto. False si ese animal no está en el zoo. */
+  feedResident(residentId: string): boolean {
+    const at = this.pens.positionOf(residentId);
+    if (!at) return false;
+    this.feedTarget = residentId;
+    this.nearResident = null;
+    this.pens.hold(residentId);
+    this.goTo(at);
+    return true;
+  }
+
+  residentScreenPos(residentId: string): Vec | null {
+    const at = this.pens.positionOf(residentId);
+    return at ? this.worldToScreen(at) : null;
+  }
+
+  keeperInPen(penId: PenId): boolean {
+    return this.pens.contains(penId, this.keeperPosition());
   }
 
   /** Manda a la cuidadora hacia un punto del mundo. Devuelve false si no hay a dónde ir. */
@@ -136,7 +197,7 @@ export class WorldScene extends Phaser.Scene {
   gateApproachTile(animalId: string): Point | null {
     const enclosure = readEnclosures(this.mapData).find((e) => e.animalId === animalId);
     const gate = readGates(this.mapData).find((g) => g.animalId === animalId);
-    return enclosure && gate ? approachTile(gate.tile, enclosure, TILE_SIZE, this.grid) : null;
+    return enclosure && gate ? approachTile(gate.tile, enclosure, TILE_SIZE, this.pathGrid) : null;
   }
 
   shopDoorTile(): Point | null {
@@ -174,6 +235,7 @@ export class WorldScene extends Phaser.Scene {
     if (length > 0) {
       this.route = [];
       this.marker.setVisible(false);
+      if (this.feedTarget) this.cancelFeedTarget();
       const distance = ((KEEPER_SPEED * delta) / 1000) * Math.min(1, length);
       const next = tryMove(
         this.grid,
@@ -215,12 +277,21 @@ export class WorldScene extends Phaser.Scene {
 
     const point = this.cameras.main.getWorldPoint(pointer.x, pointer.y);
     const world = { x: point.x, y: point.y };
-    if (this.pens.lockedPenAt(world, getSession().state)) bus.emit('toast', { text: t('toast.needShop') });
+    const state = getSession().state;
+    const hit = this.pens.residentAt(world, state, TAP_REACH);
+    if (hit) {
+      this.feedResident(hit.residentId);
+      return;
+    }
+    this.cancelFeedTarget();
+    if (this.pens.lockedPenAt(world, state)) bus.emit('toast', { text: t('toast.needShop') });
     this.goTo(world);
   }
 
   private openFeed(residentId: string): void {
     this.stopWalking();
+    this.feedTarget = null;
+    this.pens.hold(residentId);
     sfx.play('tap');
     this.scene.pause();
     const data: FeedSceneData = { residentId };
@@ -241,7 +312,9 @@ export class WorldScene extends Phaser.Scene {
   private onResume(_sys: Phaser.Scenes.Systems, data?: { from?: string }): void {
     if (data?.from === 'shop') this.leaveShop();
     const state = getSession().state;
+    this.pens.release();
     this.pens.syncUnlocks(state);
+    this.grid = withPenInteriors(this.pathGrid, this.pens.openSpaces(state), TILE_SIZE);
     this.shop?.sync(state);
   }
 

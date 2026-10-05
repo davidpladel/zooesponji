@@ -37,12 +37,11 @@ async function dragFood(page: Page, food: string): Promise<void> {
   await expect.poll(() => page.evaluate(() => window.__ZOO__!.isFeedBusy())).toBe(false);
 }
 
-test('ir al león: al llegar a su puerta se abre la comida y se le da arrastrando', async ({ page }) => {
+test('tocar al león: la cuidadora entra en su recinto y se le da de comer arrastrando', async ({ page }) => {
   await startGame(page);
-  const approach = await page.evaluate(() => window.__ZOO__!.gateApproachTile('leon'));
-  // Nada más pisar el camino pegado a la puerta se abre la ventana de dar de comer (sin tocar nada).
-  await page.evaluate(([x, y]) => window.__ZOO__!.goToTile(x!, y!), [approach!.x, approach!.y]);
-  await page.waitForFunction(() => window.__ZOO__?.activeScenes().includes('Feed'), undefined, { timeout: 20_000 });
+  expect(await page.evaluate(() => window.__ZOO__!.feedResident('bills'))).toBe(true);
+  await page.waitForFunction(() => window.__ZOO__?.activeScenes().includes('Feed'), undefined, { timeout: 30_000 });
+  expect(await page.evaluate(() => window.__ZOO__!.keeperInPen('leon'))).toBe(true);
 
   await dragFood(page, 'carne');
   await expect.poll(() => page.evaluate(() => window.__ZOO__!.hudCoinsText())).toBe('🪙 1');
@@ -55,8 +54,32 @@ test('ir al león: al llegar a su puerta se abre la comida y se le da arrastrand
     const scenes = window.__ZOO__?.activeScenes() ?? [];
     return scenes.includes('World') && !scenes.includes('Feed');
   });
-  // Sigue en la puerta: no se vuelve a abrir sola hasta que se aparte.
+  // Sigue al lado del león: no se vuelve a abrir sola.
   await page.waitForTimeout(500);
+  expect(await page.evaluate(() => window.__ZOO__!.activeScenes())).not.toContain('Feed');
+});
+
+test('con el dedo: tocar al animal que está al lado abre su comida', async ({ page }) => {
+  await startGame(page);
+  await page.evaluate(() => window.__ZOO__!.feedResident('bills'));
+  await page.waitForFunction(() => window.__ZOO__?.activeScenes().includes('Feed'), undefined, { timeout: 30_000 });
+  await page.keyboard.press('Escape');
+  await page.waitForFunction(() => !window.__ZOO__?.activeScenes().includes('Feed'));
+
+  const pos = await page.evaluate(() => window.__ZOO__!.residentScreenPos('bills'));
+  const box = await canvasBox(page);
+  await page.mouse.click(box.x + pos!.x, box.y + pos!.y);
+  await page.waitForFunction(() => window.__ZOO__?.activeScenes().includes('Feed'), undefined, { timeout: 10_000 });
+});
+
+test('pisar la puerta de un recinto abierto ya no abre la comida', async ({ page }) => {
+  await startGame(page);
+  const approach = await page.evaluate(() => window.__ZOO__!.gateApproachTile('leon'));
+  await page.evaluate(([x, y]) => window.__ZOO__!.goToTile(x!, y!), [approach!.x, approach!.y]);
+  await expect
+    .poll(() => page.evaluate(() => window.__ZOO__!.keeperPosition()), { timeout: 20_000 })
+    .toEqual({ x: approach!.x * 16 + 8, y: approach!.y * 16 + 8 });
+  await page.waitForTimeout(400);
   expect(await page.evaluate(() => window.__ZOO__!.activeScenes())).not.toContain('Feed');
 });
 
