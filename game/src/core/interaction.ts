@@ -57,3 +57,17 @@ export function approachTile(gate: Point, enclosure: Rect, tileSize: number, gri
   }
   return null;
 }
+
+/** El elemento más cercano a `point` a no más de `radius`, o null. */
+export function nearestWithin<T extends Vec>(items: readonly T[], point: Vec, radius: number): T | null {
+  let best: T | null = null;
+  let bestDistance = radius;
+  for (const item of items) {
+    const distance = Math.hypot(item.x - point.x, item.y - point.y);
+    if (distance <= bestDistance) {
+      best = item;
+      bestDistance = distance;
+    }
+  }
+  return best;
+}
