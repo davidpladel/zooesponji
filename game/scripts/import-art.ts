@@ -3,12 +3,12 @@
 import { PNG } from 'pngjs';
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { animatedStrip, composedStrip, characterSheet, reorderRows, crop, erase, recolorPanther } from './art/pngTools.ts';
-import { assertPrivateRepo, config, privateRepo, readSource, root } from './art/source.ts';
+import { animatedStrip, composedStrip, characterSheet, crop, erase } from './art/pngTools.ts';
+import { buildLook, finished } from './art/looks.ts';
+import { assertPrivateRepo, config, readSource, root } from './art/source.ts';
 
 assertPrivateRepo();
 const outDir = join(root, 'public/art');
-const finished = (file: string) => join(privateRepo, 'art-work/terminados', file);
 
 const sheet = (png: PNG) => ({ frameWidth: png.width / 3, frameHeight: png.height / 4 });
 function save(png: PNG, file: string): string {
@@ -34,18 +34,9 @@ const visitors = config.visitors.map((v, i) => {
 });
 
 const animals: Record<string, { file: string; frameWidth: number; frameHeight: number }> = {};
-for (const [id, a] of Object.entries(config.animals)) {
-  const overridePath = a.override ? finished(a.override) : null;
-  let png: PNG;
-  if (overridePath && existsSync(overridePath)) {
-    png = PNG.sync.read(readFileSync(overridePath));
-    // Hojas pintadas con otro orden de filas (p. ej. la pantera: de espaldas arriba).
-    if (a.overrideRows) png = reorderRows(png, a.overrideRows);
-    console.log(`  ${id}: usando el dibujo de los niños (${a.override})`);
-  } else {
-    png = readSource(a);
-    if (a.recolor === 'panther') png = recolorPanther(png);
-  }
+for (const [id, look] of Object.entries(config.animals)) {
+  const { png, fromOverride } = buildLook(id, look);
+  if (fromOverride) console.log(`  ${id}: usando el dibujo de los niños (${look.override})`);
   animals[id] = { file: save(png, `animal-${id}.png`), ...sheet(png) };
 }
 
