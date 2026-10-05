@@ -1,9 +1,7 @@
 # Zoo grande — más zonas, animales y comidas (diseño)
 
-**Estado:** aprobado por David (5-oct-2026). Planes: cuatro, el primero en
-`docs/superpowers/plans/2026-10-05-zoo-grande-1-cimientos.md`. El plan 1 (cimientos) está hecho
-en la rama `zoo-grande-1-cimientos`; los planes 2 a 4 están por escribir (ver «Estado de
-implementación» al final).
+**Estado:** aprobado por David (5-oct-2026). Planes: cuatro; hechos los tres primeros, falta el 4
+(ver «Estado de implementación» al final).
 **Versión prevista:** 2.3.0.
 
 ## Idea
@@ -302,7 +300,7 @@ Un test comprueba que no queda ningún texto visible fuera de `strings.ts`.
 |---|---|---|
 | 1. Cimientos | ✅ Hecho | `docs/superpowers/plans/2026-10-05-zoo-grande-1-cimientos.md` |
 | 2. Arte y comidas | ✅ Hecho | `docs/superpowers/plans/2026-10-05-zoo-grande-2-arte-y-comidas.md` |
-| 3. Mapa y recintos | ⬜ Plan por escribir | — |
+| 3. Mapa y recintos | ✅ Hecho | `docs/superpowers/plans/2026-10-05-zoo-grande-3-mapa-y-recintos.md` |
 | 4. Tienda y libro | ⬜ Plan por escribir | — |
 
 ### Decisiones tomadas durante la implementación (plan 1)
@@ -338,3 +336,29 @@ Un test comprueba que no queda ningún texto visible fuera de `strings.ts`.
 - La animación de amistad dibuja al amigo que se ha dado (conejo o gallina, `FoodDef.friend`); una
   reacción especial con otra comida se celebra con saltos y corazones.
 - Regla de las bandejas, con test: cada animal rechaza al menos una comida que otro sí come.
+
+### Decisiones tomadas durante la implementación (plan 3)
+
+- El mapa mide 96×60. El parque de siempre queda en el centro (desplazado 24 a la derecha y 20 hacia
+  abajo) y `make-zoo-map.mjs` lo escribe en sus coordenadas de antes.
+- La propiedad de recintos y puertas del mapa se llama `penId`.
+- Orden de llegada en los recintos mixtos. Sabana: Lola, Raya, Brisa, Pecas, Zigzag, Salto, Miel, Pipa.
+  Establo: Canela, Pepa, Lucero, Kiko, Clo, Tizón, Miga, Mancha.
+- Al dar de comer reaccionan el animal y los de su especie en el recinto, no todo el recinto.
+- Los animales grandes llevan `radius` en su especie: se separan más y se tocan por el cuerpo.
+- La charca de pingüinos y la del estanque bloquean el paso, como la catarata de la pantera: los patos
+  pasean alrededor.
+- Visitantes: 14 en lugar de 8 (el mapa es cuatro veces mayor). En `ovejas`, la oveja más cercana a un
+  visitante parado se le acerca, y los corazones salen cuando están a menos de 22 px.
+- Adelantado del plan 4, lo justo para que el juego funcione: la tienda enseña solo los 3 recintos
+  siguientes (`PENS_ON_SALE`) y los 35 residentes tienen título (`book.page.<id>.title`), que la ventana
+  de dar de comer usa como nombre. Las páginas, sus textos y los capítulos siguen en el plan 4.
+- Pendiente para el plan 4: con muchos recintos abiertos, los «otro animal» pasan de las 5 peanas y los
+  que sobran salen en fila delante del mostrador.
+- Las dos panteras y los dos pandas siguen compartiendo hoja (son los dibujos de los niños); en el
+  resto de recintos cada animal tiene la suya.
+- `npm run art:compare` enseña varios aspectos juntos. Con él se separaron más los tonos de las
+  gacelas y de Pecas, que con los colores de partida casi no se distinguían.
+- En la tabla de comidas el huevo lo rechazan la gacela, el caballo y el gallo, y no lo come nadie.
+  La regla de las bandejas se cumple igual (cada uno rechaza además otra comida que alguien sí come).
+  Queda a decidir si alguna especie debería comerlo.
