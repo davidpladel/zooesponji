@@ -179,7 +179,11 @@ export function editSheet(src: PNG, edits: readonly SheetEdit[], cols = 3, rows 
   return out;
 }
 
-/** Reduce cada fotograma a `size`×`size` (vecino más cercano) y lo apoya abajo en el centro del suyo. */
+/**
+ * Reduce cada fotograma a `size`×`size` y lo apoya abajo en el centro del suyo. De los píxeles que
+ * cubre cada punto se queda con el más oscuro: así no se pierden el contorno ni los ojos, que en
+ * un dibujo de 16 px miden un solo píxel.
+ */
 export function shrinkFrames(src: PNG, size: number, cols = 3, rows = 4): PNG {
   const fw = src.width / cols;
   const fh = src.height / rows;
@@ -188,14 +192,36 @@ export function shrinkFrames(src: PNG, size: number, cols = 3, rows = 4): PNG {
   out.data.fill(0);
   const dx = Math.floor((fw - size) / 2);
   const dy = fh - size;
+  /** Píxeles de origen que el punto `v` cubre al menos a medias. */
+  const covered = (v: number, from: number): number[] => {
+    const step = from / size;
+    const hit: number[] = [];
+    for (let p = Math.floor(v * step); p < Math.min(from, Math.ceil((v + 1) * step)); p++) {
+      if (Math.min(p + 1, (v + 1) * step) - Math.max(p, v * step) >= 0.5) hit.push(p);
+    }
+    return hit;
+  };
   for (let row = 0; row < rows; row++) {
     for (let col = 0; col < cols; col++) {
       for (let y = 0; y < size; y++) {
         for (let x = 0; x < size; x++) {
-          const sx = col * fw + Math.floor((x * fw) / size);
-          const sy = row * fh + Math.floor((y * fh) / size);
-          const si = (sy * src.width + sx) * 4;
-          out.data.set(src.data.subarray(si, si + 4), ((row * fh + dy + y) * out.width + col * fw + dx + x) * 4);
+          // Gana el opaco más oscuro; la sombra (semitransparente) solo si no hay nada opaco.
+          let best = -1;
+          let bestLight = Infinity;
+          for (const sy of covered(y, fh)) {
+            for (const sx of covered(x, fw)) {
+              const i = ((row * fh + sy) * src.width + col * fw + sx) * 4;
+              const alpha = src.data[i + 3]!;
+              if (alpha === 0) continue;
+              const light = alpha === 255 ? src.data[i]! * 3 + src.data[i + 1]! * 6 + src.data[i + 2]! : Infinity;
+              if (best < 0 || light < bestLight) {
+                best = i;
+                bestLight = light;
+              }
+            }
+          }
+          if (best < 0) continue;
+          out.data.set(src.data.subarray(best, best + 4), ((row * fh + dy + y) * out.width + col * fw + dx + x) * 4);
         }
       }
     }
