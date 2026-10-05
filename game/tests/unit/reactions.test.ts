@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { resolveFeeding } from '../../src/core/reactions';
-import type { AnimalId } from '../../src/data/animals';
+import { ANIMALS, trayFoods, type AnimalId } from '../../src/data/animals';
 import type { FoodId } from '../../src/data/foods';
 
 describe('resolveFeeding', () => {
@@ -23,5 +23,22 @@ describe('resolveFeeding', () => {
     ['panda', 'zanahoria', 'come', 2],
   ])('%s + %s → %s (%i monedas)', (animal, food, reaction, coins) => {
     expect(resolveFeeding(animal, food)).toEqual({ reaction, coins });
+  });
+});
+
+describe('bandeja por especie', () => {
+  it('hoy cada especie enseña las 4 comidas, en el orden de FOOD_IDS', () => {
+    expect(trayFoods('leon')).toEqual(['piedra', 'carne', 'conejo', 'zanahoria']);
+  });
+
+  it('una comida sin reacción no sale en la bandeja y, si llega, se rechaza sin monedas', () => {
+    const original = ANIMALS.leon.reactions;
+    ANIMALS.leon.reactions = { carne: 'come' };
+    try {
+      expect(trayFoods('leon')).toEqual(['carne']);
+      expect(resolveFeeding('leon', 'piedra')).toEqual({ reaction: 'rechaza', coins: 0 });
+    } finally {
+      ANIMALS.leon.reactions = original;
+    }
   });
 });

@@ -1,4 +1,4 @@
-import type { FoodId } from './foods';
+import { FOOD_IDS, type FoodId } from './foods';
 import type { StringKey } from './strings';
 
 export const ANIMAL_IDS = ['leon', 'cabra', 'pantera', 'panda'] as const;
@@ -10,7 +10,8 @@ export interface AnimalDef {
   id: AnimalId;
   nameKey: StringKey;
   emoji: string;
-  reactions: Record<FoodId, Reaction>;
+  /** Solo las comidas que salen en su bandeja. */
+  reactions: Partial<Record<FoodId, Reaction>>;
   coins: { come: number; especial?: number };
   unlockedByDefault: boolean;
   /** Animales que caben en el recinto (sin contar acompañantes como la leona). */
@@ -68,4 +69,9 @@ export const ANIMALS: Record<AnimalId, AnimalDef> = {
 
 export function isAnimalId(value: string): value is AnimalId {
   return (ANIMAL_IDS as readonly string[]).includes(value);
+}
+
+/** Comidas que se le ofrecen a la especie, en el orden de la bandeja. */
+export function trayFoods(id: AnimalId): FoodId[] {
+  return FOOD_IDS.filter((food) => ANIMALS[id].reactions[food] !== undefined);
 }

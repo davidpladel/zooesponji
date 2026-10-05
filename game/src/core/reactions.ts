@@ -6,9 +6,10 @@ export interface FeedResult {
   coins: number;
 }
 
+/** `animalId` es la especie. Una comida que la especie no lista se rechaza. */
 export function resolveFeeding(animalId: AnimalId, foodId: FoodId): FeedResult {
   const animal = ANIMALS[animalId];
-  const reaction = animal.reactions[foodId];
+  const reaction = animal.reactions[foodId] ?? 'rechaza';
   if (reaction === 'rechaza') return { reaction, coins: 0 };
   return { reaction, coins: animal.coins[reaction] ?? 0 };
 }

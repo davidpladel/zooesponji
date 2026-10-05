@@ -2,8 +2,8 @@ import * as Phaser from 'phaser';
 import { isDropOnTarget, type Rect } from '../core/interaction';
 import type { Vec } from '../core/movement';
 import type { FeedResult } from '../core/reactions';
-import { ANIMALS, type AnimalId } from '../data/animals';
-import { FOOD_IDS, FOODS, type FoodId } from '../data/foods';
+import { ANIMALS, trayFoods, type AnimalId } from '../data/animals';
+import { FOODS, type FoodId } from '../data/foods';
 import { t } from '../data/strings';
 import { sfx } from '../systems/audio';
 import { getSession } from '../systems/session';
@@ -102,12 +102,9 @@ export class FeedScene extends Phaser.Scene {
     this.scene.resume('World');
   }
 
-  targetsOnScreen(): { animal: Vec; foods: Record<FoodId, Vec> } {
-    const foods = {} as Record<FoodId, Vec>;
-    for (const id of FOOD_IDS) {
-      const home = this.homes.get(id)!;
-      foods[id] = { x: home.x, y: home.y };
-    }
+  targetsOnScreen(): { animal: Vec; foods: Partial<Record<FoodId, Vec>> } {
+    const foods: Partial<Record<FoodId, Vec>> = {};
+    for (const [id, home] of this.homes) foods[id] = { x: home.x, y: home.y };
     return { animal: { x: this.animal.x, y: this.animal.y }, foods };
   }
 
@@ -116,14 +113,15 @@ export class FeedScene extends Phaser.Scene {
   }
 
   private createTray(width: number, height: number): void {
+    const tray = trayFoods(this.animalId);
     const size = Phaser.Math.Clamp(Math.round(height * 0.12), 56, 96);
     const trayY = height * 0.86;
-    const gap = Math.min(width / (FOOD_IDS.length + 1), size * 2.2);
+    const gap = Math.min(width / (tray.length + 1), size * 2.2);
     this.add
-      .rectangle(width / 2, trayY, gap * FOOD_IDS.length + size * 0.5, size * 1.6, 0x6d4c41)
+      .rectangle(width / 2, trayY, gap * tray.length + size * 0.5, size * 1.6, 0x6d4c41)
       .setStrokeStyle(4, 0x3e2723);
-    FOOD_IDS.forEach((id, index) => {
-      const x = width / 2 + (index - (FOOD_IDS.length - 1) / 2) * gap;
+    tray.forEach((id, index) => {
+      const x = width / 2 + (index - (tray.length - 1) / 2) * gap;
       const icon = getArt()?.foods[id];
       // Icono del pack con escala entera (nítido); si no hay, el emoji.
       const food: Food = icon
