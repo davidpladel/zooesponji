@@ -38,7 +38,7 @@ async function buyInShop(page: Page, itemId: string): Promise<void> {
   await page.mouse.click(box.x + bubble!.x, box.y + bubble!.y);
 }
 
-test('comprar la pantera y luego otra: el extra queda "completo"', async ({ page }) => {
+test('comprar la pantera y luego otra: al completarse deja su peana a lo siguiente', async ({ page }) => {
   await startGame(page);
   await page.evaluate(() => window.__ZOO__!.addCoins(100));
   await page.evaluate(() => window.__ZOO__!.openShop());
@@ -50,7 +50,7 @@ test('comprar la pantera y luego otra: el extra queda "completo"', async ({ page
   await expect.poll(() => page.evaluate(() => window.__ZOO__!.shopCardStatus('extra-pantera'))).toBe('buy');
 
   await buyInShop(page, 'extra-pantera');
-  await expect.poll(() => page.evaluate(() => window.__ZOO__!.shopCardStatus('extra-pantera'))).toBe('full');
+  await expect.poll(() => page.evaluate(() => window.__ZOO__!.shopCardStatus('extra-pantera'))).toBeNull(); // completo: deja su peana a lo siguiente por precio
   expect(await page.evaluate(() => window.__ZOO__!.counts().pantera)).toBe(2);
   expect(await page.evaluate(() => window.__ZOO__!.hudCoinsText())).toBe('🪙 30');
 });

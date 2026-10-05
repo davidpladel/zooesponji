@@ -1,8 +1,9 @@
 import * as Phaser from 'phaser';
 import { ART_KEYS, animalKey, companionKey, getArt, idleFrame, lookOr, propKey } from '../art/art';
-import { isBookComplete, isPageUnlocked } from '../core/book';
+import { chapterProgress, isBookComplete, isContentPage, isPageUnlocked, pagePosition } from '../core/book';
+import type { Vec } from '../core/movement';
 import { ANIMALS } from '../data/animals';
-import { BOOK_BACK_ID, BOOK_PAGES, type BookPage } from '../data/book';
+import { BOOK_BACK_ID, BOOK_CHAPTERS, BOOK_PAGES, CHAPTER_PENS, chapterPageId, chapterTitleKey, type BookPage, type ChapterId } from '../data/book';
 import { findResident } from '../data/pens';
 import { t, type StringKey } from '../data/strings';
 import { sfx } from '../systems/audio';
@@ -25,7 +26,7 @@ export const pageTextKey = (id: string): StringKey => `book.page.${id}.text` as 
 /** Páginas que se pueden hojear: las del libro y, con todo conseguido, la contraportada. */
 function bookPages(): BookPage[] {
   const pages = [...BOOK_PAGES];
-  if (isBookComplete(getSession().state)) pages.push({ id: BOOK_BACK_ID, picture: { kind: 'gate' } });
+  if (isBookComplete(getSession().state)) pages.push({ id: BOOK_BACK_ID, chapter: 'inicio', picture: { kind: 'gate' } });
   return pages;
 }
 
@@ -37,6 +38,8 @@ export class BookScene extends Phaser.Scene {
   private panel!: Phaser.Geom.Rectangle;
   private swipeStart: { x: number; y: number } | null = null;
   private arrows: Phaser.GameObjects.Text[] = [];
+  /** Con el índice abierto: dónde está en pantalla la fila de cada capítulo. */
+  private readonly indexRows = new Map<ChapterId, Vec>();
 
   constructor() {
     super('Book');
@@ -114,7 +117,14 @@ export class BookScene extends Phaser.Scene {
   pageText(): string {
     const page = this.pages[this.index];
     if (!page) return '';
+    if (page.role === 'index') return t('book.index.title');
+    if (page.role === 'divider') return t(chapterTitleKey(page.chapter));
     return isPageUnlocked(getSession().state, page) ? `${t(pageTitleKey(page.id))} ${t(pageTextKey(page.id))}` : t('book.locked');
+  }
+
+  /** Centro en pantalla de la fila de un capítulo en el índice (null si el índice no está abierto). */
+  indexPos(chapter: ChapterId): Vec | null {
+    return this.indexRows.get(chapter) ?? null;
   }
 
   // --- Páginas ---
@@ -137,39 +147,107 @@ export class BookScene extends Phaser.Scene {
     return arrow;
   }
 
+  /** Va directamente a una página (desde el índice). */
+  private goTo(id: string): void {
+    const to = this.pages.findIndex((p) => p.id === id);
+    if (to < 0 || to === this.index) return;
+    this.index = to;
+    sfx.play('tap');
+    this.showPage();
+  }
+
   private showPage(): void {
     for (const obj of this.content) obj.destroy();
     this.content = [];
+    this.indexRows.clear();
     const page = this.pages[this.index]!;
-    const session = getSession();
-    const unlocked = isPageUnlocked(session.state, page);
-    const isNew = unlocked && !session.book.seen.includes(page.id);
-    const p = this.panel;
-    const pad = p.width * 0.07;
     // Sin flecha hacia donde no hay más páginas.
     this.arrows[0]?.setVisible(this.index > 0);
     this.arrows[1]?.setVisible(this.index < this.pages.length - 1);
-    void session.setBookPage(page.id);
+    void getSession().setBookPage(page.id);
+    if (page.role === 'index') this.showIndex();
+    else if (page.role === 'divider') this.showDivider(page);
+    else this.showContent(page);
+  }
 
-    const titleSize = Math.round(Phaser.Math.Clamp(p.height * 0.075, 20, 44));
-    const title = unlocked ? t(pageTitleKey(page.id)) : t('book.locked');
+  private titleSize(): number {
+    return Math.round(Phaser.Math.Clamp(this.panel.height * 0.075, 20, 44));
+  }
+
+  private heading(text: string, size: number): void {
+    const p = this.panel;
+    const pad = p.width * 0.07;
     this.content.push(
       this.add
-        .text(p.centerX, p.y + p.height * 0.1, title, { ...textStyle(titleSize, '#5d4037', '#fff3d6'), align: 'center', wordWrap: { width: p.width - 2 * pad } })
+        .text(p.centerX, p.y + p.height * 0.1, text, { ...textStyle(size, '#5d4037', '#fff3d6'), align: 'center', wordWrap: { width: p.width - 2 * pad } })
         .setOrigin(0.5),
     );
+  }
+
+  /** Índice: una fila grande por capítulo, con lo que llevas conseguido. Tocarla abre ese capítulo. */
+  private showIndex(): void {
+    const p = this.panel;
+    const size = this.titleSize();
+    const state = getSession().state;
+    this.heading(t('book.index.title'), size);
+    const chapters = BOOK_CHAPTERS.filter((chapter) => CHAPTER_PENS[chapter].length > 0);
+    const rowH = (p.height * 0.7) / chapters.length;
+    const rowW = p.width * 0.8;
+    const top = p.y + p.height * 0.2;
+    chapters.forEach((chapter, i) => {
+      const y = top + i * rowH + rowH / 2;
+      const { n, total } = chapterProgress(state, chapter);
+      const row = this.add
+        .rectangle(p.centerX, y, rowW, rowH * 0.82, 0xffe9b8)
+        .setStrokeStyle(3, 0xd7b98e)
+        .setInteractive({ useHandCursor: true });
+      // Un deslizamiento pasa página; solo un toque abre el capítulo.
+      row.on('pointerup', (pointer: Phaser.Input.Pointer) => {
+        if (pointer.getDistance() <= SWIPE_PX) this.goTo(chapterPageId(chapter));
+      });
+      const edge = rowW / 2 - rowW * 0.06;
+      const rowSize = Math.round(Math.min(size * 0.85, rowH * 0.4));
+      const name = this.add.text(p.centerX - edge, y, t(chapterTitleKey(chapter)), textStyle(rowSize, '#5d4037', '#ffe9b8')).setOrigin(0, 0.5);
+      const count = this.add
+        .text(p.centerX + edge, y, t('book.count', { n, total }), textStyle(Math.round(rowSize * 0.75), '#8d6e63', '#ffe9b8'))
+        .setOrigin(1, 0.5);
+      this.content.push(row, name, count);
+      this.indexRows.set(chapter, { x: p.centerX, y });
+    });
+  }
+
+  /** Portadilla de un capítulo: su nombre, su primer animal y cuántos amigos tienes ya en él. */
+  private showDivider(page: BookPage): void {
+    const p = this.panel;
+    const size = this.titleSize();
+    this.heading(t(chapterTitleKey(page.chapter)), Math.round(size * 1.25));
+    this.content.push(...this.picture(page, p.centerX, p.y + p.height * 0.47, p.height * 0.36, true));
+    const text = t('book.chapter.count', chapterProgress(getSession().state, page.chapter));
+    this.content.push(this.fitText(text, p.centerX, p.y + p.height * 0.7, p.width * 0.86, p.height * 0.2, Math.round(size * 0.8)));
+  }
+
+  private showContent(page: BookPage): void {
+    const session = getSession();
+    const unlocked = isPageUnlocked(session.state, page);
+    const isNew = unlocked && isContentPage(page) && !session.book.seen.includes(page.id);
+    const p = this.panel;
+    const pad = p.width * 0.07;
+    const titleSize = this.titleSize();
+    this.heading(unlocked ? t(pageTitleKey(page.id)) : t('book.locked'), titleSize);
 
     this.content.push(...this.picture(page, p.centerX, p.y + p.height * 0.47, p.height * 0.36, unlocked));
 
     const text = unlocked ? t(pageTextKey(page.id)) : t('book.lockedHint');
     this.content.push(this.fitText(text, p.centerX, p.y + p.height * 0.66, p.width - 2 * pad, p.height * 0.2, Math.round(titleSize * 0.8)));
 
-    // Número de página ("3 de 14").
-    this.content.push(
-      this.add
-        .text(p.centerX, p.bottom - p.height * 0.06, t('book.count', { n: this.index + 1, total: this.pages.length }), textStyle(Math.round(titleSize * 0.55), '#8d6e63', '#fff3d6'))
-        .setOrigin(0.5),
-    );
+    // Capítulo y número de página dentro de él ("Granja · 3 de 18"). La contraportada no lleva.
+    const position = page.id === BOOK_BACK_ID ? null : pagePosition(page);
+    if (position) {
+      const where = `${t(chapterTitleKey(page.chapter))} · ${t('book.count', position)}`;
+      this.content.push(
+        this.add.text(p.centerX, p.bottom - p.height * 0.06, where, textStyle(Math.round(titleSize * 0.55), '#8d6e63', '#fff3d6')).setOrigin(0.5),
+      );
+    }
 
     if (isNew) {
       const badge = this.add

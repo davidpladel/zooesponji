@@ -106,3 +106,17 @@ test('sin comprar las ovejas, ningún visitante entra en su recinto', async ({ p
   expect(await page.evaluate(() => window.__ZOO__!.sendVisitorInside('ovejas'))).toBe(false);
   expect(await page.evaluate(() => window.__ZOO__!.visitorsInPen('ovejas'))).toBe(0);
 });
+
+test('el libro se abre por un capítulo desde el índice', async ({ page }) => {
+  await startGame(page);
+  await page.evaluate(() => window.__ZOO__!.openBook('index'));
+  await page.waitForFunction(() => window.__ZOO__?.bookPage() === 'index');
+  const row = await page.evaluate(() => window.__ZOO__!.bookIndexPos('granja'));
+  const box = await canvasBox(page);
+  await page.mouse.click(box.x + row!.x, box.y + row!.y);
+  await expect.poll(() => page.evaluate(() => window.__ZOO__!.bookPage())).toBe('chapter-granja');
+  await page.evaluate(() => window.__ZOO__!.bookNext());
+  expect(await page.evaluate(() => window.__ZOO__!.bookPage())).toBe('cuac');
+  // Sin comprar el estanque, la página de Cuac está por descubrir.
+  expect(await page.evaluate(() => window.__ZOO__!.bookText())).toBe('???');
+});

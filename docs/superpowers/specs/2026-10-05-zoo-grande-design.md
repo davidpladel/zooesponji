@@ -1,7 +1,8 @@
 # Zoo grande — más zonas, animales y comidas (diseño)
 
-**Estado:** aprobado por David (5-oct-2026). Planes: cuatro; hechos los tres primeros, falta el 4
-(ver «Estado de implementación» al final).
+**Estado:** aprobado por David (5-oct-2026). Los cuatro planes están hechos (ver «Estado de
+implementación» al final). Falta el OK de David a los 35 textos del libro:
+`docs/superpowers/specs/2026-10-05-zoo-grande-textos-libro.md`.
 **Versión prevista:** 2.3.0.
 
 ## Idea
@@ -301,7 +302,7 @@ Un test comprueba que no queda ningún texto visible fuera de `strings.ts`.
 | 1. Cimientos | ✅ Hecho | `docs/superpowers/plans/2026-10-05-zoo-grande-1-cimientos.md` |
 | 2. Arte y comidas | ✅ Hecho | `docs/superpowers/plans/2026-10-05-zoo-grande-2-arte-y-comidas.md` |
 | 3. Mapa y recintos | ✅ Hecho | `docs/superpowers/plans/2026-10-05-zoo-grande-3-mapa-y-recintos.md` |
-| 4. Tienda y libro | ⬜ Plan por escribir | — |
+| 4. Tienda y libro | ✅ Hecho | `docs/superpowers/plans/2026-10-05-zoo-grande-4-tienda-y-libro.md` |
 
 ### Decisiones tomadas durante la implementación (plan 1)
 
@@ -361,4 +362,24 @@ Un test comprueba que no queda ningún texto visible fuera de `strings.ts`.
   gacelas y de Pecas, que con los colores de partida casi no se distinguían.
 - En la tabla de comidas el huevo lo rechazan la gacela, el caballo y el gallo, y no lo come nadie.
   La regla de las bandejas se cumple igual (cada uno rechaza además otra comida que alguien sí come).
-  Queda a decidir si alguna especie debería comerlo.
+  **Decidido por David (5-oct-2026): se queda así, el huevo no lo come nadie.**
+
+### Decisiones tomadas durante la implementación (plan 4)
+
+- **Tienda (decidido por David, 5-oct-2026):** enseña como mucho 5 artículos, los siguientes por
+  precio, mezclando recintos por abrir y «otro animal». Sustituye a «los 3 recintos siguientes». Lo
+  completo ya no ocupa peana; el sello AGOTADO solo sale al final, cuando quedan menos de 5 cosas que
+  comprar, para que la tienda no se quede vacía.
+- **Libro:** las páginas ya no se escriben a mano: salen de los recintos (`PENS`) según
+  `CHAPTER_PENS`. Hay un capítulo más de los previstos, `inicio` (portada, historia y Mary), que no
+  lleva portadilla ni sale en el índice.
+- Orden del libro: portada, índice, historia, Mary y los capítulos Centro (león, pantera, panda),
+  Montaña (cabras), Granja (estanque, ovejas, establo), Polo y Sabana (sabana y elefantes). Antes las
+  cabras iban detrás del león; los ids de página no cambian, así que lo leído se conserva.
+- El número de abajo de cada página es su puesto dentro del capítulo («Granja · 3 de 18»). El índice y
+  las portadillas no cuentan, no llevan estrella de «nueva» y no se guardan como leídas.
+- El máximo de 20 palabras se comprueba con un test. La página de Mary (21 palabras, del libro
+  original) queda fuera de la regla.
+- Test de textos: en `src/scenes` y `src/world` no puede haber cadenas con dos palabras seguidas
+  fuera de `strings.ts`. Encontró el «Zoo Esponji» del portón, que ya sale de `title.name`.
+- La página no declaraba icono y el navegador pedía `favicon.ico` (404): ahora usa el logo.
