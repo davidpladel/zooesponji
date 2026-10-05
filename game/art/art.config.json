@@ -163,7 +163,18 @@
       "zip": "wild",
       "file": "16x16/Default format/$bear_polar.png",
       "override": "panda.png"
-    }
+    },
+    "jirafa": { "zip": "wild", "file": "16x16/Default format/$giraffe.png", "override": "jirafa.png" },
+    "cebra": { "zip": "wild", "file": "16x16/Default format/$zebra.png", "override": "cebra.png" },
+    "gacela": { "zip": "wild", "file": "16x16/Default format/$gazelle_thomson.png", "override": "gacela.png" },
+    "pinguino": { "zip": "wild", "file": "16x16/Default format/$penguin_emperor.png", "override": "pinguino.png" },
+    "oveja": { "zip": "farm", "file": "16x16/Default Format/$sheep.png", "override": "oveja.png" },
+    "caballo": { "zip": "farm", "file": "16x16/Default Format/$horse.png", "override": "caballo.png" },
+    "gallina": { "zip": "farm", "file": "16x16/Default Format/$chicken_hen.png", "override": "gallina.png" },
+    "gallo": { "zip": "farm", "file": "16x16/Default Format/$chicken_rooster.png", "override": "gallo.png" },
+    "pato": { "zip": "farm", "file": "16x16/Default Format/$duck.png", "override": "pato.png" },
+    "elefante-africano": { "zip": "wild", "file": "16x16/Default format/$elephant_african.png", "override": "elefante-africano.png" },
+    "elefante-asiatico": { "zip": "wild", "file": "16x16/Default format/$elephant_asian.png", "override": "elefante-asiatico.png" }
   },
   "companions": {
     "leon": {
