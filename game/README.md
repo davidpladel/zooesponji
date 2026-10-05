@@ -34,7 +34,7 @@ Sin `public/art/` el juego funciona con arte provisional (emojis y colores plano
 - **Decoración:** piezas ("props") recortadas de los packs en `art/art.config.json` (`props`, `foods`, `companions`). Para catalogar: `npm run art:grid -- <zip> "<hoja>" <salida.png>` (rejilla ampliada) y `npm run art:props-sheet -- <salida.png>` (tablón de todas las piezas). Las salidas van fuera del repo.
 - **Agua animada:** una pieza con `animate: { step, count, area?, fps? }` en `art.config.json` se importa como hoja de fotogramas (`step` = distancia entre fotogramas en la hoja del pack; `area` = zona que cambia).
 - **Carne:** cuando exista `zooesponji-private/art-work/terminados/carne.png`, `art:import` la usa en la bandeja (mientras, emoji 🥩).
-- **Mapa:** `npm run make:zoo-map` regenera `public/assets/maps/zoo.tmj` (mapa lógico; el arte lo pone el juego).
+- **Mapa:** `npm run make:zoo-map` regenera `public/assets/maps/zoo.tmj` (mapa lógico de 96×60; el arte lo pone el juego). El parque de siempre queda en el centro y de sus caminos salen tres zonas, cada una con su cartel: sabana y elefantes al norte, polo al oeste y granja al este.
 - **Tienda por dentro:** `npm run make:shop-map` regenera `public/assets/maps/tienda.tmj` (20×12: suelo, pared, muebles, tendero, 5 peanas, felpudo y decoración). `art:import` recorta los muebles del *Interior Tileset Pack – Essentials* (`interior` en `art.config.json`, salen como `interior-*.png`); sin ellos la tienda se pinta con colores. `npm run make:campanita` y `npm run make:paso` vuelven a sintetizar `public/audio/campanita.wav` y `paso.wav`. Dentro, la cuidadora anda por la rejilla de `tienda.tmj` con las peanas bloqueadas (`core/shopWalk.ts`: alcance, punto de aproximación, pista y felpudo). Tienda: una peana por animal (al comprar el recinto pasa a vender "otro animal"), precio o sello AGOTADO. En la estantería hay un **libro secreto** (`BookScene`, `core/book.ts`): 14 páginas con la historia, Mary y cada animal con nombre; se guardan los ids leídos en `book` del guardado.
 
 ### Animales distintos dentro de un recinto
@@ -50,18 +50,26 @@ con la hoja del pack y una lista de `edits` (retoques):
 
 `shrink` reduce cada fotograma a ese lado en píxeles (Chispa, 13). `npm run art:preview -- <aspecto>`
 deja una vista ×8 en el repo privado para ajustarlos. El aspecto se asigna al animal en
-`src/data/pens.ts` (`look`). Tras cambiar la configuración hay que ejecutar `npm run art:import`.
+`src/data/pens.ts` (`look`). Tras cambiar la configuración, o añadir una especie o un aspecto, hay que
+ejecutar `npm run art:import`: el manifiesto exige la hoja de cada especie y, si falta, el juego arranca
+con emojis. `npm run art:compare -- <nombre> <aspecto> <aspecto>…` deja en el repo privado una imagen
+con varios aspectos juntos, para ver si se distinguen.
+
+Un recinto puede mezclar especies (sabana: jirafas, cebras y gacelas; establo: caballos, gallinas y
+gallo). Se da de comer al animal que se toca, con la bandeja de su especie, y la tienda vende el
+siguiente de la lista del recinto al precio de su especie. Las especies grandes llevan `radius` en
+`src/data/animals.ts`: se separan más al pasear y se tocan por el cuerpo, no por los pies.
 
 - **Calcetín:** `npm run make:calcetin` dibuja el icono en `art-work/terminados/calcetin.png` del
   repo privado si no existe; si los niños pintan el suyo, no se toca.
 
 ## Estructura
 
-- `src/core/` — lógica pura sin Phaser (reacciones, economía y extras, guardado, A*, mapas, movimiento, `flock` para que los animales no se pisen, `back` para el botón atrás). Todo con tests.
+- `src/core/` — lógica pura sin Phaser (reacciones, economía y extras, guardado, A*, mapas, movimiento, `flock` para que los animales no se pisen, `petting` para el aforo de la granja de contacto, `back` para el botón atrás). Todo con tests.
 - `src/data/` — contenido: animales, comidas, tienda, libro del zoo (`book.ts`: ids de página y qué las desbloquea) y textos (`strings.ts`: todo texto visible pasa por `t()`, preparado para multi-idioma).
 - `src/systems/` — eventos, sesión, almacenamiento, zoom, `audio` (samples y música), `platform` (botón atrás, segundo plano, girar el móvil), `errors` (pantalla ¡Ups!).
 - `src/scenes/` — escenas de Phaser (solo dibujan y recogen input): Boot, Preload, Title, World, Feed (dar de comer), Shop (tienda), Book (libro del zoo), Hud, Settings (menú ⚙️ y créditos), Quit (¿Salir?), Rotate (gira el móvil).
-- `src/world/` — ayudantes del mundo: `Pens` (los animales de cada recinto, cada uno con su identidad, los candados y el toque sobre un animal para darle de comer), `ShopBuilding` (edificio y puerta de la tienda), `ShopInterior` (la tienda por dentro), `ShopKeeperWalker` (la cuidadora dentro de la tienda), `Shopkeeper` (el tendero), `ShopHint` (huellas de pista), `VisitorCrowd` (visitantes).
+- `src/world/` — ayudantes del mundo: `Pens` (los animales de cada recinto, cada uno con su identidad, los candados y el toque sobre un animal para darle de comer; los recintos que no se ven no se actualizan), `ShopBuilding` (edificio y puerta de la tienda), `ShopInterior` (la tienda por dentro), `ShopKeeperWalker` (la cuidadora dentro de la tienda), `Shopkeeper` (el tendero), `ShopHint` (huellas de pista), `VisitorCrowd` (visitantes; en el recinto de ovejas entran a acariciar, 3 como mucho, y salen corazones).
 
 ## Añadir un animal
 
