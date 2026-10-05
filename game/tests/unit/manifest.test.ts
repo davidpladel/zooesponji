@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { parseManifest, resolveLook } from '../../src/art/manifest';
+import { ANIMAL_IDS } from '../../src/data/animals';
 
 const sheet = (w: number, h: number) => ({ file: 'x.png', frameWidth: w, frameHeight: h });
 const image = { file: 'd.png', width: 16, height: 16 };
@@ -11,7 +12,7 @@ function valid() {
     keeper: sheet(16, 32),
     shopkeeper: sheet(16, 32),
     visitors: [sheet(16, 32)],
-    animals: { leon: sheet(24, 24), cabra: sheet(16, 16), pantera: sheet(24, 24), panda: sheet(32, 32) },
+    animals: { ...Object.fromEntries(ANIMAL_IDS.map((id) => [id, sheet(16, 16)])), leon: sheet(24, 24), pantera: sheet(24, 24), panda: sheet(32, 32) },
     decor: { shop: image, fountain: image, tree: image, bush: image },
   };
 }

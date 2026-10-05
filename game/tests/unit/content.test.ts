@@ -6,8 +6,51 @@ import { SHOP_ITEMS, SHOP_UNLOCK_COINS, getShopItem, shopItemForPen } from '../.
 import { STRINGS_ES, t } from '../../src/data/strings';
 
 describe('contenido: animales', () => {
-  it('contiene los 4 animales actuales', () => {
-    expect([...ANIMAL_IDS]).toEqual(['leon', 'cabra', 'pantera', 'panda']);
+  it('están las 4 especies de siempre y las 11 nuevas', () => {
+    expect([...ANIMAL_IDS]).toEqual([
+      'leon', 'cabra', 'pantera', 'panda',
+      'jirafa', 'cebra', 'gacela', 'pinguino', 'oveja', 'caballo', 'gallina', 'gallo', 'pato', 'elefante-africano', 'elefante-asiatico',
+    ]);
+  });
+
+  // Tabla «Comidas» del diseño del zoo grande: [especie, come, especial, rechaza].
+  const TRAYS: [string, FoodId[], FoodId[], FoodId[]][] = [
+    ['jirafa', ['lechuga', 'manzana'], ['platano'], ['carne', 'calcetin']],
+    ['cebra', ['zanahoria', 'lechuga'], ['manzana'], ['piedra', 'pescado']],
+    ['gacela', ['zanahoria', 'lechuga'], ['maiz'], ['carne', 'huevo']],
+    ['pinguino', ['pescado'], ['piedra'], ['zanahoria', 'pan', 'calcetin']],
+    ['oveja', ['lechuga', 'maiz'], ['gallina'], ['carne', 'calcetin']],
+    ['caballo', ['zanahoria', 'maiz'], ['manzana'], ['piedra', 'huevo']],
+    ['gallina', ['lechuga', 'maiz'], ['pan'], ['piedra', 'pescado']],
+    ['gallo', ['maiz', 'pan'], [], ['carne', 'huevo', 'calcetin']],
+    ['pato', ['lechuga', 'maiz'], ['pescado'], ['piedra', 'pan']],
+    ['elefante-africano', ['lechuga', 'manzana'], ['platano'], ['carne', 'calcetin']],
+    ['elefante-asiatico', ['lechuga', 'platano'], ['manzana'], ['piedra', 'pescado']],
+  ];
+  it.each(TRAYS)('%s: come, especial y rechaza lo que dice el diseño', (id, come, especial, rechaza) => {
+    if (!isAnimalId(id)) throw new Error(`Especie desconocida: ${id}`);
+    const by = (reaction: string) => FOOD_IDS.filter((food) => ANIMALS[id].reactions[food] === reaction);
+    expect(by('come')).toEqual(come);
+    expect(by('especial')).toEqual(especial);
+    expect(by('rechaza')).toEqual(rechaza);
+  });
+
+  // Tabla «Monedas y precios»: [especie, come, especial, otro animal].
+  const COINS: [string, number, number | undefined, number][] = [
+    ['pato', 3, 5, 30], ['oveja', 4, 6, 40], ['caballo', 5, 8, 60], ['gallina', 3, 5, 30], ['gallo', 3, undefined, 30],
+    ['pinguino', 6, 9, 80], ['jirafa', 8, 12, 150], ['cebra', 6, 9, 120], ['gacela', 5, 8, 100],
+    ['elefante-africano', 10, 15, 200], ['elefante-asiatico', 10, 15, 200],
+  ];
+  it.each(COINS)('%s paga %i (especial %s) y otro igual cuesta %i', (id, come, especial, extra) => {
+    if (!isAnimalId(id)) throw new Error(`Especie desconocida: ${id}`);
+    expect(ANIMALS[id].coins).toEqual(especial === undefined ? { come } : { come, especial });
+    expect(ANIMALS[id].extraCost).toBe(extra);
+  });
+
+  it.each(ANIMAL_IDS)('%s tiene la frase del tendero y el texto de «otro»', (id) => {
+    const strings: Record<string, string> = STRINGS_ES;
+    expect(strings[`shop.about.${id}`], `shop.about.${id}`).toBeTruthy();
+    if (id !== 'leon') expect(strings[`shop.extra.${id}`], `shop.extra.${id}`).toBeTruthy();
   });
 
   it.each(ANIMAL_IDS)('%s enseña entre 4 y 5 comidas, todas con reacción válida', (id) => {
