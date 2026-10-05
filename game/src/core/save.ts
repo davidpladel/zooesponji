@@ -1,4 +1,4 @@
-import { ANIMAL_IDS, ANIMALS, isAnimalId, type AnimalId } from '../data/animals';
+import { PEN_IDS, isPenId, penCapacity, type PenId } from '../data/pens';
 import { SHOP_UNLOCK_COINS } from '../data/shop';
 import { initialCounts, type GameState } from './economy';
 
@@ -13,7 +13,7 @@ export interface Settings {
   joystick: boolean;
 }
 
-/** v1: `unlocked: AnimalId[]`. v2: `counts` por recinto (animales extra). */
+/** v1: `unlocked: PenId[]`. v2: `counts` por recinto (animales extra). */
 export const SAVE_VERSION = 2;
 
 /** Libro del zoo: páginas ya leídas y si el tendero ya contó el secreto. Ids, nunca textos. */
@@ -42,20 +42,20 @@ function isObject(value: unknown): value is Loose {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
-/** Conteos válidos: enteros entre 0 y el máximo del recinto; los animales de inicio, al menos 1. */
-function sanitizeCounts(raw: Partial<Record<AnimalId, unknown>>): Record<AnimalId, number> {
+/** Conteos válidos: enteros entre 0 y la capacidad del recinto; los recintos de inicio, al menos 1. */
+function sanitizeCounts(raw: Partial<Record<PenId, unknown>>): Record<PenId, number> {
   const base = initialCounts();
-  const counts = {} as Record<AnimalId, number>;
-  for (const id of ANIMAL_IDS) {
+  const counts = {} as Record<PenId, number>;
+  for (const id of PEN_IDS) {
     const value = raw[id];
     const n = typeof value === 'number' && Number.isInteger(value) ? value : 0;
-    counts[id] = Math.min(ANIMALS[id].maxCount, Math.max(base[id], n));
+    counts[id] = Math.min(penCapacity(id), Math.max(base[id], n));
   }
   return counts;
 }
 
-function countsFromUnlocked(ids: readonly AnimalId[]): Record<AnimalId, number> {
-  const raw: Partial<Record<AnimalId, number>> = {};
+function countsFromUnlocked(ids: readonly PenId[]): Record<PenId, number> {
+  const raw: Partial<Record<PenId, number>> = {};
   for (const id of ids) raw[id] = 1;
   return sanitizeCounts(raw);
 }
@@ -92,12 +92,12 @@ export function parseSave(value: unknown): SaveData | null {
   const coins = state.coins;
   if (typeof coins !== 'number' || !Number.isInteger(coins) || coins < 0) return null;
 
-  let counts: Record<AnimalId, number>;
+  let counts: Record<PenId, number>;
   if (value.version === 1) {
     // Migración: cada animal desbloqueado de la v1 pasa a tener 1 en su recinto.
     if (!Array.isArray(state.unlocked)) return null;
     counts = countsFromUnlocked(
-      state.unlocked.filter((id): id is AnimalId => typeof id === 'string' && isAnimalId(id)),
+      state.unlocked.filter((id): id is PenId => typeof id === 'string' && isPenId(id)),
     );
   } else {
     if (!isObject(state.counts)) return null;
@@ -129,7 +129,7 @@ export function migrateLegacy(coinsRaw: string | null, purchasesRaw: string | nu
     purchases = null;
   }
   const bought: Loose = isObject(purchases) ? purchases : {};
-  const extra = ANIMAL_IDS.filter((id) => bought[id] === true);
+  const extra = PEN_IDS.filter((id) => bought[id] === true);
 
   return {
     version: SAVE_VERSION,

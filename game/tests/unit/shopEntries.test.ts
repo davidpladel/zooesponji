@@ -24,4 +24,11 @@ describe('shopEntries', () => {
     expect(entries.find((e) => e.id === 'extra-cabra')).toMatchObject({ status: 'full', count: 5, max: 5 });
     expect(entries.find((e) => e.id === 'extra-pantera')).toMatchObject({ status: 'full', cost: 20 });
   });
+
+  it('cada artículo dice su recinto y la especie que hay que dibujar', () => {
+    const state = { ...initialState(), coins: 0, shopUnlocked: true };
+    const entries = shopEntries(state);
+    expect(entries.find((e) => e.id === 'pantera')).toMatchObject({ kind: 'pen', penId: 'pantera', species: 'pantera' });
+    expect(entries.find((e) => e.id === 'extra-cabra')).toMatchObject({ kind: 'extra', penId: 'cabra', species: 'cabra', count: 1, max: 5 });
+  });
 });

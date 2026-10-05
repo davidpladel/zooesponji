@@ -1,8 +1,8 @@
 import { addCoins, purchase, type GameState, type PurchaseResult } from '../core/economy';
 import { resolveFeeding, type FeedResult } from '../core/reactions';
 import { loadSave, parseSave, writeSave, type BookProgress, type KeyValueStore, type SaveData, type Settings } from '../core/save';
-import { ANIMAL_IDS, type AnimalId } from '../data/animals';
 import type { FoodId } from '../data/foods';
+import { PEN_IDS, PENS, findResident } from '../data/pens';
 import { bus, type EventBus, type GameEvents } from './events';
 
 export class Session {
@@ -30,12 +30,12 @@ export class Session {
     this.data = { ...this.data, state: next };
     if (next.coins !== previous.coins) this.events.emit('coins-changed', { coins: next.coins });
     if (!previous.shopUnlocked && next.shopUnlocked) this.events.emit('shop-unlocked', {});
-    for (const animalId of ANIMAL_IDS) {
-      const before = previous.counts[animalId];
-      const count = next.counts[animalId];
+    for (const penId of PEN_IDS) {
+      const before = previous.counts[penId];
+      const count = next.counts[penId];
       if (count <= before) continue;
-      if (before === 0) this.events.emit('animal-unlocked', { animalId });
-      else this.events.emit('animal-added', { animalId, count });
+      if (before === 0) this.events.emit('animal-unlocked', { penId });
+      else this.events.emit('animal-added', { penId, count, residentId: PENS[penId].residents[count - 1]!.id });
     }
     await writeSave(this.store, this.data);
   }
@@ -61,9 +61,12 @@ export class Session {
     return this.update((state) => addCoins(state, amount));
   }
 
-  async feed(animalId: AnimalId, foodId: FoodId): Promise<FeedResult> {
-    const result = resolveFeeding(animalId, foodId);
-    this.events.emit('animal-fed', { animalId, reaction: result.reaction });
+  /** Da de comer a un animal concreto. La reacción y las monedas las marca su especie. */
+  async feed(residentId: string, foodId: FoodId): Promise<FeedResult> {
+    const found = findResident(residentId);
+    if (!found) throw new Error(`Residente desconocido: ${residentId}`);
+    const result = resolveFeeding(found.resident.species, foodId);
+    this.events.emit('animal-fed', { penId: found.penId, residentId, reaction: result.reaction });
     if (result.coins > 0) await this.earnCoins(result.coins);
     return result;
   }

@@ -1,20 +1,23 @@
 import * as Phaser from 'phaser';
 import { getArt } from '../art/art';
 import { TILE_SIZE } from '../config';
-import { animalCount, isAnimalUnlocked, type GameState } from '../core/economy';
+import { penCount, isPenOpen, type GameState } from '../core/economy';
 import { penSpace, spreadPositions, stepRoamer, type PenSpace, type Roamer } from '../core/flock';
 import { gateAtDoorstep, rectContains, type Rect } from '../core/interaction';
 import type { Vec } from '../core/movement';
 import type { Point } from '../core/pathfinding';
 import type { EnclosureInfo, GateInfo, PropInfo } from '../core/tiledmap';
-import { ANIMALS, isAnimalId, type AnimalId, type Reaction } from '../data/animals';
-import { shopItemForAnimal } from '../data/shop';
+import type { Reaction } from '../data/animals';
+import { PENS, isPenId, residentsIn, type PenId, type ResidentDef } from '../data/pens';
+import { shopItemForPen } from '../data/shop';
 import { t } from '../data/strings';
 import { createAnimal, createCompanion, type Walker } from './Actors';
 
 /** Algo que pasea dentro de un recinto: un animal o su acompañante (la leona). */
 interface Wanderer {
   walker: Walker;
+  /** Qué animal es; null en los acompañantes (la leona). */
+  residentId: string | null;
   roam: Roamer;
   /** Sin arte: punto alrededor del que se balancea, y desfase del balanceo. */
   base: Vec;
@@ -22,7 +25,7 @@ interface Wanderer {
 }
 
 interface Pen {
-  id: AnimalId;
+  id: PenId;
   rect: Rect;
   space: PenSpace;
   gate: Point;
@@ -47,8 +50,9 @@ const LABEL_STYLE: Phaser.Types.GameObjects.Text.TextStyle = {
   strokeThickness: 2,
 };
 
-const wanderer = (walker: Walker, rest = Math.random() * 2000): Wanderer => ({
+const wanderer = (walker: Walker, residentId: string | null, rest = Math.random() * 2000): Wanderer => ({
   walker,
+  residentId,
   roam: { pos: { x: walker.x, y: walker.y }, target: null, rest },
   base: { x: walker.x, y: walker.y },
   phase: Math.random() * Math.PI * 2,
@@ -56,7 +60,7 @@ const wanderer = (walker: Walker, rest = Math.random() * 2000): Wanderer => ({
 
 /** Lo que pasa al pisar el camino delante de la puerta de un recinto. */
 export interface DoorstepEvent {
-  animalId: AnimalId;
+  penId: PenId;
   locked: boolean;
 }
 
@@ -65,7 +69,7 @@ export class Pens {
   private readonly pens: Pen[] = [];
   private readonly sparklePool: Phaser.GameObjects.Text[] = [];
   /** Recinto en cuya puerta está la cuidadora (para avisar solo al llegar, no en cada fotograma). */
-  private atDoorstep: AnimalId | null = null;
+  private atDoorstep: PenId | null = null;
 
   constructor(
     private readonly scene: Phaser.Scene,
@@ -75,14 +79,14 @@ export class Pens {
     props: PropInfo[] = [],
   ) {
     for (const enclosure of enclosures) {
-      if (!isAnimalId(enclosure.animalId)) continue;
+      if (!isPenId(enclosure.animalId)) continue;
       const id = enclosure.animalId;
       const gate = gates.find((g) => g.animalId === id);
       if (!gate) continue;
-      const def = ANIMALS[id];
+      const def = PENS[id];
       const home = { x: enclosure.x + enclosure.width / 2, y: enclosure.y + enclosure.height / 2 };
-      const unlocked = isAnimalUnlocked(state, id);
-      const price = shopItemForAnimal(id)?.cost;
+      const unlocked = isPenOpen(state, id);
+      const price = shopItemForPen(id)?.cost;
       const rect = { x: enclosure.x, y: enclosure.y, width: enclosure.width, height: enclosure.height };
       const space = penSpace(rect, props, TILE_SIZE);
 
@@ -101,17 +105,19 @@ export class Pens {
         .setDepth(UI_DEPTH)
         .setVisible(!unlocked);
 
-      const count = Math.max(1, animalCount(state, id));
+      // El primero se dibuja siempre (en fantasma si el recinto está cerrado).
+      const here: ResidentDef[] = residentsIn(id, Math.max(1, penCount(state, id)));
+      const count = here.length;
       const hasCompanion = Boolean(getArt()?.companions[id]);
       const spots = spreadPositions(space, count + (hasCompanion ? 1 : 0), Math.random);
       const spot = (i: number): Vec => spots[i] ?? home;
-      const animals = Array.from({ length: count }, (_v, i) => {
+      const animals = here.map((resident, i) => {
         const p = spot(i);
-        return wanderer(createAnimal(scene, id, p.x, p.y));
+        return wanderer(createAnimal(scene, resident.species, p.x, p.y), resident.id);
       });
       const companionAt = spot(count);
       const companionWalker = hasCompanion ? createCompanion(scene, id, companionAt.x, companionAt.y) : null;
-      const companion = companionWalker ? wanderer(companionWalker, 500 + Math.random() * 1500) : null;
+      const companion = companionWalker ? wanderer(companionWalker, null, 500 + Math.random() * 1500) : null;
       for (const w of [...animals, ...(companion ? [companion] : [])]) w.walker.object.setAlpha(unlocked ? 1 : LOCKED_ALPHA);
 
       this.pens.push({ id, rect, space, gate: gate.tile, home, animals, companion, lock, shown: unlocked });
@@ -156,33 +162,33 @@ export class Pens {
     const id = gate?.animalId ?? null;
     if (id === this.atDoorstep) return null;
     this.atDoorstep = id;
-    return id ? { animalId: id, locked: !isAnimalUnlocked(state, id) } : null;
+    return id ? { penId: id, locked: !isPenOpen(state, id) } : null;
   }
 
-  lockedPenAt(point: Vec, state: GameState): AnimalId | null {
-    const pen = this.pens.find((p) => !isAnimalUnlocked(state, p.id) && rectContains(p.rect, point));
+  lockedPenAt(point: Vec, state: GameState): PenId | null {
+    const pen = this.pens.find((p) => !isPenOpen(state, p.id) && rectContains(p.rect, point));
     return pen?.id ?? null;
   }
 
   /** Nº de animales que hay en el mundo en cada recinto (para pruebas). */
-  animalsIn(id: AnimalId): number {
+  animalsIn(id: PenId): number {
     return this.pen(id).animals.length;
   }
 
   /** Anima los recintos recién comprados y añade los animales extra (se llama al volver de la tienda). */
   syncUnlocks(state: GameState): void {
     for (const pen of this.pens) {
-      if (!isAnimalUnlocked(state, pen.id)) continue;
+      if (!isPenOpen(state, pen.id)) continue;
       if (!pen.shown) {
         pen.shown = true;
         this.playUnlock(pen);
       }
-      while (pen.animals.length < animalCount(state, pen.id)) this.addAnimal(pen);
+      while (pen.animals.length < penCount(state, pen.id)) this.addAnimal(pen);
     }
   }
 
   /** Todos los animales del recinto reaccionan a la comida que se les ha dado. */
-  celebrate(id: AnimalId, reaction: Reaction): void {
+  celebrate(id: PenId, reaction: Reaction): void {
     const pen = this.pens.find((p) => p.id === id);
     if (!pen) return;
     for (const w of pen.animals) {
@@ -204,7 +210,9 @@ export class Pens {
       x: Phaser.Math.Clamp((pen.gate.x + 1) * TILE_SIZE, inner.x + 8, inner.x + inner.width - 8),
       y: Phaser.Math.Clamp((pen.gate.y + 0.5) * TILE_SIZE, inner.y + 8, inner.y + inner.height - 8),
     };
-    const w = wanderer(createAnimal(this.scene, pen.id, entry.x, entry.y), 800);
+    const resident = PENS[pen.id].residents[pen.animals.length];
+    if (!resident) return;
+    const w = wanderer(createAnimal(this.scene, resident.species, entry.x, entry.y), resident.id, 800);
     pen.animals.push(w);
     w.walker.object.setScale(0);
     this.scene.tweens.add({ targets: w.walker.object, scale: 1, duration: 600, delay: 300, ease: 'Back.easeOut' });
@@ -251,7 +259,7 @@ export class Pens {
     return item.setText(text).setVisible(true).setAlpha(1);
   }
 
-  private pen(id: AnimalId): Pen {
+  private pen(id: PenId): Pen {
     const pen = this.pens.find((p) => p.id === id);
     if (!pen) throw new Error(`Recinto desconocido: ${id}`);
     return pen;

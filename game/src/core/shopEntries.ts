@@ -1,6 +1,7 @@
-import { ANIMAL_IDS, ANIMALS, type AnimalId } from '../data/animals';
-import { extraItemId, shopItemForAnimal } from '../data/shop';
-import { animalCount, isAnimalUnlocked, type GameState } from './economy';
+import { ANIMALS, type AnimalId } from '../data/animals';
+import { PEN_IDS, PENS, nextResident, penCapacity, type PenId } from '../data/pens';
+import { extraItemId, shopItemForPen } from '../data/shop';
+import { isPenOpen, penCount, type GameState } from './economy';
 
 export type ShopEntryStatus = 'buy' | 'owned' | 'full';
 
@@ -8,7 +9,9 @@ export type ShopEntryStatus = 'buy' | 'owned' | 'full';
 export interface ShopEntry {
   id: string;
   kind: 'pen' | 'extra';
-  animalId: AnimalId;
+  penId: PenId;
+  /** Especie que se dibuja en la peana: el animal que llegaría (o el último, si ya no cabe más). */
+  species: AnimalId;
   cost: number;
   status: ShopEntryStatus;
   /** Solo en extras: animales que hay y máximo del recinto. */
@@ -17,27 +20,33 @@ export interface ShopEntry {
 }
 
 /**
- * Un artículo por animal, como en las tiendas de otros juegos: el recinto mientras no se tenga y,
+ * Un artículo por recinto, como en las tiendas de otros juegos: el recinto mientras no se tenga y,
  * al comprarlo, su "otro animal" ocupa su sitio (así no quedan peanas "ya compradas" que confunden).
  */
 export function shopEntries(state: GameState): ShopEntry[] {
   const entries: ShopEntry[] = [];
-  for (const animalId of ANIMAL_IDS) {
-    const def = ANIMALS[animalId];
-    const unlocked = isAnimalUnlocked(state, animalId);
-    const pen = shopItemForAnimal(animalId);
-    const hasExtra = unlocked && def.maxCount > 1 && def.extraCost !== undefined;
-    if (pen && !hasExtra) entries.push({ id: pen.id, kind: 'pen', animalId, cost: pen.cost, status: unlocked ? 'owned' : 'buy' });
-    if (hasExtra && def.extraCost !== undefined) {
-      const count = animalCount(state, animalId);
+  for (const penId of PEN_IDS) {
+    const residents = PENS[penId].residents;
+    const open = isPenOpen(state, penId);
+    const count = penCount(state, penId);
+    const max = penCapacity(penId);
+    const pen = shopItemForPen(penId);
+    const coming = nextResident(penId, count) ?? residents[residents.length - 1]!;
+    const extraCost = ANIMALS[coming.species].extraCost;
+    const hasExtra = open && max > 1 && extraCost !== undefined;
+    if (pen && !hasExtra) {
+      entries.push({ id: pen.id, kind: 'pen', penId, species: residents[0]!.species, cost: pen.cost, status: open ? 'owned' : 'buy' });
+    }
+    if (hasExtra && extraCost !== undefined) {
       entries.push({
-        id: extraItemId(animalId),
+        id: extraItemId(penId),
         kind: 'extra',
-        animalId,
-        cost: def.extraCost,
-        status: count >= def.maxCount ? 'full' : 'buy',
+        penId,
+        species: coming.species,
+        cost: extraCost,
+        status: count >= max ? 'full' : 'buy',
         count,
-        max: def.maxCount,
+        max,
       });
     }
   }

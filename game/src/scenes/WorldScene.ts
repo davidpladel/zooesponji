@@ -6,7 +6,7 @@ import { inJoystickZone } from '../core/joystick';
 import { stepAlongPath, tileCenter, tryMove, worldToTile, type Vec } from '../core/movement';
 import { findPathOrNearest, isWalkable, type Point, type WalkGrid } from '../core/pathfinding';
 import { buildWalkGrid, readEnclosures, readGates, readProps, readShop, readSpawn, type TiledMap } from '../core/tiledmap';
-import type { AnimalId } from '../data/animals';
+import { PENS, type PenId } from '../data/pens';
 import { SHOP_UNLOCK_COINS } from '../data/shop';
 import { t } from '../data/strings';
 import { sfx } from '../systems/audio';
@@ -84,7 +84,7 @@ export class WorldScene extends Phaser.Scene {
     }
 
     const offShopUnlocked = bus.on('shop-unlocked', () => this.shop?.sync(getSession().state));
-    const offFed = bus.on('animal-fed', ({ animalId, reaction }) => this.pens.celebrate(animalId, reaction));
+    const offFed = bus.on('animal-fed', ({ penId, reaction }) => this.pens.celebrate(penId, reaction));
     this.events.on(Phaser.Scenes.Events.RESUME, this.onResume, this);
 
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
@@ -107,7 +107,7 @@ export class WorldScene extends Phaser.Scene {
     const doorstep = this.pens.onKeeperTile(tile, state);
     if (doorstep?.locked) bus.emit('toast', { text: t('toast.needShop') });
     else if (doorstep) {
-      this.openFeed(doorstep.animalId);
+      this.openFeed(PENS[doorstep.penId].residents[0]!.id);
       return;
     }
     const doorEvent = this.shop?.onKeeperTile(tile, state) ?? null;
@@ -164,8 +164,8 @@ export class WorldScene extends Phaser.Scene {
     return this.worldToScreen(tileCenter(tile, TILE_SIZE));
   }
 
-  animalsInPen(animalId: AnimalId): number {
-    return this.pens.animalsIn(animalId);
+  animalsInPen(penId: PenId): number {
+    return this.pens.animalsIn(penId);
   }
 
   private moveKeeper(delta: number): void {
@@ -219,11 +219,11 @@ export class WorldScene extends Phaser.Scene {
     this.goTo(world);
   }
 
-  private openFeed(animalId: AnimalId): void {
+  private openFeed(residentId: string): void {
     this.stopWalking();
     sfx.play('tap');
     this.scene.pause();
-    const data: FeedSceneData = { animalId };
+    const data: FeedSceneData = { residentId };
     this.scene.launch('Feed', data);
   }
 

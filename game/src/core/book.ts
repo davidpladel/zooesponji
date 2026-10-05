@@ -1,8 +1,8 @@
 import { BOOK_PAGES, type BookPage } from '../data/book';
-import { animalCount, type GameState } from './economy';
+import { penCount, type GameState } from './economy';
 
 export function isPageUnlocked(state: GameState, page: BookPage): boolean {
-  return !page.unlock || animalCount(state, page.unlock.animalId) >= page.unlock.count;
+  return !page.unlock || penCount(state, page.unlock.penId) >= page.unlock.count;
 }
 
 /** Ids de las páginas conseguidas, en el orden del libro. */

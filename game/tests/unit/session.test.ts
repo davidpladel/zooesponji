@@ -41,8 +41,23 @@ describe('Session: dar de comer', () => {
     const fed = vi.fn();
     events.on('animal-fed', fed);
     const session = await Session.load(createMemoryStore(), events);
-    await session.feed('cabra', 'carne');
-    expect(fed).toHaveBeenCalledWith({ animalId: 'cabra', reaction: 'rechaza' });
+    await session.feed('gordi', 'carne');
+    expect(fed).toHaveBeenCalledWith({ penId: 'cabra', residentId: 'gordi', reaction: 'rechaza' });
+  });
+
+  it('dar de comer a un residente avisa de quién es y de su recinto', async () => {
+    const events = new EventBus<GameEvents>();
+    const fed: GameEvents['animal-fed'][] = [];
+    events.on('animal-fed', (e) => fed.push(e));
+    const session = await Session.load(createMemoryStore(), events);
+    const result = await session.feed('gordi', 'piedra');
+    expect(result).toEqual({ reaction: 'come', coins: 1 });
+    expect(fed).toEqual([{ penId: 'cabra', residentId: 'gordi', reaction: 'come' }]);
+  });
+
+  it('dar de comer a un residente que no existe es un error', async () => {
+    const session = await Session.load(createMemoryStore(), new EventBus<GameEvents>());
+    await expect(session.feed('nadie', 'piedra')).rejects.toThrow('nadie');
   });
 });
 
@@ -57,7 +72,7 @@ describe('Session: animales extra', () => {
     await session.earnCoins(30);
     const result = await session.buy('extra-cabra');
     expect(result.ok).toBe(true);
-    expect(added).toHaveBeenCalledWith({ animalId: 'cabra', count: 2 });
+    expect(added).toHaveBeenCalledWith({ penId: 'cabra', count: 2, residentId: 'nube' });
     expect(unlocked).not.toHaveBeenCalled();
     expect(session.state.coins).toBe(20);
   });
@@ -100,7 +115,7 @@ describe('Session: dar de comer, comprar y ajustes', () => {
 
   it('dar comida que le gusta suma monedas', async () => {
     const { session } = await fresh();
-    expect(await session.feed('leon', 'carne')).toEqual({ reaction: 'come', coins: 1 });
+    expect(await session.feed('bills', 'carne')).toEqual({ reaction: 'come', coins: 1 });
     expect(session.state.coins).toBe(1);
   });
 
@@ -108,7 +123,7 @@ describe('Session: dar de comer, comprar y ajustes', () => {
     const { session, events } = await fresh();
     const handler = vi.fn();
     events.on('coins-changed', handler);
-    expect(await session.feed('leon', 'piedra')).toEqual({ reaction: 'rechaza', coins: 0 });
+    expect(await session.feed('bills', 'piedra')).toEqual({ reaction: 'rechaza', coins: 0 });
     expect(handler).not.toHaveBeenCalled();
   });
 
@@ -122,6 +137,26 @@ describe('Session: dar de comer, comprar y ajustes', () => {
     expect(handler).toHaveBeenCalledTimes(1);
   });
 
+  it('no repite shop-unlocked al gastar y volver a juntar 20, ni tras recargar la partida', async () => {
+    const { session, events, store } = await fresh();
+    const handler = vi.fn();
+    events.on('shop-unlocked', handler);
+    await session.earnCoins(20);
+    expect((await session.buy('extra-cabra')).ok).toBe(true);
+    expect(session.state.coins).toBe(10);
+    await session.earnCoins(10);
+    expect(handler).toHaveBeenCalledTimes(1);
+
+    // Otra compra y se cierra el juego con menos de 20: al volver, la tienda sigue abierta.
+    expect((await session.buy('extra-cabra')).ok).toBe(true);
+    const reloaded = await fresh(store);
+    const again = vi.fn();
+    reloaded.events.on('shop-unlocked', again);
+    expect(reloaded.session.state).toMatchObject({ coins: 10, shopUnlocked: true });
+    await reloaded.session.earnCoins(10);
+    expect(again).not.toHaveBeenCalled();
+  });
+
   it('comprar desbloquea el animal y emite animal-unlocked', async () => {
     const { session, events } = await fresh();
     await session.earnCoins(60);
@@ -129,7 +164,7 @@ describe('Session: dar de comer, comprar y ajustes', () => {
     events.on('animal-unlocked', handler);
     const result = await session.buy('pantera');
     expect(result.ok).toBe(true);
-    expect(handler).toHaveBeenCalledWith({ animalId: 'pantera' });
+    expect(handler).toHaveBeenCalledWith({ penId: 'pantera' });
     expect(session.state.coins).toBe(10);
   });
 
