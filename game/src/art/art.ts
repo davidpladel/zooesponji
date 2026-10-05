@@ -3,7 +3,7 @@ import type { Facing } from '../core/facing';
 import { ANIMAL_IDS, type AnimalId } from '../data/animals';
 import { FOOD_IDS, type FoodId } from '../data/foods';
 import { withVersion } from '../core/cacheBust';
-import { DECOR_KINDS, type ArtManifest, type DecorKind, type SheetInfo } from './manifest';
+import { DECOR_KINDS, resolveLook, type ArtManifest, type DecorKind, type SheetInfo } from './manifest';
 
 export type { Facing };
 
@@ -18,7 +18,7 @@ export function setArt(manifest: ArtManifest | null): void {
 }
 
 export const ART_KEYS = { terrain: 'art-terrain', keeper: 'art-keeper', shopkeeper: 'art-shopkeeper' } as const;
-export const animalKey = (id: AnimalId): string => `art-animal-${id}`;
+export const animalKey = (look: string): string => `art-animal-${look}`;
 export const visitorKey = (index: number): string => `art-visitor-${index}`;
 export const decorKey = (kind: DecorKind): string => `art-decor-${kind}`;
 export const propKey = (name: string): string => `art-prop-${name}`;
@@ -34,6 +34,17 @@ export const idleFrame = (facing: Facing): number => FACING_ROWS[facing] * 3 + 1
 
 const url = (file: string): string => withVersion(`art/${file}`);
 
+export function animalSheet(m: ArtManifest, look: string): SheetInfo {
+  const sheet = m.animals[look];
+  if (!sheet) throw new Error(`Falta la hoja del aspecto "${look}"`);
+  return sheet;
+}
+
+/** El aspecto si su hoja está cargada; si no, el de su especie. */
+export function lookOr(look: string, species: AnimalId): string {
+  return resolveLook(getArt(), look, species);
+}
+
 /** Encola en el loader todas las imágenes del manifiesto. */
 export function queueArt(scene: Phaser.Scene, m: ArtManifest): void {
   const sheet = (key: string, s: SheetInfo) =>
@@ -42,7 +53,7 @@ export function queueArt(scene: Phaser.Scene, m: ArtManifest): void {
   sheet(ART_KEYS.keeper, m.keeper);
   sheet(ART_KEYS.shopkeeper, m.shopkeeper);
   m.visitors.forEach((v, i) => sheet(visitorKey(i), v));
-  for (const id of ANIMAL_IDS) sheet(animalKey(id), m.animals[id]);
+  for (const [look, s] of Object.entries(m.animals)) sheet(animalKey(look), s);
   for (const kind of DECOR_KINDS) scene.load.image(decorKey(kind), url(m.decor[kind].file));
   for (const [name, p] of Object.entries(m.props)) {
     if (p.frames && p.frames > 1) scene.load.spritesheet(propKey(name), url(p.file), { frameWidth: p.width, frameHeight: p.height });
@@ -77,10 +88,8 @@ export function registerArtAnims(scene: Phaser.Scene, m: ArtManifest): void {
   createWalkAnims(scene, ART_KEYS.keeper);
   createWalkAnims(scene, ART_KEYS.shopkeeper);
   m.visitors.forEach((_v, i) => createWalkAnims(scene, visitorKey(i)));
-  for (const id of ANIMAL_IDS) {
-    createWalkAnims(scene, animalKey(id));
-    if (m.companions[id]) createWalkAnims(scene, companionKey(id));
-  }
+  for (const look of Object.keys(m.animals)) createWalkAnims(scene, animalKey(look));
+  for (const id of ANIMAL_IDS) if (m.companions[id]) createWalkAnims(scene, companionKey(id));
   for (const [name, p] of Object.entries(m.props)) {
     if (!p.frames || p.frames < 2 || scene.anims.exists(propAnimKey(name))) continue;
     scene.anims.create({

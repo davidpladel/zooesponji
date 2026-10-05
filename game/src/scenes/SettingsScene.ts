@@ -1,5 +1,5 @@
 import * as Phaser from 'phaser';
-import { animalKey, getArt, idleFrame } from '../art/art';
+import { animalKey, animalSheet, getArt, idleFrame } from '../art/art';
 import type { Vec } from '../core/movement';
 import type { Settings } from '../core/save';
 import { t, type StringKey } from '../data/strings';
@@ -109,7 +109,7 @@ export class SettingsScene extends Phaser.Scene {
     if (!art) return;
     const spriteY = y + size * 2;
     for (const [id, side] of [['panda', -1], ['pantera', 1]] as const) {
-      const frameHeight = art.animals[id].frameHeight;
+      const frameHeight = animalSheet(art, id).frameHeight;
       const scale = Math.max(2, Math.floor((height * 0.12) / frameHeight));
       this.add.sprite(width / 2 + side * (line.width / 2 + 16 + (frameHeight * scale) / 2), spriteY, animalKey(id), idleFrame('down')).setScale(scale);
     }

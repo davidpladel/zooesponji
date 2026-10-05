@@ -1,5 +1,5 @@
 import * as Phaser from 'phaser';
-import { ART_KEYS, animalKey, companionKey, getArt, idleFrame, visitorKey, walkAnimKey } from '../art/art';
+import { ART_KEYS, animalKey, animalSheet, companionKey, getArt, idleFrame, lookOr, visitorKey, walkAnimKey } from '../art/art';
 import { TEXTURES } from '../config';
 import { depthForY } from '../core/depth';
 import { facingFromDelta, type Facing } from '../core/facing';
@@ -110,32 +110,34 @@ export function createVisitor(scene: Phaser.Scene, index: number, x: number, y: 
   );
 }
 
-export function createAnimal(scene: Phaser.Scene, id: AnimalId, x: number, y: number): Walker {
+/** `look`: hoja de sprites de ese animal en concreto (por defecto, la de su especie). */
+export function createAnimal(scene: Phaser.Scene, species: AnimalId, x: number, y: number, look: string = species): Walker {
   if (getArt()) {
-    const key = animalKey(id);
+    const key = animalKey(lookOr(look, species));
     const sprite = scene.add.sprite(x, y, key).setOrigin(0.5, 0.75).setDepth(5);
     return new SpriteWalker(sprite, key);
   }
   return new PlainWalker(
-    scene.add.text(x, y, ANIMALS[id].emoji, { fontSize: '22px' }).setOrigin(0.5).setResolution(4).setDepth(5),
+    scene.add.text(x, y, ANIMALS[species].emoji, { fontSize: '22px' }).setOrigin(0.5).setResolution(4).setDepth(5),
   );
 }
 
 /** Retrato grande del animal (pose quieta de perfil, la más reconocible) con escala entera para que el pixel art se vea nítido. */
 export function animalPortrait(
   scene: Phaser.Scene,
-  id: AnimalId,
+  species: AnimalId,
   x: number,
   y: number,
   targetHeight: number,
+  look: string = species,
 ): Phaser.GameObjects.Sprite | Phaser.GameObjects.Text {
   const art = getArt();
   if (art) {
-    const frameHeight = art.animals[id].frameHeight;
-    const scale = Math.max(1, Math.floor(targetHeight / frameHeight));
-    return scene.add.sprite(x, y, animalKey(id), idleFrame('right')).setScale(scale);
+    const use = lookOr(look, species);
+    const scale = Math.max(1, Math.floor(targetHeight / animalSheet(art, use).frameHeight));
+    return scene.add.sprite(x, y, animalKey(use), idleFrame('right')).setScale(scale);
   }
-  return scene.add.text(x, y, ANIMALS[id].emoji, { fontSize: `${Math.round(targetHeight)}px` }).setOrigin(0.5);
+  return scene.add.text(x, y, ANIMALS[species].emoji, { fontSize: `${Math.round(targetHeight)}px` }).setOrigin(0.5);
 }
 
 /** Animal decorativo que acompaña al principal (p. ej. la leona). Solo existe con arte. */

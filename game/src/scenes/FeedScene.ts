@@ -33,6 +33,7 @@ function baseScaleOf(food: Food): number {
 export class FeedScene extends Phaser.Scene {
   private residentId = 'bills';
   private animalId: AnimalId = 'leon';
+  private look = 'leon';
   private animal!: Phaser.GameObjects.Sprite | Phaser.GameObjects.Text;
   private baseScale = 1;
   private speech!: Phaser.GameObjects.Text;
@@ -51,6 +52,7 @@ export class FeedScene extends Phaser.Scene {
     if (!found) throw new Error(`Residente desconocido: ${data.residentId}`);
     this.residentId = data.residentId;
     this.animalId = found.resident.species;
+    this.look = found.resident.look;
     this.foods.clear();
     this.homes.clear();
     this.dragging = null;
@@ -66,7 +68,7 @@ export class FeedScene extends Phaser.Scene {
     this.add
       .rectangle(width / 2, height * 0.4, Math.min(width * 0.85, 720), height * 0.62, 0x9ccc65)
       .setStrokeStyle(6, 0x33691e);
-    this.animal = animalPortrait(this, this.animalId, width / 2, height * 0.36, height * 0.3);
+    this.animal = animalPortrait(this, this.animalId, width / 2, height * 0.36, height * 0.3, this.look);
     this.baseScale = this.animal.scaleX;
     const title = t(`book.page.${this.residentId}.title` as StringKey);
     this.add.text(width / 2, height * 0.64, title, textStyle(Math.round(height * 0.05))).setOrigin(0.5);
