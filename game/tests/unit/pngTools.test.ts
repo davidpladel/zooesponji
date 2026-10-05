@@ -1,6 +1,6 @@
 import { PNG } from 'pngjs';
 import { describe, expect, it } from 'vitest';
-import { animatedStrip, characterSheet, reorderRows, crop, erase, recolorPanther } from '../../scripts/art/pngTools.ts';
+import { animatedStrip, characterSheet, reorderRows, crop, erase, recolorPanther, editSheet, scaleUp, shrinkFrames } from '../../scripts/art/pngTools.ts';
 
 function solid(width: number, height: number, rgba: [number, number, number, number]): PNG {
   const png = new PNG({ width, height });
@@ -78,5 +78,97 @@ describe('reorderRows', () => {
     [10, 20, 30, 40].forEach((v, y) => src.data.set([v, 0, 0, 255], y * 4));
     const out = reorderRows(src, [3, 1, 2, 0]);
     expect([0, 1, 2, 3].map((y) => pixel(out, 0, y)[0])).toEqual([40, 20, 30, 10]);
+  });
+});
+
+describe('editSheet', () => {
+  // Hoja 3×4 de fotogramas de 2×2 px, toda blanca.
+  const sheet = () => solid(6, 8, [244, 243, 242, 255]);
+
+  it('cambia un color exacto en todos los fotogramas', () => {
+    const out = editSheet(sheet(), [{ swap: { f4f3f2: 'e8c9a0' } }]);
+    expect(pixel(out, 0, 0)).toEqual([232, 201, 160, 255]);
+    expect(pixel(out, 5, 7)).toEqual([232, 201, 160, 255]);
+  });
+
+  it('no toca el original ni los colores que no están en la tabla', () => {
+    const src = sheet();
+    src.data.set([65, 64, 64, 255], 0);
+    const out = editSheet(src, [{ swap: { f4f3f2: '000000' } }]);
+    expect(pixel(out, 0, 0)).toEqual([65, 64, 64, 255]);
+    expect(pixel(src, 1, 0)).toEqual([244, 243, 242, 255]);
+  });
+
+  it('respeta la zona: lo de fuera se queda igual (calcetines)', () => {
+    const out = editSheet(sheet(), [{ swap: { f4f3f2: 'b8824e' }, area: [0, 0, 2, 1] }]);
+    expect(pixel(out, 0, 0)).toEqual([184, 130, 78, 255]);
+    expect(pixel(out, 0, 1)).toEqual([244, 243, 242, 255]);
+    // Segundo fotograma de la tercera fila: misma zona relativa.
+    expect(pixel(out, 2, 4)).toEqual([184, 130, 78, 255]);
+    expect(pixel(out, 2, 5)).toEqual([244, 243, 242, 255]);
+  });
+
+  it('respeta las filas indicadas', () => {
+    const out = editSheet(sheet(), [{ swap: { f4f3f2: '000000' }, rows: [3] }]);
+    expect(pixel(out, 0, 0)).toEqual([244, 243, 242, 255]);
+    expect(pixel(out, 0, 6)).toEqual([0, 0, 0, 255]);
+  });
+
+  it('no cambia píxeles transparentes o semitransparentes (la sombra)', () => {
+    const src = sheet();
+    src.data.set([244, 243, 242, 43], 0);
+    expect(pixel(editSheet(src, [{ swap: { f4f3f2: '000000' } }]), 0, 0)).toEqual([244, 243, 242, 43]);
+  });
+
+  it('pinta puntos sueltos en los 3 fotogramas de la fila', () => {
+    const out = editSheet(sheet(), [{ dots: [[1, 1, 'f2c230']], rows: [0] }]);
+    expect(pixel(out, 1, 1)).toEqual([242, 194, 48, 255]);
+    expect(pixel(out, 3, 1)).toEqual([242, 194, 48, 255]);
+    expect(pixel(out, 5, 1)).toEqual([242, 194, 48, 255]);
+    expect(pixel(out, 1, 3)).toEqual([244, 243, 242, 255]);
+  });
+
+  it('respeta las columnas indicadas (un fotograma concreto del paso)', () => {
+    const out = editSheet(sheet(), [{ dots: [[0, 0, 'f2c230']], rows: [0], cols: [1] }]);
+    expect(pixel(out, 2, 0)).toEqual([242, 194, 48, 255]);
+    expect(pixel(out, 0, 0)).toEqual([244, 243, 242, 255]);
+    expect(pixel(out, 4, 0)).toEqual([244, 243, 242, 255]);
+  });
+
+  it('avisa de un color mal escrito', () => {
+    expect(() => editSheet(sheet(), [{ swap: { f4f3f2: 'rojo' } }])).toThrow('rojo');
+  });
+});
+
+describe('shrinkFrames', () => {
+  it('reduce cada fotograma y lo apoya abajo en el centro, sin cambiar el tamaño de la hoja', () => {
+    // Hoja 3×4 de fotogramas de 4×4, toda negra opaca.
+    const out = shrinkFrames(solid(12, 16, [0, 0, 0, 255]), 2);
+    expect([out.width, out.height]).toEqual([12, 16]);
+    // Primer fotograma: el dibujo ocupa x 1..2, y 2..3.
+    expect(pixel(out, 0, 3)[3]).toBe(0);
+    expect(pixel(out, 1, 1)[3]).toBe(0);
+    expect(pixel(out, 1, 2)).toEqual([0, 0, 0, 255]);
+    expect(pixel(out, 2, 3)).toEqual([0, 0, 0, 255]);
+    expect(pixel(out, 3, 3)[3]).toBe(0);
+    // Último fotograma (columna 2, fila 3): misma colocación.
+    expect(pixel(out, 9, 15)).toEqual([0, 0, 0, 255]);
+    expect(pixel(out, 8, 15)[3]).toBe(0);
+  });
+
+  it('con el tamaño del fotograma no cambia nada', () => {
+    const src = solid(12, 16, [9, 9, 9, 255]);
+    expect([...shrinkFrames(src, 4).data]).toEqual([...src.data]);
+  });
+});
+
+describe('scaleUp', () => {
+  it('amplía sin suavizar', () => {
+    const src = solid(2, 1, [0, 0, 0, 255]);
+    src.data.set([255, 0, 0, 255], 4);
+    const out = scaleUp(src, 3);
+    expect([out.width, out.height]).toEqual([6, 3]);
+    expect(pixel(out, 2, 2)).toEqual([0, 0, 0, 255]);
+    expect(pixel(out, 3, 0)).toEqual([255, 0, 0, 255]);
   });
 });

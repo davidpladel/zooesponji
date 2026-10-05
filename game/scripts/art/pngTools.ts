@@ -124,3 +124,93 @@ export function recolorPanther(src: PNG): PNG {
   }
   return out;
 }
+
+/** Un retoque sobre una hoja de fotogramas: cambio de colores por zona y/o puntos sueltos. */
+export interface SheetEdit {
+  /** Color exacto → color nuevo, en hexadecimal (`"f4f3f2": "e8c9a0"`). Solo píxeles opacos. */
+  swap?: Record<string, string>;
+  /** Píxeles sueltos [x, y, color], relativos al fotograma. */
+  dots?: [number, number, string][];
+  /** Filas de la hoja a las que se aplica (0 de frente, 1 izquierda, 2 derecha, 3 de espaldas). Todas si falta. */
+  rows?: number[];
+  /** Columnas (fotogramas del paso: 0, 1, 2) a las que se aplica. Todas si falta. */
+  cols?: number[];
+  /** Zona del fotograma [x, y, ancho, alto] donde actúa `swap`. Todo el fotograma si falta. */
+  area?: [number, number, number, number];
+}
+
+function rgb(hex: string): [number, number, number] {
+  if (!/^#?[0-9a-fA-F]{6}$/.test(hex)) throw new Error(`Color no válido: ${hex}`);
+  const n = Number.parseInt(hex.replace('#', ''), 16);
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+}
+
+/** Aplica los retoques, en orden, a los fotogramas que indique cada uno. No modifica `src`. */
+export function editSheet(src: PNG, edits: readonly SheetEdit[], cols = 3, rows = 4): PNG {
+  const out = new PNG({ width: src.width, height: src.height });
+  src.data.copy(out.data);
+  const fw = src.width / cols;
+  const fh = src.height / rows;
+  const allRows = Array.from({ length: rows }, (_v, i) => i);
+  const allCols = Array.from({ length: cols }, (_v, i) => i);
+  for (const edit of edits) {
+    const swap = new Map(Object.entries(edit.swap ?? {}).map(([from, to]) => [rgb(from).join(','), rgb(to)] as const));
+    const dots = (edit.dots ?? []).map(([x, y, hex]) => [x, y, rgb(hex)] as const);
+    const [ax, ay, aw, ah] = edit.area ?? [0, 0, fw, fh];
+    for (const row of edit.rows ?? allRows) {
+      for (const col of edit.cols ?? allCols) {
+        const ox = col * fw;
+        const oy = row * fh;
+        for (let y = Math.max(0, ay); y < Math.min(fh, ay + ah) && swap.size > 0; y++) {
+          for (let x = Math.max(0, ax); x < Math.min(fw, ax + aw); x++) {
+            const i = ((oy + y) * out.width + ox + x) * 4;
+            if (out.data[i + 3] !== 255) continue;
+            const to = swap.get(`${out.data[i]},${out.data[i + 1]},${out.data[i + 2]}`);
+            if (to) out.data.set(to, i);
+          }
+        }
+        for (const [x, y, color] of dots) {
+          if (x < 0 || y < 0 || x >= fw || y >= fh) continue;
+          out.data.set([...color, 255], ((oy + y) * out.width + ox + x) * 4);
+        }
+      }
+    }
+  }
+  return out;
+}
+
+/** Reduce cada fotograma a `size`×`size` (vecino más cercano) y lo apoya abajo en el centro del suyo. */
+export function shrinkFrames(src: PNG, size: number, cols = 3, rows = 4): PNG {
+  const fw = src.width / cols;
+  const fh = src.height / rows;
+  if (size >= fw && size >= fh) return src;
+  const out = new PNG({ width: src.width, height: src.height });
+  out.data.fill(0);
+  const dx = Math.floor((fw - size) / 2);
+  const dy = fh - size;
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < cols; col++) {
+      for (let y = 0; y < size; y++) {
+        for (let x = 0; x < size; x++) {
+          const sx = col * fw + Math.floor((x * fw) / size);
+          const sy = row * fh + Math.floor((y * fh) / size);
+          const si = (sy * src.width + sx) * 4;
+          out.data.set(src.data.subarray(si, si + 4), ((row * fh + dy + y) * out.width + col * fw + dx + x) * 4);
+        }
+      }
+    }
+  }
+  return out;
+}
+
+/** Amplía `k` veces sin suavizar (para ver el pixel art en grande). */
+export function scaleUp(src: PNG, k: number): PNG {
+  const out = new PNG({ width: src.width * k, height: src.height * k });
+  for (let y = 0; y < out.height; y++) {
+    for (let x = 0; x < out.width; x++) {
+      const i = (Math.floor(y / k) * src.width + Math.floor(x / k)) * 4;
+      out.data.set(src.data.subarray(i, i + 4), (y * out.width + x) * 4);
+    }
+  }
+  return out;
+}
