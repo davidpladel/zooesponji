@@ -1,5 +1,6 @@
 import { withVersion } from '../core/cacheBust';
 import { t } from '../data/strings';
+import { getLanguage, type Language } from './language';
 
 const ID = 'legal';
 
@@ -12,9 +13,14 @@ const STYLE = `
 #${ID} h1 { font-size: 26px; } #${ID} h2 { font-size: 20px; margin-top: 1.4em; color: #6d4c41; }
 `;
 
+/** La página de privacidad de cada idioma (en `public/`). */
+export function legalPage(lang: Language): string {
+  return lang === 'es' ? 'privacidad.html' : 'privacidad-en.html';
+}
+
 /**
  * Página de privacidad por encima del juego, sin salir de él (un peque no acaba en el navegador).
- * Es la misma `privacidad.html` que se enlaza desde la ficha de la tienda.
+ * Es la misma `privacidad.html` (o `privacidad-en.html`) que se enlaza desde la ficha de la tienda.
  */
 export function openLegal(): void {
   if (document.getElementById(ID)) return;
@@ -44,8 +50,9 @@ export function closeLegal(): boolean {
 
 async function load(article: HTMLElement): Promise<void> {
   try {
-    const response = await fetch(withVersion('privacidad.html'));
-    if (!response.ok) throw new Error(`privacidad.html: ${response.status}`);
+    const file = legalPage(getLanguage());
+    const response = await fetch(withVersion(file));
+    if (!response.ok) throw new Error(`${file}: ${response.status}`);
     const page = new DOMParser().parseFromString(await response.text(), 'text/html');
     article.replaceChildren(...(page.querySelector('main')?.children ?? []));
   } catch {

@@ -87,3 +87,19 @@ test('cambiar de idioma con la tienda abierta la cierra y no se pierden las mone
   await page.waitForFunction(() => window.__ZOO__!.activeScenes().includes('World'));
   expect(await page.evaluate(() => window.__ZOO__!.hudCoinsText())).toBe('🪙 25');
 });
+
+test('en inglés la privacidad se lee en inglés, dentro del juego', async ({ page }) => {
+  await page.goto('/');
+  await waitForTitle(page);
+  await pressPlay(page);
+  await openSettings(page);
+
+  await tap(page, await page.evaluate(() => window.__ZOO__!.settingsButtonPos('privacy')));
+  await expect(page.locator('#legal h1')).toContainText('Privacy');
+  await expect(page.locator('#legal h2')).toHaveCount(8);
+  await expect(page.locator('#legal a')).toHaveCount(0);
+  await expect(page.locator('#legal button')).toHaveAttribute('aria-label', 'Close');
+
+  expect(await page.evaluate(() => window.__ZOO__!.back())).toBe('close-overlay');
+  await expect(page.locator('#legal')).toHaveCount(0);
+});
