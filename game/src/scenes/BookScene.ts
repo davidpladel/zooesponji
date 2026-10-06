@@ -8,7 +8,10 @@ import { findResident } from '../data/pens';
 import { t, type StringKey } from '../data/strings';
 import { sfx } from '../systems/audio';
 import { getSession } from '../systems/session';
-import { addCloseButton, restartOnResize, textStyle } from './ui';
+import { makePressable } from '../ui/press';
+import { textStyle } from '../ui/theme';
+import { addUiText } from '../ui/text';
+import { addCloseBadge, addPanel, addPillButton, addRibbonTitle, addVeil, pillImage, restartOnResize, setRibbonText, tileImage } from '../ui/widgets';
 
 export interface BookSceneData {
   /** Página por la que se abre (id). Sin ella: donde se quedó, o la portada. */
@@ -37,7 +40,8 @@ export class BookScene extends Phaser.Scene {
   private content: Phaser.GameObjects.GameObject[] = [];
   private panel!: Phaser.Geom.Rectangle;
   private swipeStart: { x: number; y: number } | null = null;
-  private arrows: Phaser.GameObjects.Text[] = [];
+  private arrows: Phaser.GameObjects.Container[] = [];
+  private ribbon!: Phaser.GameObjects.Container;
   /** Con el índice abierto: dónde está en pantalla la fila de cada capítulo. */
   private readonly indexRows = new Map<ChapterId, Vec>();
 
@@ -57,24 +61,24 @@ export class BookScene extends Phaser.Scene {
     sfx.setPaused('menu', true);
     if (this.scene.isActive('Shop')) this.scene.pause('Shop');
     const { width, height } = this.scale;
-    this.add.rectangle(0, 0, width, height, 0x000000, 0.65).setOrigin(0).setInteractive();
+    addVeil(this);
 
-    const panelH = height * 0.9;
-    const panelW = Math.min(width * 0.8, panelH * 1.25);
-    this.panel = new Phaser.Geom.Rectangle(width / 2 - panelW / 2, height / 2 - panelH / 2, panelW, panelH);
-    const g = this.add.graphics();
-    // Tapas de cuero y hoja de papel.
-    g.fillStyle(0x6d3b1f).fillRoundedRect(this.panel.x - 10, this.panel.y - 10, panelW + 20, panelH + 20, 18);
-    g.fillStyle(0xfff3d6).fillRoundedRect(this.panel.x, this.panel.y, panelW, panelH, 12);
-    g.lineStyle(3, 0xd7b98e).strokeRoundedRect(this.panel.x + 10, this.panel.y + 10, panelW - 20, panelH - 20, 8);
+    const panelH = height * 0.84;
+    const panelW = Math.min(width * 0.78, panelH * 1.3);
+    const panelY = height * 0.55;
+    this.panel = new Phaser.Geom.Rectangle(width / 2 - panelW / 2, panelY - panelH / 2, panelW, panelH);
+    addPanel(this, width / 2, panelY, panelW, panelH);
+    // El encabezado de cada página va en el cartel.
+    this.ribbon = addRibbonTitle(this, width / 2, this.panel.y, panelW * 0.76, Phaser.Math.Clamp(height * 0.14, 40, 80), '');
 
-    const arrowSize = Math.round(Phaser.Math.Clamp(height * 0.12, 44, 90));
+    const arrowSize = Math.round(Phaser.Math.Clamp(height * 0.14, 48, 88));
     this.arrows = [
-      this.arrow(this.panel.x - arrowSize * 0.2, '◀', arrowSize, -1).setOrigin(1, 0.5),
-      this.arrow(this.panel.right + arrowSize * 0.2, '▶', arrowSize, 1).setOrigin(0, 0.5),
+      addPillButton(this, this.panel.x - arrowSize * 0.7, height / 2, arrowSize, arrowSize, { color: 'blue', icon: 'left', onTap: () => this.turn(-1) }).setDepth(20),
+      addPillButton(this, this.panel.right + arrowSize * 0.7, height / 2, arrowSize, arrowSize, { color: 'blue', icon: 'right', onTap: () => this.turn(1) }).setDepth(20),
     ];
 
-    addCloseButton(this, () => this.close());
+    const badge = Phaser.Math.Clamp(height * 0.13, 44, 64);
+    addCloseBadge(this, this.panel.right - badge * 0.35, this.panel.y + badge * 0.35, () => this.close(), badge);
     const keyboard = this.input.keyboard;
     keyboard?.on('keydown-ESC', this.close, this);
     keyboard?.on('keydown-LEFT', this.prev, this);
@@ -137,16 +141,6 @@ export class BookScene extends Phaser.Scene {
     this.showPage();
   }
 
-  private arrow(x: number, label: string, size: number, step: number): Phaser.GameObjects.Text {
-    const arrow = this.add
-      .text(x, this.scale.height / 2, label, textStyle(size, '#fff8e1', '#4e342e'))
-      .setInteractive({ useHandCursor: true })
-      .setDepth(20);
-    arrow.on('pointerup', () => this.turn(step));
-    arrow.setData('step', step);
-    return arrow;
-  }
-
   /** Va directamente a una página (desde el índice). */
   private goTo(id: string): void {
     const to = this.pages.findIndex((p) => p.id === id);
@@ -174,14 +168,8 @@ export class BookScene extends Phaser.Scene {
     return Math.round(Phaser.Math.Clamp(this.panel.height * 0.075, 20, 44));
   }
 
-  private heading(text: string, size: number): void {
-    const p = this.panel;
-    const pad = p.width * 0.07;
-    this.content.push(
-      this.add
-        .text(p.centerX, p.y + p.height * 0.1, text, { ...textStyle(size, '#5d4037', '#fff3d6'), align: 'center', wordWrap: { width: p.width - 2 * pad } })
-        .setOrigin(0.5),
-    );
+  private heading(text: string): void {
+    setRibbonText(this.ribbon, text);
   }
 
   /** Índice: una fila grande por capítulo, con lo que llevas conseguido. Tocarla abre ese capítulo. */
@@ -189,29 +177,25 @@ export class BookScene extends Phaser.Scene {
     const p = this.panel;
     const size = this.titleSize();
     const state = getSession().state;
-    this.heading(t('book.index.title'), size);
+    this.heading(t('book.index.title'));
     const chapters = BOOK_CHAPTERS.filter((chapter) => CHAPTER_PENS[chapter].length > 0);
-    const rowH = (p.height * 0.7) / chapters.length;
-    const rowW = p.width * 0.8;
-    const top = p.y + p.height * 0.2;
+    const rowH = (p.height * 0.78) / chapters.length;
+    const rowW = p.width * 0.82;
+    const top = p.y + p.height * 0.14;
     chapters.forEach((chapter, i) => {
       const y = top + i * rowH + rowH / 2;
       const { n, total } = chapterProgress(state, chapter);
-      const row = this.add
-        .rectangle(p.centerX, y, rowW, rowH * 0.82, 0xffe9b8)
-        .setStrokeStyle(3, 0xd7b98e)
-        .setInteractive({ useHandCursor: true });
+      const row = this.add.container(p.centerX, y).setSize(rowW, rowH * 0.82);
+      row.add(pillImage(this, rowW, rowH * 0.82, 'sand'));
+      const edge = rowW / 2 - rowW * 0.07;
+      const rowSize = Math.round(Math.min(size * 0.85, rowH * 0.4));
+      row.add(addUiText(this, -edge, 0, t(chapterTitleKey(chapter)), textStyle(rowSize, '#5d4037', '#ffe9b8')).setOrigin(0, 0.5));
+      row.add(addUiText(this, edge, 0, t('book.count', { n, total }), textStyle(Math.round(rowSize * 0.75), '#8d6e63', '#ffe9b8')).setOrigin(1, 0.5));
       // Un deslizamiento pasa página; solo un toque abre el capítulo.
-      row.on('pointerup', (pointer: Phaser.Input.Pointer) => {
+      makePressable(row, (pointer) => {
         if (pointer.getDistance() <= SWIPE_PX) this.goTo(chapterPageId(chapter));
       });
-      const edge = rowW / 2 - rowW * 0.06;
-      const rowSize = Math.round(Math.min(size * 0.85, rowH * 0.4));
-      const name = this.add.text(p.centerX - edge, y, t(chapterTitleKey(chapter)), textStyle(rowSize, '#5d4037', '#ffe9b8')).setOrigin(0, 0.5);
-      const count = this.add
-        .text(p.centerX + edge, y, t('book.count', { n, total }), textStyle(Math.round(rowSize * 0.75), '#8d6e63', '#ffe9b8'))
-        .setOrigin(1, 0.5);
-      this.content.push(row, name, count);
+      this.content.push(row);
       this.indexRows.set(chapter, { x: p.centerX, y });
     });
   }
@@ -220,8 +204,8 @@ export class BookScene extends Phaser.Scene {
   private showDivider(page: BookPage): void {
     const p = this.panel;
     const size = this.titleSize();
-    this.heading(t(chapterTitleKey(page.chapter)), Math.round(size * 1.25));
-    this.content.push(...this.picture(page, p.centerX, p.y + p.height * 0.47, p.height * 0.36, true));
+    this.heading(t(chapterTitleKey(page.chapter)));
+    this.content.push(...this.picture(page, p.centerX, p.y + p.height * 0.4, p.height * 0.4, true));
     const text = t('book.chapter.count', chapterProgress(getSession().state, page.chapter));
     this.content.push(this.fitText(text, p.centerX, p.y + p.height * 0.7, p.width * 0.86, p.height * 0.2, Math.round(size * 0.8)));
   }
@@ -233,9 +217,9 @@ export class BookScene extends Phaser.Scene {
     const p = this.panel;
     const pad = p.width * 0.07;
     const titleSize = this.titleSize();
-    this.heading(unlocked ? t(pageTitleKey(page.id)) : t('book.locked'), titleSize);
+    this.heading(unlocked ? t(pageTitleKey(page.id)) : t('book.locked'));
 
-    this.content.push(...this.picture(page, p.centerX, p.y + p.height * 0.47, p.height * 0.36, unlocked));
+    this.content.push(...this.picture(page, p.centerX, p.y + p.height * 0.4, p.height * 0.4, unlocked));
 
     const text = unlocked ? t(pageTextKey(page.id)) : t('book.lockedHint');
     this.content.push(this.fitText(text, p.centerX, p.y + p.height * 0.66, p.width - 2 * pad, p.height * 0.2, Math.round(titleSize * 0.8)));
@@ -245,7 +229,7 @@ export class BookScene extends Phaser.Scene {
     if (position) {
       const where = `${t(chapterTitleKey(page.chapter))} · ${t('book.count', position)}`;
       this.content.push(
-        this.add.text(p.centerX, p.bottom - p.height * 0.06, where, textStyle(Math.round(titleSize * 0.55), '#8d6e63', '#fff3d6')).setOrigin(0.5),
+        addUiText(this, p.centerX, p.bottom - p.height * 0.06, where, textStyle(Math.round(titleSize * 0.55), '#8d6e63', '#fff3d6')).setOrigin(0.5),
       );
     }
 
@@ -262,9 +246,7 @@ export class BookScene extends Phaser.Scene {
 
   /** Texto de la página: si no cabe (p. ej. en otro idioma), encoge la letra hasta un mínimo. */
   private fitText(text: string, x: number, y: number, width: number, maxHeight: number, size: number): Phaser.GameObjects.Text {
-    const label = this.add
-      .text(x, y, text, { ...textStyle(size, '#3e2723', '#fff3d6'), align: 'center', wordWrap: { width }, lineSpacing: 4 })
-      .setOrigin(0.5, 0);
+    const label = addUiText(this, x, y, text, { ...textStyle(size, '#3e2723', '#fff3d6'), align: 'center', wordWrap: { width }, lineSpacing: 4 }).setOrigin(0.5, 0);
     for (let s = size; label.height > maxHeight && s > MIN_TEXT_PX; s -= 2) label.setFontSize(s - 2);
     return label;
   }
@@ -299,10 +281,8 @@ export class BookScene extends Phaser.Scene {
     } else if (!unlocked) {
       obj.setText('❔');
     }
-    // Marco tipo cromo detrás del dibujo.
-    const frame = this.add
-      .rectangle(x, y, obj.displayWidth + 24, obj.displayHeight + 24, 0xffffff)
-      .setStrokeStyle(4, 0xd7b98e);
+    // Cromo: ficha blanca un poco girada detrás del dibujo.
+    const frame = tileImage(this, obj.displayWidth + 30, obj.displayHeight + 30).setPosition(x, y).setAngle(-3);
     this.children.moveBelow(frame, obj);
     if (unlocked) this.tweens.add({ targets: obj, y: y - 4, duration: 700, yoyo: true, repeat: -1, ease: 'Sine.InOut' });
     return [frame, obj];
