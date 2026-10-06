@@ -384,3 +384,16 @@ Un test comprueba que no queda ningún texto visible fuera de `strings.ts`.
 - Test de textos: en `src/scenes` y `src/world` no puede haber cadenas con dos palabras seguidas
   fuera de `strings.ts`. Encontró el «Zoo Esponji» del portón, que ya sale de `title.name`.
 - La página no declaraba icono y el navegador pedía `favicon.ico` (404): ahora usa el logo.
+
+### Cambios tras la primera prueba de David (6-oct-2026)
+
+- **Tienda:** lo que hay en las peanas se decide al entrar (`shopStock`) y no cambia mientras se está
+  dentro. Antes, al agotarse un animal, otro ocupaba su peana al instante y se compraba sin querer con
+  el mismo toque. Ahora la peana se queda con su sello AGOTADO y lo siguiente sale en la próxima visita.
+- **Dar de comer:** la comida solo se abre al tocar un animal. Pasar andando a su lado ya no la abre
+  (con varios animales por recinto saltaba a cada paso).
+- **Estanque:** el recinto es más alto (10×13) y lleva un lago de 6×6 casillas (`lake-grassland`,
+  montado con las nueve piezas de la charca del pack). Sigue sin poder pisarse: los patos pasean por la
+  orilla.
+- **Miga** tiene ojos (la gallina sedosa del pack no los trae; se pintan con `dots`).
+- **Kiko** es el gallo de colores del pack: el gallo blanco era casi igual que la gallina blanca.

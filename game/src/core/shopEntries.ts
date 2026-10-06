@@ -24,32 +24,45 @@ export interface ShopEntry {
 /** Artículos que se enseñan a la vez: uno por peana. */
 export const SHOP_SLOTS = 5;
 
-/**
- * Lo que la tienda enseña: como mucho `SHOP_SLOTS` artículos, los más baratos que se pueden comprar
- * (recintos por abrir y "otro animal" de los abiertos, mezclados), de menor a mayor precio. Lo demás
- * va saliendo según se compra. Solo cuando quedan menos cosas que peanas, los recintos ya completos
- * rellenan los huecos con su sello AGOTADO, para que la tienda no se quede vacía.
- */
-export function shopEntries(state: GameState): ShopEntry[] {
-  const buyable: ShopEntry[] = [];
-  const full: ShopEntry[] = [];
-  for (const penId of PEN_IDS) {
-    const residents = PENS[penId].residents;
-    const count = penCount(state, penId);
-    const max = penCapacity(penId);
-    if (!isPenOpen(state, penId)) {
-      const pen = shopItemForPen(penId);
-      const first = residents[0]!;
-      if (pen) buyable.push({ id: pen.id, kind: 'pen', penId, species: first.species, look: first.look, cost: pen.cost, status: 'buy' });
-      continue;
-    }
-    const coming = nextResident(penId, count) ?? residents[residents.length - 1]!;
-    const cost = ANIMALS[coming.species].extraCost;
-    if (max <= 1 || cost === undefined) continue;
-    const entry: ShopEntry = { id: extraItemId(penId), kind: 'extra', penId, species: coming.species, look: coming.look, cost, status: count >= max ? 'full' : 'buy', count, max };
-    (entry.status === 'buy' ? buyable : full).push(entry);
+/** El artículo de un recinto: el recinto mientras está cerrado y, abierto, su "otro animal". Null si no vende nada. */
+function entryFor(state: GameState, penId: PenId): ShopEntry | null {
+  const residents = PENS[penId].residents;
+  const count = penCount(state, penId);
+  const max = penCapacity(penId);
+  const pen = shopItemForPen(penId);
+  const first = residents[0]!;
+  if (!isPenOpen(state, penId)) {
+    return pen ? { id: pen.id, kind: 'pen', penId, species: first.species, look: first.look, cost: pen.cost, status: 'buy' } : null;
   }
+  const coming = nextResident(penId, count) ?? residents[residents.length - 1]!;
+  const cost = ANIMALS[coming.species].extraCost;
+  if (max <= 1 || cost === undefined) {
+    // Recinto de un solo animal ya comprado: no hay más que vender.
+    return pen ? { id: pen.id, kind: 'pen', penId, species: first.species, look: first.look, cost: pen.cost, status: 'owned' } : null;
+  }
+  return { id: extraItemId(penId), kind: 'extra', penId, species: coming.species, look: coming.look, cost, status: count >= max ? 'full' : 'buy', count, max };
+}
+
+/**
+ * Lo que la tienda pone en sus peanas al entrar: como mucho `SHOP_SLOTS` recintos, los de los artículos
+ * más baratos que se pueden comprar (recintos por abrir y "otro animal" de los abiertos, mezclados), de
+ * menor a mayor precio. Solo cuando quedan menos cosas que peanas, los recintos ya completos rellenan
+ * los huecos, para que la tienda no se quede vacía.
+ */
+export function shopStock(state: GameState): PenId[] {
+  const entries = PEN_IDS.flatMap((penId) => entryFor(state, penId) ?? []);
   // `sort` es estable: a igual precio se queda el orden de los recintos.
-  const shown = buyable.sort((a, b) => a.cost - b.cost).slice(0, SHOP_SLOTS);
-  return [...shown, ...full.slice(0, SHOP_SLOTS - shown.length)];
+  const buyable = entries.filter((e) => e.status === 'buy').sort((a, b) => a.cost - b.cost).slice(0, SHOP_SLOTS);
+  const done = entries.filter((e) => e.status !== 'buy').slice(0, SHOP_SLOTS - buyable.length);
+  return [...buyable, ...done].map((e) => e.penId);
+}
+
+/**
+ * Los artículos de las peanas. `stock` es lo que se puso al entrar en la tienda: mientras se está
+ * dentro no cambia, así cada animal sigue en su peana aunque se compre. Si se completa, se queda ahí
+ * con su sello AGOTADO en vez de dejar el sitio a otro (que se compraría sin querer con el mismo toque).
+ * Lo siguiente sale en la próxima visita.
+ */
+export function shopEntries(state: GameState, stock: readonly PenId[] = shopStock(state)): ShopEntry[] {
+  return stock.flatMap((penId) => entryFor(state, penId) ?? []);
 }

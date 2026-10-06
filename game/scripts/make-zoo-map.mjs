@@ -68,7 +68,8 @@ const enclosures = [
   { penId: 'pinguinos', biome: 'tundra', x: 5, y: 25, ew: 16, eh: 10, gateX: 12, gateRow: 34, link: [35, 35] },
   // Este, granja: ovejas y estanque arriba de la avenida, establo debajo.
   { penId: 'ovejas', biome: 'grassland', x: 72, y: 25, ew: 11, eh: 10, gateX: 77, gateRow: 34, link: [35, 35] },
-  { penId: 'estanque', biome: 'grassland', x: 84, y: 25, ew: 10, eh: 10, gateX: 88, gateRow: 34, link: [35, 35] },
+  // El estanque es más alto que sus vecinos: arriba le cabe un lago de verdad.
+  { penId: 'estanque', biome: 'grassland', x: 84, y: 22, ew: 10, eh: 13, gateX: 88, gateRow: 34, link: [35, 35] },
   { penId: 'establo', biome: 'grassland', x: 74, y: 39, ew: 16, eh: 10, gateX: 81, gateRow: 39, link: [38, 38] },
 ];
 for (const e of enclosures) {
@@ -200,12 +201,16 @@ pinguinos('pine-snow', 13, 6, { block: [16, 16] });
 ovejas('sunflowers', 0, 1);
 ovejas('stump', 7, 1);
 for (const [cx, cy] of [[3, 2], [6, 5]]) ovejas('flowers', cx, cy);
-// 🦆 Estanque (interior 8x8, puerta abajo en las columnas 3-4).
-estanque('pond-grassland', 3, 3, { flat: true, block: [48, 40] });
-estanque('lilypad', 3, 2, { flat: true, z: 2 });
-estanque('lilypad-flower', 4, 3, { flat: true, z: 2 });
-estanque('sunflowers', 7, 1);
-estanque('flowers', 0, 6);
+// 🦆 Estanque (interior 8x11, puerta abajo en las columnas 3-4): un lago de 6x6 casillas arriba y
+// la orilla debajo, por donde pasean los patos y entra la cuidadora.
+const lakeLeft = (enclosures[9].x + 2) * T;
+const lakeTop = (enclosures[9].y + 2) * T;
+prop('lake-grassland', lakeLeft + 48, lakeTop + 96, { flat: true, block: [96, 96] });
+estanque('lilypad', 2, 2, { flat: true, z: 2 });
+estanque('lilypad-flower', 5, 4, { flat: true, z: 2 });
+estanque('lilypad', 3, 5, { flat: true, z: 2 });
+estanque('sunflowers', 7, 8);
+estanque('flowers', 0, 9);
 // 🐴 Establo (interior 14x8, puerta arriba en las columnas 6-7).
 establo('stump', 1, 6);
 establo('log', 11, 6, { block: [32, 16] });
@@ -235,7 +240,7 @@ at('sign-zone', 70, 35, { zone: 'granja' });
 for (const [x, y] of [
   [10, 6], [10, 12], [38, 6], [38, 12], [44, 9], [50, 9], [80, 6], [80, 12], [30, 20], [64, 20], [8, 20], [86, 20],
   [3, 30], [23, 30], [8, 40], [16, 42], [22, 46], [4, 50], [14, 52],
-  [71, 44], [92, 42], [80, 52], [90, 52], [74, 22], [86, 22],
+  [71, 44], [92, 42], [80, 52], [90, 52], [74, 22],
 ]) {
   at('tree', x, y);
 }

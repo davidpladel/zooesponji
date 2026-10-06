@@ -114,7 +114,7 @@ describe('mapa del zoo', () => {
 
   it('hay decoración en los recintos de siempre, en los nuevos y en el parque', () => {
     const names = new Set(readProps(map).map((p) => p.prop));
-    for (const name of ['acacia', 'plateau', 'waterfall', 'bamboo-mid', 'bench', 'lamp', 'sign', 'fountain', 'pond-tundra', 'pond-grassland', 'sunflowers']) {
+    for (const name of ['acacia', 'plateau', 'waterfall', 'bamboo-mid', 'bench', 'lamp', 'sign', 'fountain', 'pond-tundra', 'lake-grassland', 'sunflowers']) {
       expect(names.has(name), name).toBe(true);
     }
   });
@@ -132,6 +132,16 @@ describe('mapa del zoo', () => {
     const asian = enclosure('elefantes-asiaticos');
     expect(asian.x - (african.x + african.width)).toBe(2 * 16);
     for (const x of [64, 65]) for (let y = 5; y <= 14; y++) expect(isWalkable(grid, x, y), `(${x},${y})`).toBe(false);
+  });
+
+  it('el estanque tiene un lago de 6×6 casillas y deja orilla para pasear', () => {
+    const pen = enclosure('estanque');
+    const lake = readProps(map).find((p) => p.prop === 'lake-grassland')!;
+    expect(lake.block).toMatchObject({ width: 96, height: 96 });
+    // Dentro de la valla, con una casilla de césped por arriba y a los lados y cuatro filas de orilla abajo.
+    expect(lake.block!.x - pen.x).toBe(2 * 16);
+    expect(lake.block!.y - pen.y).toBe(2 * 16);
+    expect(pen.y + pen.height - 16 - (lake.block!.y + 96)).toBe(4 * 16);
   });
 
   it('cada zona nueva tiene su cartel a la entrada', () => {
