@@ -10,7 +10,7 @@
 
 **Spec:** `docs/superpowers/specs/2026-10-06-idiomas-es-en-design.md`.
 
-**Estado:** bloque A hecho. (Se actualiza al cerrar cada bloque: A = tareas 1-4, B = tareas 5-10, C = tareas 11-13.)
+**Estado:** bloque A hecho (unitarios y typecheck en verde; el e2e del bloque está pendiente de pasar). (Se actualiza al cerrar cada bloque: A = tareas 1-4, B = tareas 5-10, C = tareas 11-13.)
 
 ## Global Constraints
 
