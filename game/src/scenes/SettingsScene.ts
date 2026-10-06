@@ -2,7 +2,7 @@ import { Capacitor } from '@capacitor/core';
 import * as Phaser from 'phaser';
 import { animalKey, animalSheet, getArt, idleFrame } from '../art/art';
 import type { Vec } from '../core/movement';
-import type { Settings } from '../core/save';
+import type { ToggleKey } from '../core/save';
 import { APP_VERSION } from '../core/version';
 import { t, type StringKey } from '../data/strings';
 import { sfx } from '../systems/audio';
@@ -11,7 +11,7 @@ import { askQuit } from '../systems/platform';
 import { getSession } from '../systems/session';
 import { addCloseButton, addPlateButton, addWoodPanel, restartOnResize, textStyle } from './ui';
 
-const TOGGLES: readonly { key: keyof Settings; icon: string; label: StringKey }[] = [
+const TOGGLES: readonly { key: ToggleKey; icon: string; label: StringKey }[] = [
   { key: 'music', icon: '🎵', label: 'settings.music' },
   { key: 'sfx', icon: '🔊', label: 'settings.sfx' },
   { key: 'joystick', icon: '🕹️', label: 'settings.joystick' },
@@ -24,7 +24,7 @@ type ButtonKey = 'privacy' | 'quit';
  * Sin puerta parental: la privacidad se lee dentro del juego y nada lleva fuera de él.
  */
 export class SettingsScene extends Phaser.Scene {
-  private readonly toggles = new Map<keyof Settings, Phaser.GameObjects.Container>();
+  private readonly toggles = new Map<ToggleKey, Phaser.GameObjects.Container>();
   private readonly buttons = new Map<ButtonKey, Phaser.GameObjects.Container>();
   /** El mundo estaba en marcha al abrir: al cerrar se reanuda. */
   private pausedWorld = false;
@@ -87,7 +87,7 @@ export class SettingsScene extends Phaser.Scene {
     return `${t('credits.madeBy')} ${t('credits.art')}`;
   }
 
-  togglePos(key: keyof Settings): Vec | null {
+  togglePos(key: ToggleKey): Vec | null {
     const button = this.toggles.get(key);
     return button ? { x: button.x, y: button.y } : null;
   }
@@ -97,7 +97,7 @@ export class SettingsScene extends Phaser.Scene {
     return button ? { x: button.x, y: button.y } : null;
   }
 
-  private async flip(key: keyof Settings): Promise<void> {
+  private async flip(key: ToggleKey): Promise<void> {
     const session = getSession();
     await session.updateSettings({ [key]: !session.settings[key] });
     sfx.play('tap');
@@ -106,7 +106,7 @@ export class SettingsScene extends Phaser.Scene {
     this.renderToggle(key, button.width, toggle.icon, t(toggle.label));
   }
 
-  private renderToggle(key: keyof Settings, size: number, icon: string, label: string): void {
+  private renderToggle(key: ToggleKey, size: number, icon: string, label: string): void {
     const button = this.toggles.get(key);
     if (!button) return;
     button.removeAll(true);

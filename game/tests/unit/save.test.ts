@@ -5,6 +5,7 @@ import {
   LEGACY_COINS_KEY,
   LEGACY_PURCHASES_KEY,
   SAVE_KEY,
+  SAVE_VERSION,
   defaultSave,
   loadSave,
   migrateLegacy,
@@ -149,5 +150,35 @@ describe('loadSave / writeSave', () => {
     const store = createMemoryStore({ [LEGACY_COINS_KEY]: '99' });
     await writeSave(store, defaultSave());
     expect((await loadSave(store)).state.coins).toBe(0);
+  });
+});
+
+describe('ajustes: idioma', () => {
+  const withLanguage = (language: unknown) => ({ ...defaultSave(), settings: { ...defaultSave().settings, language } });
+
+  it('sin idioma guardado queda en automático (el campo no existe)', () => {
+    const parsed = parseSave(JSON.parse(JSON.stringify(defaultSave())))!;
+    expect(parsed.settings.language).toBeUndefined();
+    expect('language' in parsed.settings).toBe(false);
+  });
+
+  it.each(['es', 'en'] as const)('acepta %s', (language) => {
+    expect(parseSave(withLanguage(language))?.settings.language).toBe(language);
+  });
+
+  it.each([['fr'], ['EN'], ['es-ES'], [3], [null], [true]])('ignora %j y queda en automático', (language) => {
+    const parsed = parseSave(withLanguage(language))!;
+    expect(parsed.settings.language).toBeUndefined();
+    expect(parsed.settings.music).toBe(true);
+  });
+
+  it('ida y vuelta: lo que se escribe se vuelve a leer', async () => {
+    const store = createMemoryStore();
+    await writeSave(store, { ...defaultSave(), settings: { ...defaultSave().settings, language: 'en' } });
+    expect((await loadSave(store)).settings.language).toBe('en');
+  });
+
+  it('no cambia la versión del guardado', () => {
+    expect(SAVE_VERSION).toBe(2);
   });
 });
