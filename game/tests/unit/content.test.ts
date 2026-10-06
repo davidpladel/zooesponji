@@ -146,6 +146,9 @@ describe('textos con variables', () => {
   it('t sustituye {n}', () => {
     expect(t('toast.shopLocked', { n: 20 })).toBe('La tienda abre con 20 monedas');
   });
+  it('el bocadillo de compra lleva el precio', () => {
+    expect(t('shop.buy', { cost: 50 })).toBe('¡Comprar! 🪙 50');
+  });
   it('sin variables deja el texto igual', () => {
     expect(t('title.play')).toBe('Jugar');
   });
