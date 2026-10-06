@@ -1,8 +1,7 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import { STRINGS_ES, hasKey } from '../../src/data/strings';
-import { STRINGS_EN } from '../../src/data/strings/en';
+import { STRINGS_EN, STRINGS_ES, hasKey } from '../../src/data/strings';
 
 const words = (text: string): number => text.trim().split(/\s+/).length;
 
@@ -62,66 +61,33 @@ describe('hasKey', () => {
 const ES: Record<string, string> = STRINGS_ES;
 const EN: Record<string, string> = STRINGS_EN;
 const markers = (text: string): string[] => [...text.matchAll(/\{(\w+)\}/g)].map((m) => m[1]!).sort();
-/** De las claves que se piden, las que aún no están en inglés. */
-const missing = (keys: string[]): string[] => keys.filter((key) => !(key in EN));
-
-const pageKeys = (ids: string[]): string[] => ids.flatMap((id) => [`book.page.${id}.title`, `book.page.${id}.text`]);
 /** El nombre propio de un título: lo que va antes de la coma («Bills, el león» → «Bills»). */
 const properName = (title: string): string => title.split(',')[0]!;
 
 describe('inglés', () => {
-  it.each(Object.keys(EN))('%s: existe en español, no está vacío y conserva los marcadores', (key) => {
-    expect(ES[key], key).toBeDefined();
+  it('tiene exactamente las mismas claves que el español', () => {
+    expect(Object.keys(EN).sort()).toEqual(Object.keys(ES).sort());
+  });
+
+  it.each(Object.keys(ES))('%s: no está vacío y conserva los marcadores', (key) => {
     expect(EN[key]!.trim()).not.toBe('');
     expect(markers(EN[key]!)).toEqual(markers(ES[key]!));
   });
 
   it('«Zoo Esponji» no se traduce', () => {
     expect(EN['title.name']).toBe('Zoo Esponji');
-  });
-
-  it('bloque 1: están todos los textos cortos', () => {
-    expect(missing(Object.keys(ES).filter((key) => !/^(shop\.about|book\.page)\./.test(key)))).toEqual([]);
-  });
-
-  it('bloque 2: el tendero dice algo de cada especie', () => {
-    const about = Object.keys(ES).filter((key) => key.startsWith('shop.about.'));
-    expect(about).toHaveLength(15);
-    expect(missing(about)).toEqual([]);
-  });
-
-  it('libro A: el zoo, centro y montaña', () => {
-    const ids = ['cover', 'story', 'mary', 'bills', 'sasha', 'gordi', 'nube', 'galleta', 'tolon', 'chispa', 'noche', 'sombra', 'mochi', 'pompon', 'back'];
-    expect(missing(pageKeys(ids))).toEqual([]);
-  });
-
-  it('libro B: la granja', () => {
-    const ids = ['cuac', 'charco', 'pluma', 'remo', 'pio', 'lana', 'bolita', 'trueno', 'algodon', 'rizos', 'canela', 'pepa', 'lucero', 'kiko', 'clo', 'tizon', 'miga', 'mancha'];
-    expect(missing(pageKeys(ids))).toEqual([]);
-  });
-
-  it('libro C: polo y sabana', () => {
-    const ids = ['pingu', 'copito', 'frac', 'tobogan', 'hielo', 'lola', 'raya', 'brisa', 'pecas', 'zigzag', 'salto', 'miel', 'pipa', 'tembo', 'kali', 'raja', 'mali'];
-    expect(missing(pageKeys(ids))).toEqual([]);
-  });
-
-  it('con el libro C ya no falta ninguna clave', () => {
-    expect(missing(Object.keys(ES))).toEqual([]);
+    expect(EN['book.page.cover.title']).toContain('Zoo Esponji');
+    expect(EN['book.page.story.text']).toContain('Zoo Esponji');
   });
 
   it.each(Object.entries(EN).filter(([key]) => /^book\.page\..+\.text$/.test(key)))('%s tiene 20 palabras como mucho', (_key, text) => {
     expect(words(text)).toBeLessThanOrEqual(20);
   });
 
-  it.each(Object.keys(EN).filter((key) => /^book\.page\..+\.title$/.test(key) && ES[key]!.includes(',')))(
+  it.each(Object.keys(ES).filter((key) => /^book\.page\..+\.title$/.test(key) && ES[key]!.includes(',')))(
     '%s conserva el nombre propio',
     (key) => {
       expect(properName(EN[key]!)).toBe(properName(ES[key]!));
     },
   );
-
-  it('«Zoo Esponji» sigue igual dentro del libro', () => {
-    expect(EN['book.page.cover.title']).toContain('Zoo Esponji');
-    expect(EN['book.page.story.text']).toContain('Zoo Esponji');
-  });
 });

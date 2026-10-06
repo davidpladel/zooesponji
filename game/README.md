@@ -66,17 +66,18 @@ siguiente de la lista del recinto al precio de su especie. Las especies grandes 
 ## Estructura
 
 - `src/core/` — lógica pura sin Phaser (reacciones, economía y extras, guardado, A*, mapas, movimiento, `flock` para que los animales no se pisen, `petting` para el aforo de la granja de contacto, `back` para el botón atrás). Todo con tests.
-- `src/data/` — contenido: animales, comidas, tienda, libro del zoo (`book.ts`: ids de página y qué las desbloquea) y textos (`strings/`: una clave por texto en `es.ts`; todo texto visible pasa por `t()`, de `strings/index.ts`).
+- `src/data/` — contenido: animales, comidas, tienda, libro del zoo (`book.ts`: ids de página y qué las desbloquea) y textos (`strings/`: `es.ts` y `en.ts`, una clave por texto; `en.ts` no compila si le falta una; todo texto visible pasa por `t()`, que usa el idioma activo).
 - `src/systems/` — eventos, sesión, almacenamiento, zoom, `audio` (samples y música), `platform` (botón atrás, segundo plano, girar el móvil), `errors` (pantalla ¡Ups!), `language` (idioma activo y detección por el idioma del móvil).
 - `src/scenes/` — escenas de Phaser (solo dibujan y recogen input): Boot, Preload, Title, World, Feed (dar de comer), Shop (tienda), Book (libro del zoo), Hud, Settings (menú ⚙️: ajustes, créditos, privacidad y salir), Quit (¿Salir?), Rotate (gira el móvil).
 - `src/world/` — ayudantes del mundo: `Pens` (los animales de cada recinto, cada uno con su identidad, los candados y el toque sobre un animal para darle de comer; los recintos que no se ven no se actualizan), `ShopBuilding` (edificio y puerta de la tienda), `ShopInterior` (la tienda por dentro), `ShopKeeperWalker` (la cuidadora dentro de la tienda), `Shopkeeper` (el tendero), `ShopHint` (huellas de pista), `VisitorCrowd` (visitantes; en el recinto de ovejas entran a acariciar, 3 como mucho, y salen corazones).
 
 ## Añadir un animal
 
-1. Especie en `src/data/animals.ts`: su nombre (clave de `src/data/strings/es.ts`), reacciones solo para las comidas de su bandeja (4 o 5), monedas y, si se pueden comprar más animales sueltos, `extraCost` + `extraNameKey`.
+1. Especie en `src/data/animals.ts`: su nombre (clave de `src/data/strings/es.ts`, con su traducción en `en.ts`), reacciones solo para las comidas de su bandeja (4 o 5), monedas y, si se pueden comprar más animales sueltos, `extraCost` + `extraNameKey`.
 2. Recinto en `src/data/pens.ts`: precio (sin precio, viene abierto de inicio) y lista ordenada de residentes (`id`, especie, aspecto). Su capítulo del libro se elige en `CHAPTER_PENS` (`src/data/book.ts`) y las páginas salen solas. El `id` de cada residente es el de su página en `src/data/book.ts`. La tienda sale de esta tabla.
 3. Sprites del aspecto: entrada en `art/art.config.json` (hoja del pack o dibujo de los niños) y `npm run art:import`.
 4. En el mapa de Tiled, capa `objetos`: rectángulo de tipo `recinto` y objeto de tipo `puerta`, ambos con la propiedad `penId`, que lleva el id del recinto.
+5. Textos en los dos idiomas: nombre de la especie, frase del tendero (`shop.about.*`), «otro…» (`shop.extra.*`) y título y texto de la página de cada residente (`book.page.<id>.*`). El nombre propio no se traduce.
 
 Los tests de contenido fallan si falta alguna de estas piezas.
 
