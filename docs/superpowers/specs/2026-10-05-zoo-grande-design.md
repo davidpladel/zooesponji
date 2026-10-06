@@ -346,7 +346,7 @@ Un test comprueba que no queda ningún texto visible fuera de `strings.ts`.
 - La propiedad de recintos y puertas del mapa se llama `penId`.
 - Orden de llegada en los recintos mixtos. Sabana: Lola, Raya, Brisa, Pecas, Zigzag, Salto, Miel, Pipa.
   Establo: Canela, Pepa, Lucero, Kiko, Clo, Tizón, Miga, Mancha.
-- Al dar de comer reaccionan el animal y los de su especie en el recinto, no todo el recinto.
+- Al dar de comer reacciona solo el animal que ha comido (primero reaccionaban también los de su especie; David pidió que fuera solo uno, 6-oct-2026).
 - Los animales grandes llevan `radius` en su especie: se separan más y se tocan por el cuerpo.
 - La charca de pingüinos y la del estanque bloquean el paso, como la catarata de la pantera: los patos
   pasean alrededor.
