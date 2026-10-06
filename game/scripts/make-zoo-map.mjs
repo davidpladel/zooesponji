@@ -259,7 +259,7 @@ prop('park-gate', gatePx, H * T);
 
 objects.push({
   id: nextId++, name: 'inicio', type: 'punto', point: true,
-  x: (23 + OX) * T + T / 2, y: (30 + OY) * T + T / 2, width: 0, height: 0, rotation: 0, visible: true,
+  x: (23 + OX) * T + T / 2, y: (33 + OY) * T + T / 2, width: 0, height: 0, rotation: 0, visible: true,
 });
 
 const walkable = [{ name: 'walkable', type: 'bool', value: true }];
