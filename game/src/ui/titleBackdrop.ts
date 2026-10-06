@@ -1,6 +1,7 @@
 import * as Phaser from 'phaser';
 import { t } from '../data/strings';
 import { UI, textStyle } from './theme';
+import { addUiText } from './text';
 
 export const TITLE_BG = 'title-bg';
 /** Punto de la imagen (0 arriba, 1 abajo) que se conserva al recortar en pantallas alargadas. */
@@ -38,7 +39,7 @@ export function addTitleBackdrop(scene: Phaser.Scene): TitleLayout {
   }
   const name = t('title.name');
   const outer = textStyle(layout.nameSize, UI.logo, '#ffffff');
-  scene.add.text(width / 2, layout.nameY, name, { ...outer, strokeThickness: Math.round(layout.nameSize * 0.3) }).setOrigin(0.5);
-  scene.add.text(width / 2, layout.nameY, name, { ...textStyle(layout.nameSize, UI.logo, '#8a3b12'), strokeThickness: Math.round(layout.nameSize * 0.13) }).setOrigin(0.5);
+  addUiText(scene, width / 2, layout.nameY, name, { ...outer, strokeThickness: Math.round(layout.nameSize * 0.3) }).setOrigin(0.5);
+  addUiText(scene, width / 2, layout.nameY, name, { ...textStyle(layout.nameSize, UI.logo, '#8a3b12'), strokeThickness: Math.round(layout.nameSize * 0.13) }).setOrigin(0.5);
   return layout;
 }
