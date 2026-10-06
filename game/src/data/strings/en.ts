@@ -7,7 +7,7 @@ import type { StringKey } from './es';
 export const STRINGS_EN: Record<StringKey, string> = {
   'title.name': 'Zoo Esponji',
   'title.play': 'Play',
-  'title.credits': 'Made by Daniela and Adrián 💛',
+  'title.credits': 'Made by Daniela and Adrián',
   'settings.title': 'Settings',
   'quit.ask': 'Quit?',
   'settings.privacy': 'Privacy',

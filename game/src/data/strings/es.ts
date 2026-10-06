@@ -1,7 +1,7 @@
 export const STRINGS_ES = {
   'title.name': 'Zoo Esponji',
   'title.play': 'Jugar',
-  'title.credits': 'Hecho por Daniela y Adrián 💛',
+  'title.credits': 'Hecho por Daniela y Adrián',
   'settings.title': 'Ajustes',
   'quit.ask': '¿Salir?',
   'settings.privacy': 'Privacidad',
