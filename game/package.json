@@ -19,6 +19,7 @@
     "make:campanita": "node scripts/make-campanita.mjs",
     "make:paso": "node scripts/make-paso.mjs",
     "make:calcetin": "node scripts/make-calcetin.ts",
+    "make:ui-assets": "node scripts/make-ui-assets.mjs",
     "art:grid": "node scripts/art/grid.ts",
     "art:preview": "node scripts/art/preview.ts",
     "art:compare": "node scripts/art/compare.ts",
@@ -33,7 +34,9 @@
   },
   "devDependencies": {
     "@capacitor/cli": "^8.5.2",
+    "@fontsource/baloo-2": "^5.3.0",
     "@playwright/test": "^1.63.0",
+    "@tabler/icons": "^3.49.0",
     "@types/adm-zip": "^0.5.8",
     "@types/node": "^24.19.0",
     "@types/pngjs": "^6.0.5",
