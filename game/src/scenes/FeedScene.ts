@@ -10,7 +10,11 @@ import { sfx } from '../systems/audio';
 import { getSession } from '../systems/session';
 import { foodKey, getArt } from '../art/art';
 import { animalPortrait } from '../world/Actors';
-import { addCloseButton, restartOnResize, textStyle } from './ui';
+import { sceneryTexture } from '../ui/paint';
+import { textStyle } from '../ui/theme';
+import { addUiText } from '../ui/text';
+import type { UiText } from '../ui/text';
+import { HUD_COIN, addCloseBadge, addPanel, addRibbonTitle, addTile, addVeil, restartOnResize } from '../ui/widgets';
 
 export interface FeedSceneData {
   residentId: string;
@@ -18,8 +22,6 @@ export interface FeedSceneData {
 
 /** Margen (px) alrededor del animal para que soltar "cerca" cuente. */
 const DROP_MARGIN = 48;
-/** Contador de monedas del HUD, en coordenadas de pantalla. */
-export const COIN_TARGET: Vec = { x: 34, y: 34 };
 /** Retardo elástico de la comida al seguir el dedo (0..1; 1 = sin retardo). */
 const FOLLOW = 0.35;
 
@@ -36,7 +38,7 @@ export class FeedScene extends Phaser.Scene {
   private look = 'leon';
   private animal!: Phaser.GameObjects.Sprite | Phaser.GameObjects.Text;
   private baseScale = 1;
-  private speech!: Phaser.GameObjects.Text;
+  private speech!: UiText;
   private readonly foods = new Map<FoodId, Food>();
   private readonly homes = new Map<FoodId, Vec>();
   private dragging: { id: FoodId; target: Vec } | null = null;
@@ -63,23 +65,27 @@ export class FeedScene extends Phaser.Scene {
   create(): void {
     const { width, height } = this.scale;
 
-    // Fondo oscuro que además bloquea los toques al mundo.
-    this.add.rectangle(0, 0, width, height, 0x000000, 0.6).setOrigin(0).setInteractive();
-    this.add
-      .rectangle(width / 2, height * 0.4, Math.min(width * 0.85, 720), height * 0.62, 0x9ccc65)
-      .setStrokeStyle(6, 0x33691e);
-    this.animal = animalPortrait(this, this.animalId, width / 2, height * 0.36, height * 0.3, this.look);
+    // El velo bloquea los toques al mundo.
+    addVeil(this);
+    const panelW = Math.min(width * 0.88, 780);
+    const panelH = height * 0.86;
+    const panelY = height * 0.55;
+    const top = panelY - panelH / 2;
+    addPanel(this, width / 2, panelY, panelW, panelH);
+    // Ventana con cielo y prado donde se asoma el animal.
+    this.add.image(width / 2, height * 0.37, sceneryTexture(this, panelW * 0.9, height * 0.44));
+    this.animal = animalPortrait(this, this.animalId, width / 2, height * 0.37, height * 0.3, this.look);
     this.baseScale = this.animal.scaleX;
     const title = t(`book.page.${this.residentId}.title` as StringKey);
-    this.add.text(width / 2, height * 0.64, title, textStyle(Math.round(height * 0.05))).setOrigin(0.5);
-    this.speech = this.add
-      .text(width / 2 + height * 0.22, height * 0.16, '', textStyle(Math.round(height * 0.06), '#ffffff', '#4e342e'))
+    addRibbonTitle(this, width / 2, top, Math.min(panelW * 0.6, 440), Phaser.Math.Clamp(height * 0.14, 40, 80), title);
+    this.speech = addUiText(this, width / 2 + height * 0.22, height * 0.2, '', textStyle(Math.round(height * 0.06), '#ffffff', '#4e342e'))
       .setOrigin(0.5)
       .setDepth(15)
       .setVisible(false);
 
-    this.createTray(width, height);
-    addCloseButton(this, () => this.close());
+    this.createTray(width, height, panelW);
+    const badge = Phaser.Math.Clamp(height * 0.13, 44, 64);
+    addCloseBadge(this, width / 2 + panelW / 2 - badge * 0.35, top + badge * 0.35, () => this.close(), badge);
     restartOnResize(this);
 
     this.input.on(Phaser.Input.Events.DRAG_START, this.onDragStart, this);
@@ -119,16 +125,16 @@ export class FeedScene extends Phaser.Scene {
     return this.busy;
   }
 
-  private createTray(width: number, height: number): void {
+  private createTray(width: number, height: number, panelW: number): void {
     const tray = trayFoods(this.animalId);
     const size = Phaser.Math.Clamp(Math.round(height * 0.12), 56, 96);
-    const trayY = height * 0.86;
-    const gap = Math.min(width / (tray.length + 1), size * 2.2);
-    this.add
-      .rectangle(width / 2, trayY, gap * tray.length + size * 0.5, size * 1.6, 0x6d4c41)
-      .setStrokeStyle(4, 0x3e2723);
+    const tile = Math.round(size * 1.45);
+    const trayY = height * 0.79;
+    const gap = Math.min((panelW * 0.9) / tray.length, tile * 1.2);
     tray.forEach((id, index) => {
       const x = width / 2 + (index - (tray.length - 1) / 2) * gap;
+      // La ficha es solo el hueco: la comida se arrastra, no se pulsa.
+      addTile(this, x, trayY, tile, tile);
       const icon = getArt()?.foods[id];
       // Icono del pack con escala entera (nítido); si no hay, el emoji.
       const food: Food = icon
@@ -230,8 +236,8 @@ export class FeedScene extends Phaser.Scene {
       const coin = this.pooled('🪙', 36).setPosition(this.animal.x, this.animal.y);
       this.tweens.add({
         targets: coin,
-        x: COIN_TARGET.x,
-        y: COIN_TARGET.y,
+        x: HUD_COIN.x,
+        y: HUD_COIN.y,
         scale: 0.6,
         delay: i * 120,
         duration: 600,
