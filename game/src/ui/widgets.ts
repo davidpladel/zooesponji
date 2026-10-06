@@ -3,6 +3,7 @@ import type { Vec } from '../core/movement';
 import { addIcon, type IconName } from './icons';
 import { coinTexture, panelTexture, pillTexture, ribbonTexture, shadowOf, tileTexture } from './paint';
 import { makePressable } from './press';
+import { addUiText } from './text';
 import { PILL, UI, textStyle, type PillColor } from './theme';
 
 type Tap = (pointer: Phaser.Input.Pointer) => void;
@@ -48,7 +49,7 @@ export function addPillButton(scene: Phaser.Scene, x: number, y: number, w: numb
   const marks: Phaser.GameObjects.Image[] = [];
   const row: (Phaser.GameObjects.Text | Phaser.GameObjects.Image)[] = [];
   const text = (value: string): void => {
-    const item = scene.add.text(0, cy, value, textStyle(10, '#ffffff', stroke)).setOrigin(0, 0.5);
+    const item = addUiText(scene, 0, cy, value, textStyle(10, '#ffffff', stroke)).setOrigin(0, 0.5);
     texts.push(item);
     row.push(item);
   };
@@ -97,7 +98,7 @@ export function addPanel(scene: Phaser.Scene, x: number, y: number, w: number, h
 export function addRibbonTitle(scene: Phaser.Scene, x: number, y: number, w: number, h: number, text: string): Phaser.GameObjects.Container {
   const ribbon = scene.add.container(x, y);
   ribbon.add(centered(scene.add.image(0, 0, ribbonTexture(scene, w, h)), h));
-  const label = scene.add.text(0, 0, '', textStyle(10)).setOrigin(0.5);
+  const label = addUiText(scene, 0, 0, '', textStyle(10)).setOrigin(0.5);
   ribbon.add(label);
   ribbon.setSize(w, h).setData('label', label).setDepth(25);
   setRibbonText(ribbon, text);
@@ -144,7 +145,7 @@ export interface CoinCounter {
 /** Moneda y número. (x, y) es el centro de la moneda. */
 export function addCoinCounter(scene: Phaser.Scene, x: number, y: number, size = 44): CoinCounter {
   const container = scene.add.container(x, y);
-  const text = scene.add.text(size * 0.72, 0, '0', textStyle(Math.round(size * 0.8), '#ffffff', '#5a3210')).setOrigin(0, 0.5);
+  const text = addUiText(scene, size * 0.72, 0, '0', textStyle(Math.round(size * 0.8), '#ffffff', '#5a3210')).setOrigin(0, 0.5);
   container.add([coinImage(scene, size), text]);
   return {
     container,
@@ -169,7 +170,7 @@ export function addVeil(scene: Phaser.Scene, onTap?: () => void): Phaser.GameObj
 /** Texto centrado en x con un corazón amarillo detrás. */
 export function addHeartLine(scene: Phaser.Scene, x: number, y: number, text: string, style: Phaser.Types.GameObjects.Text.TextStyle): Phaser.GameObjects.Text {
   const size = parseInt(String(style.fontSize), 10);
-  const label = scene.add.text(x - size * 0.6, y, text, style).setOrigin(0.5);
+  const label = addUiText(scene, x - size * 0.6, y, text, style).setOrigin(0.5);
   addIcon(scene, label.x + label.width / 2 + size * 0.7, y, 'heart', size * 1.1, 0xffd23c);
   return label;
 }
