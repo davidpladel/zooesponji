@@ -4,7 +4,7 @@ import { FALLBACK_SPOTS, interiorLayout, toScreen, type InteriorLayout } from '.
 import type { Point } from '../core/pathfinding';
 import { readInteriorSpots, wallRows, type InteriorDeco, type InteriorSpots, type TiledMap } from '../core/tiledmap';
 import { t } from '../data/strings';
-import { textStyle } from '../scenes/ui';
+import { textStyle } from '../ui/theme';
 
 const MAP_W = 320;
 const MAP_H = 192;

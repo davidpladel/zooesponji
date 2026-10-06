@@ -20,7 +20,9 @@ import { ShopHint } from '../world/ShopHint';
 import { ShopInterior } from '../world/ShopInterior';
 import { ShopKeeperWalker } from '../world/ShopKeeperWalker';
 import { Shopkeeper } from '../world/Shopkeeper';
-import { addCloseButton, restartOnResize, textStyle } from './ui';
+import { textStyle } from '../ui/theme';
+import { addUiText } from '../ui/text';
+import { addCloseBadge, addPillButton, restartOnResize } from '../ui/widgets';
 
 /** Si el dedo se desplaza más que esto entre pulsar y soltar, no es un toque. */
 const TAP_MAX_DISTANCE = 12;
@@ -120,7 +122,7 @@ export class ShopScene extends Phaser.Scene {
     this.time.addEvent({ delay: 1800, loop: true, callback: () => this.floatHeart() });
     this.interior.doorMat(() => this.onDoorTap());
     this.addBook();
-    addCloseButton(this, () => this.close());
+    addCloseBadge(this, width - 16 - 32, 16 + 32, () => this.close(), 56).setDepth(4000);
 
     const keyboard = this.input.keyboard;
     if (keyboard) {
@@ -402,36 +404,18 @@ export class ShopScene extends Phaser.Scene {
     const fontSize = Math.round(Math.max(16, 6.5 * s));
     // Como en otras tiendas: se compra → precio; no quedan → sello AGOTADO sobre el animal en gris.
     if (done) {
-      const stamp = this.add
-        .text(pos.x, pos.y - 12 * s, t('shop.soldOut'), {
-          fontFamily: 'sans-serif',
-          fontSize: `${Math.round(fontSize * 0.85)}px`,
-          fontStyle: 'bold',
-          color: '#ffffff',
-          backgroundColor: '#c62828',
-          padding: { x: Math.round(2.5 * s), y: Math.round(1 * s) },
-        })
-        .setOrigin(0.5)
-        .setAngle(-12)
-        .setDepth(1500);
-      parts.push(stamp);
+      const stampH = Math.round(Math.max(24, 9 * s));
+      parts.push(addPillButton(this, pos.x, pos.y - 12 * s, stampH * 4.2, stampH, { color: 'red', label: t('shop.soldOut') }).setAngle(-12).setDepth(1500));
     } else {
-      const sign = this.add
-        .text(pos.x, pos.y + 12 * s, `🪙 ${entry.cost}`, {
-          fontFamily: 'sans-serif',
-          fontSize: `${fontSize}px`,
-          color: '#ffffff',
-          backgroundColor: affordable ? '#43a047' : '#9e9e9e',
-          padding: { x: Math.round(2.5 * s), y: Math.round(1.5 * s) },
-        })
-        .setOrigin(0.5, 0)
-        .setDepth(1500);
-      parts.push(sign);
+      const cost = String(entry.cost);
+      const signH = Math.round(Math.max(26, 11 * s));
+      const signW = signH * (1.9 + 0.36 * cost.length);
+      parts.push(addPillButton(this, pos.x, pos.y + 12 * s + signH / 2, signW, signH, { color: affordable ? 'green' : 'gray', coin: cost }).setDepth(1500));
     }
     if (entry.kind === 'extra') {
       // Cuántos tienes ya, en letra pequeña bajo el precio (o el sello): informa, no pide nada.
       const have = t('shop.have', { n: entry.count ?? 0, max: entry.max ?? 0 });
-      parts.push(this.add.text(pos.x, pos.y + (done ? 4 : 25) * s, have, textStyle(Math.round(fontSize * 0.7), '#fff8e1', '#4e342e')).setOrigin(0.5, 0).setDepth(1500));
+      parts.push(addUiText(this, pos.x, pos.y + (done ? 4 : 25) * s, have, textStyle(Math.round(fontSize * 0.7), '#fff8e1', '#4e342e')).setOrigin(0.5, 0).setDepth(1500));
     }
 
     // Zona táctil generosa (peana + animal) para dedos pequeños.
@@ -478,28 +462,20 @@ export class ShopScene extends Phaser.Scene {
     const s = this.interior.layout.scale;
     const entry = product.entry;
     const affordable = getSession().state.coins >= entry.cost;
-    const text = this.add
-      .text(0, 0, t('shop.buy', { cost: entry.cost }), {
-        fontFamily: 'sans-serif',
-        fontSize: `${Math.round(Math.max(18, 7.5 * s))}px`,
-        color: '#ffffff',
-        stroke: affordable ? '#1b5e20' : '#424242',
-        strokeThickness: 3,
-      })
-      .setOrigin(0.5);
-    const w = text.width + 10 * s;
-    const h = text.height + 6 * s;
-    const g = this.add.graphics();
-    g.fillStyle(affordable ? 0x43a047 : 0x9e9e9e).lineStyle(Math.max(2, s * 0.75), 0xffffff);
-    g.fillRoundedRect(-w / 2, -h / 2, w, h, 4 * s).strokeRoundedRect(-w / 2, -h / 2, w, h, 4 * s);
-    g.fillTriangle(-4 * s, h / 2 - 1, 4 * s, h / 2 - 1, 0, h / 2 + 5 * s);
+    const h = Math.round(Math.max(40, 15 * s));
+    const w = h * 4.4;
     const lift = entry.kind === 'extra' ? 12 * s : 0; // por encima de la chapita ➕ n/max
     const y = Math.max(h / 2 + 4, product.animal.y - product.animal.displayHeight - 8 * s - h / 2 - lift);
-    const bubble = this.add.container(product.hit.x, y, [g, text]).setDepth(3100).setScale(0);
-    bubble.setSize(w, h + 5 * s).setInteractive({ useHandCursor: true });
-    bubble.on('pointerup', (pointer: Phaser.Input.Pointer) => {
-      if (this.isTap(pointer)) void this.onBuy(entry);
-    });
+    const bubble = addPillButton(this, product.hit.x, y, w, h, {
+      color: affordable ? 'green' : 'gray',
+      label: t('shop.buy'),
+      coin: String(entry.cost),
+      onTap: (pointer) => {
+        if (this.isTap(pointer)) void this.onBuy(entry);
+      },
+    })
+      .setDepth(3100)
+      .setScale(0);
     this.tweens.add({ targets: bubble, scale: 1, duration: 200, ease: 'Back.Out' });
     this.tweens.add({ targets: bubble, y: y - 2 * s, duration: 600, yoyo: true, repeat: -1, ease: 'Sine.InOut', delay: 200 });
     this.buyBubble = bubble;

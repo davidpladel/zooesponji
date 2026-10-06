@@ -74,7 +74,7 @@ export const STRINGS_EN: Record<StringKey, string> = {
   'shop.hello': 'Hello! Which animal would you like today?',
   'shop.thanks': 'Thank you! Take good care of it!',
   'shop.needCoins': 'You need more coins!',
-  'shop.buy': 'Buy! 🪙 {cost}',
+  'shop.buy': 'Buy!',
   'shop.extra.cabra': 'Another goat',
   'shop.extra.pantera': 'Another panther',
   'shop.extra.panda': 'Another panda',

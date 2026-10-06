@@ -157,7 +157,7 @@ describe('textos con variables', () => {
     setLanguage('es');
     expect(t('toast.shopLocked', { n: 20 })).toBe('La tienda abre con 20 monedas');
     expect(t('title.play')).toBe('Jugar');
-    expect(t('shop.buy', { cost: 50 })).toBe('¡Comprar! 🪙 50');
+    expect(t('shop.buy')).toBe('¡Comprar!');
     expect(t('book.page.bills.title')).toBe('Bills, el león');
   });
 
@@ -165,7 +165,7 @@ describe('textos con variables', () => {
     setLanguage('en');
     expect(t('toast.shopLocked', { n: 20 })).toBe('The shop opens with 20 coins');
     expect(t('title.play')).toBe('Play');
-    expect(t('shop.buy', { cost: 50 })).toBe('Buy! 🪙 50');
+    expect(t('shop.buy')).toBe('Buy!');
     expect(t('book.page.bills.title')).toBe('Bills, the lion');
   });
 
