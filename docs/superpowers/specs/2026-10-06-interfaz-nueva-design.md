@@ -153,6 +153,20 @@ Al abrir se ven tres cosas seguidas: splash de Android, carga del juego y títul
 - `splash.png` (todas las densidades, vertical y apaisado): se rehace con el león, el fondo azul cielo y «Zoo Esponji» en Baloo 2 amarillo con contorno marrón. Solo lo ven los Android anteriores al 12.
 - El fondo de `index.html` pasa al mismo azul, para que no asome verde oscuro entre el splash y la carga.
 
+## Ajustes al planificar (mandan sobre lo de arriba)
+
+Al leer el código para escribir el plan salieron estas diferencias con lo descrito:
+
+- **Cómo se pintan las piezas:** el juego arranca Phaser con `pixelArt: true`, que quita el suavizado a `Graphics`. Las piezas se pintan con Canvas 2D en texturas (bordes suaves y degradados reales) y se muestran como imágenes con filtro lineal. Los pintores viven en `src/ui/paint.ts`.
+- **Lógica sin Phaser en `core/`:** la regla del efecto al pulsar (`core/press.ts`) y la de visibilidad del engranaje (`core/hud.ts`) son funciones puras con pruebas unitarias; `src/ui/press.ts` solo las conecta a Phaser. El oscurecido al pulsar es un tinte, no una capa negra.
+- **Libro:** es una página por pantalla (índice, portadillas y páginas), no capítulos a la izquierda y cromo a la derecha como en el boceto. Se mantiene su estructura: panel nuevo, el encabezado de cada página pasa al cartel, las filas del índice son píldoras, el dibujo va en una ficha blanca girada y las flechas son píldoras azules a los lados.
+- **Dar de comer:** las comidas se arrastran hasta el animal, no se pulsan. Las fichas blancas son el hueco de cada comida, sin efecto al pulsar.
+- **Comprar en la tienda:** `shop.buy` se queda en «¡Comprar!» / «Buy!»; la moneda y el precio se dibujan detrás, dentro del mismo botón.
+- **Fondo de reserva de la portada:** azul cielo, no verde oscuro.
+- **Splash:** las imágenes las genera `game/store/make_icon.py`; se cambia ahí el color y la letra.
+- **Orden de trabajo real:** piezas → arranque y título → dentro del juego → ajustes y ¿salir? → dar de comer, libro y tienda → Android. El arranque va antes porque es donde se cargan la letra y los iconos.
+- **Riesgo de nitidez:** el juego se pinta a resolución de «píxel CSS» y el móvil lo amplía sin suavizar (es lo que mantiene nítido el pixel art). La interfaz lisa y el fondo pintado pueden verse algo dentados en pantallas de mucha densidad. Se comprueba en el móvil al terminar el arranque; si molesta, pintar a resolución real del dispositivo es un trabajo aparte.
+
 ## Errores y casos límite
 
 - Fuente que no carga: se usa `sans-serif`; nada se bloquea.
