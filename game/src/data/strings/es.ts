@@ -215,9 +215,3 @@ export const STRINGS_ES = {
 } as const;
 
 export type StringKey = keyof typeof STRINGS_ES;
-
-export function t(key: StringKey, vars: Record<string, string | number> = {}): string {
-  return STRINGS_ES[key].replace(/\{(\w+)\}/g, (match, name: string) =>
-    name in vars ? String(vars[name]) : match,
-  );
-}
