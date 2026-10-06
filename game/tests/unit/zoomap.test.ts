@@ -26,6 +26,16 @@ describe('mapa del zoo', () => {
     expect(isWalkable(grid, spawn.x, spawn.y)).toBe(true);
   });
 
+  it('la cuidadora empieza en el camino, a pocas casillas por encima del portón de entrada', () => {
+    const gate = readProps(map).find((p) => p.prop === 'park-gate')!;
+    const gateInfo = config.props['park-gate'] as { h: number };
+    const gateTop = (gate.y - gateInfo.h) / 16; // borde de arriba del portón, en casillas
+    const above = gateTop - (spawn.y + 0.5);
+    expect(isWalkable(grid, spawn.x, spawn.y)).toBe(true);
+    expect(above).toBeGreaterThan(0);
+    expect(above).toBeLessThanOrEqual(4);
+  });
+
   it('cada recinto tiene valla y puerta, y se llega andando a la puerta', () => {
     const enclosures = readEnclosures(map);
     const gates = readGates(map);
@@ -123,7 +133,7 @@ describe('mapa del zoo', () => {
     expect(enclosure('leon')).toMatchObject({ x: (9 + 24) * 16, y: (5 + 20) * 16, width: 12 * 16, height: 8 * 16 });
     expect(enclosure('pantera')).toMatchObject({ x: (6 + 24) * 16, y: (19 + 20) * 16, width: 15 * 16, height: 10 * 16 });
     expect(readShop(map)).toMatchObject({ x: (25 + 24) * 16, y: (4 + 20) * 16, door: { x: 27 + 24, y: 9 + 20 } });
-    expect(spawn).toEqual({ x: 47, y: 50 });
+    expect(spawn.x).toBe(47);
   });
 
   it('la sabana es el recinto grande y los elefantes van en dos jaulas con un pasillo de césped', () => {
