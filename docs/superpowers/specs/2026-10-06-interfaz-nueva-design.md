@@ -26,6 +26,7 @@ Los bocetos mandan en colores, proporciones y composición. En ellos, los recuad
 - **Ajustes:** se quita la línea «Panda y pantera pintados por Daniela y Adrián» y los dos dibujos. Orden de arriba abajo: interruptores, Privacidad y Salir, «Hecho con cariño por Daniela y Adrián», copyright y versión.
 - **Sin emojis en la interfaz:** cambian según el móvil. Se sustituyen por iconos propios.
 - **Modo inmersivo en Android:** se ocultan la barra de navegación y la de estado mientras se juega.
+- **Arranque:** la pantalla de carga usa el mismo fondo que el título y su barra se convierte en el botón «Jugar». El splash de Android conserva el león y cambia el fondo a azul cielo.
 - **Tienda por dentro:** la escena no cambia. Solo cambian monedas, botón de cerrar y etiquetas de precio.
 
 ## Diseño
@@ -136,6 +137,22 @@ Un solo sitio para todos los botones, fichas, filas del libro, interruptores, en
 - El botón atrás sigue abriendo ¿Salir?: no cambia `askQuit`.
 - En web no hace nada.
 
+### 8. Arranque: splash y pantalla de carga
+
+Al abrir se ven tres cosas seguidas: splash de Android, carga del juego y título. Deben leerse como una sola.
+
+**Pantalla de carga (`BootScene` y `PreloadScene`)**
+- `BootScene` carga lo mínimo para pintarla: la fuente (apartado 3) y `title-bg.webp`.
+- `PreloadScene` pinta el fondo de la portada con el mismo encuadre que el título, el nombre arriba y, donde irá el botón «Jugar», una barra de carga en píldora: carril crema con reborde y relleno amarillo con brillo, del mismo ancho y alto que el botón.
+- El progreso cubre las dos tandas de carga (mapas y sonido, luego arte) sin que la barra retroceda: la primera llena hasta el 40 % y la segunda el resto. Sin arte importado, salta al 100 %.
+- Al terminar, `Title` arranca sobre el mismo fondo y el nombre no se mueve: la barra da paso al botón con una aparición corta (escala 0,8 → 1, 200 ms). No hay fundido a negro entre las dos escenas.
+- La carga no muestra textos traducibles: el idioma se resuelve al final de la carga.
+
+**Splash de Android**
+- `windowSplashScreenBackground` pasa de `#1D2B1F` a azul cielo `#58B0F0` (tomado del cielo de la portada; se ajusta a ojo contra la imagen). El icono animado sigue siendo el león.
+- `splash.png` (todas las densidades, vertical y apaisado): se rehace con el león, el fondo azul cielo y «Zoo Esponji» en Baloo 2 amarillo con contorno marrón. Solo lo ven los Android anteriores al 12.
+- El fondo de `index.html` pasa al mismo azul, para que no asome verde oscuro entre el splash y la carga.
+
 ## Errores y casos límite
 
 - Fuente que no carga: se usa `sans-serif`; nada se bloquea.
@@ -147,7 +164,7 @@ Un solo sitio para todos los botones, fichas, filas del libro, interruptores, en
 
 - **Unitarias:** `makePressable` (acción al soltar dentro, nada al salir), regla de visibilidad del engranaje como función pura, y que `es.ts` y `en.ts` siguen teniendo las mismas claves.
 - **De extremo a extremo (Playwright):** se actualizan las que dependen de textos o posiciones cambiados (`coinsLabel`, `creditsText`, `quit.ask`). Nuevas: el engranaje no se ve con la tienda, el libro o dar de comer abiertos y vuelve al cerrarlos; ¿Salir? se cierra con «Seguir jugando».
-- **A mano en el móvil:** modo inmersivo (las barras no aparecen al andar; vuelven al deslizar; siguen ocultas al volver a la app), botón atrás, y lectura de todas las pantallas en español e inglés.
+- **A mano en el móvil:** arranque completo (splash azul, carga y título sin saltos de color ni pantallazos oscuros), modo inmersivo (las barras no aparecen al andar; vuelven al deslizar; siguen ocultas al volver a la app), botón atrás, y lectura de todas las pantallas en español e inglés.
 
 ## Orden de trabajo
 
@@ -156,9 +173,9 @@ Cada bloque deja el juego jugable y las pruebas en verde.
 1. Piezas comunes, letra, iconos y efecto al pulsar.
 2. Monedas, engranaje y avisos dentro del juego.
 3. Ajustes y ¿Salir?, con los textos nuevos.
-4. Título con el fondo.
+4. Título con el fondo y pantalla de carga.
 5. Dar de comer, libro y tienda.
-6. Modo inmersivo.
+6. Android: modo inmersivo y splash.
 
 ## Fuera de alcance
 
