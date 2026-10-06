@@ -2,7 +2,7 @@
 
 Creado por y para Daniela y Adrián, con la ayuda de su padre y de Claude + OpenCode + DeepSeek + ChatGPT.
 
-**Versión actual: 2.4.0** (2026-10-06, en `main`) · Juega en la web: https://davidpladel.com/zoo/ · Android: prueba cerrada de Google Play (en preparación)
+**Versión actual: 2.4.0** (2026-10-06, en `main`) · Juega en la web: https://davidpladel.com/zoo/ · Android: prueba cerrada de Google Play con la 2.3.0 (versionCode 5)
 
 ## La idea
 
@@ -78,7 +78,7 @@ El juego se ha hecho por hitos: spec de diseño → plan → ejecución.
 4. ✅ Tienda y desbloqueos, visitantes, joystick
 5. ✅ Arte (VectoRaith + panda y pantera de los niños) y decoración (5b)
 6. ✅ 6a Pulido: agua, extras, menú, sonido, móvil, errores → **2.0.0**, publicada en la web
-7. ⬜ 6b Publicación en Google Play: privacidad, ficha, firma y prueba cerrada
+7. ⬜ 6b Publicación en Google Play: privacidad, ficha, firma y prueba cerrada (prueba cerrada en marcha con la 2.3.0; falta el acceso a producción)
 
 ✅ **2.1.0 / 2.1.1** (2026-09-28, publicada en la web; la 2.1.1 y la 2.1.2 rehacen la catarata): tienda por dentro (fases C y B), muro y portón del parque, plaza con fuente animada, catarata con acantilado, pasillos estrechos, cámara más alejada, comida al llegar a la puerta y carne con dibujo.
 
@@ -86,7 +86,9 @@ El juego se ha hecho por hitos: spec de diseño → plan → ejecución.
 
 ✅ **2.4.0** (2026-10-06, fusionada en `main`, etiqueta `v2.4.0`; David la probó en el móvil): idiomas español e inglés, con detección por el idioma del móvil, botón en Ajustes y privacidad en inglés. La ficha de Play en inglés queda para 6b.
 
-Pendiente, por orden: subir la 2.4.0 a la prueba cerrada de Google Play (versionCode 5); analítica de eventos del juego (con su propio spec; hay que actualizar antes la página de privacidad); publicación en Google Play (6b). Ideas para después, cada una con su spec: bañar y limpiar, día y noche, clínica veterinaria y acuario con delfines.
+Google Play: la 2.3.0 (versionCode 5) está en la prueba cerrada; a 2026-10-06 van 5 de los 14 días seguidos con 12 testers que pide Google para poder solicitar el acceso a producción. La 2.4.0 todavía no se sube: antes se le van a añadir mejoras, y la siguiente subida irá con versionCode 6.
+
+Pendiente, por orden: las mejoras previas a la siguiente subida a Play (por definir); analítica de eventos del juego (con su propio spec; hay que actualizar antes la página de privacidad); publicación en Google Play (6b). Cabos sueltos de la 2.4.0: la prueba `zoo-grande.spec.ts:104` («sin comprar las ovejas, ningún visitante entra en su recinto») falló una vez en una tanda completa y pasó las demás, sin que se llegara a ver el error; y cambiar de idioma con la ventana de comer abierta, o con el libro sobre la tienda, no tiene prueba de juego propia. Ideas para después, cada una con su spec: bañar y limpiar, día y noche, clínica veterinaria y acuario con delfines.
 
 **Más adelante:** clínica veterinaria, bañar animales, limpiar jaulas, ciclo día-noche, acuario con delfines, más animales y zonas.
 
