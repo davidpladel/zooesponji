@@ -1,8 +1,9 @@
 # Zoo grande — más zonas, animales y comidas (diseño)
 
 **Estado:** aprobado por David (5-oct-2026). Los cuatro planes están hechos (ver «Estado de
-implementación» al final). Falta el OK de David a los 35 textos del libro:
-`docs/superpowers/specs/2026-10-05-zoo-grande-textos-libro.md`.
+implementación» al final) y David aprobó los 35 textos del libro el 6-oct-2026
+(`docs/superpowers/specs/2026-10-05-zoo-grande-textos-libro.md`). Queda que David lo pruebe entero
+antes de fusionar las ramas y publicar la 2.3.0.
 **Versión prevista:** 2.3.0.
 
 ## Idea
@@ -354,8 +355,8 @@ Un test comprueba que no queda ningún texto visible fuera de `strings.ts`.
 - Adelantado del plan 4, lo justo para que el juego funcione: la tienda enseña solo los 3 recintos
   siguientes (`PENS_ON_SALE`) y los 35 residentes tienen título (`book.page.<id>.title`), que la ventana
   de dar de comer usa como nombre. Las páginas, sus textos y los capítulos siguen en el plan 4.
-- Pendiente para el plan 4: con muchos recintos abiertos, los «otro animal» pasan de las 5 peanas y los
-  que sobran salen en fila delante del mostrador.
+- Con muchos recintos abiertos los «otro animal» pasaban de las 5 peanas; lo resolvió el plan 4 (la
+  tienda enseña 5 artículos por precio).
 - Las dos panteras y los dos pandas siguen compartiendo hoja (son los dibujos de los niños); en el
   resto de recintos cada animal tiene la suya.
 - `npm run art:compare` enseña varios aspectos juntos. Con él se separaron más los tonos de las

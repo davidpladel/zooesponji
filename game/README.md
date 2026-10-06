@@ -10,7 +10,7 @@ Spec: `docs/superpowers/specs/2026-09-27-motor-phaser-v3-design.md`
 npm install          # dependencias
 npm run dev          # juego en http://localhost:5173
 npm test             # tests de lógica (Vitest)
-npm run test:e2e     # 13 pruebas de juego en el navegador (Playwright; en local usa el Chrome instalado; si alguna falla por tiempo, --workers=1)
+npm run test:e2e     # 24 pruebas de juego en el navegador (Playwright; en local usa el Chrome instalado; si alguna falla por tiempo, --workers=1)
 npm run build        # build de producción en dist/
 npm run make:test-map  # regenera el mapa de prueba
 npx cap sync android # copia la build al proyecto Android
