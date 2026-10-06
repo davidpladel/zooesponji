@@ -1,31 +1,46 @@
 import { Capacitor } from '@capacitor/core';
 import * as Phaser from 'phaser';
-import { animalKey, animalSheet, getArt, idleFrame } from '../art/art';
 import type { Vec } from '../core/movement';
 import type { ToggleKey } from '../core/save';
 import { APP_VERSION } from '../core/version';
 import { t, type StringKey } from '../data/strings';
 import { sfx } from '../systems/audio';
-import { getLanguage, otherLanguage, setLanguage, type Language } from '../systems/language';
+import { getLanguage, otherLanguage, setLanguage } from '../systems/language';
 import { openLegal } from '../systems/legal';
 import { askQuit } from '../systems/platform';
 import { getSession } from '../systems/session';
-import { addCloseButton, addPlateButton, addWoodPanel, restartOnResize, textStyle } from './ui';
+import { addIcon, type IconName } from '../ui/icons';
+import { makePressable } from '../ui/press';
+import { addUiText } from '../ui/text';
+import { PILL, UI, textStyle, type PillColor } from '../ui/theme';
+import { addCloseBadge, addHeartLine, addPanel, addPillButton, addRibbonTitle, addVeil, pillImage, restartOnResize } from '../ui/widgets';
 
-const TOGGLES: readonly { key: ToggleKey; icon: string; label: StringKey }[] = [
-  { key: 'music', icon: '🎵', label: 'settings.music' },
-  { key: 'sfx', icon: '🔊', label: 'settings.sfx' },
-  { key: 'joystick', icon: '🕹️', label: 'settings.joystick' },
+const TOGGLES: readonly { key: ToggleKey; icon: IconName; label: StringKey }[] = [
+  { key: 'music', icon: 'music', label: 'settings.music' },
+  { key: 'sfx', icon: 'volume', label: 'settings.sfx' },
+  { key: 'joystick', icon: 'joystick', label: 'settings.joystick' },
 ];
 
-const FLAGS: Record<Language, string> = { es: '🇪🇸', en: '🇬🇧' };
 /** Ventanas que pueden estar abiertas debajo del menú; sus textos ya están pintados en el idioma anterior. */
 const OVERLAYS = ['Book', 'Shop', 'Feed'] as const;
 
 type ButtonKey = 'privacy' | 'quit';
 
+const BUTTONS: Record<ButtonKey, { color: PillColor; icon: IconName }> = {
+  privacy: { color: 'blue', icon: 'shield' },
+  quit: { color: 'red', icon: 'door' },
+};
+
+interface Chip {
+  color: PillColor;
+  label: string;
+  icon?: IconName;
+  text?: string;
+  dim?: boolean;
+}
+
 /**
- * Menú de ajustes en un tablero de madera: música, sonido, joystick, idioma, créditos, privacidad y salir.
+ * Menú de ajustes: música, sonido, joystick, idioma, privacidad, salir y créditos.
  * Sin puerta parental: la privacidad se lee dentro del juego y nada lleva fuera de él.
  */
 export class SettingsScene extends Phaser.Scene {
@@ -53,38 +68,39 @@ export class SettingsScene extends Phaser.Scene {
     sfx.setPaused('menu', true);
     const { width, height } = this.scale;
     // Tocar fuera del panel cierra.
-    this.add.rectangle(0, 0, width, height, 0x000000, 0.6).setOrigin(0).setInteractive().on('pointerup', () => this.close());
-    const panelW = Math.min(width * 0.9, 760);
-    addWoodPanel(this, width / 2, height * 0.53, panelW, height * 0.88);
-    // El cartel del título va montado sobre el borde de arriba.
-    const signH = Phaser.Math.Clamp(height * 0.13, 44, 84);
-    addWoodPanel(this, width / 2, height * 0.1, Math.min(panelW * 0.5, 360), signH);
-    this.add.text(width / 2, height * 0.1, t('settings.title'), textStyle(Math.round(signH * 0.5), '#ffffff', '#4e2f14')).setOrigin(0.5);
+    addVeil(this, () => this.close());
+    const panelW = Math.min(width * 0.88, height * 1.75, 820);
+    const panelH = height * 0.84;
+    const panelY = height * 0.55;
+    const top = panelY - panelH / 2;
+    addPanel(this, width / 2, panelY, panelW, panelH);
+    addRibbonTitle(this, width / 2, top, Math.min(panelW * 0.5, 380), Phaser.Math.Clamp(height * 0.15, 44, 84), t('settings.title'));
+    const badge = Phaser.Math.Clamp(height * 0.13, 44, 64);
+    addCloseBadge(this, width / 2 + panelW / 2 - badge * 0.35, top + badge * 0.35, () => this.close(), badge);
 
-    // Cuatro botones en fila: los tres interruptores y el idioma.
+    // Cuatro fichas en fila: los tres interruptores y el idioma.
     const slots = TOGGLES.length + 1;
-    const size = Phaser.Math.Clamp(Math.min(height * 0.2, (panelW - 80) / (slots * 1.2)), 64, 140);
+    const size = Phaser.Math.Clamp(Math.min(height * 0.2, (panelW - 80) / (slots * 1.3)), 56, 140);
     const gap = Math.min(40, size * 0.4);
     const slotX = (i: number): number => width / 2 + (i - (slots - 1) / 2) * (size + gap);
+    const rowY = height * 0.36;
     TOGGLES.forEach((toggle, i) => {
-      const button = this.add.container(slotX(i), height * 0.35);
-      button.setSize(size, size).setInteractive({ useHandCursor: true });
-      button.on('pointerup', () => void this.flip(toggle.key));
-      this.toggles.set(toggle.key, button);
-      this.renderToggle(toggle.key, size, toggle.icon, t(toggle.label));
+      const chip = this.add.container(slotX(i), rowY).setSize(size, size);
+      makePressable(chip, () => void this.flip(toggle.key));
+      this.toggles.set(toggle.key, chip);
+      this.renderToggle(toggle.key);
     });
-    this.language = this.add.container(slotX(TOGGLES.length), height * 0.35);
-    this.language.setSize(size, size).setInteractive({ useHandCursor: true });
-    this.language.on('pointerup', () => void this.switchLanguage());
-    this.paintToggle(this.language, size, FLAGS[getLanguage()], t('settings.language'), true);
+    this.language = this.add.container(slotX(TOGGLES.length), rowY).setSize(size, size);
+    makePressable(this.language, () => void this.switchLanguage());
+    this.paintChip(this.language, { color: 'blue', text: getLanguage().toUpperCase(), label: t('settings.language') });
 
-    this.addCredits(height * 0.6, panelW);
-    this.addButtons(height * 0.805, panelW);
+    this.addButtons(height * 0.7, panelW);
+    const creditSize = Math.round(Math.min(height * 0.045, panelW * 0.036));
+    addHeartLine(this, width / 2, height * 0.82, t('credits.madeBy'), textStyle(creditSize, UI.brown, UI.cream));
     const footer = APP_VERSION ? `${t('credits.copyright')} · v${APP_VERSION}` : t('credits.copyright');
     const footerSize = Math.round(Math.max(10, Math.min(height * 0.03, panelW * 0.028)));
-    this.add.text(width / 2, height * 0.89, footer, { fontFamily: 'sans-serif', fontSize: `${footerSize}px`, color: '#3e2723' }).setOrigin(0.5);
+    this.add.text(width / 2, height * 0.9, footer, { fontFamily: 'sans-serif', fontSize: `${footerSize}px`, color: '#9a7a55' }).setOrigin(0.5);
 
-    addCloseButton(this, () => this.close());
     this.input.keyboard?.on('keydown-ESC', this.close, this);
     restartOnResize(this);
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.input.keyboard?.off('keydown-ESC', this.close, this));
@@ -99,9 +115,9 @@ export class SettingsScene extends Phaser.Scene {
     this.pausedWorld = false;
   }
 
-  /** Textos de créditos visibles (para pruebas). */
+  /** Texto de créditos visible (para pruebas). */
   creditsText(): string {
-    return `${t('credits.madeBy')} ${t('credits.art')}`;
+    return t('credits.madeBy');
   }
 
   togglePos(key: ToggleKey): Vec | null {
@@ -127,26 +143,28 @@ export class SettingsScene extends Phaser.Scene {
     const session = getSession();
     await session.updateSettings({ [key]: !session.settings[key] });
     sfx.play('tap');
-    const toggle = TOGGLES.find((x) => x.key === key)!;
-    const button = this.toggles.get(key)!;
-    this.renderToggle(key, button.width, toggle.icon, t(toggle.label));
+    this.renderToggle(key);
   }
 
-  private renderToggle(key: ToggleKey, size: number, icon: string, label: string): void {
-    const button = this.toggles.get(key);
-    if (button) this.paintToggle(button, size, icon, label, getSession().settings[key]);
+  /** Encendido: ficha verde. Apagado: gris con el icono atenuado. */
+  private renderToggle(key: ToggleKey): void {
+    const chip = this.toggles.get(key);
+    const toggle = TOGGLES.find((x) => x.key === key);
+    if (!chip || !toggle) return;
+    const on = getSession().settings[key];
+    this.paintChip(chip, { color: on ? 'green' : 'gray', icon: toggle.icon, label: t(toggle.label), dim: !on });
+    chip.setData('on', on);
   }
 
-  private paintToggle(button: Phaser.GameObjects.Container, size: number, icon: string, label: string, on: boolean): void {
-    button.removeAll(true);
-    const lip = Math.max(4, Math.round(size * 0.07));
-    button.add(this.add.rectangle(0, 0, size, size, 0x4e2f14));
-    button.add(this.add.rectangle(0, -lip / 2, size - lip * 2, size - lip * 3, on ? 0xf3e9d2 : 0x9c8f7c));
-    button.add(this.add.text(0, -lip / 2, icon, { fontSize: `${Math.round(size * 0.48)}px` }).setOrigin(0.5).setAlpha(on ? 1 : 0.35));
-    // Apagado: una raya roja lo tacha.
-    if (!on) button.add(this.add.rectangle(0, -lip / 2, size * 0.8, lip * 1.4, 0xc62828).setAngle(-45));
-    button.add(this.add.text(0, size * 0.68, label, textStyle(Math.round(size * 0.2), '#ffffff', '#4e2f14')).setOrigin(0.5));
-    button.setData('on', on);
+  /** Repinta una ficha cuadrada (el contenedor se conserva: es el que recibe los toques). */
+  private paintChip(chip: Phaser.GameObjects.Container, o: Chip): void {
+    const size = chip.width;
+    const cy = -size * 0.04;
+    chip.removeAll(true);
+    chip.add(pillImage(this, size, size, o.color, size * 0.26));
+    if (o.icon) chip.add(addIcon(this, 0, cy, o.icon, size * 0.56).setAlpha(o.dim ? 0.55 : 1));
+    if (o.text) chip.add(addUiText(this, 0, cy, o.text, textStyle(Math.round(size * 0.4), '#ffffff', PILL[o.color].stroke)).setOrigin(0.5));
+    chip.add(addUiText(this, 0, size * 0.72, o.label, textStyle(Math.round(size * 0.22), UI.brown, UI.cream)).setOrigin(0.5));
   }
 
   /**
@@ -177,11 +195,12 @@ export class SettingsScene extends Phaser.Scene {
   private addButtons(y: number, panelW: number): void {
     const { width, height } = this.scale;
     const keys: ButtonKey[] = Capacitor.isNativePlatform() ? ['privacy', 'quit'] : ['privacy'];
-    const h = Phaser.Math.Clamp(height * 0.11, 40, 68);
-    const w = Math.min((panelW - 96) / 2, h * 4.2);
+    const h = Phaser.Math.Clamp(height * 0.13, 44, 72);
+    const w = Math.min((panelW - 96) / 2, h * 4);
     keys.forEach((key, i) => {
       const x = width / 2 + (i - (keys.length - 1) / 2) * (w + 24);
-      this.buttons.set(key, addPlateButton(this, x, y, w, h, t(`settings.${key}`), () => this.press(key)));
+      const button = addPillButton(this, x, y, w, h, { ...BUTTONS[key], label: t(`settings.${key}`), onTap: () => this.press(key) });
+      this.buttons.set(key, button);
     });
   }
 
@@ -194,21 +213,5 @@ export class SettingsScene extends Phaser.Scene {
     const game = this.game;
     this.close();
     askQuit(game);
-  }
-
-  /** Créditos de la versión vieja (pie de index.html), con los animales que pintaron los niños. */
-  private addCredits(y: number, panelW: number): void {
-    const { width, height } = this.scale;
-    const size = Math.round(Math.min(height * 0.04, panelW * 0.035));
-    this.add.text(width / 2, y, t('credits.madeBy'), textStyle(size, '#ffffff', '#4e2f14')).setOrigin(0.5);
-    const art = getArt();
-    const line = this.add.text(width / 2, y + size * 2, t('credits.art'), textStyle(Math.round(size * 0.85), '#fff3d6', '#4e2f14')).setOrigin(0.5);
-    if (!art) return;
-    const spriteY = y + size * 2;
-    for (const [id, side] of [['panda', -1], ['pantera', 1]] as const) {
-      const frameHeight = animalSheet(art, id).frameHeight;
-      const scale = Math.max(2, Math.floor((height * 0.1) / frameHeight));
-      this.add.sprite(width / 2 + side * (line.width / 2 + 16 + (frameHeight * scale) / 2), spriteY, animalKey(id), idleFrame('down')).setScale(scale);
-    }
   }
 }
