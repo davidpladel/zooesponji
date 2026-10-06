@@ -2,6 +2,7 @@ import type * as Phaser from 'phaser';
 import { getArt } from '../art/art';
 import { openPens } from '../core/economy';
 import type { Vec } from '../core/movement';
+import type { Settings } from '../core/save';
 import { BOOK_CHAPTERS } from '../data/book';
 import type { FoodId } from '../data/foods';
 import type { PenId } from '../data/pens';
@@ -10,7 +11,9 @@ import type { HudScene } from '../scenes/HudScene';
 import type { BookScene } from '../scenes/BookScene';
 import type { SettingsScene } from '../scenes/SettingsScene';
 import type { ShopScene } from '../scenes/ShopScene';
+import type { TitleScene } from '../scenes/TitleScene';
 import type { WorldScene } from '../scenes/WorldScene';
+import { getLanguage } from './language';
 import type { Platform } from './platform';
 import { getSession } from './session';
 
@@ -50,7 +53,12 @@ export interface ZooTestApi {
   crash(): void;
   openSettings(): void;
   settingsTogglePos(key: 'music' | 'sfx' | 'joystick'): Vec | null;
-  settings(): { music: boolean; sfx: boolean; joystick: boolean };
+  settings(): Settings;
+  /** Idioma activo: 'es' o 'en'. */
+  language(): string;
+  titlePlayLabel(): string | null;
+  settingsLanguagePos(): Vec | null;
+  settingsLanguageLabel(): string | null;
   settingsCredits(): string | null;
   settingsButtonPos(key: 'privacy' | 'quit'): Vec | null;
   counts(): Record<PenId, number>;
@@ -132,6 +140,10 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
     settingsTogglePos: (key) => activeScene<SettingsScene>('Settings')?.togglePos(key) ?? null,
     settings: () => ({ ...getSession().settings }),
     settingsCredits: () => activeScene<SettingsScene>('Settings')?.creditsText() ?? null,
+    language: () => getLanguage(),
+    titlePlayLabel: () => activeScene<TitleScene>('Title')?.playLabel() ?? null,
+    settingsLanguagePos: () => activeScene<SettingsScene>('Settings')?.languagePos() ?? null,
+    settingsLanguageLabel: () => activeScene<SettingsScene>('Settings')?.languageLabel() ?? null,
     settingsButtonPos: (key) => activeScene<SettingsScene>('Settings')?.buttonPos(key) ?? null,
     back: () => platform.back(),
     crash: () => {

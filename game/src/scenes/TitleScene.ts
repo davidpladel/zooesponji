@@ -8,6 +8,11 @@ export class TitleScene extends Phaser.Scene {
     super('Title');
   }
 
+  /** Texto del botón de jugar (para pruebas). */
+  playLabel(): string {
+    return t('title.play');
+  }
+
   create(): void {
     const { width, height } = this.scale;
     this.add
