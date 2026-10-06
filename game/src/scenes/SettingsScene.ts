@@ -167,6 +167,8 @@ export class SettingsScene extends Phaser.Scene {
     // Las operaciones de escena se aplican en orden en el siguiente paso: parar, montar, pausar.
     this.scene.stop('World');
     this.scene.launch('World');
+    // Si el menú se cerró mientras se guardaba, el mundo se queda en marcha y el menú no se reabre.
+    if (!this.scene.isActive()) return;
     this.scene.pause('World');
     this.scene.restart({ pausedWorld: true });
   }

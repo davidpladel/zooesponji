@@ -10,7 +10,7 @@
 
 **Spec:** `docs/superpowers/specs/2026-10-06-idiomas-es-en-design.md`.
 
-**Estado:** los tres bloques están implementados (unitarios, typecheck y build en verde; el e2e de los bloques A y B pasó, 25 tests en verde). Falta pasar el e2e final del bloque C. (Se actualiza al cerrar cada bloque: A = tareas 1-4, B = tareas 5-10, C = tareas 11-13.)
+**Estado:** los tres bloques están implementados (unitarios, typecheck y build en verde; el e2e final pasó: 28 en verde y la de capturas omitida). En la rama `feat/idiomas-es-en`, sin merge a `main` y sin subir versión. (Se actualiza al cerrar cada bloque: A = tareas 1-4, B = tareas 5-10, C = tareas 11-13.)
 
 ## Global Constraints
 
