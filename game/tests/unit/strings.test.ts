@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import { STRINGS_ES } from '../../src/data/strings';
+import { STRINGS_ES, hasKey } from '../../src/data/strings';
 
 const words = (text: string): number => text.trim().split(/\s+/).length;
 
@@ -42,5 +42,18 @@ describe('ningún texto visible fuera de strings.ts', () => {
       for (const match of line.matchAll(PHRASE)) found.push(match[2]!);
     }
     expect(found).toEqual([]);
+  });
+});
+
+describe('hasKey', () => {
+  it('reconoce las claves que existen', () => {
+    expect(hasKey('zone.sabana')).toBe(true);
+    expect(hasKey('title.name')).toBe(true);
+  });
+
+  it('rechaza las que no existen, también las heredadas de Object', () => {
+    expect(hasKey('zone.luna')).toBe(false);
+    expect(hasKey('toString')).toBe(false);
+    expect(hasKey('')).toBe(false);
   });
 });

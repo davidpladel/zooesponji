@@ -3,7 +3,7 @@ import { getArt, propAnimKey, propKey } from '../art/art';
 import { depthForY } from '../core/depth';
 import { readEnclosures, readProps, type EnclosureInfo, type PropInfo, type TiledMap } from '../core/tiledmap';
 import { PENS, isPenId } from '../data/pens';
-import { STRINGS_ES, t, type StringKey } from '../data/strings';
+import { hasKey, t } from '../data/strings';
 
 /** Suelo del bioma: por encima del césped (0) y por debajo de las vallas (2). */
 const GROUND_DEPTH = 1;
@@ -28,7 +28,7 @@ function nearestEnclosure(enclosures: EnclosureInfo[], x: number, y: number): En
 function signLabel(p: PropInfo, enclosures: EnclosureInfo[]): string | null {
   if (p.prop === 'sign-zone') {
     const key = `zone.${p.zone}`;
-    return key in STRINGS_ES ? t(key as StringKey) : null;
+    return hasKey(key) ? t(key) : null;
   }
   if (p.prop !== 'sign') return null;
   const enclosure = nearestEnclosure(enclosures, p.x, p.y);
