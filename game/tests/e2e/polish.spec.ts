@@ -70,6 +70,22 @@ test('menú ⚙️: apagar el sonido y ver los créditos', async ({ page }) => {
   await page.waitForFunction(() => window.__ZOO__!.activeScenes().includes('World'));
 });
 
+test('menú ⚙️: la privacidad se lee dentro del juego y el botón atrás la cierra', async ({ page }) => {
+  await startGame(page);
+  await page.evaluate(() => window.__ZOO__!.openSettings());
+  await page.waitForFunction(() => window.__ZOO__!.settingsButtonPos('privacy') !== null);
+  // En la web no hay botón de salir: una página no se puede cerrar a sí misma.
+  expect(await page.evaluate(() => window.__ZOO__!.settingsButtonPos('quit'))).toBeNull();
+
+  await tap(page, await page.evaluate(() => window.__ZOO__!.settingsButtonPos('privacy')));
+  await expect(page.locator('#legal h1')).toContainText('Privacidad');
+  await expect(page.locator('#legal a')).toHaveCount(0);
+
+  expect(await page.evaluate(() => window.__ZOO__!.back())).toBe('close-overlay');
+  await expect(page.locator('#legal')).toHaveCount(0);
+  expect(await page.evaluate(() => window.__ZOO__!.back())).toBe('close-settings');
+});
+
 test('botón atrás en el mundo pregunta "¿Salir?" y ❌ vuelve al juego', async ({ page }) => {
   await startGame(page);
   expect(await page.evaluate(() => window.__ZOO__!.back())).toBe('ask-quit');

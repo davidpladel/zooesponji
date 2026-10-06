@@ -52,6 +52,7 @@ export interface ZooTestApi {
   settingsTogglePos(key: 'music' | 'sfx' | 'joystick'): Vec | null;
   settings(): { music: boolean; sfx: boolean; joystick: boolean };
   settingsCredits(): string | null;
+  settingsButtonPos(key: 'privacy' | 'quit'): Vec | null;
   counts(): Record<PenId, number>;
   animalsInPen(penId: PenId): number;
   /** Manda a la cuidadora a dar de comer a un animal (lo mismo que tocarlo). */
@@ -131,6 +132,7 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
     settingsTogglePos: (key) => activeScene<SettingsScene>('Settings')?.togglePos(key) ?? null,
     settings: () => ({ ...getSession().settings }),
     settingsCredits: () => activeScene<SettingsScene>('Settings')?.creditsText() ?? null,
+    settingsButtonPos: (key) => activeScene<SettingsScene>('Settings')?.buttonPos(key) ?? null,
     back: () => platform.back(),
     crash: () => {
       setTimeout(() => {
