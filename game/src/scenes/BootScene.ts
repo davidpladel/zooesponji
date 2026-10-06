@@ -1,5 +1,9 @@
 import * as Phaser from 'phaser';
 import { TEXTURES, TILE_SIZE } from '../config';
+import { withVersion } from '../core/cacheBust';
+import { loadUiFont } from '../ui/font';
+import { smooth } from '../ui/paint';
+import { TITLE_BG } from '../ui/titleBackdrop';
 
 /** Genera el arte provisional (hasta que llegue el pack en el hito 5). */
 export class BootScene extends Phaser.Scene {
@@ -7,11 +11,17 @@ export class BootScene extends Phaser.Scene {
     super('Boot');
   }
 
+  preload(): void {
+    this.load.image(TITLE_BG, withVersion('assets/ui/title-bg.webp'));
+  }
+
   create(): void {
     this.makeTiles();
     this.makeKeeper();
     this.makeMarker();
-    this.scene.start('Preload');
+    if (this.textures.exists(TITLE_BG)) smooth(this, TITLE_BG);
+    // La letra tiene que estar antes del primer texto; si no llega en 2 s, se sigue sin ella.
+    void loadUiFont().then(() => this.scene.start('Preload'));
   }
 
   /** 5 tiles en fila, en el orden del tileset "placeholder": césped, camino, valla, puerta, edificio. */
