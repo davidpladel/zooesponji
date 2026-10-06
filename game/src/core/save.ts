@@ -1,5 +1,6 @@
 import { PEN_IDS, isPenId, penCapacity, type PenId } from '../data/pens';
 import { SHOP_UNLOCK_COINS } from '../data/shop';
+import type { Language } from '../systems/language';
 import { initialCounts, type GameState } from './economy';
 
 export interface KeyValueStore {
@@ -11,7 +12,12 @@ export interface Settings {
   music: boolean;
   sfx: boolean;
   joystick: boolean;
+  /** Idioma elegido en Ajustes. Ausente = automático: el del móvil. */
+  language?: Language;
 }
+
+/** Los ajustes que son un interruptor de sí o no. */
+export type ToggleKey = 'music' | 'sfx' | 'joystick';
 
 /** v1: `unlocked: PenId[]`. v2: `counts` por recinto (animales extra). */
 export const SAVE_VERSION = 2;
@@ -105,13 +111,15 @@ export function parseSave(value: unknown): SaveData | null {
   }
   const rawSettings = isObject(value.settings) ? value.settings : {};
   const defaults = defaultSettings();
-  const bool = (key: keyof Settings): boolean =>
+  const bool = (key: ToggleKey): boolean =>
     typeof rawSettings[key] === 'boolean' ? (rawSettings[key] as boolean) : defaults[key];
+  // Cualquier otro valor se ignora: el idioma vuelve a ser automático.
+  const language = rawSettings.language === 'es' || rawSettings.language === 'en' ? rawSettings.language : undefined;
 
   return {
     version: SAVE_VERSION,
     state: { coins, counts, shopUnlocked: state.shopUnlocked === true },
-    settings: { music: bool('music'), sfx: bool('sfx'), joystick: bool('joystick') },
+    settings: { music: bool('music'), sfx: bool('sfx'), joystick: bool('joystick'), ...(language ? { language } : {}) },
     book: parseBook(value.book),
   };
 }

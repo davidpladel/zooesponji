@@ -184,4 +184,13 @@ describe('Session: dar de comer, comprar y ajustes', () => {
     const reloaded = await Session.load(store, new EventBus<GameEvents>());
     expect(reloaded.settings.joystick).toBe(true);
   });
+
+  it('el idioma elegido se guarda y se recupera al volver a cargar', async () => {
+    const { session, store } = await fresh();
+    expect(session.settings.language).toBeUndefined();
+    await session.updateSettings({ language: 'en' });
+    expect(session.settings.language).toBe('en');
+    const again = await Session.load(store, new EventBus<GameEvents>());
+    expect(again.settings.language).toBe('en');
+  });
 });
