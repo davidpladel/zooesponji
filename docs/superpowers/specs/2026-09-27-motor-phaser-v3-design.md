@@ -431,7 +431,7 @@ Cada hito termina con algo jugable.
   nginx lo inyecta con `sub_filter` antes de `</body>` en `/zoo/`; por eso el banner no está en el
   `index.html` del repo y no sale en la app Android.
 
-- **Menú de madera y privacidad (2026-10-06, rama `menu-y-privacidad`):** el panel de ajustes y el
+- **Menú de madera y privacidad (2026-10-06, en la 2.3.0):** el panel de ajustes y el
   «¿Salir?» se dibujan como tableros de madera (`addWoodPanel` y `addPlateButton` en `scenes/ui.ts`,
   sin arte de los packs). El pie enseña la versión (`__APP_VERSION__`, de `package.json`). «Privacidad»
   abre `public/privacidad.html` en una capa HTML encima del juego (`systems/legal.ts`), sin enlaces,

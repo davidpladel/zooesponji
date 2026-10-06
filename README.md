@@ -2,7 +2,7 @@
 
 Creado por y para Daniela y Adrián, con la ayuda de su padre y de Claude + OpenCode + DeepSeek + ChatGPT.
 
-**Versión actual: 2.3.0** (en el repositorio; la web y Android siguen en la 2.2.0 hasta publicarla) · Juega en la web: https://davidpladel.com/zoo/ · Android: prueba cerrada de Google Play (en preparación)
+**Versión actual: 2.3.0** (2026-10-06, en `main`) · Juega en la web: https://davidpladel.com/zoo/ · Android: prueba cerrada de Google Play (en preparación)
 
 ## La idea
 
@@ -28,7 +28,7 @@ Pensado para niños de 6 a 9 años: sin textos largos, sin perder y sin anuncios
 
 | Versión | Fecha | Qué trajo |
 |---|---|---|
-| **2.3.0** | 2026-10-05 | **El zoo grande.** El mapa crece a 96×60 con tres zonas nuevas alrededor del parque: sabana (jirafas, cebras y gacelas juntas, y dos jaulas de elefantes), polo (pingüinos) y granja (ovejas, establo con caballos y gallinas, y estanque de patos). 7 recintos y 35 animales nuevos, cada uno con su nombre, su aspecto y su página: el libro pasa a 49 páginas con capítulos e índice. 7 comidas nuevas, una gallina amiga y un calcetín. La cuidadora entra en los recintos a dar de comer al animal que se toca, los visitantes entran a acariciar a las ovejas y la tienda enseña los 5 artículos siguientes por precio |
+| **2.3.0** | 2026-10-05 | **El zoo grande.** El mapa crece a 96×60 con tres zonas nuevas alrededor del parque: sabana (jirafas, cebras y gacelas juntas, y dos jaulas de elefantes), polo (pingüinos) y granja (ovejas, establo con caballos y gallinas, y estanque de patos). 7 recintos y 35 animales nuevos, cada uno con su nombre, su aspecto y su página: el libro pasa a 49 páginas con capítulos e índice. 7 comidas nuevas, una gallina amiga y un calcetín. La cuidadora entra en los recintos a dar de comer al animal que se toca, los visitantes entran a acariciar a las ovejas y la tienda enseña los 5 artículos siguientes por precio. Menú de ajustes nuevo, de madera, con la página de privacidad dentro del juego, la versión y un botón «Salir» en Android |
 | **2.2.0** | 2026-09-30 | **El libro secreto del zoo.** En la estantería de la tienda se esconde un libro (destella y salta al acercarse) con la historia del Zoo Esponji, Mary la cuidadora y cada animal con nombre propio (Bills, Sasha, Gordi, Noche, Mochi…); las páginas se consiguen comprando animales, las que faltan salen en silueta y recuerda por dónde ibas. Tienda más clara: una peana por animal, precio o sello AGOTADO y "Tienes 2 de 5". Catarata como la del pack (río arriba, caída, espuma, brillo y nenúfar) y recinto de la pantera más alto. Textos preparados para varios idiomas. 283 tests y 16 pruebas de juego |
 | 2.1.2 | 2026-09-28 | Catarata de la pantera montada como enseña el autor del pack: bloques altos de acantilado con su remate a cada lado, la caída en medio empalmando con la roca y el lago al pie (7×6 casillas) |
 | 2.1.1 | 2026-09-28 | Catarata de la pantera rehecha como la del pack: pared de roca recta hasta la valla, la caída acaba donde acaba la roca y el estanque empieza debajo con su orilla completa |
@@ -79,11 +79,9 @@ El juego se ha hecho por hitos: spec de diseño → plan → ejecución.
 
 ✅ **2.1.0 / 2.1.1** (2026-09-28, publicada en la web; la 2.1.1 y la 2.1.2 rehacen la catarata): tienda por dentro (fases C y B), muro y portón del parque, plaza con fuente animada, catarata con acantilado, pasillos estrechos, cámara más alejada, comida al llegar a la puerta y carne con dibujo.
 
-✅ **2.3.0** (2026-10-05, en las ramas `zoo-grande-3-mapa-y-recintos` y `zoo-grande-4-tienda-y-libro`, sin fusionar ni publicar hasta que David la pruebe): el zoo grande.
+✅ **2.3.0** (2026-10-06, fusionada en `main`, etiqueta `v2.3.0`; David la probó): el zoo grande y el menú de ajustes de madera con privacidad, versión y «Salir».
 
-Hecho después, en la rama `menu-y-privacidad` (sin fusionar): menú de ajustes de madera con privacidad, versión y «Salir».
-
-Pendiente, por orden: publicar la 2.3.0 (David ya la ha probado); analítica de eventos del juego (con su propio spec; hay que actualizar antes la página de privacidad); multi-idioma (selector de idioma y traducciones, con su propio spec, antes de Play Store); publicación en Google Play (6b). Ideas para después, cada una con su spec: bañar y limpiar, día y noche, clínica veterinaria y acuario con delfines.
+Pendiente, por orden: subir la 2.3.0 a la prueba cerrada de Google Play (versionCode 5); analítica de eventos del juego (con su propio spec; hay que actualizar antes la página de privacidad); multi-idioma (selector de idioma y traducciones, con su propio spec, antes de Play Store); publicación en Google Play (6b). Ideas para después, cada una con su spec: bañar y limpiar, día y noche, clínica veterinaria y acuario con delfines.
 
 **Más adelante:** clínica veterinaria, bañar animales, limpiar jaulas, ciclo día-noche, acuario con delfines, más animales y zonas.
 
