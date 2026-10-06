@@ -362,12 +362,9 @@ export class Pens {
     }
   }
 
-  /** Reacciona el animal que ha comido y, con él, los de su especie que haya en el recinto. */
+  /** Reacciona solo el animal que ha comido: los demás del recinto siguen a lo suyo. */
   celebrate(residentId: string, reaction: Reaction): void {
-    const pen = this.pens.find((p) => p.animals.some((w) => w.residentId === residentId));
-    const fed = pen?.animals.find((w) => w.residentId === residentId);
-    if (!pen || !fed) return;
-    for (const w of pen.animals.filter((a) => a.species === fed.species)) {
+    for (const w of [this.find(residentId)].filter((a) => a !== null)) {
       const object = w.walker.object;
       const emoji = this.sparkle(REACTION_EMOJI[reaction]).setPosition(w.walker.x, w.walker.y - 16);
       this.scene.tweens.add({ targets: emoji, y: emoji.y - 10, alpha: 0, duration: 1200, onComplete: () => emoji.setVisible(false) });
