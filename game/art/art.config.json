@@ -171,7 +171,7 @@
     "oveja": { "zip": "farm", "file": "16x16/Default Format/$sheep.png", "override": "oveja.png" },
     "caballo": { "zip": "farm", "file": "16x16/Default Format/$horse.png", "override": "caballo.png" },
     "gallina": { "zip": "farm", "file": "16x16/Default Format/$chicken_hen.png", "override": "gallina.png" },
-    "gallo": { "zip": "farm", "file": "16x16/Default Format/$chicken_rooster.png", "override": "gallo.png" },
+    "gallo": { "zip": "farm", "file": "16x16/Default Format/$chicken_wild_rooster.png", "override": "gallo.png" },
     "pato": { "zip": "farm", "file": "16x16/Default Format/$duck.png", "override": "pato.png" },
     "elefante-africano": { "zip": "wild", "file": "16x16/Default format/$elephant_african.png", "override": "elefante-africano.png" },
     "elefante-asiatico": { "zip": "wild", "file": "16x16/Default format/$elephant_asian.png", "override": "elefante-asiatico.png" },
@@ -202,7 +202,17 @@
     "caballo-tizon": { "zip": "farm", "file": "16x16/Default Format/$horse_friesian.png", "override": "caballo-tizon.png" },
     "caballo-mancha": { "zip": "farm", "file": "16x16/Default Format/$horse_clydesdale.png", "override": "caballo-mancha.png" },
     "gallina-clo": { "zip": "farm", "file": "16x16/Default Format/$chicken_wild_hen.png", "override": "gallina-clo.png" },
-    "gallina-miga": { "zip": "farm", "file": "16x16/Default Format/$chicken_silkie_hen.png", "override": "gallina-miga.png" },
+    "gallina-miga": {
+      "zip": "farm", "file": "16x16/Default Format/$chicken_silkie_hen.png", "override": "gallina-miga.png",
+      "edits": [
+        { "dots": [[5, 9, "414040"], [10, 9, "414040"]], "rows": [0], "cols": [0, 2] },
+        { "dots": [[5, 8, "414040"], [10, 8, "414040"]], "rows": [0], "cols": [1] },
+        { "dots": [[6, 7, "414040"]], "rows": [1], "cols": [0, 2] },
+        { "dots": [[6, 6, "414040"]], "rows": [1], "cols": [1] },
+        { "dots": [[9, 7, "414040"]], "rows": [2], "cols": [0, 2] },
+        { "dots": [[9, 6, "414040"]], "rows": [2], "cols": [1] }
+      ]
+    },
     "pinguino-copito": { "zip": "wild", "file": "16x16/Default format/$penguin_african.png", "override": "pinguino-copito.png" },
     "pinguino-frac": {
       "zip": "wild", "file": "16x16/Default format/$penguin_emperor.png", "override": "pinguino-frac.png",
@@ -321,6 +331,7 @@
     "ground-grassland": { "zip": "biomeB", "file": "16x16/grassland/tilesets/vectoraith_tileset_full_terrain_grassland.png", "x": 0, "y": 16, "w": 16, "h": 16 },
     "pond-tundra": { "zip": "biomeA", "file": "Original/16x16/tundra/tilesets/vectoraith_tileset_full_terrain_tundra.png", "x": 0, "y": 128, "w": 48, "h": 48, "animate": { "step": 80, "count": 3, "fps": 3 } },
     "pond-grassland": { "zip": "biomeB", "file": "16x16/grassland/tilesets/vectoraith_tileset_full_terrain_grassland.png", "x": 0, "y": 128, "w": 48, "h": 48, "animate": { "step": 80, "count": 3, "fps": 3 } },
+    "lake-grassland": {"zip": "biomeB", "file": "16x16/grassland/tilesets/vectoraith_tileset_full_terrain_grassland.png", "x": 0, "y": 0, "w": 96, "h": 96, "compose": {"frames": 3, "fps": 3, "layers": [{"x": 0, "y": 128, "w": 16, "h": 16, "dx": 0, "dy": 0, "step": 80}, {"x": 16, "y": 128, "w": 16, "h": 16, "dx": 16, "dy": 0, "step": 80}, {"x": 16, "y": 128, "w": 16, "h": 16, "dx": 32, "dy": 0, "step": 80}, {"x": 16, "y": 128, "w": 16, "h": 16, "dx": 48, "dy": 0, "step": 80}, {"x": 16, "y": 128, "w": 16, "h": 16, "dx": 64, "dy": 0, "step": 80}, {"x": 32, "y": 128, "w": 16, "h": 16, "dx": 80, "dy": 0, "step": 80}, {"x": 0, "y": 144, "w": 16, "h": 16, "dx": 0, "dy": 16, "step": 80}, {"x": 16, "y": 144, "w": 16, "h": 16, "dx": 16, "dy": 16, "step": 80}, {"x": 16, "y": 144, "w": 16, "h": 16, "dx": 32, "dy": 16, "step": 80}, {"x": 16, "y": 144, "w": 16, "h": 16, "dx": 48, "dy": 16, "step": 80}, {"x": 16, "y": 144, "w": 16, "h": 16, "dx": 64, "dy": 16, "step": 80}, {"x": 32, "y": 144, "w": 16, "h": 16, "dx": 80, "dy": 16, "step": 80}, {"x": 0, "y": 144, "w": 16, "h": 16, "dx": 0, "dy": 32, "step": 80}, {"x": 16, "y": 144, "w": 16, "h": 16, "dx": 16, "dy": 32, "step": 80}, {"x": 16, "y": 144, "w": 16, "h": 16, "dx": 32, "dy": 32, "step": 80}, {"x": 16, "y": 144, "w": 16, "h": 16, "dx": 48, "dy": 32, "step": 80}, {"x": 16, "y": 144, "w": 16, "h": 16, "dx": 64, "dy": 32, "step": 80}, {"x": 32, "y": 144, "w": 16, "h": 16, "dx": 80, "dy": 32, "step": 80}, {"x": 0, "y": 144, "w": 16, "h": 16, "dx": 0, "dy": 48, "step": 80}, {"x": 16, "y": 144, "w": 16, "h": 16, "dx": 16, "dy": 48, "step": 80}, {"x": 16, "y": 144, "w": 16, "h": 16, "dx": 32, "dy": 48, "step": 80}, {"x": 16, "y": 144, "w": 16, "h": 16, "dx": 48, "dy": 48, "step": 80}, {"x": 16, "y": 144, "w": 16, "h": 16, "dx": 64, "dy": 48, "step": 80}, {"x": 32, "y": 144, "w": 16, "h": 16, "dx": 80, "dy": 48, "step": 80}, {"x": 0, "y": 144, "w": 16, "h": 16, "dx": 0, "dy": 64, "step": 80}, {"x": 16, "y": 144, "w": 16, "h": 16, "dx": 16, "dy": 64, "step": 80}, {"x": 16, "y": 144, "w": 16, "h": 16, "dx": 32, "dy": 64, "step": 80}, {"x": 16, "y": 144, "w": 16, "h": 16, "dx": 48, "dy": 64, "step": 80}, {"x": 16, "y": 144, "w": 16, "h": 16, "dx": 64, "dy": 64, "step": 80}, {"x": 32, "y": 144, "w": 16, "h": 16, "dx": 80, "dy": 64, "step": 80}, {"x": 0, "y": 160, "w": 16, "h": 16, "dx": 0, "dy": 80, "step": 80}, {"x": 16, "y": 160, "w": 16, "h": 16, "dx": 16, "dy": 80, "step": 80}, {"x": 16, "y": 160, "w": 16, "h": 16, "dx": 32, "dy": 80, "step": 80}, {"x": 16, "y": 160, "w": 16, "h": 16, "dx": 48, "dy": 80, "step": 80}, {"x": 16, "y": 160, "w": 16, "h": 16, "dx": 64, "dy": 80, "step": 80}, {"x": 32, "y": 160, "w": 16, "h": 16, "dx": 80, "dy": 80, "step": 80}]}},
     "rock-snow": { "zip": "biomeA", "file": "Original/16x16/tundra/tilesets/vectoraith_tileset_details_tundra.png", "x": 0, "y": 96, "w": 16, "h": 16 },
     "rock-snow-big": { "zip": "biomeA", "file": "Original/16x16/tundra/tilesets/vectoraith_tileset_details_tundra.png", "x": 0, "y": 112, "w": 32, "h": 32 },
     "pine-snow": { "zip": "biomeA", "file": "Original/16x16/tundra/tilesets/vectoraith_tileset_details_tundra.png", "x": 48, "y": 0, "w": 32, "h": 48 },

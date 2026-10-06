@@ -5,7 +5,8 @@ import { inJoystickZone } from '../core/joystick';
 import { tileCenter, type Vec } from '../core/movement';
 import { isWalkable, type WalkGrid } from '../core/pathfinding';
 import { newlyUnlockedPages, unreadPageIds } from '../core/book';
-import { shopEntries, type ShopEntry } from '../core/shopEntries';
+import { shopEntries, shopStock, type ShopEntry } from '../core/shopEntries';
+import type { PenId } from '../data/pens';
 import { ENTRY_TARGET, approachPoint, hintTarget, onDoorMat, openInteriorGrid, productInReach, shopWalkGrid } from '../core/shopWalk';
 import { buildWalkGrid, type TiledMap } from '../core/tiledmap';
 import { MAPS } from '../config';
@@ -36,6 +37,8 @@ type WasdKeys = Record<'W' | 'A' | 'S' | 'D', Phaser.Input.Keyboard.Key>;
 /** Al girar el móvil la escena se vuelve a montar: la cuidadora sigue donde estaba y no se repite la entrada. */
 export interface ShopSceneData {
   keeper?: Vec;
+  /** Recintos que había en las peanas (no cambian mientras se está dentro). */
+  stock?: PenId[];
 }
 
 interface Product {
@@ -77,11 +80,15 @@ export class ShopScene extends Phaser.Scene {
     super('Shop');
   }
 
+  /** Lo que hay en las peanas en esta visita: se decide al entrar. */
+  private stock: PenId[] = [];
+
   init(data?: ShopSceneData): void {
     this.products.clear();
     this.buyBubble = null;
     this.activeId = null;
     this.restored = data?.keeper ?? null;
+    this.stock = data?.stock ?? shopStock(getSession().state);
     this.entering = false;
     this.armed = false;
     this.idleMs = 0;
@@ -123,7 +130,7 @@ export class ShopScene extends Phaser.Scene {
       keyboard.on('keydown', this.endEntry, this);
     }
     this.input.on(Phaser.Input.Events.POINTER_UP, this.onPointerUp, this);
-    restartOnResize(this, () => ({ keeper: this.entering ? ENTRY_TARGET : this.keeper.feet }) satisfies ShopSceneData);
+    restartOnResize(this, () => ({ keeper: this.entering ? ENTRY_TARGET : this.keeper.feet, stock: this.stock }) satisfies ShopSceneData);
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
       this.input.keyboard?.off('keydown-ESC', this.close, this);
       this.input.keyboard?.off('keydown', this.endEntry, this);
@@ -370,7 +377,7 @@ export class ShopScene extends Phaser.Scene {
   private renderProducts(): void {
     for (const product of this.products.values()) for (const part of product.parts) part.destroy();
     this.products.clear();
-    const entries = shopEntries(getSession().state);
+    const entries = shopEntries(getSession().state, this.stock);
     entries.forEach((entry, index) => this.addProduct(entry, pedestalFor(this.interior.spots, index, entries.length)));
     this.grid = shopWalkGrid(this.baseGrid, [...this.products.values()].map((p) => p.base));
     this.keeper?.setGrid(this.grid);
@@ -514,7 +521,7 @@ export class ShopScene extends Phaser.Scene {
     const result = await getSession().buy(entry.id);
     if (result.ok) {
       sfx.play('buy');
-      // Comprar un recinto puede hacer aparecer su extra: se rehacen todas las peanas.
+      // En la peana de un recinto recién comprado pasa a venderse su "otro animal"; si se completa, AGOTADO.
       this.renderProducts();
       this.activeId = null;
       this.hideBuyBubble();

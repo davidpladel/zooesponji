@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { initialState, type GameState } from '../../src/core/economy';
-import { SHOP_SLOTS, shopEntries } from '../../src/core/shopEntries';
+import { SHOP_SLOTS, shopEntries, shopStock } from '../../src/core/shopEntries';
 import { PENS } from '../../src/data/pens';
 
 const withCounts = (counts: Partial<GameState['counts']>): GameState => ({
@@ -10,6 +10,7 @@ const withCounts = (counts: Partial<GameState['counts']>): GameState => ({
 });
 
 const summary = (state: GameState) => shopEntries(state).map((e) => `${e.id}:${e.status}`);
+const summary2 = (state: GameState, stock: ReturnType<typeof shopStock>) => shopEntries(state, stock).map((e) => `${e.id}:${e.status}`);
 
 describe('shopEntries', () => {
   it('al principio: los cinco más baratos, de menor a mayor precio', () => {
@@ -42,6 +43,21 @@ describe('shopEntries', () => {
     expect(summary(withCounts(done))).toEqual(['extra-elefantes-asiaticos:buy', 'extra-cabra:full', 'extra-pantera:full', 'extra-panda:full', 'extra-estanque:full']);
     const cabra = shopEntries(withCounts(done)).find((e) => e.id === 'extra-cabra');
     expect(cabra).toMatchObject({ status: 'full', count: 5, max: 5, cost: 10 });
+  });
+
+  it('mientras se está dentro, las peanas no cambian: lo comprado sigue en su sitio', () => {
+    const stock = shopStock(withCounts({}));
+    expect(stock).toEqual(['cabra', 'pantera', 'panda', 'estanque', 'ovejas']);
+    // Se compra la pantera: en su peana queda "otra pantera", no entra nada nuevo.
+    expect(summary2(withCounts({ pantera: 1 }), stock)).toEqual(['extra-cabra:buy', 'extra-pantera:buy', 'panda:buy', 'estanque:buy', 'ovejas:buy']);
+  });
+
+  it('al completarse un animal, su peana se queda con el sello AGOTADO hasta la próxima visita', () => {
+    const stock = shopStock(withCounts({ pantera: 1 }));
+    const after = withCounts({ pantera: 2 });
+    expect(summary2(after, stock)).toEqual(['extra-cabra:buy', 'extra-pantera:full', 'panda:buy', 'estanque:buy', 'ovejas:buy']);
+    // Al volver a entrar, la pantera completa ya no ocupa peana y sale lo siguiente.
+    expect(summary(after)).toEqual(['extra-cabra:buy', 'panda:buy', 'estanque:buy', 'ovejas:buy', 'establo:buy']);
   });
 
   it('el "otro animal" de un recinto mixto es el siguiente de su lista, con el precio de su especie', () => {

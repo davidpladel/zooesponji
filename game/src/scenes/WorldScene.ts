@@ -40,8 +40,6 @@ export class WorldScene extends Phaser.Scene {
   private pathGrid!: WalkGrid;
   /** Residente hacia el que va la cuidadora para darle de comer. */
   private feedTarget: string | null = null;
-  /** Residente junto al que está (para abrir la comida solo al llegar). */
-  private nearResident: string | null = null;
   private mapData!: TiledMap;
   private keeper!: Walker;
   private marker!: Phaser.GameObjects.Image;
@@ -85,7 +83,6 @@ export class WorldScene extends Phaser.Scene {
     this.keeper = createKeeper(this, spawn.x, spawn.y);
     this.route = [];
     this.feedTarget = null;
-    this.nearResident = null;
 
     const camera = this.cameras.main;
     camera.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
@@ -116,13 +113,11 @@ export class WorldScene extends Phaser.Scene {
   update(time: number, delta: number): void {
     this.visitors.update(delta);
     this.pens.update(time, delta, this.cameras.main.worldView, { keeper: this.keeperPosition(), ...this.visitors.people() });
-    const before = this.keeperPosition();
     this.moveKeeper(delta);
     const pos = this.keeperPosition();
-    const moved = pos.x !== before.x || pos.y !== before.y;
+    if (this.reachResident(pos)) return;
 
     const state = getSession().state;
-    if (this.reachResident(pos, moved, state)) return;
 
     const tile = worldToTile(this.keeper, TILE_SIZE);
     if (this.pens.lockedDoorstep(tile, state)) bus.emit('toast', { text: t('toast.needShop') });
@@ -132,24 +127,19 @@ export class WorldScene extends Phaser.Scene {
   }
 
   /**
-   * Abre la comida al llegar junto a un animal: el que se ha tocado o, andando con joystick o teclado,
-   * el que quede al lado. Solo al llegar: no se repite hasta que la cuidadora se aparte.
+   * Abre la comida al llegar junto al animal que se ha tocado. Pasar andando al lado de otro no abre
+   * nada: en un recinto con varios animales saltaba sin querer a cada paso.
    */
-  private reachResident(pos: Vec, moved: boolean, state: GameState): boolean {
-    let reached: string | null;
-    if (this.feedTarget) {
-      const at = this.pens.positionOf(this.feedTarget);
-      reached = at && Math.hypot(at.x - pos.x, at.y - pos.y) <= FEED_REACH ? this.feedTarget : null;
-      // No hay camino hasta él: se deja de esperar.
-      if (!reached && this.route.length === 0) this.cancelFeedTarget();
-    } else {
-      reached = this.pens.residentAt(pos, state, FEED_REACH)?.residentId ?? null;
+  private reachResident(pos: Vec): boolean {
+    if (!this.feedTarget) return false;
+    const at = this.pens.positionOf(this.feedTarget);
+    if (at && Math.hypot(at.x - pos.x, at.y - pos.y) <= FEED_REACH) {
+      this.openFeed(this.feedTarget);
+      return true;
     }
-    if (reached === this.nearResident) return false;
-    this.nearResident = reached;
-    if (!reached || !(moved || this.feedTarget)) return false;
-    this.openFeed(reached);
-    return true;
+    // No hay camino hasta él: se deja de esperar.
+    if (this.route.length === 0) this.cancelFeedTarget();
+    return false;
   }
 
   private cancelFeedTarget(): void {
@@ -162,7 +152,6 @@ export class WorldScene extends Phaser.Scene {
     const at = this.pens.positionOf(residentId);
     if (!at) return false;
     this.feedTarget = residentId;
-    this.nearResident = null;
     this.pens.hold(residentId);
     this.goTo(at);
     return true;
