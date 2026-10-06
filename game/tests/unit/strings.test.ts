@@ -95,6 +95,11 @@ describe('inglés', () => {
     expect(missing(pageKeys(ids))).toEqual([]);
   });
 
+  it('libro B: la granja', () => {
+    const ids = ['cuac', 'charco', 'pluma', 'remo', 'pio', 'lana', 'bolita', 'trueno', 'algodon', 'rizos', 'canela', 'pepa', 'lucero', 'kiko', 'clo', 'tizon', 'miga', 'mancha'];
+    expect(missing(pageKeys(ids))).toEqual([]);
+  });
+
   it.each(Object.entries(EN).filter(([key]) => /^book\.page\..+\.text$/.test(key)))('%s tiene 20 palabras como mucho', (_key, text) => {
     expect(words(text)).toBeLessThanOrEqual(20);
   });
