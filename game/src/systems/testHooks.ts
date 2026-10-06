@@ -9,6 +9,7 @@ import type { PenId } from '../data/pens';
 import type { FeedScene } from '../scenes/FeedScene';
 import type { HudScene } from '../scenes/HudScene';
 import type { BookScene } from '../scenes/BookScene';
+import type { QuitScene } from '../scenes/QuitScene';
 import type { SettingsScene } from '../scenes/SettingsScene';
 import type { ShopScene } from '../scenes/ShopScene';
 import type { TitleScene } from '../scenes/TitleScene';
@@ -63,6 +64,8 @@ export interface ZooTestApi {
   settingsLanguageLabel(): string | null;
   settingsCredits(): string | null;
   settingsButtonPos(key: 'privacy' | 'quit'): Vec | null;
+  /** Con «¿Salir?» abierto: dónde está el botón de seguir jugando. */
+  quitStayPos(): Vec | null;
   counts(): Record<PenId, number>;
   animalsInPen(penId: PenId): number;
   /** Manda a la cuidadora a dar de comer a un animal (lo mismo que tocarlo). */
@@ -147,6 +150,7 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
     titlePlayLabel: () => activeScene<TitleScene>('Title')?.playLabel() ?? null,
     settingsLanguagePos: () => activeScene<SettingsScene>('Settings')?.languagePos() ?? null,
     settingsLanguageLabel: () => activeScene<SettingsScene>('Settings')?.languageLabel() ?? null,
+    quitStayPos: () => activeScene<QuitScene>('Quit')?.stayPos() ?? null,
     settingsButtonPos: (key) => activeScene<SettingsScene>('Settings')?.buttonPos(key) ?? null,
     back: () => platform.back(),
     crash: () => {

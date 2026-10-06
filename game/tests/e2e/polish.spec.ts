@@ -86,12 +86,20 @@ test('menú ⚙️: la privacidad se lee dentro del juego y el botón atrás la 
   expect(await page.evaluate(() => window.__ZOO__!.back())).toBe('close-settings');
 });
 
-test('botón atrás en el mundo pregunta "¿Salir?" y ❌ vuelve al juego', async ({ page }) => {
+test('botón atrás en el mundo pregunta si salir; atrás o «Seguir jugando» vuelven al juego', async ({ page }) => {
   await startGame(page);
   expect(await page.evaluate(() => window.__ZOO__!.back())).toBe('ask-quit');
   await page.waitForFunction(() => window.__ZOO__!.activeScenes().includes('Quit'));
   expect(await page.evaluate(() => window.__ZOO__!.back())).toBe('close-quit');
   await page.waitForFunction(() => window.__ZOO__!.activeScenes().includes('World'));
+
+  await page.evaluate(() => window.__ZOO__!.back());
+  await page.waitForFunction(() => window.__ZOO__!.quitStayPos() !== null);
+  await tap(page, await page.evaluate(() => window.__ZOO__!.quitStayPos()));
+  await page.waitForFunction(() => {
+    const scenes = window.__ZOO__!.activeScenes();
+    return scenes.includes('World') && !scenes.includes('Quit');
+  });
 });
 
 test('en vertical aparece el aviso de girar el móvil y pausa el mundo', async ({ page }) => {
