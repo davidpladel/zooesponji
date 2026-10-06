@@ -10,7 +10,7 @@
 
 **Spec:** `docs/superpowers/specs/2026-10-06-idiomas-es-en-design.md`.
 
-**Estado:** bloques A y B hechos (unitarios y typecheck en verde; el e2e del bloque A pasó, 25 tests en verde; el e2e del bloque B está pendiente de pasar). (Se actualiza al cerrar cada bloque: A = tareas 1-4, B = tareas 5-10, C = tareas 11-13.)
+**Estado:** los tres bloques están implementados (unitarios, typecheck y build en verde; el e2e de los bloques A y B pasó, 25 tests en verde). Falta pasar el e2e final del bloque C. (Se actualiza al cerrar cada bloque: A = tareas 1-4, B = tareas 5-10, C = tareas 11-13.)
 
 ## Global Constraints
 
@@ -1253,7 +1253,7 @@ git commit -m "feat: el juego sale en inglés o español según el idioma del m�
   - `TitleScene.playLabel(): string`
   - En `window.__ZOO__`: `language(): string`, `titlePlayLabel(): string | null`, `settingsLanguagePos(): Vec | null`, `settingsLanguageLabel(): string | null`; `settings()` pasa a devolver `Settings` (incluye `language`).
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 En `game/tests/unit/content.test.ts`, dentro de `describe('textos con variables', …)`:
 
@@ -1360,12 +1360,12 @@ test('cambiar de idioma con la tienda abierta la cierra y no se pierden las mone
 });
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `npx vitest run tests/unit/content.test.ts` → FAIL (la clave `settings.language` no existe).
 Run: `npx playwright test tests/e2e/english.spec.ts` → FAIL (`window.__ZOO__.language is not a function`).
 
-- [ ] **Step 3: Add the key in both languages**
+- [x] **Step 3: Add the key in both languages**
 
 En `game/src/data/strings/es.ts`, tras `'settings.joystick'`:
 
@@ -1379,7 +1379,7 @@ En `game/src/data/strings/en.ts`, tras `'settings.joystick'`:
   'settings.language': 'English',
 ```
 
-- [ ] **Step 4: Implement the button in `SettingsScene.ts`**
+- [x] **Step 4: Implement the button in `SettingsScene.ts`**
 
 Imports nuevos:
 
@@ -1496,7 +1496,7 @@ Método nuevo, después de `flip`:
 
 Actualiza el comentario de la clase: «Menú de ajustes en un tablero de madera: música, sonido, joystick, idioma, créditos, privacidad y salir.»
 
-- [ ] **Step 5: `TitleScene.playLabel()` and test hooks**
+- [x] **Step 5: `TitleScene.playLabel()` and test hooks**
 
 En `game/src/scenes/TitleScene.ts`, dentro de la clase:
 
@@ -1535,14 +1535,14 @@ En el objeto `window.__ZOO__`, junto a `settingsButtonPos`:
     settingsLanguageLabel: () => activeScene<SettingsScene>('Settings')?.languageLabel() ?? null,
 ```
 
-- [ ] **Step 6: Run tests to verify they pass**
+- [x] **Step 6: Run tests to verify they pass**
 
 Run: `npm run typecheck` → sin errores.
 Run: `npm test` → todo en verde (incluido «ningún texto visible fuera de strings.ts»).
 Run: `npx playwright test tests/e2e/english.spec.ts` → PASS (2 tests).
 Run: `npm run test:e2e` → todo en verde (las dos pruebas del menú ⚙️ de `polish.spec.ts` siguen pasando con cuatro botones).
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add src/data/strings src/scenes/SettingsScene.ts src/scenes/TitleScene.ts src/systems/testHooks.ts tests/unit/content.test.ts tests/e2e/english.spec.ts
@@ -1562,7 +1562,7 @@ git commit -m "feat: botón de idioma en Ajustes; el mundo se monta de nuevo en 
 - Consumes: `getLanguage`, `type Language` (Task 1).
 - Produces: `legalPage(lang: Language): string` exportado desde `src/systems/legal.ts` (`'privacidad.html'` o `'privacidad-en.html'`).
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 `game/tests/unit/legal.test.ts`:
 
@@ -1622,12 +1622,12 @@ test('en inglés la privacidad se lee en inglés, dentro del juego', async ({ pa
 });
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `npx vitest run tests/unit/legal.test.ts` → FAIL (`legalPage is not a function`).
 Run: `npx playwright test tests/e2e/english.spec.ts -g privacidad` → FAIL (el `h1` dice «Privacidad»).
 
-- [ ] **Step 3: Write the English page**
+- [x] **Step 3: Write the English page**
 
 `game/public/privacidad-en.html`. Traducción fiel de `privacidad.html`: mismo `<head>`, mismos estilos, mismos ocho apartados, sin enlaces.
 
@@ -1726,7 +1726,7 @@ Run: `npx playwright test tests/e2e/english.spec.ts -g privacidad` → FAIL (el 
 
 La página en inglés nombra el idioma entre los ajustes guardados. Para que las dos digan lo mismo, en `game/public/privacidad.html` cambia «los ajustes (música, sonidos y joystick)» por «los ajustes (música, sonidos, joystick e idioma)».
 
-- [ ] **Step 4: Implement `legalPage`**
+- [x] **Step 4: Implement `legalPage`**
 
 En `game/src/systems/legal.ts`:
 
@@ -1751,13 +1751,13 @@ async function load(article: HTMLElement): Promise<void> {
     if (!response.ok) throw new Error(`${file}: ${response.status}`);
 ```
 
-- [ ] **Step 5: Run tests to verify they pass**
+- [x] **Step 5: Run tests to verify they pass**
 
 Run: `npx vitest run tests/unit/legal.test.ts` → PASS.
 Run: `npm run typecheck` → sin errores.
 Run: `npm run test:e2e` → todo en verde (la privacidad en español de `polish.spec.ts` y la nueva en inglés).
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add public/privacidad-en.html public/privacidad.html src/systems/legal.ts tests/unit/legal.test.ts tests/e2e/english.spec.ts
@@ -1779,7 +1779,7 @@ La spec avisa de que un texto en inglés más largo o más corto puede desbordar
 - Consumes: todo lo anterior y los ganchos de prueba `openShop`, `openBook`, `openFeed`, `openSettings`, `addCoins`.
 - Produces: capturas en `game/test-results/` (carpeta ignorada por git).
 
-- [ ] **Step 1: Add the screenshot test**
+- [x] **Step 1: Add the screenshot test**
 
 Al final de `game/tests/e2e/english.spec.ts`:
 
@@ -1822,7 +1822,7 @@ test('capturas en inglés a tamaño de móvil, para revisarlas a ojo', async ({ 
 });
 ```
 
-- [ ] **Step 2: Run it and look at the screenshots**
+- [x] **Step 2: Run it and look at the screenshots**
 
 Run (bash): `CAPTURAS=1 npx playwright test tests/e2e/english.spec.ts -g capturas`
 Run (PowerShell): `$env:CAPTURAS='1'; npx playwright test tests/e2e/english.spec.ts -g capturas; Remove-Item Env:CAPTURAS`
@@ -1837,7 +1837,7 @@ Abre cada imagen y comprueba:
 
 Si un texto se desborda, se arregla **acortando la frase en `en.ts`** (no el diseño), manteniendo el tono, y se repite `npx vitest run tests/unit/strings.test.ts` y este paso. Apunta en el resumen de la tarea qué frases se han acortado, para que David las revise.
 
-- [ ] **Step 3: Full verification**
+- [x] **Step 3: Full verification**
 
 Run: `npm run typecheck` → sin errores.
 Run: `npm test` → todo en verde.
@@ -1845,7 +1845,7 @@ Run: `npm run build` → compila.
 Run: `npm run test:e2e` → todo en verde; la prueba de capturas sale como `skipped`.
 Run: `npx playwright test --list` → apunta el total de pruebas para el README.
 
-- [ ] **Step 4: Docs de cierre**
+- [x] **Step 4: Docs de cierre**
 
 - `README.md` (raíz), «Cómo se juega», línea «Menú ⚙️»: añade el idioma: «…con música, efectos, joystick, **idioma (español o inglés)**, créditos…». Añade una línea nueva: «- **Idiomas:** español e inglés. Sale el del móvil (cualquier variante de español da español; el resto, inglés) y se cambia en el menú ⚙️. Los nombres de los animales y «Zoo Esponji» no se traducen.»
 - `README.md` (raíz), «Hoja de ruta», párrafo «Pendiente, por orden»: quita «multi-idioma (selector de idioma y traducciones, con su propio spec, antes de Play Store)» y añade antes del párrafo: «✅ **Idiomas español e inglés** (2026-10-06, en `main`, saldrá con la próxima versión): detección por el idioma del móvil, botón en Ajustes y privacidad en inglés. La ficha de Play en inglés queda para 6b.»
@@ -1855,7 +1855,7 @@ Run: `npx playwright test --list` → apunta el total de pruebas para el README.
 - Spec, estado: «Estado: implementada (2026-10-06). Pendiente de que David revise el inglés del libro antes de publicar.» Añade bajo «Diseño → 4. Ajustes» una nota: «Resultado del inventario del plan: `HudScene` no tiene textos fijos y no se reinicia; las ventanas abiertas debajo (comida, tienda, libro) se cierran; el mundo se monta de nuevo en pausa.»
 - Este plan: marca las tareas 11-13 y cambia **Estado** a «hecho».
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add tests/e2e/english.spec.ts src/data/strings/en.ts README.md ../README.md ../docs/superpowers

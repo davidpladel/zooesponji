@@ -1,6 +1,6 @@
 # Idiomas: español e inglés
 
-Fecha: 2026-10-06 · Estado: en curso. Bloques A y B hechos (el juego ya sale en inglés con el móvil en inglés; falta el botón de Ajustes y la privacidad).
+Fecha: 2026-10-06 · Estado: implementada (2026-10-06). Pendiente de que David revise el inglés del libro antes de publicar.
 
 ## Objetivo
 
@@ -44,6 +44,7 @@ El juego se ve en español o en inglés. Por defecto sale el idioma del móvil: 
 - Botón nuevo de idioma con el mismo estilo que los de `renderToggle`. Muestra el idioma activo en su propio idioma.
 - Al pulsar: alterna, guarda, `setLanguage`, y reinicia Ajustes y las escenas del mundo (`WorldScene` + `HudScene`) para que se refresquen los rótulos creados al arrancar. No se pierde estado de partida: se guarda antes de reiniciar.
 - El plan debe comprobar qué escenas hay activas bajo Ajustes y cuáles guardan textos creados una sola vez (rótulos de recintos en `Pens.ts`, HUD, `ShopBuilding`, `Decor`).
+- Resultado del inventario del plan: `HudScene` no tiene textos fijos y no se reinicia; las ventanas abiertas debajo (comida, tienda, libro) se cierran; el mundo se monta de nuevo en pausa.
 
 ### 5. Fuera de las escenas
 - `legal.ts`: carga `privacidad.html` (es) o `privacidad-en.html` (en) según el idioma activo. `public/privacidad-en.html` es nuevo, con la traducción fiel de la política actual (misma estructura `<main>`).

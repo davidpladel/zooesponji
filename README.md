@@ -15,7 +15,8 @@ Pensado para niños de 6 a 9 años: sin textos largos, sin perder y sin anuncios
 - **Moverse:** tocar el suelo y la cuidadora va andando (también teclado, o joystick opcional desde el menú ⚙️, abajo a la izquierda).
 - **Dar de comer:** toca un animal: la cuidadora entra en su recinto y, al llegar, se abre la bandeja de comida de ese animal. Arrastra la comida (piedra, carne, conejo o zanahoria) hasta el animal.
 - **Tienda:** se abre al tener 20 monedas; pisa la puerta del puesto para entrar. Dentro suena la campanita, la cuidadora entra andando, el tendero la saluda y los animales esperan en peanas: acércate a uno (o tócalo y va sola), toca el bocadillo "¡Comprar!" y sal pisando el felpudo. Si un peque se queda quieto, unas huellas le señalan qué puede comprar. Pantera 50 🪙, panda 100 🪙, y animales extra: hasta 5 cabras (10 🪙 cada una), 2 panteras y 2 pandas (20 🪙).
-- **Menú ⚙️:** un tablero de madera con música, efectos, joystick, créditos, la versión del juego, la página de privacidad (se lee sin salir del juego) y, en Android, un botón «Salir».
+- **Menú ⚙️:** un tablero de madera con música, efectos, joystick, **idioma (español o inglés)**, créditos, la versión del juego, la página de privacidad (se lee sin salir del juego) y, en Android, un botón «Salir».
+- **Idiomas:** español e inglés. Sale el del móvil (cualquier variante de español da español; el resto, inglés) y se cambia en el menú ⚙️. Los nombres de los animales y «Zoo Esponji» no se traducen.
 
 | Alimento | 🦁 León | 🐐 Cabra | 🐆 Pantera negra | 🐼 Oso panda |
 |---|---|---|---|---|
@@ -65,6 +66,7 @@ El juego se ha hecho por hitos: spec de diseño → plan → ejecución.
 | [Spec](docs/superpowers/specs/2026-09-27-v3-hito-6a-pulido-design.md) y [plan hito 6a](docs/superpowers/plans/2026-09-27-v3-hito-6a-pulido.md) | Pulido: agua, extras, menú, sonido, móvil, errores |
 | [Spec](docs/superpowers/specs/2026-09-27-tienda-por-dentro-design.md) y [plan tienda por dentro](docs/superpowers/plans/2026-09-27-tienda-por-dentro.md) | La tienda vista por dentro (fase C) |
 | [Spec](docs/superpowers/specs/2026-09-28-tienda-fase-b-design.md) y [plan fase B](docs/superpowers/plans/2026-09-28-tienda-fase-b.md) | La cuidadora entra andando en la tienda y compra acercándose (fase B) |
+| [Spec](docs/superpowers/specs/2026-10-06-idiomas-es-en-design.md) y [plan idiomas](docs/superpowers/plans/2026-10-06-idiomas-es-en.md) | Idiomas español e inglés: detección, botón en Ajustes, textos y privacidad |
 | [Spec](docs/superpowers/specs/2026-08-08-mvp-zooesponji-design.md) y [plan 1.0](docs/superpowers/plans/2026-08-08-mvp-zooesponji.md), [spec](docs/superpowers/specs/2026-08-15-escenas-inmersivas-design.md) y [plan del prototipo](docs/superpowers/plans/2026-08-15-escenas-inmersivas.md) | Histórico (1.x y prototipo Canvas) |
 
 ## Hoja de ruta
@@ -81,7 +83,9 @@ El juego se ha hecho por hitos: spec de diseño → plan → ejecución.
 
 ✅ **2.3.0** (2026-10-06, fusionada en `main`, etiqueta `v2.3.0`; David la probó): el zoo grande y el menú de ajustes de madera con privacidad, versión y «Salir».
 
-Pendiente, por orden: subir la 2.3.0 a la prueba cerrada de Google Play (versionCode 5); analítica de eventos del juego (con su propio spec; hay que actualizar antes la página de privacidad); multi-idioma (selector de idioma y traducciones, con su propio spec, antes de Play Store); publicación en Google Play (6b). Ideas para después, cada una con su spec: bañar y limpiar, día y noche, clínica veterinaria y acuario con delfines.
+✅ **Idiomas español e inglés** (2026-10-06, en `main`, saldrá con la próxima versión): detección por el idioma del móvil, botón en Ajustes y privacidad en inglés. La ficha de Play en inglés queda para 6b.
+
+Pendiente, por orden: subir la 2.3.0 a la prueba cerrada de Google Play (versionCode 5); analítica de eventos del juego (con su propio spec; hay que actualizar antes la página de privacidad); publicación en Google Play (6b). Ideas para después, cada una con su spec: bañar y limpiar, día y noche, clínica veterinaria y acuario con delfines.
 
 **Más adelante:** clínica veterinaria, bañar animales, limpiar jaulas, ciclo día-noche, acuario con delfines, más animales y zonas.
 
