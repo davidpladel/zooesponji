@@ -79,4 +79,10 @@ describe('inglés', () => {
   it('bloque 1: están todos los textos cortos', () => {
     expect(missing(Object.keys(ES).filter((key) => !/^(shop\.about|book\.page)\./.test(key)))).toEqual([]);
   });
+
+  it('bloque 2: el tendero dice algo de cada especie', () => {
+    const about = Object.keys(ES).filter((key) => key.startsWith('shop.about.'));
+    expect(about).toHaveLength(15);
+    expect(missing(about)).toEqual([]);
+  });
 });
