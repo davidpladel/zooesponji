@@ -2,6 +2,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { STRINGS_ES, hasKey } from '../../src/data/strings';
+import { STRINGS_EN } from '../../src/data/strings/en';
 
 const words = (text: string): number => text.trim().split(/\s+/).length;
 
@@ -55,5 +56,27 @@ describe('hasKey', () => {
     expect(hasKey('zone.luna')).toBe(false);
     expect(hasKey('toString')).toBe(false);
     expect(hasKey('')).toBe(false);
+  });
+});
+
+const ES: Record<string, string> = STRINGS_ES;
+const EN: Record<string, string> = STRINGS_EN;
+const markers = (text: string): string[] => [...text.matchAll(/\{(\w+)\}/g)].map((m) => m[1]!).sort();
+/** De las claves que se piden, las que aún no están en inglés. */
+const missing = (keys: string[]): string[] => keys.filter((key) => !(key in EN));
+
+describe('inglés', () => {
+  it.each(Object.keys(EN))('%s: existe en español, no está vacío y conserva los marcadores', (key) => {
+    expect(ES[key], key).toBeDefined();
+    expect(EN[key]!.trim()).not.toBe('');
+    expect(markers(EN[key]!)).toEqual(markers(ES[key]!));
+  });
+
+  it('«Zoo Esponji» no se traduce', () => {
+    expect(EN['title.name']).toBe('Zoo Esponji');
+  });
+
+  it('bloque 1: están todos los textos cortos', () => {
+    expect(missing(Object.keys(ES).filter((key) => !/^(shop\.about|book\.page)\./.test(key)))).toEqual([]);
   });
 });
