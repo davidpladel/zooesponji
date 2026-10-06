@@ -479,7 +479,7 @@ export class ShopScene extends Phaser.Scene {
     const entry = product.entry;
     const affordable = getSession().state.coins >= entry.cost;
     const text = this.add
-      .text(0, 0, `¡Comprar! 🪙 ${entry.cost}`, {
+      .text(0, 0, t('shop.buy', { cost: entry.cost }), {
         fontFamily: 'sans-serif',
         fontSize: `${Math.round(Math.max(18, 7.5 * s))}px`,
         color: '#ffffff',

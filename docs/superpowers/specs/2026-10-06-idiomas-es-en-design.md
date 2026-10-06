@@ -1,6 +1,6 @@
 # Idiomas: español e inglés
 
-Fecha: 2026-10-06 · Estado: spec aprobada; plan escrito en `docs/superpowers/plans/2026-10-06-idiomas-es-en.md`, sin empezar.
+Fecha: 2026-10-06 · Estado: en curso. Bloque A hecho (idioma activo, guardado, `strings/es.ts`, `shop.buy`).
 
 ## Objetivo
 

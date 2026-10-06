@@ -10,7 +10,7 @@
 
 **Spec:** `docs/superpowers/specs/2026-10-06-idiomas-es-en-design.md`.
 
-**Estado:** sin empezar. (Se actualiza al cerrar cada bloque: A = tareas 1-4, B = tareas 5-10, C = tareas 11-13.)
+**Estado:** bloque A hecho. (Se actualiza al cerrar cada bloque: A = tareas 1-4, B = tareas 5-10, C = tareas 11-13.)
 
 ## Global Constraints
 
@@ -94,7 +94,7 @@ Las operaciones de escena de Phaser se encolan y se aplican en orden en el sigui
   - `getLanguage(): Language`, `setLanguage(lang: Language): void`
   - `otherLanguage(lang: Language): Language`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 `game/tests/unit/language.test.ts`:
 
@@ -161,12 +161,12 @@ describe('idioma activo', () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npx vitest run tests/unit/language.test.ts`
 Expected: FAIL, no encuentra `../../src/systems/language`.
 
-- [ ] **Step 3: Write minimal implementation**
+- [x] **Step 3: Write minimal implementation**
 
 `game/src/systems/language.ts`:
 
@@ -209,12 +209,12 @@ export function setLanguage(lang: Language): void {
 setLanguage(detectLanguage(deviceLanguages()));
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `npx vitest run tests/unit/language.test.ts` → PASS (18 tests).
 Run: `npm run typecheck` → sin errores.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/systems/language.ts tests/unit/language.test.ts
@@ -237,7 +237,7 @@ git commit -m "feat: idioma activo y detección por el idioma del móvil"
   - `type ToggleKey = 'music' | 'sfx' | 'joystick'` exportado desde `src/core/save.ts`
   - `Session.updateSettings({ language })` ya existe y lo guarda sin cambios.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Al final de `game/tests/unit/save.test.ts` (añade `SAVE_VERSION` a la lista de imports de `'../../src/core/save'`):
 
@@ -286,12 +286,12 @@ En `game/tests/unit/session.test.ts`, dentro de `describe('Session: dar de comer
   });
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `npx vitest run tests/unit/save.test.ts tests/unit/session.test.ts`
 Expected: FAIL en «acepta es», «acepta en», «ida y vuelta» y en el de la sesión (`language` llega `undefined` porque `parseSave` lo descarta).
 
-- [ ] **Step 3: Write minimal implementation**
+- [x] **Step 3: Write minimal implementation**
 
 En `game/src/core/save.ts`, añade el import de tipo y sustituye la interfaz:
 
@@ -344,13 +344,13 @@ const TOGGLES: readonly { key: ToggleKey; icon: string; label: StringKey }[] = [
 
 Y en las firmas `togglePos(key: ToggleKey)`, `flip(key: ToggleKey)` y `renderToggle(key: ToggleKey, …)`. No queda ningún `keyof Settings` en el archivo.
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `npx vitest run tests/unit/save.test.ts tests/unit/session.test.ts` → PASS.
 Run: `npm run typecheck` → sin errores.
 Run: `npm test` → todo en verde.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/core/save.ts src/scenes/SettingsScene.ts tests/unit/save.test.ts tests/unit/session.test.ts
@@ -376,7 +376,7 @@ Movimiento sin cambio de comportamiento: `t()` sigue dando español. El inglés 
   - `hasKey(key: string): key is StringKey`
   - `t(key: StringKey, vars?: Record<string, string | number>): string`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 En `game/tests/unit/strings.test.ts`, cambia el import y añade un bloque al final:
 
@@ -399,12 +399,12 @@ describe('hasKey', () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npx vitest run tests/unit/strings.test.ts`
 Expected: FAIL, `hasKey is not a function`.
 
-- [ ] **Step 3: Move the file and write the implementation**
+- [x] **Step 3: Move the file and write the implementation**
 
 ```bash
 mkdir -p src/data/strings
@@ -455,12 +455,12 @@ import { hasKey, t } from '../data/strings';
 
 Los demás imports de `'../data/strings'` y `'./strings'` (`animals.ts`, `book.ts`, `foods.ts`, `pens.ts`, escenas, tests) resuelven solos a `strings/index.ts`: no se tocan.
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `npm run typecheck` → sin errores.
 Run: `npm test` → todo en verde (incluido `hasKey`).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add -A src/data src/world/Decor.ts tests/unit/strings.test.ts
@@ -481,7 +481,7 @@ git commit -m "refactor: los textos pasan a strings/es.ts y Decor usa hasKey"
 - Consumes: `t` de `src/data/strings`.
 - Produces: clave `'shop.buy'` con el marcador `{cost}`.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 En `game/tests/unit/content.test.ts`, dentro de `describe('textos con variables', …)`:
 
@@ -491,12 +491,12 @@ En `game/tests/unit/content.test.ts`, dentro de `describe('textos con variables'
   });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npx vitest run tests/unit/content.test.ts`
 Expected: FAIL (`Cannot read properties of undefined (reading 'replace')`; `npm run typecheck` también falla porque la clave no existe).
 
-- [ ] **Step 3: Write minimal implementation**
+- [x] **Step 3: Write minimal implementation**
 
 En `game/src/data/strings/es.ts`, después de `'shop.needCoins'`:
 
@@ -511,13 +511,13 @@ En `game/src/scenes/ShopScene.ts`, en `showBuyBubble`:
       .text(0, 0, t('shop.buy', { cost: entry.cost }), {
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `npm run typecheck` → sin errores.
 Run: `npm test` → todo en verde.
 Run: `npm run test:e2e` → todo en verde (la compra en la tienda sigue funcionando).
 
-- [ ] **Step 5: Docs del bloque A**
+- [x] **Step 5: Docs del bloque A**
 
 - `game/README.md`, sección «Estructura», línea de `src/data/`: sustituye «y textos (`strings.ts`: todo texto visible pasa por `t()`, preparado para multi-idioma)» por «y textos (`strings/`: una clave por texto en `es.ts`; todo texto visible pasa por `t()`, de `strings/index.ts`)».
 - `game/README.md`, sección «Estructura», línea de `src/systems/`: añade «`language` (idioma activo y detección por el idioma del móvil)».
@@ -525,7 +525,7 @@ Run: `npm run test:e2e` → todo en verde (la compra en la tienda sigue funciona
 - Spec, primera línea de estado: «Estado: en curso. Bloque A hecho (idioma activo, guardado, `strings/es.ts`, `shop.buy`).»
 - Este plan: marca las casillas de las tareas 1-4 y cambia **Estado** a «bloque A hecho».
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/data/strings/es.ts src/scenes/ShopScene.ts tests/unit/content.test.ts README.md ../docs/superpowers
