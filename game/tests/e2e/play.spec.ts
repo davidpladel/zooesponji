@@ -44,10 +44,10 @@ test('tocar al león: la cuidadora entra en su recinto y se le da de comer arras
   expect(await page.evaluate(() => window.__ZOO__!.keeperInPen('leon'))).toBe(true);
 
   await dragFood(page, 'carne');
-  await expect.poll(() => page.evaluate(() => window.__ZOO__!.hudCoinsText())).toBe('🪙 1');
+  await expect.poll(() => page.evaluate(() => window.__ZOO__!.hudCoinsText())).toBe('1');
 
   await dragFood(page, 'piedra');
-  await expect.poll(() => page.evaluate(() => window.__ZOO__!.hudCoinsText())).toBe('🪙 1');
+  await expect.poll(() => page.evaluate(() => window.__ZOO__!.hudCoinsText())).toBe('1');
 
   await page.keyboard.press('Escape');
   await page.waitForFunction(() => {
@@ -94,7 +94,7 @@ test('soltar la comida lejos no da monedas', async ({ page }) => {
   await page.mouse.move(box.x + 20, box.y + box.height - 20, { steps: 8 });
   await page.mouse.up();
   await page.waitForTimeout(500);
-  expect(await page.evaluate(() => window.__ZOO__!.hudCoinsText())).toBe('🪙 0');
+  expect(await page.evaluate(() => window.__ZOO__!.hudCoinsText())).toBe('0');
 });
 
 /** En la tienda: tocar el animal (la cuidadora va andando) y luego el bocadillo de compra. */
@@ -122,7 +122,7 @@ test('con 60 monedas se entra en la tienda y se compra la pantera', async ({ pag
 
   await buyInShop(page, 'pantera');
 
-  await expect.poll(() => page.evaluate(() => window.__ZOO__!.hudCoinsText())).toBe('🪙 10');
+  await expect.poll(() => page.evaluate(() => window.__ZOO__!.hudCoinsText())).toBe('10');
   expect(await page.evaluate(() => window.__ZOO__!.unlocked())).toContain('pantera');
 
   await page.keyboard.press('Escape');
@@ -148,5 +148,5 @@ test('la cabra tiene lechuga en su bandeja y se la come', async ({ page }) => {
   const targets = await page.evaluate(() => window.__ZOO__!.feedTargets());
   expect(Object.keys(targets!.foods)).toHaveLength(5);
   await dragFood(page, 'lechuga');
-  await expect.poll(() => page.evaluate(() => window.__ZOO__!.hudCoinsText())).toBe('🪙 1');
+  await expect.poll(() => page.evaluate(() => window.__ZOO__!.hudCoinsText())).toBe('1');
 });

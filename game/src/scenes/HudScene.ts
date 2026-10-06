@@ -1,4 +1,5 @@
 import * as Phaser from 'phaser';
+import { gearVisible } from '../core/hud';
 import { JOYSTICK_RADIUS, inJoystickZone, joystickVector, knobOffset } from '../core/joystick';
 import type { Vec } from '../core/movement';
 import { ANIMALS } from '../data/animals';
@@ -8,12 +9,14 @@ import { sfx } from '../systems/audio';
 import { bus } from '../systems/events';
 import { joystickState } from '../systems/joystickState';
 import { getSession } from '../systems/session';
-import { textStyle } from './ui';
+import { textStyle } from '../ui/theme';
+import { addUiText } from '../ui/text';
+import { HUD_COIN, addCoinCounter, addPillButton, type CoinCounter } from '../ui/widgets';
 
 export class HudScene extends Phaser.Scene {
-  private coinsText!: Phaser.GameObjects.Text;
+  private coins!: CoinCounter;
   private toastText!: Phaser.GameObjects.Text;
-  private gear!: Phaser.GameObjects.Text;
+  private gear!: Phaser.GameObjects.Container;
   private stickBase!: Phaser.GameObjects.Arc;
   private stickKnob!: Phaser.GameObjects.Arc;
   private stickOrigin: Vec | null = null;
@@ -24,27 +27,17 @@ export class HudScene extends Phaser.Scene {
   }
 
   create(): void {
-    this.coinsText = this.add.text(16, 16, '', {
-      fontFamily: 'sans-serif',
-      fontSize: '28px',
-      color: '#ffffff',
-      stroke: '#000000',
-      strokeThickness: 5,
-    });
+    this.coins = addCoinCounter(this, HUD_COIN.x, HUD_COIN.y);
     this.renderCoins(getSession().state.coins);
 
-    this.toastText = this.add
-      .text(this.scale.width / 2, 90, '', textStyle(28, '#ffffff', '#000000'))
+    this.toastText = addUiText(this, this.scale.width / 2, 90, '', textStyle(28))
       .setOrigin(0.5)
       .setDepth(50)
       .setVisible(false);
 
-    // Menú de ajustes: botón grande (≥ 48 px) abajo a la izquierda, lejos de la ✖ de las ventanas.
-    this.gear = this.add
-      .text(16, this.scale.height - 16, '⚙️', { fontSize: '40px', backgroundColor: '#00000055', padding: { x: 10, y: 8 } })
-      .setOrigin(0, 1)
-      .setInteractive({ useHandCursor: true });
-    this.gear.on('pointerup', () => this.openSettings());
+    // Menú de ajustes: abajo a la izquierda (a la derecha están los botones de Android).
+    this.gear = addPillButton(this, 0, 0, 56, 56, { color: 'blue', icon: 'gear', onTap: () => this.openSettings() });
+    this.layout();
 
     this.stickBase = this.add.circle(0, 0, JOYSTICK_RADIUS, 0xffffff, 0.25).setVisible(false);
     this.stickKnob = this.add.circle(0, 0, 28, 0xffffff, 0.7).setVisible(false);
@@ -77,16 +70,19 @@ export class HudScene extends Phaser.Scene {
   }
 
   coinsLabel(): string {
-    return this.coinsText.text;
+    return this.coins.label();
+  }
+
+  gearVisible(): boolean {
+    return this.gear.visible;
+  }
+
+  update(): void {
+    this.gear.setVisible(gearVisible(this.scene.manager.getScenes(true).map((scene) => scene.scene.key)));
   }
 
   private renderCoins(coins: number, pop = false): void {
-    this.coinsText.setText(`🪙 ${coins}`);
-    if (pop) {
-      this.tweens.killTweensOf(this.coinsText);
-      this.coinsText.setScale(1);
-      this.tweens.add({ targets: this.coinsText, scale: 1.3, duration: 120, yoyo: true });
-    }
+    this.coins.set(coins, pop);
   }
 
   private showToast(text: string): void {
@@ -111,7 +107,7 @@ export class HudScene extends Phaser.Scene {
   }
 
   private layout(): void {
-    this.gear.setPosition(16, this.scale.height - 16);
+    this.gear.setPosition(16 + 28, this.scale.height - 16 - 28);
     this.toastText.setX(this.scale.width / 2);
   }
 
@@ -120,7 +116,7 @@ export class HudScene extends Phaser.Scene {
     // Con Feed o Settings abiertas el mundo está pausado; en la tienda la cuidadora también anda.
     if (!this.scene.isActive('World') && !this.scene.isActive('Shop')) return;
     const point = { x: pointer.x, y: pointer.y };
-    if (this.gear.getBounds().contains(point.x, point.y)) return; // la rueda no arranca el joystick
+    if (this.gear.visible && this.gear.getBounds().contains(point.x, point.y)) return; // la rueda no arranca el joystick
     if (!inJoystickZone(point, this.scale.width, this.scale.height)) return;
     this.stickPointerId = pointer.id;
     this.stickOrigin = point;

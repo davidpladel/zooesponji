@@ -53,10 +53,10 @@ test('se compra el estanque, la cuidadora entra y da de comer a un pato', async 
   expect(await page.evaluate(() => window.__ZOO__!.keeperInPen('estanque'))).toBe(true);
   await dragFood(page, 'maiz');
   // 200 − 150 del estanque + 3 del pato.
-  await expect.poll(() => coins(page)).toBe('🪙 53');
+  await expect.poll(() => coins(page)).toBe('53');
   // El pan les sienta mal: no da monedas.
   await dragFood(page, 'pan');
-  await expect.poll(() => coins(page)).toBe('🪙 53');
+  await expect.poll(() => coins(page)).toBe('53');
 });
 
 test('en la sabana se da de comer a una jirafa y a una cebra, cada una con su bandeja', async ({ page }) => {
@@ -72,7 +72,7 @@ test('en la sabana se da de comer a una jirafa y a una cebra, cada una con su ba
   expect(foods.sort()).toEqual(['calcetin', 'carne', 'lechuga', 'manzana', 'platano']);
   await dragFood(page, 'lechuga');
   // 1100 − 900 − 120 + 8 de la jirafa.
-  await expect.poll(() => coins(page)).toBe('🪙 88');
+  await expect.poll(() => coins(page)).toBe('88');
   await closeFeed(page);
 
   await feed(page, 'raya');
@@ -80,7 +80,7 @@ test('en la sabana se da de comer a una jirafa y a una cebra, cada una con su ba
   expect(foods.sort()).toEqual(['lechuga', 'manzana', 'pescado', 'piedra', 'zanahoria']);
   await dragFood(page, 'zanahoria');
   // + 6 de la cebra.
-  await expect.poll(() => coins(page)).toBe('🪙 94');
+  await expect.poll(() => coins(page)).toBe('94');
 });
 
 test('un visitante entra en el recinto de las ovejas y salen corazones', async ({ page }) => {
