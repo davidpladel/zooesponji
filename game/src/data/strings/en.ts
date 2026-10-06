@@ -19,6 +19,7 @@ export const STRINGS_EN: Record<StringKey, string> = {
   'settings.music': 'Music',
   'settings.sfx': 'Sounds',
   'settings.joystick': 'Joystick',
+  'settings.language': 'English',
   'credits.madeBy': 'Made with love by Daniela and Adrián 💛',
   'credits.copyright': '© 2026 davidpladel · All rights reserved',
   'credits.art': 'Panda and panther painted by Daniela and Adrián',

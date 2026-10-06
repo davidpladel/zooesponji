@@ -144,6 +144,13 @@ describe('contenido: tienda', () => {
 });
 
 describe('textos con variables', () => {
+  it('cada idioma se llama a sí mismo en su idioma', () => {
+    setLanguage('es');
+    expect(t('settings.language')).toBe('Español');
+    setLanguage('en');
+    expect(t('settings.language')).toBe('English');
+  });
+
   afterEach(() => setLanguage('es'));
 
   it('en español', () => {

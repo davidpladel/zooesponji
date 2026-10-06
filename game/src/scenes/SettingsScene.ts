@@ -6,6 +6,7 @@ import type { ToggleKey } from '../core/save';
 import { APP_VERSION } from '../core/version';
 import { t, type StringKey } from '../data/strings';
 import { sfx } from '../systems/audio';
+import { getLanguage, otherLanguage, setLanguage, type Language } from '../systems/language';
 import { openLegal } from '../systems/legal';
 import { askQuit } from '../systems/platform';
 import { getSession } from '../systems/session';
@@ -17,15 +18,22 @@ const TOGGLES: readonly { key: ToggleKey; icon: string; label: StringKey }[] = [
   { key: 'joystick', icon: '🕹️', label: 'settings.joystick' },
 ];
 
+const FLAGS: Record<Language, string> = { es: '🇪🇸', en: '🇬🇧' };
+/** Ventanas que pueden estar abiertas debajo del menú; sus textos ya están pintados en el idioma anterior. */
+const OVERLAYS = ['Book', 'Shop', 'Feed'] as const;
+
 type ButtonKey = 'privacy' | 'quit';
 
 /**
- * Menú de ajustes en un tablero de madera: música, sonido, joystick, créditos, privacidad y salir.
+ * Menú de ajustes en un tablero de madera: música, sonido, joystick, idioma, créditos, privacidad y salir.
  * Sin puerta parental: la privacidad se lee dentro del juego y nada lleva fuera de él.
  */
 export class SettingsScene extends Phaser.Scene {
   private readonly toggles = new Map<ToggleKey, Phaser.GameObjects.Container>();
   private readonly buttons = new Map<ButtonKey, Phaser.GameObjects.Container>();
+  private language: Phaser.GameObjects.Container | null = null;
+  /** Ya se ha pulsado el idioma: se ignoran más toques hasta que el menú se monte de nuevo. */
+  private switching = false;
   /** El mundo estaba en marcha al abrir: al cerrar se reanuda. */
   private pausedWorld = false;
 
@@ -36,6 +44,8 @@ export class SettingsScene extends Phaser.Scene {
   init(data: { pausedWorld?: boolean } = {}): void {
     this.toggles.clear();
     this.buttons.clear();
+    this.language = null;
+    this.switching = false;
     if (data.pausedWorld !== undefined) this.pausedWorld = data.pausedWorld;
   }
 
@@ -51,15 +61,22 @@ export class SettingsScene extends Phaser.Scene {
     addWoodPanel(this, width / 2, height * 0.1, Math.min(panelW * 0.5, 360), signH);
     this.add.text(width / 2, height * 0.1, t('settings.title'), textStyle(Math.round(signH * 0.5), '#ffffff', '#4e2f14')).setOrigin(0.5);
 
-    const size = Phaser.Math.Clamp(Math.min(height * 0.2, (panelW - 80) / 3.6), 64, 140);
+    // Cuatro botones en fila: los tres interruptores y el idioma.
+    const slots = TOGGLES.length + 1;
+    const size = Phaser.Math.Clamp(Math.min(height * 0.2, (panelW - 80) / (slots * 1.2)), 64, 140);
+    const gap = Math.min(40, size * 0.4);
+    const slotX = (i: number): number => width / 2 + (i - (slots - 1) / 2) * (size + gap);
     TOGGLES.forEach((toggle, i) => {
-      const x = width / 2 + (i - 1) * (size + 40);
-      const button = this.add.container(x, height * 0.35);
+      const button = this.add.container(slotX(i), height * 0.35);
       button.setSize(size, size).setInteractive({ useHandCursor: true });
       button.on('pointerup', () => void this.flip(toggle.key));
       this.toggles.set(toggle.key, button);
       this.renderToggle(toggle.key, size, toggle.icon, t(toggle.label));
     });
+    this.language = this.add.container(slotX(TOGGLES.length), height * 0.35);
+    this.language.setSize(size, size).setInteractive({ useHandCursor: true });
+    this.language.on('pointerup', () => void this.switchLanguage());
+    this.paintToggle(this.language, size, FLAGS[getLanguage()], t('settings.language'), true);
 
     this.addCredits(height * 0.6, panelW);
     this.addButtons(height * 0.805, panelW);
@@ -97,6 +114,15 @@ export class SettingsScene extends Phaser.Scene {
     return button ? { x: button.x, y: button.y } : null;
   }
 
+  languagePos(): Vec | null {
+    return this.language ? { x: this.language.x, y: this.language.y } : null;
+  }
+
+  /** Nombre del idioma que enseña el botón (para pruebas). */
+  languageLabel(): string {
+    return t('settings.language');
+  }
+
   private async flip(key: ToggleKey): Promise<void> {
     const session = getSession();
     await session.updateSettings({ [key]: !session.settings[key] });
@@ -108,9 +134,11 @@ export class SettingsScene extends Phaser.Scene {
 
   private renderToggle(key: ToggleKey, size: number, icon: string, label: string): void {
     const button = this.toggles.get(key);
-    if (!button) return;
+    if (button) this.paintToggle(button, size, icon, label, getSession().settings[key]);
+  }
+
+  private paintToggle(button: Phaser.GameObjects.Container, size: number, icon: string, label: string, on: boolean): void {
     button.removeAll(true);
-    const on = getSession().settings[key];
     const lip = Math.max(4, Math.round(size * 0.07));
     button.add(this.add.rectangle(0, 0, size, size, 0x4e2f14));
     button.add(this.add.rectangle(0, -lip / 2, size - lip * 2, size - lip * 3, on ? 0xf3e9d2 : 0x9c8f7c));
@@ -119,6 +147,28 @@ export class SettingsScene extends Phaser.Scene {
     if (!on) button.add(this.add.rectangle(0, -lip / 2, size * 0.8, lip * 1.4, 0xc62828).setAngle(-45));
     button.add(this.add.text(0, size * 0.68, label, textStyle(Math.round(size * 0.2), '#ffffff', '#4e2f14')).setOrigin(0.5));
     button.setData('on', on);
+  }
+
+  /**
+   * Cambia de idioma sin recargar. Se guarda antes de tocar nada: no se pierde partida.
+   * Los rótulos del mundo se pintan una sola vez al montarlo, así que el mundo se monta de nuevo
+   * (la cuidadora vuelve a la entrada) y se queda en pausa debajo del menú. El HUD no tiene textos fijos.
+   */
+  private async switchLanguage(): Promise<void> {
+    if (this.switching) return;
+    this.switching = true;
+    const next = otherLanguage(getLanguage());
+    await getSession().updateSettings({ language: next });
+    setLanguage(next);
+    sfx.play('tap');
+    for (const key of OVERLAYS) {
+      if (this.scene.isActive(key) || this.scene.isPaused(key)) this.scene.stop(key);
+    }
+    // Las operaciones de escena se aplican en orden en el siguiente paso: parar, montar, pausar.
+    this.scene.stop('World');
+    this.scene.launch('World');
+    this.scene.pause('World');
+    this.scene.restart({ pausedWorld: true });
   }
 
   /** Privacidad siempre; Salir solo en la app (una web no se puede cerrar a sí misma). */

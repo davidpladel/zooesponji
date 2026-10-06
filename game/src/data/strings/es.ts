@@ -13,6 +13,7 @@ export const STRINGS_ES = {
   'settings.music': 'Música',
   'settings.sfx': 'Sonidos',
   'settings.joystick': 'Joystick',
+  'settings.language': 'Español',
   'credits.madeBy': 'Hecho con cariño por Daniela y Adrián 💛',
   'credits.copyright': '© 2026 davidpladel · Todos los derechos reservados',
   'credits.art': 'Panda y pantera pintados por Daniela y Adrián',
