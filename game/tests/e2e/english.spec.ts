@@ -103,3 +103,41 @@ test('en inglés la privacidad se lee en inglés, dentro del juego', async ({ pa
   expect(await page.evaluate(() => window.__ZOO__!.back())).toBe('close-overlay');
   await expect(page.locator('#legal')).toHaveCount(0);
 });
+
+test('capturas en inglés a tamaño de móvil, para revisarlas a ojo', async ({ page }, testInfo) => {
+  test.skip(!process.env.CAPTURAS, 'Solo a mano: CAPTURAS=1');
+  await page.setViewportSize({ width: 800, height: 360 });
+  const shot = async (name: string): Promise<void> => {
+    await page.waitForTimeout(600); // que acaben las animaciones de entrada
+    await page.screenshot({ path: testInfo.outputPath(`en-${name}.png`) });
+  };
+
+  await page.goto('/');
+  await waitForTitle(page);
+  await shot('1-titulo');
+  await pressPlay(page);
+  await shot('2-mundo');
+
+  await openSettings(page);
+  await shot('3-ajustes');
+  await page.evaluate(() => window.__ZOO__!.back());
+
+  await page.evaluate(() => window.__ZOO__!.openFeed('bills'));
+  await page.waitForFunction(() => window.__ZOO__!.activeScenes().includes('Feed'));
+  await shot('4-comer');
+  await page.evaluate(() => window.__ZOO__!.back());
+
+  await page.evaluate(() => window.__ZOO__!.addCoins(500));
+  await page.evaluate(() => window.__ZOO__!.openShop());
+  await page.waitForFunction(() => window.__ZOO__!.shopCardScreenPos('pantera') !== null);
+  await page.waitForTimeout(3500); // saludo del tendero
+  await shot('5-tienda');
+
+  for (const pageId of ['index', 'story', 'mary', 'canela']) {
+    await page.evaluate((id) => window.__ZOO__!.openBook(id), pageId);
+    await page.waitForFunction((id) => window.__ZOO__!.bookPage() === id, pageId);
+    await shot(`6-libro-${pageId}`);
+    await page.evaluate(() => window.__ZOO__!.back());
+    await page.waitForFunction(() => !window.__ZOO__!.activeScenes().includes('Book'));
+  }
+});
