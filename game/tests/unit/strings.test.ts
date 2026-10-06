@@ -100,6 +100,15 @@ describe('inglés', () => {
     expect(missing(pageKeys(ids))).toEqual([]);
   });
 
+  it('libro C: polo y sabana', () => {
+    const ids = ['pingu', 'copito', 'frac', 'tobogan', 'hielo', 'lola', 'raya', 'brisa', 'pecas', 'zigzag', 'salto', 'miel', 'pipa', 'tembo', 'kali', 'raja', 'mali'];
+    expect(missing(pageKeys(ids))).toEqual([]);
+  });
+
+  it('con el libro C ya no falta ninguna clave', () => {
+    expect(missing(Object.keys(ES))).toEqual([]);
+  });
+
   it.each(Object.entries(EN).filter(([key]) => /^book\.page\..+\.text$/.test(key)))('%s tiene 20 palabras como mucho', (_key, text) => {
     expect(words(text)).toBeLessThanOrEqual(20);
   });
