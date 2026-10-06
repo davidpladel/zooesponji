@@ -25,6 +25,8 @@ export interface ZooTestApi {
   /** Compra un artículo sin pasar por la tienda (para llegar rápido a un recinto en las pruebas). */
   buy(itemId: string): Promise<boolean>;
   hudCoinsText(): string | null;
+  /** El engranaje de ajustes se ve (solo andando por el zoo). */
+  hudGearVisible(): boolean;
   openFeed(residentId: string): void;
   feedTargets(): { animal: Vec; foods: Partial<Record<FoodId, Vec>> } | null;
   isFeedBusy(): boolean;
@@ -105,6 +107,7 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
       return result.ok;
     },
     hudCoinsText: () => activeScene<HudScene>('Hud')?.coinsLabel() ?? null,
+    hudGearVisible: () => activeScene<HudScene>('Hud')?.gearVisible() ?? false,
     openFeed: (residentId) => {
       if (game.scene.isActive('World')) game.scene.pause('World');
       game.scene.start('Feed', { residentId });

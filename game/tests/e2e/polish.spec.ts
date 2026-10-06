@@ -52,7 +52,7 @@ test('comprar la pantera y luego otra: al completarse su peana queda AGOTADA', a
   await buyInShop(page, 'extra-pantera');
   await expect.poll(() => page.evaluate(() => window.__ZOO__!.shopCardStatus('extra-pantera'))).toBe('full');
   expect(await page.evaluate(() => window.__ZOO__!.counts().pantera)).toBe(2);
-  expect(await page.evaluate(() => window.__ZOO__!.hudCoinsText())).toBe('🪙 30');
+  expect(await page.evaluate(() => window.__ZOO__!.hudCoinsText())).toBe('30');
 });
 
 test('menú ⚙️: apagar el sonido y ver los créditos', async ({ page }) => {
@@ -117,4 +117,28 @@ test('un error no controlado muestra la pantalla "¡Ups!" con 🔄', async ({ pa
   await expect(page.locator('#error-screen')).toContainText('¡Ups!');
   await expect(page.locator('#error-retry')).toBeVisible();
   expect(errors.some((e) => e.includes('Error de prueba'))).toBe(true);
+});
+
+test('el engranaje solo se ve andando por el zoo', async ({ page }) => {
+  await startGame(page);
+  const gear = () => page.evaluate(() => window.__ZOO__!.hudGearVisible());
+  await expect.poll(gear).toBe(true);
+
+  await page.evaluate(() => window.__ZOO__!.openFeed('bills'));
+  await expect.poll(gear).toBe(false);
+  await page.evaluate(() => window.__ZOO__!.back());
+  await expect.poll(gear).toBe(true);
+
+  await page.evaluate(() => window.__ZOO__!.openShop());
+  await expect.poll(gear).toBe(false);
+  await page.evaluate(() => window.__ZOO__!.openBook());
+  await expect.poll(() => page.evaluate(() => window.__ZOO__!.activeScenes())).toContain('Book');
+  expect(await gear()).toBe(false);
+  await page.evaluate(() => window.__ZOO__!.back()); // cierra el libro
+  expect(await gear()).toBe(false); // sigue la tienda
+  await page.evaluate(() => window.__ZOO__!.back()); // sale de la tienda
+  await expect.poll(gear, { timeout: 15_000 }).toBe(true);
+
+  await page.evaluate(() => window.__ZOO__!.openSettings());
+  await expect.poll(gear).toBe(false);
 });

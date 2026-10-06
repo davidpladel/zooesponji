@@ -37,11 +37,11 @@ test('las monedas se muestran y sobreviven a recargar', async ({ page }) => {
   await startGame(page);
 
   await page.evaluate(() => window.__ZOO__!.addCoins(3));
-  await expect.poll(() => page.evaluate(() => window.__ZOO__!.hudCoinsText())).toBe('🪙 3');
+  await expect.poll(() => page.evaluate(() => window.__ZOO__!.hudCoinsText())).toBe('3');
 
   await page.reload();
   await startGame(page);
-  await expect.poll(() => page.evaluate(() => window.__ZOO__!.hudCoinsText())).toBe('🪙 3');
+  await expect.poll(() => page.evaluate(() => window.__ZOO__!.hudCoinsText())).toBe('3');
 });
 
 test('sin errores en la consola al arrancar', async ({ page }) => {

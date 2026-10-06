@@ -85,7 +85,7 @@ test('cambiar de idioma con la tienda abierta la cierra y no se pierden las mone
 
   expect(await page.evaluate(() => window.__ZOO__!.back())).toBe('close-settings');
   await page.waitForFunction(() => window.__ZOO__!.activeScenes().includes('World'));
-  expect(await page.evaluate(() => window.__ZOO__!.hudCoinsText())).toBe('🪙 25');
+  expect(await page.evaluate(() => window.__ZOO__!.hudCoinsText())).toBe('25');
 });
 
 test('en inglés la privacidad se lee en inglés, dentro del juego', async ({ page }) => {
