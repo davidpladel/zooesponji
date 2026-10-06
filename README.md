@@ -79,7 +79,9 @@ El juego se ha hecho por hitos: spec de diseño → plan → ejecución.
 
 ✅ **2.1.0 / 2.1.1** (2026-09-28, publicada en la web; la 2.1.1 y la 2.1.2 rehacen la catarata): tienda por dentro (fases C y B), muro y portón del parque, plaza con fuente animada, catarata con acantilado, pasillos estrechos, cámara más alejada, comida al llegar a la puerta y carne con dibujo.
 
-Pendiente: la carne pintada por Daniela y Adrián (ahora es un emoji 🥩).
+✅ **2.3.0** (2026-10-05, en las ramas `zoo-grande-3-mapa-y-recintos` y `zoo-grande-4-tienda-y-libro`, sin fusionar ni publicar hasta que David la pruebe): el zoo grande.
+
+Pendiente, por orden: probar y publicar la 2.3.0; multi-idioma (selector de idioma y traducciones, con su propio spec, antes de Play Store); publicación en Google Play (6b). Ideas para después, cada una con su spec: bañar y limpiar, día y noche, clínica veterinaria y acuario con delfines.
 
 **Más adelante:** clínica veterinaria, bañar animales, limpiar jaulas, ciclo día-noche, acuario con delfines, más animales y zonas.
 

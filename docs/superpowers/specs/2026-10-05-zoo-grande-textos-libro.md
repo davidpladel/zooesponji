@@ -1,8 +1,7 @@
 # Zoo grande — textos de las 35 páginas nuevas del libro
 
-**Estado:** propuesta de Claude, **pendiente del OK de David**. Ya están puestos en el juego
-(`game/src/data/strings.ts`, claves `book.page.<id>.text`) para poder verlos en el libro; cambiar uno es
-cambiar su línea ahí.
+**Estado:** **aprobados por David (6-oct-2026)**. Están en el juego (`game/src/data/strings.ts`, claves
+`book.page.<id>.text`); cambiar uno es cambiar su línea ahí.
 
 Reglas: 20 palabras como mucho, frases completas, sin nada que dependa del idioma (los nombres propios
 son claves aparte). Un test comprueba el máximo de palabras.
