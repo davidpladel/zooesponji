@@ -65,6 +65,10 @@ const markers = (text: string): string[] => [...text.matchAll(/\{(\w+)\}/g)].map
 /** De las claves que se piden, las que aún no están en inglés. */
 const missing = (keys: string[]): string[] => keys.filter((key) => !(key in EN));
 
+const pageKeys = (ids: string[]): string[] => ids.flatMap((id) => [`book.page.${id}.title`, `book.page.${id}.text`]);
+/** El nombre propio de un título: lo que va antes de la coma («Bills, el león» → «Bills»). */
+const properName = (title: string): string => title.split(',')[0]!;
+
 describe('inglés', () => {
   it.each(Object.keys(EN))('%s: existe en español, no está vacío y conserva los marcadores', (key) => {
     expect(ES[key], key).toBeDefined();
@@ -84,5 +88,26 @@ describe('inglés', () => {
     const about = Object.keys(ES).filter((key) => key.startsWith('shop.about.'));
     expect(about).toHaveLength(15);
     expect(missing(about)).toEqual([]);
+  });
+
+  it('libro A: el zoo, centro y montaña', () => {
+    const ids = ['cover', 'story', 'mary', 'bills', 'sasha', 'gordi', 'nube', 'galleta', 'tolon', 'chispa', 'noche', 'sombra', 'mochi', 'pompon', 'back'];
+    expect(missing(pageKeys(ids))).toEqual([]);
+  });
+
+  it.each(Object.entries(EN).filter(([key]) => /^book\.page\..+\.text$/.test(key)))('%s tiene 20 palabras como mucho', (_key, text) => {
+    expect(words(text)).toBeLessThanOrEqual(20);
+  });
+
+  it.each(Object.keys(EN).filter((key) => /^book\.page\..+\.title$/.test(key) && ES[key]!.includes(',')))(
+    '%s conserva el nombre propio',
+    (key) => {
+      expect(properName(EN[key]!)).toBe(properName(ES[key]!));
+    },
+  );
+
+  it('«Zoo Esponji» sigue igual dentro del libro', () => {
+    expect(EN['book.page.cover.title']).toContain('Zoo Esponji');
+    expect(EN['book.page.story.text']).toContain('Zoo Esponji');
   });
 });
