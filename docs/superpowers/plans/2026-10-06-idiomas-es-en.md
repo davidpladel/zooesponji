@@ -10,7 +10,7 @@
 
 **Spec:** `docs/superpowers/specs/2026-10-06-idiomas-es-en-design.md`.
 
-**Estado:** bloque A hecho (unitarios y typecheck en verde; el e2e del bloque está pendiente de pasar). (Se actualiza al cerrar cada bloque: A = tareas 1-4, B = tareas 5-10, C = tareas 11-13.)
+**Estado:** bloques A y B hechos (unitarios y typecheck en verde; el e2e del bloque A pasó, 25 tests en verde; el e2e del bloque B está pendiente de pasar). (Se actualiza al cerrar cada bloque: A = tareas 1-4, B = tareas 5-10, C = tareas 11-13.)
 
 ## Global Constraints
 
@@ -550,7 +550,7 @@ Menús, especies, zonas, recintos, comidas, tienda, avisos y rótulos del libro.
 - Consumes: `type StringKey` de `./es`.
 - Produces: `STRINGS_EN` (exportado desde `src/data/strings/en.ts`; `index.ts` aún no lo usa).
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 En `game/tests/unit/strings.test.ts`, añade el import y, al final, el bloque:
 
@@ -582,12 +582,12 @@ describe('inglés', () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npx vitest run tests/unit/strings.test.ts`
 Expected: FAIL, no encuentra `../../src/data/strings/en`.
 
-- [ ] **Step 3: Write the translation**
+- [x] **Step 3: Write the translation**
 
 `game/src/data/strings/en.ts`:
 
@@ -701,12 +701,12 @@ export const STRINGS_EN = {
 } satisfies Partial<Record<StringKey, string>>;
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `npx vitest run tests/unit/strings.test.ts` → PASS.
 Run: `npm run typecheck` → sin errores.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/data/strings/en.ts tests/unit/strings.test.ts
@@ -725,7 +725,7 @@ git commit -m "feat: inglés, bloque 1: menús, especies, zonas, recintos, comid
 - Consumes: `STRINGS_EN`, `missing` y `ES` del test de la Task 5.
 - Produces: las 15 claves `shop.about.<especie>` en `STRINGS_EN`.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Dentro de `describe('inglés', …)`:
 
@@ -737,12 +737,12 @@ Dentro de `describe('inglés', …)`:
   });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npx vitest run tests/unit/strings.test.ts -t "bloque 2"`
 Expected: FAIL, faltan las 15 claves.
 
-- [ ] **Step 3: Write the translation**
+- [x] **Step 3: Write the translation**
 
 En `game/src/data/strings/en.ts`, al final del objeto:
 
@@ -764,11 +764,11 @@ En `game/src/data/strings/en.ts`, al final del objeto:
   'shop.about.elefante-asiatico': 'The Asian elephant showers with its trunk!',
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `npx vitest run tests/unit/strings.test.ts` → PASS. `npm run typecheck` → sin errores.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/data/strings/en.ts tests/unit/strings.test.ts
@@ -789,7 +789,7 @@ Portada, historia, Mary, leones, cabras, panteras, pandas y contraportada.
 - Consumes: `EN`, `ES`, `missing`, `words` del test.
 - Produces: 30 claves `book.page.<id>.title|text`; en el test, el ayudante `pageKeys(ids)` y dos comprobaciones generales (20 palabras, nombre propio) que valen para los bloques siguientes.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Junto a `missing`, fuera del `describe`:
 
@@ -824,12 +824,12 @@ Dentro de `describe('inglés', …)`:
   });
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `npx vitest run tests/unit/strings.test.ts -t "libro A"`
 Expected: FAIL, faltan 30 claves.
 
-- [ ] **Step 3: Write the translation**
+- [x] **Step 3: Write the translation**
 
 Al final del objeto de `game/src/data/strings/en.ts`:
 
@@ -868,11 +868,11 @@ Al final del objeto de `game/src/data/strings/en.ts`:
 
 Adaptaciones hechas a propósito (no «corregirlas» a literal): «Nube» se explica con *like a little cloud*; «Tolón» con *ding-dong*; «Noche» es *black as the night* en vez de *as coal*.
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `npx vitest run tests/unit/strings.test.ts` → PASS. `npm run typecheck` → sin errores.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/data/strings/en.ts tests/unit/strings.test.ts
@@ -893,7 +893,7 @@ Patos, ovejas y establo.
 - Consumes: `missing`, `pageKeys` y las comprobaciones generales de la Task 7 (20 palabras, nombre propio), que se aplican solas a las páginas nuevas.
 - Produces: 36 claves `book.page.<id>.title|text`.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Dentro de `describe('inglés', …)`:
 
@@ -904,12 +904,12 @@ Dentro de `describe('inglés', …)`:
   });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npx vitest run tests/unit/strings.test.ts -t "libro B"`
 Expected: FAIL, faltan 36 claves.
 
-- [ ] **Step 3: Write the translation**
+- [x] **Step 3: Write the translation**
 
 Al final del objeto de `game/src/data/strings/en.ts`:
 
@@ -954,11 +954,11 @@ Al final del objeto de `game/src/data/strings/en.ts`:
 
 Adaptaciones: «Cuac» *quacks his own name*; «Charco» gana un *Splash!*; «Trueno» se explica con *His name means thunder*; «Algodón» es *soft as cotton*; «Rizos» y «Mancha» van sin pronombre.
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `npx vitest run tests/unit/strings.test.ts` → PASS. `npm run typecheck` → sin errores.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/data/strings/en.ts tests/unit/strings.test.ts
@@ -979,7 +979,7 @@ Pingüinos, jirafas, cebras, gacelas y elefantes.
 - Consumes: `missing`, `pageKeys` y las comprobaciones generales de la Task 7.
 - Produces: 34 claves `book.page.<id>.title|text`. Con ellas `STRINGS_EN` ya tiene todas las claves de `STRINGS_ES`.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Dentro de `describe('inglés', …)`:
 
@@ -994,12 +994,12 @@ Dentro de `describe('inglés', …)`:
   });
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `npx vitest run tests/unit/strings.test.ts -t "libro C"`
 Expected: FAIL, faltan 34 claves.
 
-- [ ] **Step 3: Write the translation**
+- [x] **Step 3: Write the translation**
 
 Al final del objeto de `game/src/data/strings/en.ts`:
 
@@ -1042,11 +1042,11 @@ Al final del objeto de `game/src/data/strings/en.ts`:
 
 Adaptaciones: «Frac» es *his black-and-white suit*; «Brisa» deja *a breeze*; «Miel» es *sweet as honey*; «Tobogán» grita *Wheee!*.
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `npx vitest run tests/unit/strings.test.ts` → PASS. `npm run typecheck` → sin errores.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/data/strings/en.ts tests/unit/strings.test.ts
@@ -1072,7 +1072,7 @@ git commit -m "feat: inglés, libro C: polo y sabana"
   - `t()` devuelve el texto del idioma activo
   - Al arrancar, el idioma activo es `settings.language` o, si no hay, el del móvil.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 En `game/tests/unit/content.test.ts`, cambia los imports y sustituye entero el `describe('textos con variables', …)`:
 
@@ -1145,12 +1145,12 @@ describe('inglés', () => {
 });
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `npx vitest run tests/unit/content.test.ts tests/unit/strings.test.ts`
 Expected: FAIL. `strings.test.ts` no encuentra `STRINGS_EN` en el índice; en `content.test.ts`, «en inglés» recibe `'La tienda abre con 20 monedas'`.
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 En `game/src/data/strings/en.ts`, cambia la declaración y el cierre (el contenido del objeto no se toca):
 
@@ -1212,20 +1212,20 @@ En `game/playwright.config.ts`, dentro de `use`, después de `viewport`: las pru
     locale: 'es-ES',
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `npm run typecheck` → sin errores. (Comprobación a mano de que falta-clave-no-compila: borra una línea de `en.ts`, `npm run typecheck` debe dar `Property '…' is missing in type`; deshaz el cambio.)
 Run: `npm test` → todo en verde.
 Run: `npm run test:e2e` → todo en verde, en español.
 
-- [ ] **Step 5: Docs del bloque B**
+- [x] **Step 5: Docs del bloque B**
 
 - `game/README.md`, «Estructura», línea de `src/data/`: «y textos (`strings/`: `es.ts` y `en.ts`, una clave por texto; `en.ts` no compila si le falta una; todo texto visible pasa por `t()`, que usa el idioma activo)».
 - `game/README.md`, «Añadir un animal», paso 1: «(clave de `src/data/strings/es.ts`, con su traducción en `en.ts`)». Añade al final de la lista: «5. Textos en los dos idiomas: nombre de la especie, frase del tendero (`shop.about.*`), «otro…» (`shop.extra.*`) y título y texto de la página de cada residente (`book.page.<id>.*`). El nombre propio no se traduce.»
 - Spec, estado: «Estado: en curso. Bloques A y B hechos (el juego ya sale en inglés con el móvil en inglés; falta el botón de Ajustes y la privacidad).»
 - Este plan: marca las tareas 5-10 y cambia **Estado** a «bloques A y B hechos».
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/data/strings src/scenes/PreloadScene.ts playwright.config.ts tests/unit README.md ../docs/superpowers

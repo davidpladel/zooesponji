@@ -6,6 +6,7 @@ import { MAPS } from '../config';
 import { phaserBackend, queueAudio, sfx } from '../systems/audio';
 import { createStore } from '../systems/createStore';
 import { bus } from '../systems/events';
+import { deviceLanguages, resolveLanguage, setLanguage } from '../systems/language';
 import { Session, setSession } from '../systems/session';
 
 /** Sin arte importado, el archivo no existe (o el servidor devuelve otra cosa): se usa el arte provisional. */
@@ -60,7 +61,10 @@ export class PreloadScene extends Phaser.Scene {
   }
 
   private async startSession(): Promise<void> {
-    setSession(await Session.load(createStore()));
+    const session = await Session.load(createStore());
+    setSession(session);
+    // El idioma elegido en Ajustes; si no hay ninguno, el del móvil.
+    setLanguage(resolveLanguage(session.settings.language, deviceLanguages()));
     this.scene.start('Title');
   }
 }

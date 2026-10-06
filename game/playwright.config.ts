@@ -10,6 +10,8 @@ export default defineConfig({
     channel: process.env.CI ? undefined : 'chrome',
     baseURL: 'http://localhost:5173',
     viewport: { width: 1280, height: 720 },
+    // Las pruebas de siempre leen textos en español; el inglés tiene su propio archivo (english.spec.ts).
+    locale: 'es-ES',
   },
   webServer: {
     command: 'npm run dev',

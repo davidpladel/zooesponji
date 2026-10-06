@@ -1,9 +1,10 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vitest';
 import { ANIMAL_IDS, ANIMALS, isAnimalId, trayFoods } from '../../src/data/animals';
 import { FOOD_IDS, FOODS, type FoodId } from '../../src/data/foods';
 import { PEN_IDS, PENS } from '../../src/data/pens';
 import { SHOP_ITEMS, SHOP_UNLOCK_COINS, getShopItem, shopItemForPen } from '../../src/data/shop';
 import { STRINGS_ES, t } from '../../src/data/strings';
+import { setLanguage } from '../../src/systems/language';
 
 describe('contenido: animales', () => {
   it('están las 4 especies de siempre y las 11 nuevas', () => {
@@ -143,14 +144,32 @@ describe('contenido: tienda', () => {
 });
 
 describe('textos con variables', () => {
-  it('t sustituye {n}', () => {
+  afterEach(() => setLanguage('es'));
+
+  it('en español', () => {
+    setLanguage('es');
     expect(t('toast.shopLocked', { n: 20 })).toBe('La tienda abre con 20 monedas');
-  });
-  it('el bocadillo de compra lleva el precio', () => {
-    expect(t('shop.buy', { cost: 50 })).toBe('¡Comprar! 🪙 50');
-  });
-  it('sin variables deja el texto igual', () => {
     expect(t('title.play')).toBe('Jugar');
+    expect(t('shop.buy', { cost: 50 })).toBe('¡Comprar! 🪙 50');
+    expect(t('book.page.bills.title')).toBe('Bills, el león');
+  });
+
+  it('en inglés', () => {
+    setLanguage('en');
+    expect(t('toast.shopLocked', { n: 20 })).toBe('The shop opens with 20 coins');
+    expect(t('title.play')).toBe('Play');
+    expect(t('shop.buy', { cost: 50 })).toBe('Buy! 🪙 50');
+    expect(t('book.page.bills.title')).toBe('Bills, the lion');
+  });
+
+  it('el nombre del animal nuevo va traducido dentro del aviso', () => {
+    setLanguage('en');
+    expect(t('toast.newAnimal', { name: t('animal.pinguino') })).toBe('New animal: Penguin!');
+  });
+
+  it('una variable que no se pasa deja el marcador tal cual', () => {
+    setLanguage('en');
+    expect(t('shop.have', { n: 2 })).toBe('You have 2 of {max}');
   });
 });
 

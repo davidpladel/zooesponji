@@ -4,7 +4,7 @@ import type { StringKey } from './es';
  * Textos en inglés, para niños de 6 a 9 años: cálidos y cortos.
  * Los nombres propios (Bills, Sasha, Mary, Nube…) y «Zoo Esponji» no se traducen.
  */
-export const STRINGS_EN = {
+export const STRINGS_EN: Record<StringKey, string> = {
   'title.name': 'Zoo Esponji',
   'title.play': 'Play',
   'title.credits': 'Made by Daniela and Adrián 💛',
@@ -219,4 +219,4 @@ export const STRINGS_EN = {
   'book.page.raja.text': 'Raja showers with his trunk. And showers anyone who walks by!',
   'book.page.mali.title': 'Mali, the Asian elephant',
   'book.page.mali.text': 'Mali is brown and very clever. She peels bananas with her trunk.',
-} satisfies Partial<Record<StringKey, string>>;
+};

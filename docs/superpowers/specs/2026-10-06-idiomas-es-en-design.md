@@ -1,6 +1,6 @@
 # Idiomas: español e inglés
 
-Fecha: 2026-10-06 · Estado: en curso. Bloque A hecho (idioma activo, guardado, `strings/es.ts`, `shop.buy`).
+Fecha: 2026-10-06 · Estado: en curso. Bloques A y B hechos (el juego ya sale en inglés con el móvil en inglés; falta el botón de Ajustes y la privacidad).
 
 ## Objetivo
 
