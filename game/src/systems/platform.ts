@@ -8,6 +8,7 @@ import type { BookScene } from '../scenes/BookScene';
 import type { SettingsScene } from '../scenes/SettingsScene';
 import type { ShopScene } from '../scenes/ShopScene';
 import { sfx } from './audio';
+import { closeLegal } from './legal';
 import { getSession } from './session';
 
 async function exitApp(): Promise<void> {
@@ -21,6 +22,13 @@ async function exitApp(): Promise<void> {
   } catch {
     // En la web no existe: no se hace nada.
   }
+}
+
+/** Abre "¿Salir?" encima de todo; al confirmar guarda y cierra la app. */
+export function askQuit(game: Phaser.Game): void {
+  const data: QuitSceneData = { onConfirm: () => void exitApp() };
+  game.scene.run('Quit', data);
+  game.scene.bringToTop('Quit');
 }
 
 /** Botón atrás (Android), segundo plano y capa "gira el móvil". */
@@ -68,6 +76,8 @@ export class Platform {
   }
 
   async back(): Promise<BackAction> {
+    // La página de privacidad va por encima del juego (HTML): es lo primero que se cierra.
+    if (closeLegal()) return 'close-overlay';
     const action = this.backAction();
     const scene = <T extends Phaser.Scene>(key: string) => this.game.scene.getScene(key) as T;
     switch (action) {
@@ -82,12 +92,9 @@ export class Platform {
         if (this.active('Feed')) scene<FeedScene>('Feed').close();
         if (this.active('Shop')) scene<ShopScene>('Shop').close();
         break;
-      case 'ask-quit': {
-        const data: QuitSceneData = { onConfirm: () => void exitApp() };
-        this.game.scene.run('Quit', data);
-        this.game.scene.bringToTop('Quit');
+      case 'ask-quit':
+        askQuit(this.game);
         break;
-      }
       case 'exit':
         await exitApp();
         break;

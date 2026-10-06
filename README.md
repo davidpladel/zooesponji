@@ -15,7 +15,7 @@ Pensado para niños de 6 a 9 años: sin textos largos, sin perder y sin anuncios
 - **Moverse:** tocar el suelo y la cuidadora va andando (también teclado, o joystick opcional desde el menú ⚙️, abajo a la izquierda).
 - **Dar de comer:** toca un animal: la cuidadora entra en su recinto y, al llegar, se abre la bandeja de comida de ese animal. Arrastra la comida (piedra, carne, conejo o zanahoria) hasta el animal.
 - **Tienda:** se abre al tener 20 monedas; pisa la puerta del puesto para entrar. Dentro suena la campanita, la cuidadora entra andando, el tendero la saluda y los animales esperan en peanas: acércate a uno (o tócalo y va sola), toca el bocadillo "¡Comprar!" y sal pisando el felpudo. Si un peque se queda quieto, unas huellas le señalan qué puede comprar. Pantera 50 🪙, panda 100 🪙, y animales extra: hasta 5 cabras (10 🪙 cada una), 2 panteras y 2 pandas (20 🪙).
-- **Menú ⚙️:** música, efectos, joystick y créditos.
+- **Menú ⚙️:** un tablero de madera con música, efectos, joystick, créditos, la versión del juego, la página de privacidad (se lee sin salir del juego) y, en Android, un botón «Salir».
 
 | Alimento | 🦁 León | 🐐 Cabra | 🐆 Pantera negra | 🐼 Oso panda |
 |---|---|---|---|---|
@@ -81,7 +81,9 @@ El juego se ha hecho por hitos: spec de diseño → plan → ejecución.
 
 ✅ **2.3.0** (2026-10-05, en las ramas `zoo-grande-3-mapa-y-recintos` y `zoo-grande-4-tienda-y-libro`, sin fusionar ni publicar hasta que David la pruebe): el zoo grande.
 
-Pendiente, por orden: probar y publicar la 2.3.0; multi-idioma (selector de idioma y traducciones, con su propio spec, antes de Play Store); publicación en Google Play (6b). Ideas para después, cada una con su spec: bañar y limpiar, día y noche, clínica veterinaria y acuario con delfines.
+Hecho después, en la rama `menu-y-privacidad` (sin fusionar): menú de ajustes de madera con privacidad, versión y «Salir».
+
+Pendiente, por orden: publicar la 2.3.0 (David ya la ha probado); analítica de eventos del juego (con su propio spec; hay que actualizar antes la página de privacidad); multi-idioma (selector de idioma y traducciones, con su propio spec, antes de Play Store); publicación en Google Play (6b). Ideas para después, cada una con su spec: bañar y limpiar, día y noche, clínica veterinaria y acuario con delfines.
 
 **Más adelante:** clínica veterinaria, bañar animales, limpiar jaulas, ciclo día-noche, acuario con delfines, más animales y zonas.
 

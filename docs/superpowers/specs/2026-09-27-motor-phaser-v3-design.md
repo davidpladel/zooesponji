@@ -431,6 +431,14 @@ Cada hito termina con algo jugable.
   nginx lo inyecta con `sub_filter` antes de `</body>` en `/zoo/`; por eso el banner no está en el
   `index.html` del repo y no sale en la app Android.
 
+- **Menú de madera y privacidad (2026-10-06, rama `menu-y-privacidad`):** el panel de ajustes y el
+  «¿Salir?» se dibujan como tableros de madera (`addWoodPanel` y `addPlateButton` en `scenes/ui.ts`,
+  sin arte de los packs). El pie enseña la versión (`__APP_VERSION__`, de `package.json`). «Privacidad»
+  abre `public/privacidad.html` en una capa HTML encima del juego (`systems/legal.ts`), sin enlaces,
+  así que sigue sin hacer falta puerta parental; esa misma página es la URL para la ficha de Google
+  Play (`davidpladel.com/zoo/privacidad.html`). «Salir» solo sale en la app y pasa por el «¿Salir?»
+  de siempre. El botón atrás cierra primero la página de privacidad.
+
 ### Pendiente fuera de los hitos
 
 - **Carne** (`carne.png`) la pintan Daniela y Adrián (guía en el repo privado).
