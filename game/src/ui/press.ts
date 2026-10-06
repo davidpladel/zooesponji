@@ -29,9 +29,12 @@ export function makePressable(target: Pressable, onTap: (pointer: Phaser.Input.P
   const step = (event: PressEvent, pointer?: Phaser.Input.Pointer): void => {
     const next = pressStep(state, event);
     if (next.state !== state) {
+      // La escala de reposo solo se toma con la pieza quieta: si nuestro propio tween sigue en vuelo
+      // (soltar y volver a pulsar enseguida), la escala actual es intermedia y se conserva la anterior.
+      const inFlight = tween?.isPlaying() === true;
       tween?.stop();
       if (next.state === 'down') {
-        base = target.scale;
+        if (!inFlight) base = target.scale;
         shade(true);
         tween = scene.tweens.add({ targets: target, scale: base * PRESS_SCALE, duration: 60 });
       } else {

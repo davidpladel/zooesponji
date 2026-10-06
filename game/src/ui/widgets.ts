@@ -59,7 +59,8 @@ export function addPillButton(scene: Phaser.Scene, x: number, y: number, w: numb
   }
   if (o.label) text(o.label);
   if (o.coin !== undefined) {
-    const coin = coinImage(scene, Math.round(h * 0.56)).setOrigin(0, 0.5).setY(cy);
+    const coin = coinImage(scene, Math.round(h * 0.56));
+    coin.setOrigin(0, coin.originY).setY(cy); // conserva el origen Y centrado en el cuerpo
     marks.push(coin);
     row.push(coin);
     text(o.coin);
@@ -68,7 +69,7 @@ export function addPillButton(scene: Phaser.Scene, x: number, y: number, w: numb
   let size = Math.round(h * (alone ? 0.58 : 0.46));
   const lay = (): number => {
     for (const item of texts) item.setStyle(textStyle(size, '#ffffff', stroke));
-    for (const mark of marks) mark.setDisplaySize(alone ? size : size * 1.1, alone ? size : size * 1.1);
+    for (const mark of marks) mark.setScale((alone ? size : size * 1.1) / mark.width); // escala uniforme por ancho
     const gap = size * 0.3;
     const total = row.reduce((sum, item) => sum + item.displayWidth, 0) + gap * (row.length - 1);
     let cursor = -total / 2;
