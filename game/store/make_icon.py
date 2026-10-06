@@ -8,6 +8,8 @@ from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 RES = '../android/app/src/main/res/'
 FONT = 'C:/Windows/Fonts/ariblk.ttf'
+SPLASH_FONT = 'fonts/Baloo2.ttf'  # variable; se fija el peso 800
+SKY = (88, 176, 240, 255)  # #58B0F0, el cielo de la portada
 S = 2048  # lienzo de trabajo; el león ocupa ~80 %
 C = S // 2
 
@@ -214,17 +216,18 @@ def main():
         rnd.putalpha(circle_mask(ic_size))
         rnd.save(d + 'ic_launcher_round.png')
 
-    # Splash: fondo verde oscuro del juego + león + título
+    # Splash: azul cielo de la portada + león + título
     def splash(w, h, path):
-        im = Image.new('RGBA', (w, h), (29, 43, 31, 255))
+        im = Image.new('RGBA', (w, h), SKY)
         side = int(min(w, h) * 0.56)
         canvas = Image.new('RGBA', (side, side), (0, 0, 0, 0))
         place(canvas, lion_img, 0.96)
         im.alpha_composite(canvas, ((w - side) // 2, int(h * 0.5 - side * 0.66)))
         d = ImageDraw.Draw(im)
-        f = ImageFont.truetype(FONT, int(min(w, h) * 0.1))
-        d.text((w / 2, h * 0.5 + side * 0.6), 'Zoo Esponji', font=f, fill=(255, 213, 74), anchor='mm',
-               stroke_width=max(2, int(min(w, h) * 0.012)), stroke_fill=(59, 42, 16))
+        f = ImageFont.truetype(SPLASH_FONT, int(min(w, h) * 0.12))
+        f.set_variation_by_axes([800])
+        d.text((w / 2, h * 0.5 + side * 0.6), 'Zoo Esponji', font=f, fill=(255, 210, 60), anchor='mm',
+               stroke_width=max(2, int(min(w, h) * 0.014)), stroke_fill=(138, 59, 18))
         im.convert('RGB').save(path)
 
     for dirname in os.listdir(RES):
