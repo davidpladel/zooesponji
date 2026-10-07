@@ -1732,7 +1732,7 @@ Antes de subir a Play la versión que mide, en **Contenido de la aplicación →
 4. Tipos de datos, los tres como **recogidos**, **no compartidos**, **no tratados de forma efímera**, **opcionales** (se apagan en Ajustes) y con la finalidad **Analíticas**:
    - **Ubicación → Ubicación aproximada** (el país sale de la dirección de internet recortada).
    - **Actividad en la app → Interacciones con la app**.
-   - **Información y rendimiento de la app → Diagnóstico**.
+   - **Información y rendimiento de la app → Registros de fallos** (no «Diagnósticos»: el juego no envía tiempos de carga ni nada parecido, solo un mensaje corto cuando hay un error).
 5. La URL de la política de privacidad no cambia; comprobar que la página publicada ya es la nueva.
 
 - [ ] **Step 12: Cerrar la documentación**

@@ -102,7 +102,7 @@ Saber cuánta gente juega y qué hace en el juego (usuarios activos por día, se
 Están escritos paso a paso en el plan:
 
 - **Matomo:** crear el sitio «Zoo Esponji», crear las cinco dimensiones personalizadas de visita, activar el modo CNIL en ese sitio y revisar el borrado de datos.
-- **Play Console → Seguridad de los datos:** declarar interacciones con la app, diagnóstico y ubicación aproximada.
+- **Play Console → Seguridad de los datos:** declarar interacciones con la app, registros de fallos y ubicación aproximada (recogidos, no compartidos, no temporales, opcionales, finalidad análisis).
 - Pasar a Claude la dirección de Matomo, el id del sitio y los ids de las dimensiones.
 
 ## Pruebas
