@@ -71,6 +71,7 @@ El juego se ha hecho por hitos: spec de diseño → plan → ejecución.
 | [Spec](docs/superpowers/specs/2026-10-06-interfaz-nueva-design.md) y [plan interfaz nueva](docs/superpowers/plans/2026-10-06-interfaz-nueva.md) | Interfaz nueva: píldoras, paneles, letra y iconos, portada pintada, modo inmersivo |
 | [Spec](docs/superpowers/specs/2026-10-06-idiomas-es-en-design.md) y [plan idiomas](docs/superpowers/plans/2026-10-06-idiomas-es-en.md) | Idiomas español e inglés: detección, botón en Ajustes, textos y privacidad |
 | [Spec](docs/superpowers/specs/2026-10-07-analitica-anonima-matomo-design.md) y [plan analítica](docs/superpowers/plans/2026-10-07-analitica-anonima-matomo.md) | Estadísticas anónimas con Matomo: usuarios activos sin identificadores, eventos y ficha en Ajustes |
+| [Spec analítica detallada](docs/superpowers/specs/2026-10-07-analitica-detallada-design.md) | Diseño (sin plan aún): eventos por animal, comida, recinto y página; jugadores únicos sin identificador; juego sin conexión; lectura por API |
 | [Spec](docs/superpowers/specs/2026-08-08-mvp-zooesponji-design.md) y [plan 1.0](docs/superpowers/plans/2026-08-08-mvp-zooesponji.md), [spec](docs/superpowers/specs/2026-08-15-escenas-inmersivas-design.md) y [plan del prototipo](docs/superpowers/plans/2026-08-15-escenas-inmersivas.md) | Histórico (1.x y prototipo Canvas) |
 
 ## Hoja de ruta
