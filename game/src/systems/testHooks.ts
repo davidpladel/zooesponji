@@ -2,7 +2,7 @@ import type * as Phaser from 'phaser';
 import { getArt } from '../art/art';
 import { openPens } from '../core/economy';
 import type { Vec } from '../core/movement';
-import type { Settings } from '../core/save';
+import type { Settings, ToggleKey } from '../core/save';
 import { BOOK_CHAPTERS } from '../data/book';
 import type { FoodId } from '../data/foods';
 import type { PenId } from '../data/pens';
@@ -55,7 +55,7 @@ export interface ZooTestApi {
   /** Provoca un error no controlado (para probar la pantalla de error). */
   crash(): void;
   openSettings(): void;
-  settingsTogglePos(key: 'music' | 'sfx' | 'joystick'): Vec | null;
+  settingsTogglePos(key: ToggleKey): Vec | null;
   settings(): Settings;
   /** Idioma activo: 'es' o 'en'. */
   language(): string;

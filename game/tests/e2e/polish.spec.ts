@@ -55,6 +55,20 @@ test('comprar la pantera y luego otra: al completarse su peana queda AGOTADA', a
   expect(await page.evaluate(() => window.__ZOO__!.hudCoinsText())).toBe('30');
 });
 
+test('menú ⚙️: las estadísticas anónimas se pueden apagar y se quedan apagadas', async ({ page }) => {
+  await startGame(page);
+  await page.evaluate(() => window.__ZOO__!.openSettings());
+  await page.waitForFunction(() => window.__ZOO__!.settingsTogglePos('stats') !== null);
+  expect(await page.evaluate(() => window.__ZOO__!.settings().stats)).toBe(true);
+
+  await tap(page, await page.evaluate(() => window.__ZOO__!.settingsTogglePos('stats')));
+  await expect.poll(() => page.evaluate(() => window.__ZOO__!.settings().stats)).toBe(false);
+
+  await page.reload();
+  await page.waitForFunction(() => window.__ZOO__?.activeScenes().includes('Title'));
+  expect(await page.evaluate(() => window.__ZOO__!.settings().stats)).toBe(false);
+});
+
 test('menú ⚙️: apagar el sonido y ver los créditos', async ({ page }) => {
   await startGame(page);
   await page.evaluate(() => window.__ZOO__!.openSettings());

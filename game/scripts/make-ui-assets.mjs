@@ -20,6 +20,7 @@ const ICONS = {
   left: 'caret-left',
   right: 'caret-right',
   heart: 'heart',
+  chart: 'chart-bar',
 };
 /** Estos se quieren de trazo aunque exista la versión rellena. */
 const OUTLINE = new Set(['close', 'door']);
