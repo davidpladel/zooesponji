@@ -62,6 +62,8 @@ export class GameTracker implements AnalyticsHooks {
   private reach: ReachState | null = null;
   private started = false;
   private stretchAt = 0;
+  /** Instante en que el juego se fue a segundo plano; `null` en primer plano. */
+  private awayAt: number | null = null;
   private feeds = 0;
   private readonly fedAnimals = new Set<string>();
   private readonly controls = new Set<string>();
@@ -129,9 +131,12 @@ export class GameTracker implements AnalyticsHooks {
       this.send('tienda', 'mira', itemId);
     });
     on('shop-denied', ({ itemId, missing }) => this.send('tienda', 'sin-monedas', itemId, missing));
-    on('purchase', ({ penId, residentId, cost }) => {
+    on('purchase', ({ itemId, penId, residentId, cost }) => {
       if (this.shop) this.shop.bought += 1;
       this.send('tienda', 'compra', part(penId, residentId), cost);
+      // El estado del día ya salió al empezar: sin esto, lo comprado hoy se alimenta sin constar como tenido.
+      if (itemId === penId) this.send('tiene', 'tiene-recinto', penId, 1);
+      this.send('tiene', 'tiene-animal', part(penId, residentId));
       this.step('primera-compra');
       if (zooComplete(this.deps.state())) this.step('zoo-completo');
     });
@@ -173,6 +178,8 @@ export class GameTracker implements AnalyticsHooks {
 
   sessionStarted(flags: readonly ActivityFlag[]): void {
     this.safely(() => {
+      // Una ausencia larga vuelve por aquí y no por `resumed`.
+      this.skipAway();
       this.stretchAt = this.time();
       this.controls.clear();
       this.feeds = 0;
@@ -183,6 +190,7 @@ export class GameTracker implements AnalyticsHooks {
 
   goingBackground(seconds: number): void {
     this.safely(() => {
+      this.awayAt = this.time();
       if (!this.deps.sink.active) return;
       this.send('sesion', 'rato-comidas', feedsBucket(this.feeds), this.feeds);
       this.send('sesion', 'rato-animales', animalsBucket(this.fedAnimals.size), this.fedAnimals.size);
@@ -198,6 +206,7 @@ export class GameTracker implements AnalyticsHooks {
 
   resumed(): void {
     this.safely(() => {
+      this.skipAway();
       this.stretchAt = this.time();
     });
   }
@@ -209,6 +218,24 @@ export class GameTracker implements AnalyticsHooks {
   }
 
   // --- Por dentro ---
+
+  /**
+   * El rato en segundo plano no es tiempo de ventana, de tienda ni de lectura: lo que estuviera abierto
+   * empieza tanto más tarde como se haya estado fuera. Una tableta bloqueada horas no hincha las medias.
+   */
+  private skipAway(): void {
+    const since = this.awayAt;
+    this.awayAt = null;
+    if (since === null) return;
+    const away = this.time() - since;
+    if (away <= 0) return;
+    if (this.feedWindow) this.feedWindow.at += away;
+    if (this.shop) this.shop.at += away;
+    if (this.reading) {
+      this.reading.at += away;
+      if (this.reading.page) this.reading.page.at += away;
+    }
+  }
 
   private onFed({ residentId, foodId, reaction, coins }: GameEvents['animal-fed']): void {
     const resident = residentName(residentId);

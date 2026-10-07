@@ -34,7 +34,7 @@ out.push(`# Resumen de estadísticas — ${meta.date ?? 'periodo desconocido'}`,
 if (truncated(report)) {
   out.push('> **AVISO: el informe de Matomo está incompleto** (trae una fila «Otros»/«Others» que agrupa lo que pasó del límite). Las tablas largas pueden no mostrar todas las filas.', '');
 }
-out.push(`Las cifras de alcance son «jugadores por día»: un jugador que juega tres días cuenta tres veces. Con menos de ${MIN_SAMPLE} en el denominador se marca «insuficiente» y no se concluye nada.`, '');
+out.push(`Las cifras de alcance son «jugadores por día»: un jugador que juega tres días cuenta tres veces. Con menos de ${MIN_SAMPLE} en el denominador se marca «insuficiente» y no se concluye nada. En la retención, las cohortes de quienes empezaron a jugar antes de esta versión no tienen fila de «nuevos», y las más recientes salen bajas solo porque aún no han pasado los días suficientes.`, '');
 
 out.push('## Muestra', '', table(['Dato', 'Valor'], [
   ['Jugadores nuevos', news],

@@ -101,6 +101,7 @@ export function seedSteps(state: ReachState, steps: readonly Step[]): ReachState
   return { ...state, steps: STEPS.filter((step) => state.steps.includes(step) || steps.includes(step)) };
 }
 
+/** Un valor que no sea un número se guardaría como `null` y dejaría todo el estado ilegible: suma 0. */
 export function addPlay(state: ReachState, seconds: number): ReachState {
-  return { ...state, playSeconds: state.playSeconds + Math.max(0, seconds) };
+  return { ...state, playSeconds: state.playSeconds + (Number.isFinite(seconds) ? Math.max(0, seconds) : 0) };
 }

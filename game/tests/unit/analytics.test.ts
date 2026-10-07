@@ -257,7 +257,62 @@ describe('Analytics: segundo plano', () => {
   });
 });
 
+describe('Analytics: jugar al cruzar la medianoche', () => {
+  it('volver tras una ausencia corta pero en otro día empieza otra sesión, con su aviso del día', async () => {
+    const t = setup();
+    t.clock.time = new Date(2026, 9, 7, 23, 50, 0).getTime();
+    await t.analytics.start();
+    t.clock.time = new Date(2026, 9, 7, 23, 55, 0).getTime();
+    t.analytics.setBackground(true);
+    t.clock.time = new Date(2026, 9, 8, 0, 5, 0).getTime();
+    t.analytics.setBackground(false);
+    await settle();
+    await t.analytics.flush();
+    expect(t.names().filter((n) => n === 'sesion/inicio')).toHaveLength(2);
+    expect(t.names().filter((n) => n === 'activo/dia')).toHaveLength(2);
+    expect(new Set(t.sent().map((p) => p._id)).size).toBe(2);
+  });
+});
+
 describe('Analytics: arranque y envío en curso', () => {
+  it('un error antes de leer la cola guardada no la pisa: sale lo que esperaba y sale el error', async () => {
+    const store = createMemoryStore();
+    const first = setup({ store });
+    await first.analytics.start();
+    first.net.ok = false;
+    await first.analytics.flush();
+    const waiting = JSON.parse((await store.get(QUEUE_KEY))!).hits.length;
+    expect(waiting).toBeGreaterThan(0);
+
+    const second = setup({ store });
+    second.analytics.reportError(new Error('nada más abrir'));
+    await second.analytics.flush();
+    await settle();
+    expect(second.bodies).toEqual([]);
+    expect(JSON.parse((await store.get(QUEUE_KEY))!).hits).toHaveLength(waiting);
+    await second.analytics.start();
+    await settle();
+    expect(second.sent().filter((p) => p.e_a === 'inicio')).toHaveLength(2);
+    expect(second.sent().filter((p) => p.e_a === 'nuevo')).toHaveLength(1);
+    expect(second.sent().some((p) => p.e_c === 'error' && p.e_n === 'nada más abrir')).toBe(true);
+  });
+
+  it('con un envío colgado, irse a segundo plano guarda igualmente el fin de sesión', async () => {
+    const pending: ((ok: boolean) => void)[] = [];
+    const t = setup({ send: () => new Promise<boolean>((resolve) => pending.push(resolve)) });
+    await t.analytics.start();
+    const first = t.analytics.flush();
+    await settle();
+    expect(pending).toHaveLength(1);
+    t.clock.time += 40_000;
+    t.analytics.setBackground(true);
+    await settle();
+    expect(pending).toHaveLength(1);
+    expect(await t.store.get(QUEUE_KEY)).toContain('e_a=fin');
+    pending[0]!(false);
+    await first;
+  });
+
   it('irse a segundo plano antes de empezar la sesión no mide ni avisa', async () => {
     const t = setup();
     const calls: string[] = [];

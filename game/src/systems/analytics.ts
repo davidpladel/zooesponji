@@ -48,6 +48,10 @@ export class Analytics {
   private queue: QueueState = emptyQueue();
   private dirty = false;
   private sending = false;
+  /** La cola guardada ya está leída y unida a la de memoria: hasta entonces ni se guarda ni se envía. */
+  private ready = false;
+  /** Alguien pidió enviar antes de tiempo: se hace al terminar de arrancar. */
+  private flushAsked = false;
   private hooks: AnalyticsHooks | null = null;
   private visitorId = '';
   private screen = '';
@@ -57,6 +61,8 @@ export class Analytics {
   private coins: number;
   private readonly coinSteps = new Set<number>();
   private startedAt = 0;
+  /** Día local en que empezó la sesión en curso. */
+  private sessionDay = '';
   private hiddenAt: number | null = null;
 
   constructor(private readonly deps: AnalyticsDeps) {
@@ -99,6 +105,7 @@ export class Analytics {
       hits: over > 0 ? hits.slice(over) : hits,
       lost: { full: stored.lost.full + mine.lost.full + over, expired: stored.lost.expired + mine.lost.expired },
     };
+    this.ready = true;
     const waiting = stored.hits.length;
     const waitingAge = oldestAge(stored, this.deps.now().getTime());
     events.on('settings-changed', ({ settings }) => this.onSettings(settings));
@@ -107,6 +114,10 @@ export class Analytics {
     events.on('animal-added', ({ penId, count }) => this.event('progreso', 'animal', penId, count));
     await this.beginSession();
     if (waiting > 0 && waitingAge !== null) this.event('calidad', 'pendientes', pendingBucket(waitingAge), waiting);
+    if (this.flushAsked) {
+      this.flushAsked = false;
+      void this.flush();
+    }
   }
 
   track(hit: Hit): void {
@@ -144,10 +155,16 @@ export class Analytics {
    */
   async flush(): Promise<void> {
     const { config } = this.deps;
-    if (!config || !this.active || this.sending) return;
+    if (!config || !this.active) return;
+    if (!this.ready) {
+      this.flushAsked = true;
+      return;
+    }
+    // Antes de mirar si hay un envío en marcha: puede estar colgado, y lo último del rato no debe perderse.
+    await this.persist();
+    if (this.sending) return;
     this.sending = true;
     try {
-      await this.persist();
       for (;;) {
         const now = this.deps.now().getTime();
         const kept = expire(this.queue, now, maxAgeMs(config.replayHours));
@@ -187,7 +204,9 @@ export class Analytics {
     if (this.hiddenAt === null) return;
     const away = now - this.hiddenAt;
     this.hiddenAt = null;
-    if (away >= SESSION_GAP_MS) {
+    // Otro día local es otra sesión aunque la ausencia sea corta: el aviso del día y lo que se tiene solo salen al empezar una.
+    const otherDay = this.startedAt !== 0 && dayKey(new Date(now)) !== this.sessionDay;
+    if (away >= SESSION_GAP_MS || otherDay) {
       void this.beginSession();
       return;
     }
@@ -222,7 +241,8 @@ export class Analytics {
   }
 
   private async persist(): Promise<void> {
-    if (!this.dirty) return;
+    // Sin haber leído lo guardado, escribir sería pisarlo con solo lo de ahora.
+    if (!this.ready || !this.dirty) return;
     this.dirty = false;
     try {
       await this.deps.store.set(QUEUE_KEY, JSON.stringify(this.queue));
@@ -247,6 +267,7 @@ export class Analytics {
     this.startedAt = now.getTime();
     this.coinSteps.clear();
     const today = dayKey(now);
+    this.sessionDay = today;
     let flags: readonly ActivityFlag[] = [];
     let returns: readonly ReturnFlag[] = [];
     let cohort: string | undefined;

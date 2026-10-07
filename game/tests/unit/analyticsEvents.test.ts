@@ -190,6 +190,35 @@ describe('GameTracker: tienda', () => {
     expect(t.sent).not.toContain('tienda | tienda-sin-compra');
   });
 
+  it('comprar un recinto lo apunta ese mismo día entre lo que se tiene, con su primer animal', async () => {
+    const t = setup();
+    await t.tracker.start();
+    t.events.emit('purchase', { itemId: 'pantera', penId: 'pantera', residentId: 'noche', cost: 50 });
+    expect(t.sent).toEqual(expect.arrayContaining(['tiene | tiene-animal | pantera/noche', 'tiene | tiene-recinto | pantera']));
+    expect(t.values.get('tiene | tiene-recinto | pantera')).toBe(1);
+  });
+
+  it('comprar un animal extra apunta el animal, no otra vez el recinto', async () => {
+    const t = setup();
+    await t.tracker.start();
+    t.events.emit('purchase', { itemId: 'extra-cabra', penId: 'cabra', residentId: 'nube', cost: 10 });
+    expect(t.sent).toContain('tiene | tiene-animal | cabra/nube');
+    expect(t.sent.some((k) => k.startsWith('tiene | tiene-recinto'))).toBe(false);
+  });
+
+  it('el tiempo en la tienda no cuenta el rato fuera, aunque al volver sea otra sesión', async () => {
+    const t = setup();
+    await t.tracker.start();
+    t.events.emit('shop-opened', {});
+    t.clock.time += 10_000;
+    t.tracker.goingBackground(10);
+    t.clock.time += 3 * 3_600_000;
+    t.tracker.sessionStarted([]);
+    t.clock.time += 5_000;
+    t.events.emit('shop-closed', {});
+    expect(t.values.get('tienda | tienda-fin')).toBe(15);
+  });
+
   it('salir sin comprar', async () => {
     const t = setup();
     await t.tracker.start();
@@ -224,6 +253,52 @@ describe('GameTracker: libro', () => {
     expect(t.values.get('libro | libro-fin | 1')).toBe(9);
     expect(t.sent).not.toContain('libro | lee | noche');
     expect(t.sent).not.toContain('alcance | dia-pagina | sasha');
+  });
+});
+
+describe('GameTracker: el segundo plano no cuenta como tiempo', () => {
+  it('una página con la tableta bloqueada tres horas se lee lo que se leyó', async () => {
+    const t = setup();
+    await t.tracker.start();
+    t.events.emit('book-opened', { pageId: 'bills' });
+    t.events.emit('book-page-shown', { pageId: 'bills', kind: 'contenido' });
+    t.clock.time += 3_000;
+    t.tracker.goingBackground(3);
+    t.clock.time += 3 * 3_600_000;
+    t.tracker.resumed();
+    t.clock.time += 2_000;
+    t.events.emit('book-page-shown', { pageId: 'sasha', kind: 'contenido' });
+    t.clock.time += 4_000;
+    t.events.emit('book-closed', {});
+    expect(t.values.get('libro | lee | bills')).toBe(5);
+    expect(t.values.get('libro | lee | sasha')).toBe(4);
+    expect(t.values.get('libro | libro-fin | 2-3')).toBe(9);
+  });
+
+  it('la ventana de comer tampoco cuenta el rato fuera', async () => {
+    const t = setup();
+    await t.tracker.start();
+    t.events.emit('feed-opened', { residentId: 'gordi' });
+    t.clock.time += 4_000;
+    t.tracker.goingBackground(4);
+    t.clock.time += 20 * 60_000;
+    t.tracker.resumed();
+    t.clock.time += 6_000;
+    t.events.emit('feed-closed', { residentId: 'gordi' });
+    expect(t.values.get('comer | ventana-tiempo | cabra/gordi')).toBe(10);
+  });
+
+  it('los minutos de juego del embudo siguen sin contar el rato fuera', async () => {
+    const t = setup();
+    await t.tracker.start();
+    t.tracker.sessionStarted([]);
+    t.clock.time += 100_000;
+    t.tracker.goingBackground(100);
+    t.clock.time += 3 * 3_600_000;
+    t.tracker.resumed();
+    t.clock.time += 50_000;
+    t.fed('gordi', 'zanahoria', 'come', 1);
+    expect(t.values.get('embudo | primera-comida')).toBe(2);
   });
 });
 

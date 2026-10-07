@@ -91,10 +91,18 @@ export function meanText(value, n, min = MIN_SAMPLE, digits = 1) {
   return `${Number(value).toFixed(digits)} (n=${n})`;
 }
 
-/** Matomo agrupa las filas que pasan de su límite en «Others» / «Otros» (o -1): el informe está incompleto. */
+const GROUPED = ['others', 'otros', '-1'];
+const grouped = (text) => GROUPED.includes(String(text ?? '').trim().toLowerCase());
+
+/**
+ * Matomo agrupa las filas que pasan de su límite en «Others» / «Otros» (o -1): el informe está incompleto.
+ * En el informe plano la fila agrupada de una subtabla llega como «come - Others»: se miran también la
+ * acción y el nombre por separado.
+ */
 export function truncated(report) {
   if (!Array.isArray(report)) return false;
-  return report.some((row) => ['others', 'otros', '-1'].includes(String(row?.label ?? '').trim().toLowerCase()));
+  const rows = report.filter((row) => row !== null && typeof row === 'object');
+  return rows.some((row) => grouped(row.label)) || toRows(rows).some((row) => grouped(row.action) || grouped(row.name));
 }
 
 /** Sustituye cada secreto (y su forma codificada para URL) por «***». Primero los más largos. */
