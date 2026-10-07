@@ -60,8 +60,8 @@ Saber cuánta gente juega y qué hace en el juego (usuarios activos por día, se
 - Se vacía cada 10 segundos, al pasar a segundo plano y al registrar un error.
 - Envío: `fetch` `POST` a `<url>/matomo.php` con `mode: 'no-cors'`, `keepalive: true` y `credentials: 'omit'`. Sin reintentos; todo fallo se traga.
 - **Sesión nueva** (id nuevo, contador +1, banderas recalculadas): al arrancar y al volver de más de 30 minutos en segundo plano.
-- **Apagada cuando:** falta la configuración (así queda en desarrollo y en los tests, que no cargan `.env.production`) o el jugador la apagó en Ajustes.
-- Configuración en `game/.env.production`: `VITE_MATOMO_URL`, `VITE_MATOMO_SITE`, `VITE_MATOMO_DIMS` (cinco ids separados por comas, en el orden versión, plataforma, idioma, sesión, antigüedad).
+- **Apagada cuando:** falta la configuración (así queda en desarrollo y en los tests) o el jugador la apagó en Ajustes.
+- El repositorio es público: los valores reales no se suben. Configuración en `game/.env.production.local` (ignorado por git; hay un `.env.example` de plantilla): `VITE_MATOMO_URL`, `VITE_MATOMO_SITE`, `VITE_MATOMO_DIMS` (cinco ids separados por comas, en el orden versión, plataforma, idioma, sesión, antigüedad).
 
 ### 4. Qué se mide
 
