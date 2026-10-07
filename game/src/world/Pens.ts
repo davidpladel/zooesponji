@@ -407,7 +407,7 @@ export class Pens {
     this.zoom = zoom;
     for (const pen of this.pens) {
       const old = pen.lock;
-      pen.lock = this.buildLock(pen.lockAt.x, pen.lockAt.y, pen.lockPrice).setVisible(old.visible);
+      pen.lock = this.buildLock(pen.lockAt.x, pen.lockAt.y, pen.lockPrice).setVisible(!pen.shown);
       this.scene.tweens.killTweensOf(old);
       old.destroy();
     }

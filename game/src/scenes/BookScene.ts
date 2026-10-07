@@ -219,7 +219,8 @@ export class BookScene extends Phaser.Scene {
     const titleSize = this.titleSize();
     this.heading(unlocked ? t(pageTitleKey(page.id)) : t('book.locked'));
 
-    this.content.push(...this.picture(page, p.centerX, p.y + p.height * 0.4, p.height * 0.4, unlocked));
+    const pictureObjects = this.picture(page, p.centerX, p.y + p.height * 0.4, p.height * 0.4, unlocked);
+    this.content.push(...pictureObjects);
 
     const text = unlocked ? t(pageTextKey(page.id)) : t('book.lockedHint');
     this.content.push(this.fitText(text, p.centerX, p.y + p.height * 0.66, p.width - 2 * pad, p.height * 0.2, Math.round(titleSize * 0.8)));
@@ -234,9 +235,13 @@ export class BookScene extends Phaser.Scene {
     }
 
     if (isNew) {
+      // En la esquina de la ficha del dibujo (no del panel, donde está el cierre), por encima de ella.
+      const tile = pictureObjects[0] as Phaser.GameObjects.Image;
+      const corner = tile.getTopRight();
       const badge = this.add
-        .text(p.right - pad * 0.5, p.y + pad * 0.5, '✨', { fontSize: `${titleSize}px` })
-        .setOrigin(0.5);
+        .text(corner.x - 6, corner.y + 6, '✨', { fontSize: `${titleSize}px` })
+        .setOrigin(0.5)
+        .setDepth(tile.depth + 2);
       this.tweens.add({ targets: badge, scale: 1.3, duration: 500, yoyo: true, repeat: -1 });
       this.content.push(badge);
       void session.readPages([page.id]);
