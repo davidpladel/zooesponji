@@ -2,7 +2,7 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { DATA } from './config.mjs';
-import { MIN_SAMPLE, byAction, events, medianBucket, share, table, toRows } from './lib.mjs';
+import { MIN_SAMPLE, byAction, events, meanText, medianText, share, table, toRows, truncated } from './lib.mjs';
 
 const file = join(DATA, 'events.json');
 if (!existsSync(file)) {
@@ -10,7 +10,8 @@ if (!existsSync(file)) {
   process.exit(1);
 }
 const meta = existsSync(join(DATA, 'meta.json')) ? JSON.parse(readFileSync(join(DATA, 'meta.json'), 'utf8')) : {};
-const rows = toRows(JSON.parse(readFileSync(file, 'utf8')));
+const report = JSON.parse(readFileSync(file, 'utf8'));
+const rows = toRows(report);
 const index = byAction(rows);
 const n = (action, name) => events(index, action, name);
 const of = (action) => [...(index.get(action)?.values() ?? [])];
@@ -18,8 +19,9 @@ const top = (list, key, limit = 20) => [...list].sort((a, b) => b[key] - a[key])
 const FEED = ['come', 'rechaza', 'especial'];
 const feedsOf = (prefix) => FEED.reduce((sum, action) => sum + of(action).filter((r) => r.name.startsWith(`${prefix}/`)).reduce((s, r) => s + r.events, 0), 0);
 const counts = (action) => new Map(of(action).map((r) => [r.name, r.events]));
-const median = (action, order) => medianBucket(counts(action), order) ?? 'sin datos';
-const avg = (row) => (row ? row.avg.toFixed(1) : '—');
+const median = (action, order) => medianText(counts(action), order);
+// La media de Matomo es sobre sus eventos: esa es su muestra.
+const avg = (row) => (row ? meanText(row.avg, row.events) : '—');
 
 const playerDays = n('dia');
 const news = n('nuevo');
@@ -29,13 +31,16 @@ const lost = of('perdidos').reduce((sum, r) => sum + r.sum, 0);
 const out = [];
 
 out.push(`# Resumen de estadísticas — ${meta.date ?? 'periodo desconocido'}`, '');
+if (truncated(report)) {
+  out.push('> **AVISO: el informe de Matomo está incompleto** (trae una fila «Otros»/«Others» que agrupa lo que pasó del límite). Las tablas largas pueden no mostrar todas las filas.', '');
+}
 out.push(`Las cifras de alcance son «jugadores por día»: un jugador que juega tres días cuenta tres veces. Con menos de ${MIN_SAMPLE} en el denominador se marca «insuficiente» y no se concluye nada.`, '');
 
 out.push('## Muestra', '', table(['Dato', 'Valor'], [
   ['Jugadores nuevos', news],
   ['Jugadores por día (suma)', playerDays],
   ['Sesiones', sessions],
-  ['Comidas por sesión (media)', sessions ? (FEED.reduce((s, a) => s + n(a), 0) / sessions).toFixed(1) : '—'],
+  ['Comidas por sesión (media)', meanText(FEED.reduce((s, a) => s + n(a), 0) / sessions, sessions)],
   ['Comidas por rato de juego (mediana, tramo)', median('rato-comidas', ['0', '1-2', '3-5', '6-10', '11-20', '21+'])],
   ['Animales distintos por rato (mediana, tramo)', median('rato-animales', ['0', '1', '2-3', '4-6', '7+'])],
   ['Duración del rato (mediana, tramo)', median('fin', ['<1m', '1-3m', '3-10m', '10-30m', '30m+'])],
@@ -70,7 +75,7 @@ out.push('## Libro', '', table(['Dato', 'Valor'], [
   ['Páginas leídas por apertura (mediana, tramo)', median('libro-fin', ['0', '1', '2-3', '4-7', '8+'])],
 ]), '', table(
   ['Página', 'Leída (veces)', 'Segundos (media)', 'Hojeada', 'Vista bloqueada'],
-  top([...new Set([...of('lee'), ...of('hojea'), ...of('bloqueada')].map((r) => r.name))].map((name) => ({ name, events: n('lee', name) })), 'events', 80)
+  top([...new Set([...of('lee'), ...of('hojea'), ...of('bloqueada')].map((r) => r.name))].map((name) => ({ name, events: n('lee', name), seen: n('lee', name) + n('hojea', name) + n('bloqueada', name) })), 'seen', 80)
     .map((p) => [p.name, p.events, avg(index.get('lee')?.get(p.name)), n('hojea', p.name), n('bloqueada', p.name)]),
 ), '');
 
