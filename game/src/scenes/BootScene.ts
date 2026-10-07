@@ -3,6 +3,7 @@ import { TEXTURES, TILE_SIZE } from '../config';
 import { withVersion } from '../core/cacheBust';
 import { loadUiFont } from '../ui/font';
 import { smooth } from '../ui/paint';
+import { UI } from '../ui/theme';
 import { TITLE_BG } from '../ui/titleBackdrop';
 
 /** Genera el arte provisional (hasta que llegue el pack en el hito 5). */
@@ -12,6 +13,8 @@ export class BootScene extends Phaser.Scene {
   }
 
   preload(): void {
+    // Azul cielo desde el primer fotograma: sin rastro del verde oscuro mientras cargan el fondo y la letra.
+    this.cameras.main.setBackgroundColor(UI.sky);
     this.load.image(TITLE_BG, withVersion('assets/ui/title-bg.webp'));
   }
 
