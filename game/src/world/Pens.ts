@@ -12,6 +12,7 @@ import { ANIMALS, type AnimalId, type Reaction } from '../data/animals';
 import { PENS, isPenId, residentsIn, type PenId, type ResidentDef } from '../data/pens';
 import { shopItemForPen } from '../data/shop';
 import { t } from '../data/strings';
+import { addPillButton } from '../ui/widgets';
 import { createAnimal, createCompanion, type Walker } from './Actors';
 import type { Petting } from './VisitorCrowd';
 
@@ -41,7 +42,10 @@ interface Pen {
   /** Animales del recinto (el primero existe siempre; si está cerrado, se ve en fantasma). */
   animals: Wanderer[];
   companion: Wanderer | null;
-  lock: Phaser.GameObjects.Text;
+  lock: Phaser.GameObjects.Container;
+  /** Dónde y con qué precio se dibuja el candado (para rehacerlo si cambia el zoom). */
+  lockAt: Vec;
+  lockPrice: number | undefined;
   /** Granja de contacto: entran visitantes y los animales reaccionan a la gente. */
   petting: boolean;
   keeperInside: boolean;
@@ -52,6 +56,10 @@ interface Pen {
 
 /** Por encima de cualquier cosa del mundo ordenada por Y. */
 const UI_DEPTH = 10000;
+/** Tamaño de la píldora del candado, en píxeles del mundo (se pinta a tamaño de pantalla). */
+const LOCK_W = 44;
+const LOCK_W_BARE = 22;
+const LOCK_H = 15;
 const LOCKED_ALPHA = 0.25;
 /** Una oveja se aparta de quien pasa andando a menos de esto (px). */
 const FLEE_RADIUS = 14;
@@ -100,6 +108,8 @@ export class Pens {
   private atDoorstep: PenId | null = null;
   /** Residente al que va a dar de comer la cuidadora: se queda quieto esperándola. */
   private held: string | null = null;
+  /** Zoom de la cámara del mundo: la píldora del candado se pinta a tamaño de pantalla y se encoge 1/zoom. */
+  private zoom: number;
   /** Veces que han salido corazones entre un visitante y un animal (para pruebas). */
   heartsShown = 0;
 
@@ -109,7 +119,9 @@ export class Pens {
     gates: GateInfo[],
     state: GameState,
     props: PropInfo[] = [],
+    zoom = 1,
   ) {
+    this.zoom = zoom;
     for (const enclosure of enclosures) {
       if (!isPenId(enclosure.penId)) continue;
       const id = enclosure.penId;
@@ -124,18 +136,7 @@ export class Pens {
 
       // Con arte, el nombre va en el cartel de madera de la puerta (Decor).
       if (!getArt()) scene.add.text(home.x, enclosure.y + 11, t(def.nameKey), LABEL_STYLE).setOrigin(0.5).setResolution(4).setDepth(UI_DEPTH);
-      const lock = scene.add
-        .text(home.x, home.y + 14, price ? `🔒 ${price}🪙` : '🔒', {
-          fontFamily: 'sans-serif',
-          fontSize: '10px',
-          color: '#ffffff',
-          backgroundColor: '#000000aa',
-          padding: { x: 4, y: 2 },
-        })
-        .setOrigin(0.5)
-        .setResolution(4)
-        .setDepth(UI_DEPTH)
-        .setVisible(!unlocked);
+      const lock = this.buildLock(home.x, home.y + 14, price).setVisible(!unlocked);
 
       // El primero se dibuja siempre (en fantasma si el recinto está cerrado).
       const here: ResidentDef[] = residentsIn(id, Math.max(1, penCount(state, id)));
@@ -156,7 +157,7 @@ export class Pens {
       const companion = companionWalker ? wanderer(companionWalker, null, null, radiusOf(lead), 500 + Math.random() * 1500) : null;
       for (const w of [...animals, ...(companion ? [companion] : [])]) w.walker.object.setAlpha(unlocked ? 1 : LOCKED_ALPHA);
 
-      this.pens.push({ id, rect, space, gate: gate.tile, home, animals, companion, lock, petting: def.visitors === true, keeperInside: false, followLeft: 0, shown: unlocked });
+      this.pens.push({ id, rect, space, gate: gate.tile, home, animals, companion, lock, lockAt: { x: home.x, y: home.y + 14 }, lockPrice: price, petting: def.visitors === true, keeperInside: false, followLeft: 0, shown: unlocked });
     }
   }
 
@@ -392,10 +393,30 @@ export class Pens {
     this.burst(entry);
   }
 
+  /** Píldora gris con candado (y moneda y precio). Se pinta a tamaño de pantalla y se escala 1/zoom: nítida. */
+  private buildLock(x: number, y: number, price: number | undefined): Phaser.GameObjects.Container {
+    const z = this.zoom;
+    const w = (price === undefined ? LOCK_W_BARE : LOCK_W) * z;
+    const pill = addPillButton(this.scene, x, y, w, LOCK_H * z, { color: 'gray', icon: 'lock', coin: price === undefined ? undefined : String(price) });
+    return pill.setScale(1 / z).setDepth(UI_DEPTH);
+  }
+
+  /** El zoom de la cámara ha cambiado: se rehacen los candados para que sigan nítidos. */
+  setZoom(zoom: number): void {
+    if (zoom === this.zoom) return;
+    this.zoom = zoom;
+    for (const pen of this.pens) {
+      const old = pen.lock;
+      pen.lock = this.buildLock(pen.lockAt.x, pen.lockAt.y, pen.lockPrice).setVisible(old.visible);
+      this.scene.tweens.killTweensOf(old);
+      old.destroy();
+    }
+  }
+
   private playUnlock(pen: Pen): void {
     this.scene.tweens.add({
       targets: pen.lock,
-      scale: 1.8,
+      scale: pen.lock.scale * 1.8,
       alpha: 0,
       duration: 400,
       onComplete: () => pen.lock.setVisible(false),
