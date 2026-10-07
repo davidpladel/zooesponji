@@ -96,7 +96,7 @@ test('en inglés la privacidad se lee en inglés, dentro del juego', async ({ pa
 
   await tap(page, await page.evaluate(() => window.__ZOO__!.settingsButtonPos('privacy')));
   await expect(page.locator('#legal h1')).toContainText('Privacy');
-  await expect(page.locator('#legal h2')).toHaveCount(8);
+  await expect(page.locator('#legal h2')).toHaveCount(9);
   await expect(page.locator('#legal a')).toHaveCount(0);
   await expect(page.locator('#legal button')).toHaveAttribute('aria-label', 'Close');
 
