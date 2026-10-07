@@ -2,7 +2,7 @@ import * as Phaser from 'phaser';
 import { withVersion } from '../core/cacheBust';
 import { smooth } from './paint';
 
-export const ICONS = ['play', 'close', 'music', 'volume', 'joystick', 'gear', 'lock', 'shield', 'door', 'left', 'right', 'heart'] as const;
+export const ICONS = ['play', 'close', 'music', 'volume', 'joystick', 'gear', 'lock', 'shield', 'door', 'left', 'right', 'heart', 'chart'] as const;
 export type IconName = (typeof ICONS)[number];
 
 const iconKey = (name: IconName): string => `ui-icon-${name}`;

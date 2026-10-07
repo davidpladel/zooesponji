@@ -19,6 +19,7 @@ const TOGGLES: readonly { key: ToggleKey; icon: IconName; label: StringKey }[] =
   { key: 'music', icon: 'music', label: 'settings.music' },
   { key: 'sfx', icon: 'volume', label: 'settings.sfx' },
   { key: 'joystick', icon: 'joystick', label: 'settings.joystick' },
+  { key: 'stats', icon: 'chart', label: 'settings.stats' },
 ];
 
 /** Ventanas que pueden estar abiertas debajo del menú; sus textos ya están pintados en el idioma anterior. */
@@ -40,7 +41,7 @@ interface Chip {
 }
 
 /**
- * Menú de ajustes: música, sonido, joystick, idioma, privacidad, salir y créditos.
+ * Menú de ajustes: música, sonido, joystick, estadísticas, idioma, privacidad, salir y créditos.
  * Sin puerta parental: la privacidad se lee dentro del juego y nada lleva fuera de él.
  */
 export class SettingsScene extends Phaser.Scene {
@@ -78,7 +79,7 @@ export class SettingsScene extends Phaser.Scene {
     const badge = Phaser.Math.Clamp(height * 0.13, 44, 64);
     addCloseBadge(this, width / 2 + panelW / 2 - badge * 0.35, top + badge * 0.35, () => this.close(), badge);
 
-    // Cuatro fichas en fila: los tres interruptores y el idioma.
+    // Cinco fichas en fila: los cuatro interruptores y el idioma.
     const slots = TOGGLES.length + 1;
     const size = Phaser.Math.Clamp(Math.min(height * 0.2, (panelW - 80) / (slots * 1.3)), 56, 140);
     const gap = Math.min(40, size * 0.4);
