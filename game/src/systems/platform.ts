@@ -9,6 +9,7 @@ import type { SettingsScene } from '../scenes/SettingsScene';
 import type { ShopScene } from '../scenes/ShopScene';
 import { getAnalytics } from './analytics';
 import { sfx } from './audio';
+import { bus } from './events';
 import { closeLegal } from './legal';
 import { getSession } from './session';
 
@@ -27,6 +28,7 @@ async function exitApp(): Promise<void> {
 
 /** Abre "¿Salir?" encima de todo; al confirmar guarda y cierra la app. */
 export function askQuit(game: Phaser.Game): void {
+  bus.emit('quit-asked', {});
   const data: QuitSceneData = { onConfirm: () => void exitApp() };
   game.scene.run('Quit', data);
   game.scene.bringToTop('Quit');

@@ -3,6 +3,7 @@ import type * as Phaser from 'phaser';
 import { parseConfig, type MatomoEnv } from '../core/matomoRequest';
 import { APP_VERSION } from '../core/version';
 import { Analytics, setAnalytics } from './analytics';
+import { GameTracker } from './analyticsEvents';
 import { createStore } from './createStore';
 import { bus } from './events';
 import { getLanguage } from './language';
@@ -18,6 +19,7 @@ const SCREENS: Record<string, string> = {
   Book: 'libro',
   Feed: 'comer',
   Settings: 'ajustes',
+  Quit: 'salir',
 };
 
 function randomId(): string {
@@ -39,12 +41,14 @@ export async function installAnalytics(game: Phaser.Game): Promise<void> {
     const config = parseConfig(import.meta.env as MatomoEnv);
     if (!config) return;
     const session = getSession();
+    const store = createStore();
+    const now = (): Date => new Date();
     const analytics = new Analytics({
       config,
-      store: createStore(),
+      store,
       events: bus,
       send,
-      now: () => new Date(),
+      now,
       randomId,
       version: APP_VERSION,
       platform: Capacitor.isNativePlatform() ? 'android' : 'web',
@@ -53,12 +57,24 @@ export async function installAnalytics(game: Phaser.Game): Promise<void> {
       coins: session.state.coins,
     });
     setAnalytics(analytics);
+    const tracker = new GameTracker({
+      sink: analytics,
+      events: bus,
+      store,
+      now,
+      state: () => getSession().state,
+      settings: () => getSession().settings,
+      book: () => getSession().book,
+    });
+    analytics.setHooks(tracker);
     for (const [key, name] of Object.entries(SCREENS)) {
       const events = game.scene.getScene(key).events;
       events.on('start', () => analytics.screenView(name));
       events.on('resume', () => analytics.screenView(name));
     }
     setInterval(() => void analytics.flush(), FLUSH_MS);
+    // El tracker primero: tiene que estar escuchando cuando empiece la sesión.
+    await tracker.start();
     await analytics.start();
   } catch {
     // Medir nunca impide jugar.
