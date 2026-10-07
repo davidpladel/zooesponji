@@ -15,7 +15,7 @@ Pensado para niños de 6 a 9 años: sin textos largos, sin perder y sin anuncios
 - **Moverse:** tocar el suelo y la cuidadora va andando (también teclado, o joystick opcional desde el menú ⚙️, abajo a la izquierda).
 - **Dar de comer:** toca un animal: la cuidadora entra en su recinto y, al llegar, se abre la bandeja de comida de ese animal. Arrastra la comida (piedra, carne, conejo o zanahoria) hasta el animal.
 - **Tienda:** se abre al tener 20 monedas; pisa la puerta del puesto para entrar. Dentro suena la campanita, la cuidadora entra andando, el tendero la saluda y los animales esperan en peanas: acércate a uno (o tócalo y va sola), toca el bocadillo "¡Comprar!" y sal pisando el felpudo. Si un peque se queda quieto, unas huellas le señalan qué puede comprar. Pantera 50 🪙, panda 100 🪙, y animales extra: hasta 5 cabras (10 🪙 cada una), 2 panteras y 2 pandas (20 🪙).
-- **Menú ⚙️:** un tablero de madera con música, efectos, joystick, **idioma (español o inglés)**, créditos, la versión del juego, la página de privacidad (se lee sin salir del juego) y, en Android, un botón «Salir».
+- **Menú ⚙️:** un tablero de madera con música, efectos, joystick, estadísticas anónimas, **idioma (español o inglés)**, créditos, la versión del juego, la página de privacidad (se lee sin salir del juego) y, en Android, un botón «Salir».
 - **Idiomas:** español e inglés. Sale el del móvil (cualquier variante de español da español; el resto, inglés) y se cambia en el menú ⚙️. Los nombres de los animales y «Zoo Esponji» no se traducen.
 
 | Alimento | 🦁 León | 🐐 Cabra | 🐆 Pantera negra | 🐼 Oso panda |
@@ -49,7 +49,7 @@ Pensado para niños de 6 a 9 años: sin textos largos, sin perder y sin anuncios
 - La lógica (reacciones, monedas, guardado, caminos A\*, rebaños…) es TypeScript puro en `game/src/core/`, sin Phaser, y está probada con **Vitest**; las escenas solo dibujan y recogen toques. Pruebas de juego en el navegador con **Playwright**; CI en **GitHub Actions**.
 - **Mapas:** generados por script en formato **Tiled**; colisiones, recintos, puertas y punto de inicio salen del propio mapa. Terreno con autotile (formato RPG Maker A2).
 - **Android:** **Capacitor** (`appId` `com.davidpladel.zooesponji`), horizontal, guardado nativo.
-- **Google Play (Families Policy):** sin analítica, sin anuncios, sin permiso `AD_ID`, sin enlaces externos.
+- **Google Play (Families Policy):** sin anuncios, sin permiso `AD_ID`, sin enlaces externos y sin SDK de terceros. Estadísticas anónimas hacia un Matomo propio (sin cookies ni identificadores; se apagan en Ajustes).
 - **Por qué no Godot / Unity:** el requisito es web + Android a la vez desde el terminal; el export web de Godot pesa 30–40 MB y va flojo en el navegador del móvil. Detalle en la [spec](docs/superpowers/specs/2026-09-27-motor-phaser-v3-design.md).
 
 Para arrancarlo, probarlo, compilar para Android o publicar en la web: [game/README.md](game/README.md).
@@ -70,6 +70,7 @@ El juego se ha hecho por hitos: spec de diseño → plan → ejecución.
 | [Spec](docs/superpowers/specs/2026-09-28-tienda-fase-b-design.md) y [plan fase B](docs/superpowers/plans/2026-09-28-tienda-fase-b.md) | La cuidadora entra andando en la tienda y compra acercándose (fase B) |
 | [Spec](docs/superpowers/specs/2026-10-06-interfaz-nueva-design.md) y [plan interfaz nueva](docs/superpowers/plans/2026-10-06-interfaz-nueva.md) | Interfaz nueva: píldoras, paneles, letra y iconos, portada pintada, modo inmersivo |
 | [Spec](docs/superpowers/specs/2026-10-06-idiomas-es-en-design.md) y [plan idiomas](docs/superpowers/plans/2026-10-06-idiomas-es-en.md) | Idiomas español e inglés: detección, botón en Ajustes, textos y privacidad |
+| [Spec](docs/superpowers/specs/2026-10-07-analitica-anonima-matomo-design.md) y [plan analítica](docs/superpowers/plans/2026-10-07-analitica-anonima-matomo.md) | Estadísticas anónimas con Matomo: usuarios activos sin identificadores, eventos y ficha en Ajustes |
 | [Spec](docs/superpowers/specs/2026-08-08-mvp-zooesponji-design.md) y [plan 1.0](docs/superpowers/plans/2026-08-08-mvp-zooesponji.md), [spec](docs/superpowers/specs/2026-08-15-escenas-inmersivas-design.md) y [plan del prototipo](docs/superpowers/plans/2026-08-15-escenas-inmersivas.md) | Histórico (1.x y prototipo Canvas) |
 
 ## Hoja de ruta

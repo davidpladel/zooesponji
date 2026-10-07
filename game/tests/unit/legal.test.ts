@@ -19,7 +19,18 @@ describe('página de privacidad', () => {
     const en = read(legalPage('en'));
     expect(en).toContain('<html lang="en">');
     for (const tag of ['h1', 'h2', 'p', 'strong']) expect(count(en, tag), tag).toBe(count(es, tag));
-    expect(count(en, 'h2')).toBe(8);
+    expect(count(en, 'h2')).toBe(9);
+  });
+
+  it('explica las estadísticas anónimas y cómo apagarlas, en los dos idiomas', () => {
+    const es = main(read(legalPage('es')));
+    const en = main(read(legalPage('en')));
+    expect(es).toContain('Estadísticas anónimas');
+    expect(es).toContain('Ajustes');
+    expect(es).not.toContain('Tampoco lleva');
+    expect(en).toContain('Anonymous statistics');
+    expect(en).toContain('Settings');
+    expect(en).not.toContain('measurement or tracking tools either');
   });
 
   it('sin enlaces (un peque no sale del juego) y con los mismos datos de contacto', () => {

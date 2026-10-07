@@ -193,6 +193,8 @@ segundo plano.
 - **Families Policy de Google Play desde v3.0:**
   - Ningún SDK de analítica o crashes que recoja identificadores; sin permiso
     `AD_ID`.
+  - Desde el 7-oct-2026 hay estadísticas anónimas con código propio hacia un Matomo propio, sin SDK ni
+    identificadores: ver `2026-10-07-analitica-anonima-matomo-design.md`.
   - Puerta parental para cualquier enlace externo y ajustes sensibles.
   - Política de privacidad publicada (obligatoria aunque no haya anuncios).
   - `targetSdkVersion` según lo que exija Play en el momento de publicar.
