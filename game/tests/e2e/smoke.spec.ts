@@ -21,15 +21,15 @@ test('tocar el camino mueve a la cuidadora hasta allí', async ({ page }) => {
   await startGame(page);
 
   const spawn = await page.evaluate(() => window.__ZOO__!.spawnTile());
-  const tx = spawn!.x + 3; // 3 casillas a la derecha por el camino principal
-  const target = await page.evaluate(([x, y]) => window.__ZOO__!.tileToScreen(x!, y!), [tx, spawn!.y]);
+  const ty = spawn!.y - 2; // 2 casillas hacia arriba por el camino de la entrada
+  const target = await page.evaluate(([x, y]) => window.__ZOO__!.tileToScreen(x!, y!), [spawn!.x, ty]);
   const box = await canvasBox(page);
   await page.mouse.click(box.x + target!.x, box.y + target!.y);
 
   await expect
-    .poll(() => page.evaluate(() => window.__ZOO__!.keeperPosition()?.x ?? 0), { timeout: 5_000 })
-    .toBeCloseTo(tx * 16 + 8, 0);
-  expect(await page.evaluate(() => window.__ZOO__!.keeperPosition()?.y)).toBeCloseTo(spawn!.y * 16 + 8, 0);
+    .poll(() => page.evaluate(() => window.__ZOO__!.keeperPosition()?.y ?? 0), { timeout: 5_000 })
+    .toBeCloseTo(ty * 16 + 8, 0);
+  expect(await page.evaluate(() => window.__ZOO__!.keeperPosition()?.x)).toBeCloseTo(spawn!.x * 16 + 8, 0);
 });
 
 test('las monedas se muestran y sobreviven a recargar', async ({ page }) => {
