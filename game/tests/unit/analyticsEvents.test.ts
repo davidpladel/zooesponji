@@ -7,7 +7,7 @@ import { GameTracker, knownSteps } from '../../src/systems/analyticsEvents';
 import { EventBus, type GameEvents } from '../../src/systems/events';
 import { createMemoryStore } from '../../src/systems/storage';
 
-function setup(opts: { state?: GameState; store?: KeyValueStore; active?: boolean } = {}) {
+function setup(opts: { state?: GameState; store?: KeyValueStore; active?: boolean; throwing?: boolean } = {}) {
   const events = new EventBus<GameEvents>();
   const store = opts.store ?? createMemoryStore();
   const clock = { time: new Date(2026, 9, 7, 10, 0, 0).getTime() };
@@ -16,6 +16,7 @@ function setup(opts: { state?: GameState; store?: KeyValueStore; active?: boolea
   const sink = {
     active: opts.active ?? true,
     event(category: string, action: string, name?: string, value?: number): void {
+      if (opts.throwing) throw new Error('colaborador roto');
       const key = [category, action, ...(name === undefined ? [] : [name])].join(' | ');
       sent.push(key);
       values.set(key, value);
@@ -33,7 +34,7 @@ function setup(opts: { state?: GameState; store?: KeyValueStore; active?: boolea
   });
   const fed = (residentId: string, foodId: GameEvents['animal-fed']['foodId'], reaction: GameEvents['animal-fed']['reaction'], coins: number) =>
     events.emit('animal-fed', { penId: 'cabra', residentId, foodId, reaction, coins });
-  return { tracker, events, store, clock, sent, values, fed };
+  return { tracker, events, store, clock, sent, values, fed, sink };
 }
 
 describe('GameTracker: comer', () => {
@@ -117,7 +118,7 @@ describe('GameTracker: alcance y embudo', () => {
     const first = setup({ store });
     await first.tracker.start();
     first.fed('gordi', 'zanahoria', 'come', 1);
-    await Promise.resolve();
+    await new Promise((resolve) => setTimeout(resolve, 0));
     expect(await store.get(REACH_KEY)).toContain('animal:cabra/gordi');
 
     const second = setup({ store });
@@ -277,7 +278,7 @@ describe('GameTracker: sesión', () => {
     t.fed('gordi', 'zanahoria', 'come', 1);
     t.tracker.goingBackground(10);
     t.tracker.screenShown('libro');
-    await Promise.resolve();
+    await new Promise((resolve) => setTimeout(resolve, 0));
     expect(t.sent).toEqual([]);
     expect(await t.store.get(REACH_KEY)).toBeNull();
   });
@@ -292,5 +293,51 @@ describe('GameTracker: ajustes y salida', () => {
     t.events.emit('quit-answered', { leave: false });
     t.events.emit('quit-answered', { leave: true });
     expect(t.sent).toEqual(['ajustes | privacidad', 'ajustes | salir-pregunta', 'ajustes | salir-no', 'ajustes | salir-si']);
+  });
+});
+
+describe('GameTracker: nunca rompe el juego', () => {
+  it('si el colaborador lanza, ni el bus ni los avisos lanzan', async () => {
+    const t = setup({ throwing: true });
+    await t.tracker.start();
+    expect(() => t.fed('gordi', 'zanahoria', 'come', 1)).not.toThrow();
+    expect(() => t.tracker.sessionStarted(['dia'])).not.toThrow();
+    expect(() => t.tracker.goingBackground(10)).not.toThrow();
+    expect(() => t.tracker.resumed()).not.toThrow();
+    expect(() => t.tracker.screenShown('libro')).not.toThrow();
+  });
+
+  it('un evento justo después de start() sin esperar sigue dando su detalle', () => {
+    const t = setup();
+    void t.tracker.start();
+    t.fed('gordi', 'zanahoria', 'come', 1);
+    expect(t.sent).toContain('comer | come | cabra/gordi/zanahoria');
+  });
+
+  it('llamar a start() dos veces no duplica eventos', async () => {
+    const t = setup();
+    await t.tracker.start();
+    await t.tracker.start();
+    t.fed('gordi', 'zanahoria', 'come', 1);
+    expect(t.sent.filter((k) => k === 'comer | come | cabra/gordi/zanahoria')).toHaveLength(1);
+  });
+
+  it('con la estadística apagada la sesión no manda el estado del día', async () => {
+    const t = setup({ active: false });
+    await t.tracker.start();
+    t.tracker.sessionStarted(['dia']);
+    expect(t.sent).toEqual([]);
+  });
+
+  it('al apagar y volver a encender no sobrevive una ventana abierta', async () => {
+    const t = setup();
+    await t.tracker.start();
+    t.events.emit('feed-opened', { residentId: 'gordi' });
+    t.sink.active = false;
+    t.events.emit('feed-closed', { residentId: 'gordi' });
+    t.sink.active = true;
+    t.sent.length = 0;
+    t.events.emit('feed-closed', { residentId: 'gordi' });
+    expect(t.sent).toEqual([]);
   });
 });
