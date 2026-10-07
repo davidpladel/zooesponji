@@ -41,6 +41,8 @@ export interface GameEvents {
   'animal-added': { penId: PenId; count: number; residentId: string };
   /** Se ha dado de comer a un residente: su recinto entero lo celebra. */
   'animal-fed': { penId: PenId; residentId: string; reaction: Reaction };
+  /** El libro se ha abierto por otra página. */
+  'book-page': { pageId: string };
   'settings-changed': { settings: Settings };
   toast: { text: string };
 }
