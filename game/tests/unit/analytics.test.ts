@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
 import { ACTIVITY_KEY } from '../../src/core/activity';
-import { durationBucket } from '../../src/core/eventCatalog';
 import { QUEUE_KEY, QUEUE_LIMIT } from '../../src/core/hitQueue';
 import type { MatomoConfig } from '../../src/core/matomoRequest';
 import { defaultSettings, type KeyValueStore, type Settings } from '../../src/core/save';
@@ -63,6 +62,7 @@ describe('Analytics: apagada', () => {
     const t = setup({ config: null });
     await t.analytics.start();
     t.analytics.track({ kind: 'event', category: 'x', action: 'y' });
+    t.events.emit('animal-unlocked', { penId: 'panda' });
     await t.analytics.flush();
     expect(t.bodies).toEqual([]);
     expect(await t.store.get(ACTIVITY_KEY)).toBeNull();
@@ -71,10 +71,26 @@ describe('Analytics: apagada', () => {
   it('con las estadísticas apagadas en Ajustes no envía ni guarda nada', async () => {
     const t = setup({ settings: { ...defaultSettings(), stats: false } });
     await t.analytics.start();
+    t.events.emit('animal-unlocked', { penId: 'panda' });
     t.analytics.screenView('mapa');
     await t.analytics.flush();
     expect(t.bodies).toEqual([]);
     expect(await t.store.get(ACTIVITY_KEY)).toBeNull();
+  });
+
+  it('con las estadísticas apagadas no sale lo que quedó guardado y se borra', async () => {
+    const store = createMemoryStore();
+    const first = setup({ store });
+    await first.analytics.start();
+    first.net.ok = false;
+    await first.analytics.flush();
+    expect(JSON.parse((await store.get(QUEUE_KEY))!).hits.length).toBeGreaterThan(0);
+
+    const second = setup({ store, settings: { ...defaultSettings(), stats: false } });
+    await second.analytics.start();
+    await second.analytics.flush();
+    expect(second.bodies).toEqual([]);
+    expect(JSON.parse((await store.get(QUEUE_KEY))!).hits).toEqual([]);
   });
 });
 
@@ -133,6 +149,7 @@ describe('Analytics: pantallas', () => {
     await t.analytics.start();
     t.analytics.screenView('mapa');
     t.analytics.screenView('mapa');
+    t.events.emit('animal-unlocked', { penId: 'panda' });
     await t.analytics.flush();
     const screens = t.sent().filter((p) => p.action_name);
     expect(screens.map((p) => p.action_name)).toEqual(['mapa']);
@@ -177,6 +194,7 @@ describe('Analytics: apagar y encender en Ajustes', () => {
     const t = setup();
     await t.analytics.start();
     t.events.emit('settings-changed', settings({ stats: false }));
+    t.events.emit('animal-unlocked', { penId: 'panda' });
     await t.analytics.flush();
     expect(t.bodies).toEqual([]);
   });
@@ -205,7 +223,7 @@ describe('Analytics: segundo plano', () => {
     const ends = t.sent().filter((p) => p.e_a === 'fin');
     expect(ends).toHaveLength(1);
     expect(ends[0]?.e_v).toBe('95');
-    expect(ends[0]?.e_n).toBe(durationBucket(95));
+    expect(ends[0]?.e_n).toBe('1-3m'); // 95 s
   });
 
   it('una ausencia corta sigue en la misma sesión', async () => {
@@ -236,6 +254,79 @@ describe('Analytics: segundo plano', () => {
     const second = t.sent().filter((p) => p._id !== firstId);
     expect(second.map((p) => p.e_a ?? p.action_name)).toEqual(['inicio', 'mapa']);
     expect(second[0]?.dimension4).toBe('2-5');
+  });
+});
+
+describe('Analytics: arranque y envío en curso', () => {
+  it('irse a segundo plano antes de empezar la sesión no mide ni avisa', async () => {
+    const t = setup();
+    const calls: string[] = [];
+    t.analytics.setHooks({
+      sessionStarted: () => calls.push('sesion'),
+      goingBackground: (s) => calls.push(`fuera:${s}`),
+      resumed: () => calls.push('vuelve'),
+      screenShown: () => calls.push('pantalla'),
+    });
+    t.analytics.setBackground(true);
+    t.analytics.setBackground(false);
+    await settle();
+    await t.analytics.flush();
+    expect(t.bodies).toEqual([]);
+    expect(calls).toEqual(['vuelve']);
+  });
+
+  it('lo apuntado antes de terminar de leer la cola guardada no se pierde', async () => {
+    const t = setup();
+    const started = t.analytics.start();
+    t.analytics.reportError(new Error('antes de arrancar'));
+    await started;
+    await settle();
+    await t.analytics.flush();
+    expect(t.sent().some((p) => p.e_c === 'error' && p.e_n === 'antes de arrancar')).toBe(true);
+  });
+
+  it('lo apuntado mientras se guarda al final de un envío también se guarda', async () => {
+    const real = createMemoryStore();
+    let writes = 0;
+    let release: () => void = () => {};
+    const store: KeyValueStore = {
+      get: (key) => real.get(key),
+      set: async (key, value) => {
+        if (key === QUEUE_KEY) {
+          writes += 1;
+          if (writes === 2) await new Promise<void>((resolve) => (release = resolve));
+        }
+        await real.set(key, value);
+      },
+    };
+    const t = setup({ store });
+    await t.analytics.start();
+    const flushing = t.analytics.flush();
+    await settle();
+    expect(writes).toBe(2); // el guardado final está en marcha
+    t.analytics.track({ kind: 'event', category: 'x', action: 'tarde' });
+    release();
+    await flushing;
+    expect(JSON.parse((await real.get(QUEUE_KEY))!).hits.map((h: { q: string }) => h.q).join('|')).toContain('tarde');
+  });
+
+  it('con un envío en curso otro flush no envía y lo apuntado sale una sola vez', async () => {
+    const pending: { body: string; resolve: (ok: boolean) => void }[] = [];
+    const t = setup({ send: (_url, body) => new Promise<boolean>((resolve) => pending.push({ body, resolve })) });
+    await t.analytics.start();
+    const first = t.analytics.flush();
+    await settle();
+    expect(pending).toHaveLength(1);
+    await t.analytics.flush();
+    expect(pending).toHaveLength(1);
+    t.analytics.track({ kind: 'event', category: 'x', action: 'durante' });
+    pending[0]!.resolve(true);
+    await settle();
+    expect(pending).toHaveLength(2);
+    pending[1]!.resolve(true);
+    await first;
+    expect(pending.filter((p) => p.body.includes('e_a=durante'))).toHaveLength(1);
+    expect(pending.map((p) => p.body).join('').split('e_a=durante').length - 1).toBe(1);
   });
 });
 
@@ -390,6 +481,19 @@ describe('Analytics: retención y colaborador', () => {
     expect(calls).toEqual(['sesion:nuevo,dia,semana,mes', 'pantalla:tienda', 'fuera:20', 'vuelve']);
   });
 
+  it('un colaborador que lanza no rompe el juego', async () => {
+    const t = setup();
+    const boom = (): never => {
+      throw new Error('fallo del colaborador');
+    };
+    t.analytics.setHooks({ sessionStarted: boom, goingBackground: boom, resumed: boom, screenShown: boom });
+    await expect(t.analytics.start()).resolves.toBeUndefined();
+    expect(() => t.analytics.screenView('mapa')).not.toThrow();
+    expect(() => t.analytics.setBackground(true)).not.toThrow();
+    expect(() => t.analytics.setBackground(false)).not.toThrow();
+    await settle();
+  });
+
   it('los eventos del juego que siguen aquí: recinto, animal y monedas', async () => {
     const t = setup();
     await t.analytics.start();
@@ -398,6 +502,7 @@ describe('Analytics: retención y colaborador', () => {
     t.events.emit('coins-changed', { coins: 120 });
     await t.analytics.flush();
     expect(t.names()).toEqual(expect.arrayContaining(['progreso/recinto', 'progreso/animal', 'progreso/monedas']));
+    expect(JSON.stringify(t.sent())).not.toContain('nube');
   });
 });
 
