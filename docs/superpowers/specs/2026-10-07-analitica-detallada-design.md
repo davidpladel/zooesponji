@@ -142,9 +142,9 @@ Tramos de duración: `<1m`, `1-3m`, `3-10m`, `10-30m`, `30m+`. La unidad es el *
 | `perdidos` | motivo: `cola-llena`, `caducado` | cuántos eventos | primera sesión con red tras perderlos |
 | `pendientes` | tramo de edad del más viejo: `<1h`, `1-6h`, `6-24h`, `1-3d`, `3-7d` | cuántos se reenvían | al arrancar con eventos guardados |
 
-### 2. Etapa del jugador: sexta dimensión
+### 2. Etapa del jugador: sin dimensión nueva
 
-Nueva dimensión de visita `progreso`, tramo de recintos abiertos: `2`, `3-4`, `5-7`, `8-11`. `VITE_MATOMO_DIMS` admite cinco ids (como hoy, sin esta dimensión) o seis. Así la versión nueva funciona antes de que David cree la dimensión.
+No se añade ninguna dimensión. Matomo trae cinco huecos de dimensiones de visita por instalación y están ocupados; además, cruzar eventos con una dimensión exige un segmento, que el modo CNIL redondea a decenas. La etapa del jugador sale exacta del evento diario `tiene-recinto`: cuántos jugadores tienen cada recinto y con cuántos animales. `VITE_MATOMO_DIMS` no cambia.
 
 ### 3. Lo que recuerda el dispositivo (`src/core/reach.ts`, nuevo, lógica pura)
 
@@ -205,7 +205,6 @@ Clave aparte `zooesponji_v3_reach`. No toca la partida ni `SAVE_VERSION`.
 
 ### 9. Pasos manuales de David (detallados en el plan)
 
-- Crear la dimensión de visita `progreso` y pasar su id.
 - Crear el usuario de solo lectura y guardar su token en el fichero local.
 - Opcional, recomendado: ampliar la ventana de `cdt` a 7 días.
 
@@ -217,7 +216,7 @@ Clave aparte `zooesponji_v3_reach`. No toca la partida ni `SAVE_VERSION`.
 - **`hitQueue`:** límite y descarte, caducidad, `cdt` solo pasados 5 minutos y en UTC, reloj atrasado, lote confirmado y lote fallido, persistencia y relectura, borrado al apagar.
 - **`penNear`:** paso rápido que no cuenta, permanencia que cuenta una vez, salida y vuelta.
 - **`analyticsEvents` (con envío falso):** ventana con comidas, ventana vacía, comida fuera, libro leído y hojeado, compra, sin monedas, resumen del rato, estado diario.
-- **`matomoRequest`:** cinco o seis dimensiones; nunca `token_auth`.
+- **`matomoRequest`:** `cdt` presente o ausente según la edad del evento; nunca `token_auth`.
 - **Pruebas de juego:** las escenas emiten los eventos nuevos del `bus`.
 - **Compilación:** sin token en `dist/`; `AndroidManifest.xml` sin permisos nuevos.
 
