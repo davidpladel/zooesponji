@@ -14,6 +14,7 @@ import type { SettingsScene } from '../scenes/SettingsScene';
 import type { ShopScene } from '../scenes/ShopScene';
 import type { TitleScene } from '../scenes/TitleScene';
 import type { WorldScene } from '../scenes/WorldScene';
+import { bus, type GameEvents } from './events';
 import { getLanguage } from './language';
 import type { Platform } from './platform';
 import { getSession } from './session';
@@ -81,6 +82,8 @@ export interface ZooTestApi {
   gateApproachTile(penId: string): { x: number; y: number } | null;
   shopDoorTile(): { x: number; y: number } | null;
   spawnTile(): { x: number; y: number } | null;
+  /** Nombres de los eventos de estadísticas que ha emitido el juego, en orden. */
+  busLog(): string[];
 }
 
 declare global {
@@ -97,6 +100,14 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
 
   const activeScene = <T extends Phaser.Scene>(key: string): T | null =>
     game.scene.isActive(key) ? (game.scene.getScene(key) as T) : null;
+
+  const logged: (keyof GameEvents)[] = [
+    'animal-tapped', 'feed-opened', 'animal-fed', 'food-missed', 'feed-closed', 'pen-near', 'locked-tap', 'shop-locked',
+    'control-used', 'shop-opened', 'shop-look', 'shop-denied', 'purchase', 'shop-closed', 'book-opened', 'book-page-shown',
+    'book-index', 'book-closed', 'legal-opened', 'quit-asked', 'quit-answered',
+  ];
+  const busLog: string[] = [];
+  for (const name of logged) bus.on(name, () => busLog.push(name));
 
   window.__GAME__ = game;
   window.__ZOO__ = {
@@ -173,5 +184,6 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
     gateApproachTile: (penId) => activeScene<WorldScene>('World')?.gateApproachTile(penId) ?? null,
     shopDoorTile: () => activeScene<WorldScene>('World')?.shopDoorTile() ?? null,
     spawnTile: () => activeScene<WorldScene>('World')?.spawnTile() ?? null,
+    busLog: () => [...busLog],
   };
 }

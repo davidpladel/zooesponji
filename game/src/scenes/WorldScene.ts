@@ -1,18 +1,19 @@
 import * as Phaser from 'phaser';
 import { getArt } from '../art/art';
 import { KEEPER_SPEED, MAPS, TEXTURES, TILE_SIZE } from '../config';
-import type { GameState } from '../core/economy';
+import { isPenOpen, type GameState } from '../core/economy';
 import { approachTile } from '../core/interaction';
 import { inJoystickZone } from '../core/joystick';
 import { stepAlongPath, tileCenter, tryMove, worldToTile, type Vec } from '../core/movement';
 import { findPathOrNearest, isWalkable, type Point, type WalkGrid } from '../core/pathfinding';
 import { withPenInteriors } from '../core/penGrid';
+import { noPen, stepNear, type NearState } from '../core/penNear';
 import { buildWalkGrid, readEnclosures, readGates, readProps, readShop, readSpawn, type TiledMap } from '../core/tiledmap';
 import type { PenId } from '../data/pens';
 import { SHOP_UNLOCK_COINS } from '../data/shop';
 import { t } from '../data/strings';
 import { sfx } from '../systems/audio';
-import { bus } from '../systems/events';
+import { bus, type ControlMode } from '../systems/events';
 import { joystickState } from '../systems/joystickState';
 import { getSession } from '../systems/session';
 import { computeZoom } from '../systems/viewport';
@@ -40,6 +41,9 @@ export class WorldScene extends Phaser.Scene {
   private pathGrid!: WalkGrid;
   /** Residente hacia el que va la cuidadora para darle de comer. */
   private feedTarget: string | null = null;
+  private near: NearState<PenId> = noPen();
+  /** Formas de moverse ya avisadas desde que se montó el mapa. */
+  private readonly controlsUsed = new Set<ControlMode>();
   private mapData!: TiledMap;
   private keeper!: Walker;
   private marker!: Phaser.GameObjects.Image;
@@ -83,6 +87,8 @@ export class WorldScene extends Phaser.Scene {
     this.keeper = createKeeper(this, spawn.x, spawn.y);
     this.route = [];
     this.feedTarget = null;
+    this.near = noPen();
+    this.controlsUsed.clear();
 
     const camera = this.cameras.main;
     camera.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
@@ -115,6 +121,7 @@ export class WorldScene extends Phaser.Scene {
     this.pens.update(time, delta, this.cameras.main.worldView, { keeper: this.keeperPosition(), ...this.visitors.people() });
     this.moveKeeper(delta);
     const pos = this.keeperPosition();
+    this.watchPens(pos, delta);
     if (this.reachResident(pos)) return;
 
     const state = getSession().state;
@@ -123,7 +130,23 @@ export class WorldScene extends Phaser.Scene {
     if (this.pens.lockedDoorstep(tile, state)) bus.emit('toast', { text: t('toast.needShop') });
     const doorEvent = this.shop?.onKeeperTile(tile, state) ?? null;
     if (doorEvent === 'open') this.openShop();
-    else if (doorEvent === 'locked') bus.emit('toast', { text: t('toast.shopLocked', { n: SHOP_UNLOCK_COINS }) });
+    else if (doorEvent === 'locked') {
+      bus.emit('shop-locked', { missing: Math.max(0, SHOP_UNLOCK_COINS - state.coins) });
+      bus.emit('toast', { text: t('toast.shopLocked', { n: SHOP_UNLOCK_COINS }) });
+    }
+  }
+
+  /** Avisa cuando la cuidadora lleva un rato junto a un recinto: es una visita, no un ir de paso. */
+  private watchPens(pos: Vec, delta: number): void {
+    const step = stepNear(this.near, this.pens.rects(), pos, delta);
+    this.near = step.state;
+    if (step.entered) bus.emit('pen-near', { penId: step.entered, locked: !isPenOpen(getSession().state, step.entered) });
+  }
+
+  private usedControl(mode: ControlMode): void {
+    if (this.controlsUsed.has(mode)) return;
+    this.controlsUsed.add(mode);
+    bus.emit('control-used', { mode });
   }
 
   /**
@@ -275,9 +298,14 @@ export class WorldScene extends Phaser.Scene {
     if (c && k) {
       const x = (c.right.isDown || k.D.isDown ? 1 : 0) - (c.left.isDown || k.A.isDown ? 1 : 0);
       const y = (c.down.isDown || k.S.isDown ? 1 : 0) - (c.up.isDown || k.W.isDown ? 1 : 0);
-      if (x !== 0 || y !== 0) return { x, y };
+      if (x !== 0 || y !== 0) {
+        this.usedControl('teclado');
+        return { x, y };
+      }
     }
-    return joystickState.vector;
+    const stick = joystickState.vector;
+    if (stick.x !== 0 || stick.y !== 0) this.usedControl('joystick');
+    return stick;
   }
 
   private onPointerUp(pointer: Phaser.Input.Pointer): void {
@@ -289,12 +317,18 @@ export class WorldScene extends Phaser.Scene {
     const world = { x: point.x, y: point.y };
     const state = getSession().state;
     const hit = this.pens.residentAt(world, state, TAP_REACH);
+    this.usedControl('toque');
     if (hit) {
+      bus.emit('animal-tapped', { residentId: hit.residentId });
       this.feedResident(hit.residentId);
       return;
     }
     this.cancelFeedTarget();
-    if (this.pens.lockedPenAt(world, state)) bus.emit('toast', { text: t('toast.needShop') });
+    const locked = this.pens.lockedPenAt(world, state);
+    if (locked) {
+      bus.emit('locked-tap', { penId: locked });
+      bus.emit('toast', { text: t('toast.needShop') });
+    }
     this.goTo(world);
   }
 
@@ -303,6 +337,7 @@ export class WorldScene extends Phaser.Scene {
     this.feedTarget = null;
     this.pens.hold(residentId);
     sfx.play('tap');
+    bus.emit('feed-opened', { residentId });
     this.scene.pause();
     const data: FeedSceneData = { residentId };
     this.scene.launch('Feed', data);
@@ -310,6 +345,7 @@ export class WorldScene extends Phaser.Scene {
 
   private openShop(): void {
     this.stopWalking();
+    bus.emit('shop-opened', {});
     this.scene.pause();
     this.scene.launch('Shop');
   }
