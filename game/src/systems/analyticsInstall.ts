@@ -26,8 +26,11 @@ function randomId(): string {
 }
 
 /** Sin cookies (`credentials: 'omit'`) y sin leer la respuesta. `keepalive` deja terminar el envío al salir. */
-function send(url: string, body: string): void {
-  void fetch(url, { method: 'POST', body, mode: 'no-cors', keepalive: true, credentials: 'omit' }).catch(() => {});
+function send(url: string, body: string): Promise<boolean> {
+  return fetch(url, { method: 'POST', body, mode: 'no-cors', keepalive: true, credentials: 'omit' }).then(
+    () => true,
+    () => false,
+  );
 }
 
 /** Arranca las estadísticas anónimas. Sin configuración (desarrollo, tests) no hace nada. Nunca lanza. */
@@ -55,7 +58,7 @@ export async function installAnalytics(game: Phaser.Game): Promise<void> {
       events.on('start', () => analytics.screenView(name));
       events.on('resume', () => analytics.screenView(name));
     }
-    setInterval(() => analytics.flush(), FLUSH_MS);
+    setInterval(() => void analytics.flush(), FLUSH_MS);
     await analytics.start();
   } catch {
     // Medir nunca impide jugar.
