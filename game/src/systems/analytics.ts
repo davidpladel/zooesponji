@@ -1,6 +1,6 @@
 import { ACTIVITY_KEY, ageBucket, cohortWeek, dayKey, nextActivity, parseActivity, sessionBucket, type ActivityFlag, type ReturnFlag } from '../core/activity';
 import { durationBucket, pendingBucket, type ActionOf, type Category } from '../core/eventCatalog';
-import { QUEUE_KEY, ack, clearLost, emptyQueue, expire, maxAgeMs, oldestAge, parseQueue, push, stamp, takeBatch, type QueueState } from '../core/hitQueue';
+import { QUEUE_KEY, QUEUE_LIMIT, ack, clearLost, emptyQueue, expire, maxAgeMs, oldestAge, parseQueue, push, stamp, takeBatch, type QueueState } from '../core/hitQueue';
 import { toBulkBody, toQuery, trackerUrl, type Hit, type MatomoConfig } from '../core/matomoRequest';
 import type { KeyValueStore, Settings } from '../core/save';
 import type { EventBus, GameEvents } from './events';
@@ -39,9 +39,10 @@ export interface AnalyticsHooks {
 }
 
 /**
- * Estadísticas anónimas hacia Matomo: sin cookies y sin identificador guardado. El id de visita se
- * crea al azar en cada sesión. Lo que no se puede enviar espera en el dispositivo y sale después con
- * su fecha real. Medir nunca rompe el juego: todo fallo se traga.
+ * Estadísticas anónimas hacia Matomo: sin cookies. El id de visita se crea al azar en cada sesión y
+ * viaja dentro de los eventos que esperan en el dispositivo, así que desaparece con ellos: nada une una
+ * sesión con otra. Lo que no se puede enviar sale después con su fecha real. Medir nunca rompe el
+ * juego: todo fallo se traga.
  */
 export class Analytics {
   private queue: QueueState = emptyQueue();
@@ -75,13 +76,31 @@ export class Analytics {
   async start(): Promise<void> {
     if (!this.deps.config) return;
     const { events } = this.deps;
-    try {
-      this.queue = parseQueue(await this.deps.store.get(QUEUE_KEY));
-    } catch {
-      this.queue = emptyQueue();
+    let stored = emptyQueue();
+    if (this.settings.stats) {
+      try {
+        stored = parseQueue(await this.deps.store.get(QUEUE_KEY));
+      } catch {
+        stored = emptyQueue();
+      }
+    } else {
+      // Con las estadísticas apagadas lo que quedó guardado no se envía nunca: se borra.
+      try {
+        await this.deps.store.set(QUEUE_KEY, JSON.stringify(emptyQueue()));
+      } catch {
+        // Sin almacén no hay nada que borrar.
+      }
     }
-    const waiting = this.queue.hits.length;
-    const waitingAge = oldestAge(this.queue, this.deps.now().getTime());
+    // Lo apuntado mientras se leía el almacén va detrás de lo guardado, que es más antiguo.
+    const mine = this.queue;
+    const hits = [...stored.hits, ...mine.hits];
+    const over = Math.max(0, hits.length - QUEUE_LIMIT);
+    this.queue = {
+      hits: over > 0 ? hits.slice(over) : hits,
+      lost: { full: stored.lost.full + mine.lost.full + over, expired: stored.lost.expired + mine.lost.expired },
+    };
+    const waiting = stored.hits.length;
+    const waitingAge = oldestAge(stored, this.deps.now().getTime());
     events.on('settings-changed', ({ settings }) => this.onSettings(settings));
     events.on('coins-changed', ({ coins }) => this.onCoins(coins));
     events.on('animal-unlocked', ({ penId }) => this.event('progreso', 'recinto', penId));
@@ -116,7 +135,7 @@ export class Analytics {
     if (name === this.screen) return;
     this.screen = name;
     this.track({ kind: 'screen', name });
-    this.hooks?.screenShown(name);
+    if (this.active) this.notify((hooks) => hooks.screenShown(name));
   }
 
   /**
@@ -125,7 +144,7 @@ export class Analytics {
    */
   async flush(): Promise<void> {
     const { config } = this.deps;
-    if (!config || this.sending) return;
+    if (!config || !this.active || this.sending) return;
     this.sending = true;
     try {
       await this.persist();
@@ -147,6 +166,9 @@ export class Analytics {
     } finally {
       this.sending = false;
     }
+    // Lo apuntado durante el último guardado no espera al siguiente intervalo. Solo se guarda: sin
+    // otro bucle de envío, así que sin red no hay vuelta que dar.
+    if (this.dirty) await this.persist();
   }
 
   /** El aviso puede llegar dos veces (Capacitor y navegador): solo cuenta el cambio. */
@@ -155,8 +177,9 @@ export class Analytics {
     if (hidden) {
       if (this.hiddenAt !== null) return;
       this.hiddenAt = now;
+      if (this.startedAt === 0) return; // la sesión aún no ha empezado: no hay duración que medir
       const seconds = Math.round((now - this.startedAt) / 1000);
-      if (this.active) this.hooks?.goingBackground(seconds);
+      if (this.active) this.notify((hooks) => hooks.goingBackground(seconds));
       this.event('sesion', 'fin', durationBucket(seconds), seconds);
       void this.flush();
       return;
@@ -169,7 +192,7 @@ export class Analytics {
       return;
     }
     this.startedAt = now;
-    if (this.active) this.hooks?.resumed();
+    if (this.active) this.notify((hooks) => hooks.resumed());
   }
 
   /** Solo el mensaje, sin traza ni direcciones, y se envía ya: tras un error puede no haber otra ocasión. */
@@ -178,6 +201,16 @@ export class Analytics {
     const message = raw.replace(/\S+:\/\/\S+/g, '').replace(/\s+/g, ' ').trim().slice(0, 100);
     this.event('error', 'no-controlado', message || 'desconocido');
     void this.flush();
+  }
+
+  /** Un colaborador que falla no debe romper el juego. */
+  private notify(call: (hooks: AnalyticsHooks) => void): void {
+    if (!this.hooks) return;
+    try {
+      call(this.hooks);
+    } catch {
+      // Medir nunca rompe el juego.
+    }
   }
 
   private async trySend(url: string, body: string): Promise<boolean> {
@@ -232,7 +265,7 @@ export class Analytics {
     for (const flag of flags) this.event('activo', flag, flag === 'nuevo' ? cohort : undefined);
     for (const flag of returns) this.event('activo', flag, cohort);
     if (this.screen) this.track({ kind: 'screen', name: this.screen });
-    this.hooks?.sessionStarted(flags);
+    this.notify((hooks) => hooks.sessionStarted(flags));
   }
 
   private onSettings(next: Settings): void {
