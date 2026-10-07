@@ -2,7 +2,7 @@ import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { parseEnv } from './lib.mjs';
+import { parseEnv, redact } from './lib.mjs';
 
 export const HERE = dirname(fileURLToPath(import.meta.url));
 export const DATA = join(HERE, 'data');
@@ -31,12 +31,30 @@ export function loadConfig() {
   return { url, site, token };
 }
 
-/** Llama a la API de informes. El token va en el cuerpo del POST, nunca en la dirección, y nunca se imprime. */
+/**
+ * Llama a la API de informes. El token va en el cuerpo del POST, nunca en la dirección.
+ * Ningún error que salga de aquí contiene el token ni la dirección del servidor: los fallos de red
+ * traen la dirección en su causa, así que se descartan y se lanza un mensaje genérico.
+ */
 export async function api(config, method, params = {}) {
   const body = new URLSearchParams({ module: 'API', method, format: 'JSON', idSite: config.site, token_auth: config.token, filter_limit: '-1', ...params });
-  const response = await fetch(`${config.url}/index.php`, { method: 'POST', body });
+  let response;
+  try {
+    response = await fetch(`${config.url}/index.php`, { method: 'POST', body });
+  } catch {
+    throw new Error(`No se pudo contactar con Matomo en ${method}`);
+  }
   if (!response.ok) throw new Error(`Matomo respondió ${response.status} a ${method}`);
-  const data = await response.json();
-  if (data && data.result === 'error') throw new Error(`Matomo rechazó ${method}: ${String(data.message).replaceAll(config.token, '***')}`);
+  let data;
+  try {
+    data = await response.json();
+  } catch {
+    throw new Error(`Respuesta no válida de Matomo en ${method}`);
+  }
+  if (data && data.result === 'error') {
+    let host = '';
+    try { host = new URL(config.url).host; } catch { /* la dirección ya se validó al cargar */ }
+    throw new Error(`Matomo rechazó ${method}: ${redact(String(data.message), [config.token, config.url, host])}`);
+  }
   return data;
 }

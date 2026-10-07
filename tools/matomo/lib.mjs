@@ -75,3 +75,37 @@ export function table(headers, rows) {
   const line = (cells) => `| ${cells.join(' | ')} |`;
   return [line(headers), `|${headers.map(() => '---').join('|')}|`, ...rows.map(line)].join('\n');
 }
+
+/** Mediana lista para imprimir, con su muestra: «3-5 (n=120)», «insuficiente (n=12)» o «sin datos». */
+export function medianText(counts, order, min = MIN_SAMPLE) {
+  const total = order.reduce((sum, label) => sum + (counts.get(label) ?? 0), 0);
+  if (total === 0) return 'sin datos';
+  if (total < min) return `insuficiente (n=${total})`;
+  return `${medianBucket(counts, order)} (n=${total})`;
+}
+
+/** Media lista para imprimir, con su muestra: «4.2 (n=85)», «insuficiente (n=7)» o «—» sin datos. */
+export function meanText(value, n, min = MIN_SAMPLE, digits = 1) {
+  if (!n) return '—';
+  if (n < min) return `insuficiente (n=${n})`;
+  return `${Number(value).toFixed(digits)} (n=${n})`;
+}
+
+/** Matomo agrupa las filas que pasan de su límite en «Others» / «Otros» (o -1): el informe está incompleto. */
+export function truncated(report) {
+  if (!Array.isArray(report)) return false;
+  return report.some((row) => ['others', 'otros', '-1'].includes(String(row?.label ?? '').trim().toLowerCase()));
+}
+
+/** Sustituye cada secreto (y su forma codificada para URL) por «***». Primero los más largos. */
+export function redact(text, secrets) {
+  const forms = [];
+  for (const secret of secrets) {
+    if (typeof secret !== 'string' || secret === '') continue;
+    forms.push(secret, encodeURIComponent(secret), new URLSearchParams({ x: secret }).toString().slice(2));
+  }
+  forms.sort((a, b) => b.length - a.length);
+  let out = String(text);
+  for (const form of new Set(forms)) if (form) out = out.replaceAll(form, '***');
+  return out;
+}

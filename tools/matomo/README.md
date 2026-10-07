@@ -29,3 +29,9 @@ con menos de 30 en el denominador se marca «insuficiente».
 - `tiene-animal` y `tiene-recinto` se envían una vez al día y dicen qué tiene el jugador: son el denominador.
 - El catálogo completo está en `game/src/core/eventCatalog.ts` y en
   `docs/superpowers/specs/2026-10-07-analitica-detallada-design.md`.
+
+## Seguridad
+
+Los scripts nunca imprimen el token ni la dirección del servidor, y los errores son genéricos a propósito.
+Si algo falla, revisa a mano la dirección y el token en `.env.local`.
+Las pruebas se lanzan desde la raíz con `node --test "tools/matomo/*.test.mjs"`.

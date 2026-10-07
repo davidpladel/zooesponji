@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { byAction, events, medianBucket, parseEnv, share, table, toRows } from './lib.mjs';
+import { byAction, events, meanText, medianBucket, medianText, parseEnv, redact, share, table, toRows, truncated } from './lib.mjs';
 
 test('parseEnv lee claves, ignora comentarios y quita comillas', () => {
   assert.deepEqual(parseEnv('# nota\nMATOMO_URL=https://stats.example.com/\nMATOMO_SITE="7"\n\nMATOMO_TOKEN=abc=def\n'), {
@@ -51,4 +51,41 @@ test('medianBucket da el tramo donde cae la mitad', () => {
 
 test('table escribe una tabla de Markdown', () => {
   assert.equal(table(['a', 'b'], [['1', '2']]), '| a | b |\n|---|---|\n| 1 | 2 |');
+});
+
+test('share acepta justo 30 y marca 29', () => {
+  assert.equal(share(30, 30), '100 % (30 de 30)');
+  assert.equal(share(29, 29), 'insuficiente (29 de 29)');
+});
+
+test('medianText da tramo y muestra, insuficiente o sin datos', () => {
+  const order = ['0', '1-2', '3-5'];
+  assert.equal(medianText(new Map([['0', 10], ['1-2', 30], ['3-5', 80]]), order), '3-5 (n=120)');
+  assert.equal(medianText(new Map([['0', 5], ['1-2', 7]]), order), 'insuficiente (n=12)');
+  assert.equal(medianText(new Map(), order), 'sin datos');
+  assert.equal(medianText(new Map([['1-2', 30]]), order), '1-2 (n=30)');
+  assert.equal(medianText(new Map([['1-2', 29]]), order), 'insuficiente (n=29)');
+});
+
+test('meanText da la media con su muestra', () => {
+  assert.equal(meanText(4.24, 85), '4.2 (n=85)');
+  assert.equal(meanText(4.24, 7), 'insuficiente (n=7)');
+  assert.equal(meanText(0, 0), '—');
+  assert.equal(meanText(4.24, 30), '4.2 (n=30)');
+  assert.equal(meanText(4.256, 85, 30, 2), '4.26 (n=85)');
+});
+
+test('truncated detecta la fila agrupada de Matomo', () => {
+  assert.equal(truncated([{ label: 'a' }, { label: 'Others' }]), true);
+  assert.equal(truncated([{ label: 'otros' }]), true);
+  assert.equal(truncated([{ label: 'Otros' }]), true);
+  assert.equal(truncated([{ label: '-1' }]), true);
+  assert.equal(truncated([{ label: 'come - a' }]), false);
+  assert.equal(truncated({ result: 'error' }), false);
+});
+
+test('redact enmascara secretos y su forma codificada', () => {
+  assert.equal(redact('fallo con tok123 y https://h.example/x', ['tok123', 'https://h.example']), 'fallo con *** y ***/x');
+  assert.equal(redact('a%20b y a b', ['a b']), '*** y ***');
+  assert.equal(redact('nada', ['', undefined]), 'nada');
 });
