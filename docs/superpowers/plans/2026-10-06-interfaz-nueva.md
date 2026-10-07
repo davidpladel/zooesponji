@@ -12,7 +12,7 @@
 
 **Bocetos:** `docs/superpowers/mockups/boceto-titulo.html` y `boceto-resto.html`. Mandan en colores, proporciones y composición.
 
-**Estado:** sin empezar. (Se actualiza al cerrar cada bloque.)
+**Estado:** tareas 1 a 11 implementadas en la rama `interfaz-nueva` y documentación al día (2026-10-07): tipos limpios, 976 pruebas unitarias y e2e 29 pasadas + 1 omitida (la de capturas en inglés, solo a mano); el Java de Android compila. Pendiente: que David pruebe en el móvil el modo inmersivo, el splash y el arranque completo; subir versión; capturas nuevas para Google Play; fusionar en `main`. Una revisión final del código está en marcha y puede añadir arreglos.
 
 ## Global Constraints
 
@@ -71,7 +71,7 @@
 **Interfaces:**
 - Produces: `pressStep(state: PressState, event: PressEvent): PressStep`; `gearVisible(activeScenes: readonly string[]): boolean`.
 
-- [ ] **Step 1: Escribir las pruebas que fallan**
+- [x] **Step 1: Escribir las pruebas que fallan**
 
 `game/tests/unit/press.test.ts`:
 
@@ -125,12 +125,12 @@ describe('engranaje de ajustes', () => {
 });
 ```
 
-- [ ] **Step 2: Ejecutarlas y ver que fallan**
+- [x] **Step 2: Ejecutarlas y ver que fallan**
 
 Run: `npx vitest run tests/unit/press.test.ts tests/unit/hud.test.ts`
 Expected: FAIL, no se encuentran `../../src/core/press` ni `../../src/core/hud`.
 
-- [ ] **Step 3: Implementar**
+- [x] **Step 3: Implementar**
 
 `game/src/core/press.ts`:
 
@@ -164,12 +164,12 @@ export function gearVisible(activeScenes: readonly string[]): boolean {
 }
 ```
 
-- [ ] **Step 4: Ejecutarlas y ver que pasan**
+- [x] **Step 4: Ejecutarlas y ver que pasan**
 
 Run: `npx vitest run tests/unit/press.test.ts tests/unit/hud.test.ts`
 Expected: PASS (5 + 7 pruebas).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add game/src/core/press.ts game/src/core/hud.ts game/tests/unit/press.test.ts game/tests/unit/hud.test.ts
@@ -185,12 +185,12 @@ git commit -m "feat: reglas puras del efecto al pulsar y del engranaje"
 **Interfaces:**
 - Produces: los archivos de `public/` con esos nombres exactos. Iconos: `play`, `close`, `music`, `volume`, `joystick`, `gear`, `lock`, `shield`, `door`, `left`, `right`, `heart` (`.svg`, trazo o relleno blanco).
 
-- [ ] **Step 1: Instalar las fuentes de los recursos**
+- [x] **Step 1: Instalar las fuentes de los recursos**
 
 Run (desde `game/`): `npm install --save-dev @fontsource/baloo-2 @tabler/icons`
 Expected: se añaden las dos a `devDependencies`.
 
-- [ ] **Step 2: Escribir el script**
+- [x] **Step 2: Escribir el script**
 
 `game/scripts/make-ui-assets.mjs`:
 
@@ -246,17 +246,17 @@ En `game/package.json`, dentro de `"scripts"`, tras `"make:calcetin"`:
     "make:ui-assets": "node scripts/make-ui-assets.mjs",
 ```
 
-- [ ] **Step 3: Ejecutarlo**
+- [x] **Step 3: Ejecutarlo**
 
 Run: `npm run make:ui-assets`
 Expected: 12 líneas `nombre.svg ← …` y `baloo-2-latin-800-normal.woff2`. Si lanza «No existe el icono de Tabler», buscar el nombre correcto en `node_modules/@tabler/icons/icons/outline/` y corregir el mapa `ICONS`.
 
-- [ ] **Step 4: Copiar el fondo de la portada**
+- [x] **Step 4: Copiar el fondo de la portada**
 
 Run (desde `game/`): `cp ../docs/superpowers/mockups/titulo-fondo-prueba.webp public/assets/ui/title-bg.webp`
 Expected: `public/assets/ui/title-bg.webp` existe (unos 290 KB).
 
-- [ ] **Step 5: Anotar las licencias**
+- [x] **Step 5: Anotar las licencias**
 
 En `THIRD_PARTY_NOTICES.md`, añadir estas filas al final de la tabla (después de la fila de la música):
 
@@ -271,7 +271,7 @@ Y debajo del párrafo del arte de VectoRaith, añadir:
 El fondo de la portada (`game/public/assets/ui/title-bg.webp`) es una imagen propia de davidpladel, generada con ChatGPT.
 ```
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add game/scripts/make-ui-assets.mjs game/package.json game/package-lock.json game/public/fonts game/public/assets/ui THIRD_PARTY_NOTICES.md
@@ -295,7 +295,7 @@ git commit -m "feat: letra Baloo 2, iconos y fondo de portada para la interfaz n
 
 Esta tarea no tiene prueba unitaria propia (todo depende de Phaser y el entorno de Vitest es `node`): se comprueba con `npm run typecheck` aquí y a la vista en las tareas 4 a 10. `src/scenes/ui.ts` sigue existiendo hasta la tarea 10, así que el juego compila en todo momento.
 
-- [ ] **Step 1: `theme.ts`**
+- [x] **Step 1: `theme.ts`**
 
 ```ts
 import type * as Phaser from 'phaser';
@@ -343,7 +343,7 @@ export function textStyle(size: number, color = '#ffffff', stroke: string = UI.o
 }
 ```
 
-- [ ] **Step 2: `font.ts`**
+- [x] **Step 2: `font.ts`**
 
 ```ts
 import { withVersion } from '../core/cacheBust';
@@ -365,7 +365,7 @@ export async function loadUiFont(timeoutMs = 2000): Promise<boolean> {
 }
 ```
 
-- [ ] **Step 3: `paint.ts`**
+- [x] **Step 3: `paint.ts`**
 
 ```ts
 import * as Phaser from 'phaser';
@@ -540,7 +540,7 @@ export function sceneryTexture(scene: Phaser.Scene, w: number, h: number): strin
 }
 ```
 
-- [ ] **Step 4: `icons.ts`**
+- [x] **Step 4: `icons.ts`**
 
 ```ts
 import * as Phaser from 'phaser';
@@ -568,7 +568,7 @@ export function addIcon(scene: Phaser.Scene, x: number, y: number, name: IconNam
 }
 ```
 
-- [ ] **Step 5: `press.ts`**
+- [x] **Step 5: `press.ts`**
 
 ```ts
 import * as Phaser from 'phaser';
@@ -628,7 +628,7 @@ export function makePressable(target: Pressable, onTap: (pointer: Phaser.Input.P
 
 Nota: `shade(false)` quita el tinte de todos los hijos. Por eso los iconos dentro de piezas pulsables van siempre en blanco (sin tinte propio) y se atenúan con `setAlpha`, no con tinte.
 
-- [ ] **Step 6: `widgets.ts`**
+- [x] **Step 6: `widgets.ts`**
 
 ```ts
 import * as Phaser from 'phaser';
@@ -816,12 +816,12 @@ export function restartOnResize(scene: Phaser.Scene, data?: () => object): void 
 export { shadowOf };
 ```
 
-- [ ] **Step 7: Comprobar tipos**
+- [x] **Step 7: Comprobar tipos**
 
 Run: `npm run typecheck`
 Expected: sin errores. Si Phaser 4 no expone `clearTint`, `setStyle` o `Textures.FilterMode.LINEAR` con ese nombre, buscar el equivalente en `node_modules/phaser/types/phaser.d.ts` y ajustar solo esa llamada.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add game/src/ui
@@ -842,7 +842,7 @@ git commit -m "feat: juego de piezas de la interfaz nueva (src/ui)"
 - Consumes: `loadUiFont`, `queueIcons`, `smoothIcons`, `smooth`, `pillImage`, `addPillButton`, `addHeartLine`, `restartOnResize`, `textStyle`, `UI`.
 - Produces: `TITLE_BG`, `titleLayout(width, height)`, `addTitleBackdrop(scene)`.
 
-- [ ] **Step 1: `titleBackdrop.ts`**
+- [x] **Step 1: `titleBackdrop.ts`**
 
 ```ts
 import * as Phaser from 'phaser';
@@ -893,7 +893,7 @@ export function addTitleBackdrop(scene: Phaser.Scene): TitleLayout {
 
 «Zoo Esponji» no se traduce, así que da igual que el idioma aún no esté resuelto durante la carga.
 
-- [ ] **Step 2: `BootScene.ts`: cargar letra y fondo antes de seguir**
+- [x] **Step 2: `BootScene.ts`: cargar letra y fondo antes de seguir**
 
 Añadir los imports:
 
@@ -921,7 +921,7 @@ Añadir el método `preload` antes de `create`, y sustituir `create`:
   }
 ```
 
-- [ ] **Step 3: `PreloadScene.ts`: pantalla de carga**
+- [x] **Step 3: `PreloadScene.ts`: pantalla de carga**
 
 Añadir los imports:
 
@@ -986,14 +986,14 @@ En `loadArt`, marcar la segunda fase. Queda así:
   }
 ```
 
-- [ ] **Step 4: Textos: el corazón deja de ser emoji**
+- [x] **Step 4: Textos: el corazón deja de ser emoji**
 
 En `es.ts`: `'title.credits': 'Hecho por Daniela y Adrián',`
 En `en.ts`: `'title.credits': 'Made by Daniela and Adrián',`
 
 (`credits.madeBy` se cambia en la tarea 6, con Ajustes.)
 
-- [ ] **Step 5: `TitleScene.ts` entero**
+- [x] **Step 5: `TitleScene.ts` entero**
 
 ```ts
 import * as Phaser from 'phaser';
@@ -1053,11 +1053,11 @@ export class TitleScene extends Phaser.Scene {
 }
 ```
 
-- [ ] **Step 6: `index.html`: fondo azul cielo**
+- [x] **Step 6: `index.html`: fondo azul cielo**
 
 En el bloque `html, body`, cambiar `background: #1d2b1f;` por `background: #58b0f0;`.
 
-- [ ] **Step 7: Comprobar**
+- [x] **Step 7: Comprobar**
 
 Run: `npm run typecheck`
 Expected: sin errores.
@@ -1071,7 +1071,7 @@ A la vista: `npm run dev`, abrir `http://localhost:5173` con la ventana apaisada
 - Al mantenerlo pulsado encoge y se oscurece; al soltar entra al juego.
 - La letra es Baloo 2 (redonda y gorda), no la del sistema.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add game/src/ui/titleBackdrop.ts game/src/scenes/BootScene.ts game/src/scenes/PreloadScene.ts game/src/scenes/TitleScene.ts game/src/data/strings game/index.html
@@ -1094,7 +1094,7 @@ git commit -m "feat: pantalla de carga y título con el fondo pintado y el botó
 - Consumes: `gearVisible` (tarea 1), `addCoinCounter`, `addPillButton`, `HUD_COIN`, `textStyle`.
 - Produces: `HudScene.coinsLabel(): string` devuelve solo el número (`'25'`); `HudScene.gearVisible(): boolean`; hook `window.__ZOO__.hudGearVisible(): boolean`.
 
-- [ ] **Step 1: Escribir la prueba e2e que falla**
+- [x] **Step 1: Escribir la prueba e2e que falla**
 
 Al final de `game/tests/e2e/polish.spec.ts`:
 
@@ -1124,7 +1124,7 @@ test('el engranaje solo se ve andando por el zoo', async ({ page }) => {
 });
 ```
 
-- [ ] **Step 2: Hook de pruebas**
+- [x] **Step 2: Hook de pruebas**
 
 En `game/src/systems/testHooks.ts`, en la interfaz `ZooTestApi`, tras `hudCoinsText(): string | null;`:
 
@@ -1139,7 +1139,7 @@ Y en el objeto, tras la línea de `hudCoinsText`:
     hudGearVisible: () => activeScene<HudScene>('Hud')?.gearVisible() ?? false,
 ```
 
-- [ ] **Step 3: `HudScene.ts`**
+- [x] **Step 3: `HudScene.ts`**
 
 Cambiar los imports: quitar `import { textStyle } from './ui';` y añadir:
 
@@ -1213,14 +1213,14 @@ En `onPointerDown`, el engranaje solo bloquea el joystick si se ve:
     if (this.gear.visible && this.gear.getBounds().contains(point.x, point.y)) return; // la rueda no arranca el joystick
 ```
 
-- [ ] **Step 4: Las pruebas e2e leen las monedas sin emoji**
+- [x] **Step 4: Las pruebas e2e leen las monedas sin emoji**
 
 En `tests/e2e/english.spec.ts`, `play.spec.ts`, `polish.spec.ts`, `smoke.spec.ts` y `zoo-grande.spec.ts`, sustituir cada `toBe('🪙 ` por `toBe('` (por ejemplo `toBe('🪙 25')` → `toBe('25')`).
 
 Run: `grep -rn "🪙" tests/e2e`
 Expected: ninguna línea.
 
-- [ ] **Step 5: Comprobar**
+- [x] **Step 5: Comprobar**
 
 Run: `npm run typecheck`
 Expected: sin errores.
@@ -1230,7 +1230,7 @@ Expected: PASS.
 
 A la vista (`npm run dev`, entrar a jugar): moneda dorada con «1» y número blanco arriba a la izquierda; engranaje azul redondo abajo a la izquierda que encoge al apretarlo y abre Ajustes.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add game/src/scenes/HudScene.ts game/src/systems/testHooks.ts game/tests/e2e
@@ -1246,12 +1246,12 @@ git commit -m "feat: monedas y engranaje nuevos; el engranaje solo se ve andando
 - Consumes: piezas de `src/ui/`.
 - Produces: se mantienen `togglePos`, `buttonPos`, `languagePos`, `languageLabel`; `creditsText()` devuelve solo `t('credits.madeBy')`.
 
-- [ ] **Step 1: Textos**
+- [x] **Step 1: Textos**
 
 En `es.ts`: cambiar `'credits.madeBy'` a `'Hecho con cariño por Daniela y Adrián',` y **borrar** la línea de `'credits.art'`.
 En `en.ts`: cambiar `'credits.madeBy'` a `'Made with love by Daniela and Adrián',` y **borrar** la línea de `'credits.art'`.
 
-- [ ] **Step 2: Imports y constantes de `SettingsScene.ts`**
+- [x] **Step 2: Imports y constantes de `SettingsScene.ts`**
 
 Sustituir las líneas 1–25 (imports, `TOGGLES`, `FLAGS`, `OVERLAYS`, `ButtonKey`) por:
 
@@ -1306,7 +1306,7 @@ Actualizar el comentario de la clase a:
  */
 ```
 
-- [ ] **Step 3: `create`**
+- [x] **Step 3: `create`**
 
 Sustituir el método `create` entero por:
 
@@ -1354,7 +1354,7 @@ Sustituir el método `create` entero por:
   }
 ```
 
-- [ ] **Step 4: Resto de métodos**
+- [x] **Step 4: Resto de métodos**
 
 `creditsText` queda:
 
@@ -1418,7 +1418,7 @@ Sustituir `addButtons` por:
 
 `press` no cambia. **Borrar** el método `addCredits` entero.
 
-- [ ] **Step 5: Comprobar**
+- [x] **Step 5: Comprobar**
 
 Run: `npm run typecheck`
 Expected: sin errores (si queda algún import sin usar, quitarlo).
@@ -1431,7 +1431,7 @@ Expected: PASS (2 pruebas: sonido y créditos; privacidad).
 
 A la vista, comparar con el boceto de Ajustes: orden interruptores → Privacidad → «Hecho con cariño…» con corazón → copyright; sin panda ni pantera; el joystick apagado sale gris; la ficha de idioma dice «ES» y al pulsarla pasa a «EN».
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add game/src/scenes/SettingsScene.ts game/src/data/strings
@@ -1447,7 +1447,7 @@ git commit -m "feat: Ajustes con la interfaz nueva y sin la línea del panda y l
 **Interfaces:**
 - Produces: `QuitScene.yesPos(): Vec` (botón que sale), `QuitScene.stayPos(): Vec`; hook `quitStayPos(): Vec | null`; claves `quit.stay`, `quit.leave`.
 
-- [ ] **Step 1: Prueba e2e que falla**
+- [x] **Step 1: Prueba e2e que falla**
 
 En `polish.spec.ts`, sustituir la prueba `'botón atrás en el mundo pregunta "¿Salir?" y ❌ vuelve al juego'` por:
 
@@ -1469,7 +1469,7 @@ test('botón atrás en el mundo pregunta si salir; atrás o «Seguir jugando» v
 });
 ```
 
-- [ ] **Step 2: Hook**
+- [x] **Step 2: Hook**
 
 En `testHooks.ts`: añadir `import type { QuitScene } from '../scenes/QuitScene';`, en la interfaz:
 
@@ -1484,7 +1484,7 @@ y en el objeto:
     quitStayPos: () => activeScene<QuitScene>('Quit')?.stayPos() ?? null,
 ```
 
-- [ ] **Step 3: Textos**
+- [x] **Step 3: Textos**
 
 En `es.ts`: `'quit.ask': '¿Salir del zoo?',` y, debajo, añadir:
 
@@ -1500,7 +1500,7 @@ En `en.ts`: `'quit.ask': 'Leave the zoo?',` y, debajo:
   'quit.leave': 'Quit',
 ```
 
-- [ ] **Step 4: `QuitScene.ts` entero**
+- [x] **Step 4: `QuitScene.ts` entero**
 
 ```ts
 import * as Phaser from 'phaser';
@@ -1568,7 +1568,7 @@ export class QuitScene extends Phaser.Scene {
 }
 ```
 
-- [ ] **Step 5: Comprobar**
+- [x] **Step 5: Comprobar**
 
 Run: `npm run typecheck`
 Expected: sin errores.
@@ -1579,7 +1579,7 @@ Expected: PASS.
 Run: `npx playwright test tests/e2e/polish.spec.ts -g "salir"`
 Expected: PASS.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add game/src/scenes/QuitScene.ts game/src/data/strings game/src/systems/testHooks.ts game/tests/e2e/polish.spec.ts
@@ -1601,7 +1601,7 @@ git commit -m "feat: «¿Salir del zoo?» con botones de seguir jugando y salir"
 - Consumes: `HUD_COIN`, `addCloseBadge`, `addPanel`, `addRibbonTitle`, `addTile`, `addVeil`, `restartOnResize`, `sceneryTexture`, `textStyle`.
 - Produces: sin cambios en la API de la escena (`targetsOnScreen`, `isBusy`, `close`).
 
-- [ ] **Step 1: Imports y destino de las monedas**
+- [x] **Step 1: Imports y destino de las monedas**
 
 Sustituir `import { addCloseButton, restartOnResize, textStyle } from './ui';` por:
 
@@ -1613,7 +1613,7 @@ import { HUD_COIN, addCloseBadge, addPanel, addRibbonTitle, addTile, addVeil, re
 
 Borrar la constante `COIN_TARGET` y su comentario. En `flyCoins`, sustituir `COIN_TARGET.x` y `COIN_TARGET.y` por `HUD_COIN.x` y `HUD_COIN.y`.
 
-- [ ] **Step 2: Cabecera de `create`**
+- [x] **Step 2: Cabecera de `create`**
 
 Sustituir desde `const { width, height } = this.scale;` hasta `restartOnResize(this);` (ambos incluidos) por:
 
@@ -1645,7 +1645,7 @@ Sustituir desde `const { width, height } = this.scale;` hasta `restartOnResize(t
     restartOnResize(this);
 ```
 
-- [ ] **Step 3: Bandeja: cada comida en su ficha**
+- [x] **Step 3: Bandeja: cada comida en su ficha**
 
 Sustituir `createTray` por:
 
@@ -1674,7 +1674,7 @@ Sustituir `createTray` por:
   }
 ```
 
-- [ ] **Step 4: Comprobar**
+- [x] **Step 4: Comprobar**
 
 Run: `npm run typecheck`
 Expected: sin errores.
@@ -1684,7 +1684,7 @@ Expected: PASS (dar de comer arrastrando sigue funcionando y las monedas suben).
 
 A la vista, comparar con el boceto «Dar de comer»: nombre del animal en el cartel, animal dentro de la ventana de cielo y prado, comidas sobre fichas blancas, chapa roja en la esquina del panel. Arrastrar una comida al animal y comprobar que las monedas vuelan hasta la moneda del contador.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add game/src/scenes/FeedScene.ts
@@ -1702,7 +1702,7 @@ git commit -m "feat: dar de comer con panel, cartel y fichas de la interfaz nuev
 
 El libro sigue siendo una página por pantalla. Cambia el marco, el encabezado pasa al cartel, las filas del índice son píldoras y las flechas son botones azules.
 
-- [ ] **Step 1: Imports y campos**
+- [x] **Step 1: Imports y campos**
 
 Sustituir `import { addCloseButton, restartOnResize, textStyle } from './ui';` por:
 
@@ -1719,7 +1719,7 @@ Cambiar el campo `arrows` y añadir `ribbon`:
   private ribbon!: Phaser.GameObjects.Container;
 ```
 
-- [ ] **Step 2: Marco en `create`**
+- [x] **Step 2: Marco en `create`**
 
 Sustituir desde `this.add.rectangle(0, 0, width, height, 0x000000, 0.65)...` hasta `addCloseButton(this, () => this.close());` (ambos incluidos) por:
 
@@ -1746,7 +1746,7 @@ Sustituir desde `this.add.rectangle(0, 0, width, height, 0x000000, 0.65)...` has
 
 **Borrar** el método privado `arrow(...)` entero.
 
-- [ ] **Step 3: Encabezado al cartel**
+- [x] **Step 3: Encabezado al cartel**
 
 Sustituir `heading` por:
 
@@ -1761,7 +1761,7 @@ Y ajustar sus tres llamadas:
 - en `showDivider`: `this.heading(t(chapterTitleKey(page.chapter)));`
 - en `showContent`: `this.heading(unlocked ? t(pageTitleKey(page.id)) : t('book.locked'));`
 
-- [ ] **Step 4: Filas del índice como píldoras**
+- [x] **Step 4: Filas del índice como píldoras**
 
 En `showIndex`, sustituir desde `const rowH = ...` hasta el final del `forEach` por:
 
@@ -1787,7 +1787,7 @@ En `showIndex`, sustituir desde `const rowH = ...` hasta el final del `forEach` 
     });
 ```
 
-- [ ] **Step 5: Dibujo más arriba y en ficha girada**
+- [x] **Step 5: Dibujo más arriba y en ficha girada**
 
 En `showDivider` y en `showContent`, la llamada a `this.picture(...)` pasa de `p.y + p.height * 0.47, p.height * 0.36` a `p.y + p.height * 0.4, p.height * 0.4` (el encabezado ya no ocupa sitio dentro de la página).
 
@@ -1799,7 +1799,7 @@ En `picture`, sustituir el bloque del marco (desde el comentario `// Marco tipo 
     this.children.moveBelow(frame, obj);
 ```
 
-- [ ] **Step 6: Comprobar**
+- [x] **Step 6: Comprobar**
 
 Run: `npm run typecheck`
 Expected: sin errores (quitar `size` de `showDivider`/`showContent` solo si deja de usarse; en ambos se sigue usando para el texto).
@@ -1809,7 +1809,7 @@ Expected: PASS (abrir un capítulo desde el índice y pasar página siguen funci
 
 A la vista (abrir el libro desde la estantería de la tienda): cartel con el nombre de la página, flechas azules a los lados que se esconden en la primera y la última página, filas del índice que encogen al apretarlas, deslizar sigue pasando página.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add game/src/scenes/BookScene.ts
@@ -1826,21 +1826,21 @@ git commit -m "feat: libro del zoo con panel, cartel, índice en píldoras y fle
 - Consumes: `addCloseBadge`, `addPillButton` (opción `coin`), `restartOnResize`, `textStyle`.
 - Produces: `shop.buy` ya no lleva `{cost}`. Tras esta tarea nadie importa `scenes/ui`.
 
-- [ ] **Step 1: Prueba unitaria del texto (falla)**
+- [x] **Step 1: Prueba unitaria del texto (falla)**
 
 En `tests/unit/content.test.ts`: `expect(t('shop.buy', { cost: 50 })).toBe('¡Comprar! 🪙 50');` pasa a `expect(t('shop.buy')).toBe('¡Comprar!');`, y `expect(t('shop.buy', { cost: 50 })).toBe('Buy! 🪙 50');` pasa a `expect(t('shop.buy')).toBe('Buy!');`.
 
 Run: `npx vitest run tests/unit/content.test.ts`
 Expected: FAIL en esas dos comprobaciones.
 
-- [ ] **Step 2: Textos**
+- [x] **Step 2: Textos**
 
 En `es.ts`: `'shop.buy': '¡Comprar!',`. En `en.ts`: `'shop.buy': 'Buy!',`.
 
 Run: `npx vitest run tests/unit/content.test.ts`
 Expected: PASS.
 
-- [ ] **Step 3: Imports**
+- [x] **Step 3: Imports**
 
 En `ShopScene.ts`, sustituir `import { addCloseButton, restartOnResize, textStyle } from './ui';` por:
 
@@ -1851,7 +1851,7 @@ import { addCloseBadge, addPillButton, restartOnResize } from '../ui/widgets';
 
 En `src/world/ShopInterior.ts`, sustituir `import { textStyle } from '../scenes/ui';` por `import { textStyle } from '../ui/theme';`.
 
-- [ ] **Step 4: Botón de cerrar**
+- [x] **Step 4: Botón de cerrar**
 
 En `create`, sustituir `addCloseButton(this, () => this.close());` por:
 
@@ -1859,7 +1859,7 @@ En `create`, sustituir `addCloseButton(this, () => this.close());` por:
     addCloseBadge(this, width - 16 - 32, 16 + 32, () => this.close(), 56).setDepth(4000);
 ```
 
-- [ ] **Step 5: Sello de agotado y etiqueta de precio**
+- [x] **Step 5: Sello de agotado y etiqueta de precio**
 
 En `addProduct`, sustituir el bloque `if (done) { ... } else { ... }` (el que crea `stamp` o `sign`) por:
 
@@ -1876,7 +1876,7 @@ En `addProduct`, sustituir el bloque `if (done) { ... } else { ... }` (el que cr
     }
 ```
 
-- [ ] **Step 6: Bocadillo de compra**
+- [x] **Step 6: Bocadillo de compra**
 
 Sustituir el cuerpo de `showBuyBubble` por:
 
@@ -1905,14 +1905,14 @@ Sustituir el cuerpo de `showBuyBubble` por:
 
 (El comentario de documentación del método se conserva.)
 
-- [ ] **Step 7: Retirar el archivo viejo**
+- [x] **Step 7: Retirar el archivo viejo**
 
 Run: `grep -rn "scenes/ui'\|from './ui'" src`
 Expected: ninguna línea. Si queda alguna, cambiar ese import a `../ui/theme` o `../ui/widgets` según lo que use.
 
 Run: `git rm src/scenes/ui.ts`
 
-- [ ] **Step 8: Comprobar**
+- [x] **Step 8: Comprobar**
 
 Run: `npm run typecheck`
 Expected: sin errores.
@@ -1922,7 +1922,7 @@ Expected: PASS (comprar con el bocadillo, sello AGOTADO, cerrar la tienda, engra
 
 A la vista, comparar con el boceto «Tienda»: chapa roja arriba a la derecha, precios en píldoras verdes con moneda (grises si no llega el dinero), bocadillo «¡Comprar! (moneda) 50» que encoge al apretarlo, y sin engranaje.
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
 
 ```bash
 git add -A game/src game/tests/unit/content.test.ts
@@ -1946,7 +1946,7 @@ git commit -m "feat: tienda con cerrar, precios y compra nuevos; se retira scene
 
 No hay prueba automática: se comprueba en el móvil.
 
-- [ ] **Step 1: `MainActivity.java` entero**
+- [x] **Step 1: `MainActivity.java` entero**
 
 ```java
 package com.davidpladel.zooesponji;
@@ -1985,11 +1985,11 @@ public class MainActivity extends BridgeActivity {
 }
 ```
 
-- [ ] **Step 2: Color del splash del sistema**
+- [x] **Step 2: Color del splash del sistema**
 
 En `styles.xml`, dentro de `AppTheme.NoActionBarLaunch`: `<item name="windowSplashScreenBackground">#58B0F0</item>`.
 
-- [ ] **Step 3: Letra para el script del splash**
+- [x] **Step 3: Letra para el script del splash**
 
 Pillow no lee `.woff2`: hace falta el `.ttf`. Desde `game/` (PowerShell):
 
@@ -2001,7 +2001,7 @@ Invoke-WebRequest -Uri "https://github.com/google/fonts/raw/main/ofl/baloo2/OFL.
 
 Expected: `store/fonts/Baloo2.ttf` (fuente variable, varios cientos de KB) y `OFL.txt`.
 
-- [ ] **Step 4: `make_icon.py`: fondo azul y letra nueva**
+- [x] **Step 4: `make_icon.py`: fondo azul y letra nueva**
 
 Debajo de la línea `FONT = 'C:/Windows/Fonts/ariblk.ttf'`, añadir:
 
@@ -2028,7 +2028,7 @@ Sustituir la función `splash` y su comentario por:
         im.convert('RGB').save(path)
 ```
 
-- [ ] **Step 5: Regenerar**
+- [x] **Step 5: Regenerar**
 
 Run (desde `game/store/`): `python make_icon.py`
 Expected: `ok`.
@@ -2038,7 +2038,7 @@ Expected: cambian los 11 `splash.png`. Si también aparecen como modificados ico
 
 Abrir `android/app/src/main/res/drawable-land-xhdpi/splash.png` y comprobar: fondo azul cielo, león y «Zoo Esponji» en letra redonda amarilla con contorno marrón.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add game/android/app/src/main/java game/android/app/src/main/res game/store/make_icon.py game/store/fonts
@@ -2061,11 +2061,11 @@ git commit -m "feat: modo inmersivo en Android y splash azul cielo con la letra 
 **Files:**
 - Modify: `README.md`, `game/README.md`, `docs/superpowers/specs/2026-10-06-interfaz-nueva-design.md`, este plan
 
-- [ ] **Step 1: Spec**
+- [x] **Step 1: Spec**
 
 En la primera línea de estado de la spec, cambiar «diseño aprobado, sin implementar» por «implementada (fecha de hoy); pendiente de publicar». Añadir al final una sección `## Decisiones tomadas durante la implementación` con una línea por cada cosa que se haya hecho distinta de lo escrito (nombres de API de Phaser ajustados, iconos de Tabler sustituidos, resultado de la comprobación de nitidez en el móvil).
 
-- [ ] **Step 2: `game/README.md`**
+- [x] **Step 2: `game/README.md`**
 
 En «Comandos», añadir bajo `npm run build`:
 
@@ -2081,15 +2081,15 @@ Actualizar el número de pruebas e2e de esa lista (suma una: la del engranaje). 
 Las piezas de los menús (píldoras, paneles, carteles, chapa de cerrar, monedas) están en `src/ui/`. Se pintan con Canvas 2D en texturas porque el juego usa `pixelArt: true`. Todo botón pasa por `makePressable` (`src/ui/press.ts`), que le da el efecto al pulsar. Los bocetos de referencia están en `docs/superpowers/mockups/`.
 ```
 
-- [ ] **Step 3: `README.md` raíz**
+- [x] **Step 3: `README.md` raíz**
 
 En la tabla de versiones y el roadmap, añadir la interfaz nueva como trabajo terminado en la rama `interfaz-nueva`, pendiente de versión (la siguiente a la 2.4.0) y de capturas nuevas para Google Play.
 
-- [ ] **Step 4: Este plan**
+- [x] **Step 4: Este plan**
 
 Marcar las casillas hechas y actualizar la línea **Estado** de la cabecera.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add README.md game/README.md docs/superpowers

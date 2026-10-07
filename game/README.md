@@ -10,14 +10,15 @@ Spec: `docs/superpowers/specs/2026-09-27-motor-phaser-v3-design.md`
 npm install          # dependencias
 npm run dev          # juego en http://localhost:5173
 npm test             # tests de lógica (Vitest)
-npm run test:e2e     # 29 pruebas de juego (una, la de capturas en inglés, solo a mano con CAPTURAS=1) en el navegador (Playwright; en local usa el Chrome instalado; si alguna falla por tiempo, --workers=1)
+npm run test:e2e     # 30 pruebas de juego (29 corren solas; la de capturas en inglés, solo a mano con CAPTURAS=1) en el navegador (Playwright; en local usa el Chrome instalado; si alguna falla por tiempo, --workers=1)
 npm run build        # build de producción en dist/
+npm run make:ui-assets # copia la letra y los iconos de la interfaz a public/ (solo si cambian)
 npm run make:test-map  # regenera el mapa de prueba
 npx cap sync android # copia la build al proyecto Android
 npx cap open android # abre Android Studio (▶ Run para probar en el móvil)
 ```
 
-Icono y ficha de Play (desde `game/store/`, Python + Pillow + numpy): `python make_icon.py` dibuja el león y genera el icono 512, los iconos de Android y los splash; después `python make.py` compone el gráfico de funciones 1024×500 y copia las capturas a `play/`.
+Icono y ficha de Play (desde `game/store/`, Python + Pillow + numpy): `python make_icon.py` dibuja el león y genera el icono 512, los iconos de Android y los splash; después `python make.py` compone el gráfico de funciones 1024×500 y copia las capturas a `play/`. El splash usa la letra `store/fonts/Baloo2.ttf` sobre el azul cielo `#58B0F0`.
 
 ## Arte
 
@@ -62,6 +63,10 @@ siguiente de la lista del recinto al precio de su especie. Las especies grandes 
 
 - **Calcetín:** `npm run make:calcetin` dibuja el icono en `art-work/terminados/calcetin.png` del
   repo privado si no existe; si los niños pintan el suyo, no se toca.
+
+## Interfaz
+
+Las piezas de los menús (píldoras, paneles, carteles, chapa de cerrar, monedas) están en `src/ui/`. Se pintan con Canvas 2D en texturas porque el juego usa `pixelArt: true`. Todo botón pasa por `makePressable` (`src/ui/press.ts`), que le da el efecto al pulsar, y todo texto de la interfaz se crea con `addUiText` (`src/ui/text.ts`) para que no tiemble al cambiar de tamaño. Los bocetos de referencia están en `docs/superpowers/mockups/`.
 
 ## Estructura
 
