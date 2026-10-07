@@ -36,6 +36,8 @@ El juego no tiene anuncios, compras reales, enlaces externos, chat ni recogida d
 
 - No añadir SDKs (analítica, Firebase, crash reporting remoto…). Los errores se quedan en el
   dispositivo.
+  (Cambiado el 7-oct-2026: sigue sin SDK, pero hay estadísticas anónimas propias y de los errores sale un
+  mensaje corto. Ver `2026-10-07-analitica-anonima-matomo-design.md`.)
 - No añadir enlaces que salgan de la app. Si alguna vez se añade uno, irá tras una puerta
   parental (fuera de este hito).
 - No añadir permisos de Android más allá de los que ya pone Capacitor; en particular, nunca
