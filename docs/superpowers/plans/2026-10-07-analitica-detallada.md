@@ -53,7 +53,7 @@
 - Consumes: `findResident(id)` de `game/src/data/pens.ts` (devuelve `{ penId, resident } | undefined`).
 - Produces: `CATALOG`, `Category`, `ActionOf<C>`, `ReachKind`, `ReachScope`, `reachAction(scope, kind)`, `STEPS`, `Step`, `part(...parts)`, `residentName(residentId)`, y los tramos `feedsBucket`, `animalsBucket`, `pagesBucket`, `bookBucket`, `durationBucket`, `coinsBucket`, `pendingBucket`.
 
-- [ ] **Step 1: Escribir el test**
+- [x] **Step 1: Escribir el test**
 
 ```ts
 // game/tests/unit/eventCatalog.test.ts
@@ -116,12 +116,12 @@ describe('tramos, en sus bordes', () => {
 });
 ```
 
-- [ ] **Step 2: Comprobar que falla**
+- [x] **Step 2: Comprobar que falla**
 
 Run: `npx vitest run tests/unit/eventCatalog.test.ts`
 Expected: FAIL, no encuentra `../../src/core/eventCatalog`.
 
-- [ ] **Step 3: Implementar**
+- [x] **Step 3: Implementar**
 
 ```ts
 // game/src/core/eventCatalog.ts
@@ -207,12 +207,12 @@ export const pendingBucket = (ms: number): string =>
   bucket(ms, [[HOUR_MS - 1, '<1h'], [6 * HOUR_MS - 1, '1-6h'], [24 * HOUR_MS - 1, '6-24h'], [72 * HOUR_MS - 1, '1-3d'], [168 * HOUR_MS - 1, '3-7d']], '7d+');
 ```
 
-- [ ] **Step 4: Comprobar que pasa**
+- [x] **Step 4: Comprobar que pasa**
 
 Run: `npx vitest run tests/unit/eventCatalog.test.ts && npx tsc --noEmit`
 Expected: PASS y sin errores de tipos. Si el test de las specs falla por una acción, corregir la spec (falta en la tabla), no el test.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add game/src/core/eventCatalog.ts game/tests/unit/eventCatalog.test.ts
@@ -230,7 +230,7 @@ git commit -m "feat: catálogo único de eventos de estadísticas, con tramos"
 **Interfaces:**
 - Produces: `ReturnFlag = 'vuelve-d1' | 'vuelve-d7' | 'vuelve-d30'`; `ActivityState.returned?: ReturnFlag[]`; `weekStart(day: string): number` (antes `monday`, privada); `daysBetween(from: string, to: string): number`; `cohortWeek(day: string): string` (`AAAA-Snn`); `nextActivity(prev, today)` devuelve además `returns: ReturnFlag[]`.
 
-- [ ] **Step 1: Añadir tests y adaptar los que comparan el resultado entero**
+- [x] **Step 1: Añadir tests y adaptar los que comparan el resultado entero**
 
 En `game/tests/unit/activity.test.ts`: en los tres `toEqual({ state: …, flags: … })` que comparan el objeto entero (primera vez, mismo día, reloj hacia atrás) añadir `returns: []`. Añadir al import `cohortWeek, daysBetween` y este bloque al final:
 
@@ -270,12 +270,12 @@ describe('semana de inicio y retención', () => {
 });
 ```
 
-- [ ] **Step 2: Comprobar que falla**
+- [x] **Step 2: Comprobar que falla**
 
 Run: `npx vitest run tests/unit/activity.test.ts`
 Expected: FAIL (`cohortWeek` no existe, falta `returns`).
 
-- [ ] **Step 3: Implementar**
+- [x] **Step 3: Implementar**
 
 En `game/src/core/activity.ts`:
 
@@ -353,12 +353,12 @@ export function nextActivity(
 
 En `ageBucket`, sustituir la primera línea por `const days = daysBetween(firstDay, today);`.
 
-- [ ] **Step 4: Comprobar que pasa**
+- [x] **Step 4: Comprobar que pasa**
 
 Run: `npx vitest run tests/unit/activity.test.ts tests/unit/analytics.test.ts && npx tsc --noEmit`
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add game/src/core/activity.ts game/tests/unit/activity.test.ts
@@ -377,7 +377,7 @@ git commit -m "feat: semana de inicio y banderas de retorno (d1, d7, d30) sin id
 - Consumes: `weekStart` (Task 2); `ReachKind`, `ReachScope`, `Step` (Task 1).
 - Produces: `REACH_KEY`; `ReachState { day; week; today: string[]; thisWeek: string[]; ever: string[]; steps: Step[]; playSeconds: number }`; `emptyReach(today)`; `parseReach(raw: string | null): ReachState | null`; `markReach(state, kind, id, today): { state; scopes: ReachScope[] }`; `markEver(state, key): { state; first: boolean }`; `markStep(state, step): { state; first: boolean }`; `addPlay(state, seconds)`; `seedSteps(state, steps)`.
 
-- [ ] **Step 1: Escribir el test**
+- [x] **Step 1: Escribir el test**
 
 ```ts
 // game/tests/unit/reach.test.ts
@@ -456,12 +456,12 @@ describe('guardado', () => {
 });
 ```
 
-- [ ] **Step 2: Comprobar que falla**
+- [x] **Step 2: Comprobar que falla**
 
 Run: `npx vitest run tests/unit/reach.test.ts`
 Expected: FAIL, no encuentra el módulo.
 
-- [ ] **Step 3: Implementar**
+- [x] **Step 3: Implementar**
 
 ```ts
 // game/src/core/reach.ts
@@ -572,12 +572,12 @@ export function addPlay(state: ReachState, seconds: number): ReachState {
 }
 ```
 
-- [ ] **Step 4: Comprobar que pasa**
+- [x] **Step 4: Comprobar que pasa**
 
 Run: `npx vitest run tests/unit/reach.test.ts && npx tsc --noEmit`
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add game/src/core/reach.ts game/tests/unit/reach.test.ts
@@ -597,7 +597,7 @@ git commit -m "feat: alcance diario, semanal y de vida, y pasos del embudo, guar
 - Produces (matomoRequest): `MatomoConfig.replayHours: number`; `MatomoEnv.VITE_MATOMO_REPLAY_HOURS?: string`; `DEFAULT_REPLAY_HOURS = 23`; `cdtParam(time: number): string`.
 - Produces (hitQueue): `QUEUE_KEY`, `QUEUE_LIMIT = 1000`, `BATCH_SIZE = 50`, `CDT_AFTER_MS = 300_000`; `StoredHit { q: string; t: number }`; `QueueState { hits: StoredHit[]; lost: { full: number; expired: number } }`; `emptyQueue()`, `parseQueue(raw)`, `push(state, hit, limit?)`, `expire(state, now, maxAge)`, `takeBatch(state, size?)`, `ack(state, batch)`, `clearLost(state)`, `stamp(hit, now)`, `oldestAge(state, now)`, `maxAgeMs(replayHours)`.
 
-- [ ] **Step 1: Tests de `matomoRequest`**
+- [x] **Step 1: Tests de `matomoRequest`**
 
 En `game/tests/unit/matomoRequest.test.ts` y en `game/tests/unit/analytics.test.ts`, añadir `replayHours: 23,` al objeto `config`. En `matomoRequest.test.ts`, añadir `cdtParam` al import y, dentro de `describe('parseConfig', …)`:
 
@@ -621,7 +621,7 @@ describe('cdtParam', () => {
 });
 ```
 
-- [ ] **Step 2: Test de `hitQueue`**
+- [x] **Step 2: Test de `hitQueue`**
 
 ```ts
 // game/tests/unit/hitQueue.test.ts
@@ -702,12 +702,12 @@ describe('guardado', () => {
 });
 ```
 
-- [ ] **Step 3: Comprobar que fallan**
+- [x] **Step 3: Comprobar que fallan**
 
 Run: `npx vitest run tests/unit/hitQueue.test.ts tests/unit/matomoRequest.test.ts`
 Expected: FAIL (módulo y `cdtParam` inexistentes).
 
-- [ ] **Step 4: Implementar `matomoRequest`**
+- [x] **Step 4: Implementar `matomoRequest`**
 
 En `game/src/core/matomoRequest.ts`:
 
@@ -757,7 +757,7 @@ Añadir al final de `game/.env.example`:
 VITE_MATOMO_REPLAY_HOURS=
 ```
 
-- [ ] **Step 5: Implementar `hitQueue`**
+- [x] **Step 5: Implementar `hitQueue`**
 
 ```ts
 // game/src/core/hitQueue.ts
@@ -846,12 +846,12 @@ export function maxAgeMs(replayHours: number): number {
 }
 ```
 
-- [ ] **Step 6: Comprobar que pasa**
+- [x] **Step 6: Comprobar que pasa**
 
 Run: `npx vitest run tests/unit/hitQueue.test.ts tests/unit/matomoRequest.test.ts tests/unit/analytics.test.ts && npx tsc --noEmit`
 Expected: PASS.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add game/src/core/hitQueue.ts game/src/core/matomoRequest.ts game/.env.example game/tests/unit/hitQueue.test.ts game/tests/unit/matomoRequest.test.ts game/tests/unit/analytics.test.ts
@@ -870,7 +870,7 @@ git commit -m "feat: cola de eventos guardable, con tope, caducidad y fecha real
 - Consumes: `Rect`, `rectContains(rect, point, margin)` de `game/src/core/interaction.ts`; `Vec` de `game/src/core/movement.ts`.
 - Produces: `NEAR_MARGIN = 32`, `NEAR_MS = 2000`; `NearState<T extends string> { penId: T | null; ms: number; fired: boolean }`; `noPen<T>()`; `stepNear<T>(state, pens: readonly { id: T; rect: Rect }[], pos: Vec, delta: number): { state: NearState<T>; entered: T | null }`.
 
-- [ ] **Step 1: Escribir el test**
+- [x] **Step 1: Escribir el test**
 
 ```ts
 // game/tests/unit/penNear.test.ts
@@ -921,12 +921,12 @@ describe('visitar un recinto', () => {
 });
 ```
 
-- [ ] **Step 2: Comprobar que falla**
+- [x] **Step 2: Comprobar que falla**
 
 Run: `npx vitest run tests/unit/penNear.test.ts`
 Expected: FAIL, no encuentra el módulo.
 
-- [ ] **Step 3: Implementar**
+- [x] **Step 3: Implementar**
 
 ```ts
 // game/src/core/penNear.ts
@@ -972,12 +972,12 @@ export function stepNear<T extends string>(
 }
 ```
 
-- [ ] **Step 4: Comprobar que pasa**
+- [x] **Step 4: Comprobar que pasa**
 
 Run: `npx vitest run tests/unit/penNear.test.ts && npx tsc --noEmit`
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add game/src/core/penNear.ts game/tests/unit/penNear.test.ts
@@ -1002,7 +1002,7 @@ git commit -m "feat: regla de visita a un recinto (dos segundos junto a él)"
   - `AnalyticsHooks { sessionStarted(flags: readonly ActivityFlag[]): void; goingBackground(seconds: number): void; resumed(): void; screenShown(name: string): void }` y `Analytics.setHooks(hooks: AnalyticsHooks): void`.
   - Deja de escuchar `shop-unlocked`, `animal-fed` y `book-page` (pasan al `GameTracker`, Task 8). Se elimina la exportación `QUEUE_LIMIT` de este fichero (ahora está en `hitQueue`).
 
-- [ ] **Step 1: Adaptar el arnés de los tests**
+- [x] **Step 1: Adaptar el arnés de los tests**
 
 En `game/tests/unit/analytics.test.ts`:
 
@@ -1058,7 +1058,7 @@ const settle = (): Promise<void> => new Promise((resolve) => setTimeout(resolve,
 
 En todo el fichero: cada `t.analytics.flush();` pasa a `await t.analytics.flush();`. Tras cada `t.analytics.setBackground(true);` y cada `t.analytics.reportError(...)` cuyo envío se compruebe después, añadir `await settle();`.
 
-- [ ] **Step 2: Sustituir los tests que cambian de comportamiento y añadir los nuevos**
+- [x] **Step 2: Sustituir los tests que cambian de comportamiento y añadir los nuevos**
 
 Borrar los tests `la cola tiene tope: se descartan los más viejos`, `un envío que falla no rompe nada y la cola se vacía` y `progreso, comida y libro`. En `al irse envía el fin de sesión con los segundos jugados`, comprobar además que el evento `sesion/fin` lleva `e_n` igual al tramo que corresponda a los segundos del test (`<1m`, `1-3m`…). Añadir:
 
@@ -1203,12 +1203,12 @@ describe('Analytics: retención y colaborador', () => {
 });
 ```
 
-- [ ] **Step 3: Comprobar que falla**
+- [x] **Step 3: Comprobar que falla**
 
 Run: `npx vitest run tests/unit/analytics.test.ts`
 Expected: FAIL (tipos de `send`, `setHooks` inexistente, etc.).
 
-- [ ] **Step 4: Reescribir `analytics.ts`**
+- [x] **Step 4: Reescribir `analytics.ts`**
 
 ```ts
 // game/src/systems/analytics.ts
@@ -1493,7 +1493,7 @@ export function getAnalytics(): Analytics | null {
 
 Nota para el test `sin configuración no envía ni guarda nada`, que llama a `track({ category: 'x', action: 'y' })`: `track` acepta cualquier `Hit`; solo `event` está tipado con el catálogo.
 
-- [ ] **Step 5: Adaptar `analyticsInstall.ts`**
+- [x] **Step 5: Adaptar `analyticsInstall.ts`**
 
 Sustituir la función `send` y la línea del `setInterval`:
 
@@ -1511,12 +1511,12 @@ function send(url: string, body: string): Promise<boolean> {
     setInterval(() => void analytics.flush(), FLUSH_MS);
 ```
 
-- [ ] **Step 6: Comprobar que pasa**
+- [x] **Step 6: Comprobar que pasa**
 
 Run: `npx vitest run && npx tsc --noEmit`
 Expected: PASS en todo. Si queda algún test antiguo en rojo por comprobar `bodies` sin esperar, añadirle `await` o `await settle()`; no cambiar el código de `analytics.ts` para acomodarlo.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add game/src/systems/analytics.ts game/src/systems/analyticsInstall.ts game/tests/unit/analytics.test.ts
@@ -1565,7 +1565,7 @@ git commit -m "feat: lo jugado sin conexión se guarda y se envía después con 
 
   y los tipos `ControlMode = 'toque' | 'joystick' | 'teclado'`, `BookPageKind = 'contenido' | 'bloqueada' | 'paso'`.
 
-- [ ] **Step 1: Tests de la sesión**
+- [x] **Step 1: Tests de la sesión**
 
 En `game/tests/unit/session.test.ts`: en los dos tests de `animal-fed`, añadir al objeto esperado `foodId` y `coins` (`{ penId: 'cabra', residentId: 'gordi', foodId: 'carne', reaction: 'rechaza', coins: 0 }` y `{ penId: 'cabra', residentId: 'gordi', foodId: 'piedra', reaction: 'come', coins: 1 }`). Añadir:
 
@@ -1594,12 +1594,12 @@ describe('Session: compras', () => {
 
 Si `buy('pantera')` exige que la tienda esté abierta y el test falla por eso, ganar antes las monedas que la abren como hacen los demás tests de compra de ese fichero.
 
-- [ ] **Step 2: Comprobar que falla**
+- [x] **Step 2: Comprobar que falla**
 
 Run: `npx vitest run tests/unit/session.test.ts`
 Expected: FAIL (`purchase` no existe en `GameEvents`, faltan `foodId` y `coins`).
 
-- [ ] **Step 3: Implementar**
+- [x] **Step 3: Implementar**
 
 En `game/src/systems/events.ts`: añadir `import type { FoodId } from '../data/foods';`, exportar los dos tipos nuevos encima de `GameEvents`, sustituir la entrada `'animal-fed'` y añadir el resto de entradas del bloque «Produces» antes de `'settings-changed'`.
 
@@ -1628,12 +1628,12 @@ Sustituir `buy`:
   }
 ```
 
-- [ ] **Step 4: Comprobar que pasa**
+- [x] **Step 4: Comprobar que pasa**
 
 Run: `npx vitest run && npx tsc --noEmit`
 Expected: PASS. (`WorldScene` usa `residentId` y `reaction` de `animal-fed`: sigue compilando.)
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add game/src/systems/events.ts game/src/systems/session.ts game/tests/unit/session.test.ts
@@ -1652,7 +1652,7 @@ git commit -m "feat: el bus avisa de la comida dada, de las compras y de lo que 
 - Consumes: Task 1 (catálogo), Task 3 (`reach`), Task 6 (`AnalyticsHooks`), Task 7 (eventos del `bus`); `initialCounts`, `openPens`, `GameState` de `core/economy`; `isBookComplete` de `core/book`; `BOOK_BACK_ID` de `data/book`; `PEN_IDS`, `penCapacity`, `findResident` de `data/pens`; `dayKey` de `core/activity`.
 - Produces: `EventSink { readonly active: boolean; event<C extends Category>(category: C, action: ActionOf<C>, name?: string, value?: number): void }` (lo cumple `Analytics`); `TrackerDeps { sink; events; store; now; state; settings; book }`; `class GameTracker implements AnalyticsHooks` con `start(): Promise<void>`; `knownSteps(state, book): Step[]`.
 
-- [ ] **Step 1: Escribir el test**
+- [x] **Step 1: Escribir el test**
 
 ```ts
 // game/tests/unit/analyticsEvents.test.ts
@@ -1953,12 +1953,12 @@ describe('GameTracker: ajustes y salida', () => {
 });
 ```
 
-- [ ] **Step 2: Comprobar que falla**
+- [x] **Step 2: Comprobar que falla**
 
 Run: `npx vitest run tests/unit/analyticsEvents.test.ts`
 Expected: FAIL, no encuentra el módulo.
 
-- [ ] **Step 3: Implementar**
+- [x] **Step 3: Implementar**
 
 ```ts
 // game/src/systems/analyticsEvents.ts
@@ -2261,14 +2261,14 @@ export class GameTracker implements AnalyticsHooks {
 }
 ```
 
-- [ ] **Step 4: Comprobar que pasa**
+- [x] **Step 4: Comprobar que pasa**
 
 Run: `npx vitest run tests/unit/analyticsEvents.test.ts && npx tsc --noEmit`
 Expected: PASS. Dos avisos para quien implemente:
 - Si `tsc` protesta en `this.send('comer', reaction, …)`, es que `Reaction` (`'come' | 'rechaza' | 'especial'`) ha dejado de coincidir con acciones de `comer` del catálogo: arreglar el catálogo, no forzar el tipo.
 - Si `initialState()` no trae `leon` y `cabra` abiertos con un animal cada uno, ajustar los valores esperados del test «el primer rato del día» a lo que traiga, sin tocar el código.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add game/src/systems/analyticsEvents.ts game/tests/unit/analyticsEvents.test.ts
@@ -2287,7 +2287,7 @@ git commit -m "feat: GameTracker traduce el juego a eventos detallados, alcance 
 - Consumes: Task 5 (`noPen`, `stepNear`, `NearState`), Task 7 (eventos del `bus`, `ControlMode`).
 - Produces: `Pens.rects(): { id: PenId; rect: Rect }[]`; `window.__ZOO__.busLog(): string[]` (nombres de los eventos del `bus` emitidos, en orden; solo en desarrollo).
 
-- [ ] **Step 1: Registro del `bus` para las pruebas**
+- [x] **Step 1: Registro del `bus` para las pruebas**
 
 En `game/src/systems/testHooks.ts`: añadir `import { bus, type GameEvents } from './events';`, añadir a `ZooTestApi`:
 
@@ -2310,7 +2310,7 @@ Dentro de `installTestHooks`, antes de `window.__ZOO__ = {`:
 
 Y en el objeto: `busLog: () => [...busLog],`.
 
-- [ ] **Step 2: Escribir la prueba de juego**
+- [x] **Step 2: Escribir la prueba de juego**
 
 ```ts
 // game/tests/e2e/stats.spec.ts
@@ -2375,12 +2375,12 @@ test('tocar un animal y moverse con el dedo deja rastro', async ({ page }) => {
 });
 ```
 
-- [ ] **Step 3: Comprobar que falla**
+- [x] **Step 3: Comprobar que falla**
 
 Run: `npx playwright test tests/e2e/stats.spec.ts`
 Expected: FAIL (ningún evento en el registro).
 
-- [ ] **Step 4: `Pens.rects()`**
+- [x] **Step 4: `Pens.rects()`**
 
 En `game/src/world/Pens.ts`, junto a `rectOf`:
 
@@ -2391,7 +2391,7 @@ En `game/src/world/Pens.ts`, junto a `rectOf`:
   }
 ```
 
-- [ ] **Step 5: `WorldScene`**
+- [x] **Step 5: `WorldScene`**
 
 Imports: cambiar `import type { GameState } from '../core/economy';` por `import { isPenOpen, type GameState } from '../core/economy';`; añadir `import { noPen, stepNear, type NearState } from '../core/penNear';`; cambiar el import del bus por `import { bus, type ControlMode } from '../systems/events';`.
 
@@ -2489,7 +2489,7 @@ En `openFeed`, antes de `this.scene.pause();`: `bus.emit('feed-opened', { reside
 
 En `openShop`, antes de `this.scene.pause();`: `bus.emit('shop-opened', {});`
 
-- [ ] **Step 6: `FeedScene`**
+- [x] **Step 6: `FeedScene`**
 
 Añadir `import { bus } from '../systems/events';`.
 
@@ -2520,12 +2520,12 @@ En `onDragEnd`, sustituir el `else` final:
     }
 ```
 
-- [ ] **Step 7: Comprobar que pasa**
+- [x] **Step 7: Comprobar que pasa**
 
 Run: `npx tsc --noEmit && npx vitest run && npx playwright test tests/e2e/stats.spec.ts tests/e2e/play.spec.ts`
 Expected: PASS.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add game/src/world/Pens.ts game/src/scenes/WorldScene.ts game/src/scenes/FeedScene.ts game/src/systems/testHooks.ts game/tests/e2e/stats.spec.ts
@@ -2543,7 +2543,7 @@ git commit -m "feat: el mapa y la ventana de comer avisan de visitas, toques, co
 **Interfaces:**
 - Consumes: Task 6 (`setHooks`), Task 7 (eventos, `BookPageKind`), Task 8 (`GameTracker`).
 
-- [ ] **Step 1: Añadir la prueba de juego**
+- [x] **Step 1: Añadir la prueba de juego**
 
 Al final de `game/tests/e2e/stats.spec.ts`:
 
@@ -2574,7 +2574,7 @@ test('abrir la privacidad desde ajustes deja rastro', async ({ page }) => {
 Run: `npx playwright test tests/e2e/stats.spec.ts`
 Expected: los dos tests nuevos FAIL.
 
-- [ ] **Step 2: `ShopScene`**
+- [x] **Step 2: `ShopScene`**
 
 En `updateReach`, después de `if (!product) return;`:
 
@@ -2592,7 +2592,7 @@ En `close()`, después de `this.closing = true;`: `bus.emit('shop-closed', {});`
 
 En `openBook()`, antes de `this.scene.launch('Book');`: `bus.emit('book-opened', { pageId: getSession().book.page ?? 'cover' });`
 
-- [ ] **Step 3: `BookScene`**
+- [x] **Step 3: `BookScene`**
 
 Añadir `import { bus, type BookPageKind } from '../systems/events';`.
 
@@ -2615,7 +2615,7 @@ En `showIndex`, sustituir el `makePressable` de la fila:
 
 En `close()`, después de `sfx.play('tap');`: `bus.emit('book-closed', {});`
 
-- [ ] **Step 4: Ajustes y salida**
+- [x] **Step 4: Ajustes y salida**
 
 `game/src/scenes/SettingsScene.ts`: añadir `import { bus } from '../systems/events';` y, en `press`, antes de `openLegal();`: `bus.emit('legal-opened', {});`
 
@@ -2632,7 +2632,7 @@ onTap: () => {
 
 En `close()`, después de `if (!this.scene.isActive()) return;`: `bus.emit('quit-answered', { leave: false });`
 
-- [ ] **Step 5: Conectar el `GameTracker`**
+- [x] **Step 5: Conectar el `GameTracker`**
 
 En `game/src/systems/analyticsInstall.ts`: añadir `import { GameTracker } from './analyticsEvents';`, añadir `Quit: 'salir',` al mapa `SCREENS`, y sustituir desde `const session = getSession();` hasta `await analytics.start();`:
 
@@ -2675,12 +2675,12 @@ En `game/src/systems/analyticsInstall.ts`: añadir `import { GameTracker } from 
     await analytics.start();
 ```
 
-- [ ] **Step 6: Comprobar que pasa**
+- [x] **Step 6: Comprobar que pasa**
 
 Run: `npx tsc --noEmit && npx vitest run && npx playwright test`
 Expected: PASS en todo (unitarias y todas las pruebas de juego).
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add game/src/scenes/ShopScene.ts game/src/scenes/BookScene.ts game/src/scenes/SettingsScene.ts game/src/scenes/QuitScene.ts game/src/systems/platform.ts game/src/systems/analyticsInstall.ts game/tests/e2e/stats.spec.ts
@@ -2699,7 +2699,7 @@ git commit -m "feat: tienda, libro, ajustes y salida avisan de lo que pasa; el t
 - Produces (`lib.mjs`): `parseEnv(text)`, `toRows(report)`, `byAction(rows)`, `events(index, action, name?)`, `share(n, d, min?)`, `medianBucket(counts, order)`, `table(headers, rows)`.
 - Ficheros que genera: `tools/matomo/data/events.json`, `events-daily.json`, `visits-daily.json`, `resumen.md`.
 
-- [ ] **Step 1: Ignorar los datos y documentar el token**
+- [x] **Step 1: Ignorar los datos y documentar el token**
 
 Añadir al final de `.gitignore` (raíz):
 
@@ -2732,7 +2732,7 @@ Añadir a `SECURITY.md`, al final de la sección 1:
   único sitio. Los scripts lo envían en el cuerpo de la petición, nunca en la dirección, y no lo imprimen.
 ```
 
-- [ ] **Step 2: Test de la librería**
+- [x] **Step 2: Test de la librería**
 
 ```js
 // tools/matomo/lib.test.mjs
@@ -2792,10 +2792,10 @@ test('table escribe una tabla de Markdown', () => {
 });
 ```
 
-Run (raíz): `node --test tools/matomo/`
+Run (raíz): `node --test "tools/matomo/*.test.mjs"`
 Expected: FAIL, no encuentra `lib.mjs`.
 
-- [ ] **Step 3: Implementar la librería**
+- [x] **Step 3: Implementar la librería**
 
 ```js
 // tools/matomo/lib.mjs
@@ -2878,10 +2878,10 @@ export function table(headers, rows) {
 }
 ```
 
-Run (raíz): `node --test tools/matomo/`
+Run (raíz): `node --test "tools/matomo/*.test.mjs"`
 Expected: PASS.
 
-- [ ] **Step 4: Configuración con guarda de seguridad**
+- [x] **Step 4: Configuración con guarda de seguridad**
 
 ```js
 // tools/matomo/config.mjs
@@ -2929,7 +2929,7 @@ export async function api(config, method, params = {}) {
 }
 ```
 
-- [ ] **Step 5: Descarga**
+- [x] **Step 5: Descarga**
 
 ```js
 // tools/matomo/pull.mjs
@@ -2967,7 +2967,7 @@ try {
 }
 ```
 
-- [ ] **Step 6: Resumen**
+- [x] **Step 6: Resumen**
 
 ```js
 // tools/matomo/resumen.mjs
@@ -3070,7 +3070,7 @@ writeFileSync(join(DATA, 'resumen.md'), `${out.join('\n')}\n`);
 console.log('Resumen escrito en tools/matomo/data/resumen.md');
 ```
 
-- [ ] **Step 7: Sonda para comprobar la fecha real (se usa en la Task 13)**
+- [x] **Step 7: Sonda para comprobar la fecha real (se usa en la Task 13)**
 
 ```js
 // tools/matomo/probe.mjs
@@ -3099,7 +3099,7 @@ await post('Lote 2 (uno bueno y uno de hace 30 h)', [hit('junto-a-uno-viejo', 0)
 console.log('Mira en Matomo → Comportamiento → Eventos (categoría «prueba») de hoy y de ayer qué ha llegado y en qué hora.');
 ```
 
-- [ ] **Step 8: README de la carpeta**
+- [x] **Step 8: README de la carpeta**
 
 ```markdown
 <!-- tools/matomo/README.md -->
@@ -3135,12 +3135,12 @@ con menos de 30 en el denominador se marca «insuficiente».
   `docs/superpowers/specs/2026-10-07-analitica-detallada-design.md`.
 ```
 
-- [ ] **Step 9: Comprobar**
+- [x] **Step 9: Comprobar**
 
-Run (raíz): `node --test tools/matomo/ && node tools/matomo/pull.mjs`
+Run (raíz): `node --test "tools/matomo/*.test.mjs" && node tools/matomo/pull.mjs`
 Expected: los tests PASS; `pull.mjs` termina con el mensaje «Falta tools/matomo/.env.local…» y código 1 (aún no hay token: es lo correcto).
 
-- [ ] **Step 10: Commit**
+- [x] **Step 10: Commit**
 
 ```bash
 git add .gitignore SECURITY.md tools/matomo/
@@ -3158,7 +3158,7 @@ Antes de confirmar, mirar la salida de `git status --short`: no debe aparecer `t
 - Create: `game/scripts/check-dist.mjs`
 - Modify: `game/package.json`, `game/public/privacidad.html`, `game/public/privacidad-en.html`, `README.md`, `docs/superpowers/specs/2026-10-07-analitica-anonima-matomo-design.md`, `docs/superpowers/specs/2026-10-07-analitica-detallada-design.md`
 
-- [ ] **Step 1: Guarda de la compilación**
+- [x] **Step 1: Guarda de la compilación**
 
 ```js
 // game/scripts/check-dist.mjs
@@ -3203,7 +3203,7 @@ Expected: termina con «check-dist: sin tokens en la compilación.»
 
 Comprobar que la guarda muerde: añadir temporalmente `console.log('token_auth');` al final de `game/src/main.ts`, lanzar `npm run build` (Expected: FAIL con la ruta del fichero), quitar la línea y volver a compilar (Expected: PASS).
 
-- [ ] **Step 2: Privacidad en español**
+- [x] **Step 2: Privacidad en español**
 
 En `game/public/privacidad.html`, sustituir el párrafo del apartado «Estadísticas anónimas» por:
 
@@ -3225,7 +3225,7 @@ En `game/public/privacidad.html`, sustituir el párrafo del apartado «Estadíst
       </p>
 ```
 
-- [ ] **Step 3: Privacidad en inglés**
+- [x] **Step 3: Privacidad en inglés**
 
 En `game/public/privacidad-en.html`, sustituir el párrafo del apartado «Anonymous statistics» por:
 
@@ -3253,23 +3253,23 @@ En los dos ficheros, poner en «Última actualización» / «Last updated» la f
 Run: `npx vitest run tests/unit/legal.test.ts`
 Expected: PASS (los apartados no cambian de número).
 
-- [ ] **Step 4: Documentación**
+- [x] **Step 4: Documentación**
 
 - `README.md`: en la fila «Spec analítica detallada», enlazar también el plan (`docs/superpowers/plans/2026-10-07-analitica-detallada.md`) y cambiar «Diseño (sin plan aún)» por lo que ya esté hecho. Si el README describe qué mide el juego o la carpeta `tools/`, añadir una línea sobre `tools/matomo/`.
 - `docs/superpowers/specs/2026-10-07-analitica-detallada-design.md`: actualizar la línea «Estado» con la rama y lo que falte.
 - `docs/superpowers/specs/2026-10-07-analitica-anonima-matomo-design.md`: añadir bajo el título una nota: «La tabla de «Qué se mide» y el envío (cola, reintentos) están ampliados en `2026-10-07-analitica-detallada-design.md`.»
 - Este plan: marcar las casillas hechas.
 
-- [ ] **Step 5: Comprobación completa**
+- [x] **Step 5: Comprobación completa**
 
 Run: `npx tsc --noEmit && npx vitest run && npx playwright test && npm run build`
-Run (raíz): `node --test tools/matomo/`
+Run (raíz): `node --test "tools/matomo/*.test.mjs"`
 Expected: todo PASS.
 
 Run (raíz): `git grep -nIiE "token_auth=[0-9a-f]|MATOMO_TOKEN=.+" -- . ':!tools/matomo/.env.example'`
 Expected: sin resultados.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add game/scripts/check-dist.mjs game/package.json game/public/privacidad.html game/public/privacidad-en.html README.md docs/superpowers/
