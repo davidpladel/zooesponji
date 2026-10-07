@@ -1,6 +1,6 @@
 # Analítica anónima con Matomo
 
-Fecha: 2026-10-07 · Estado: diseño aprobado por David (2026-10-07). Sin implementar. Plan: `docs/superpowers/plans/2026-10-07-analitica-anonima-matomo.md`.
+Fecha: 2026-10-07 · Estado: código implementado en la rama `feat/analitica-matomo` (2026-10-07); falta comprobar en Matomo, activar el modo CNIL, probar en Android y Play Console. Plan: `docs/superpowers/plans/2026-10-07-analitica-anonima-matomo.md`.
 
 ## Objetivo
 
@@ -117,6 +117,6 @@ Están escritos paso a paso en el plan:
 
 ## Riesgos
 
-- **Petición `no-cors`:** la respuesta es opaca y el cuerpo viaja como `text/plain`. Hay que comprobar a mano que Matomo acepta el lote; si no, se cambia a una petición `GET` por evento.
+- **Petición `no-cors`:** la respuesta es opaca y el cuerpo viaja como `text/plain`. Comprobado el 7-oct-2026: Matomo acepta el lote así y sin `token_auth`.
 - **Modo CNIL y `_id`:** si Matomo dejase de agrupar por `_id`, cada evento contaría como visita; los eventos y las banderas de activos seguirían siendo correctos, que es lo que se lee.
 - **Redondeo a decenas** de los datos segmentados: con pocos jugadores, los cruces por dimensión serán poco precisos. Los totales de eventos no se redondean.

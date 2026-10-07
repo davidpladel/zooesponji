@@ -27,6 +27,22 @@
       ],
       "port": 5174,
       "autoPort": false
+    },
+    {
+      "name": "game-preview",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "preview",
+        "--prefix",
+        "game",
+        "--",
+        "--port",
+        "4173",
+        "--strictPort"
+      ],
+      "port": 4173,
+      "autoPort": false
     }
   ]
 }

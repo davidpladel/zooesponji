@@ -10,6 +10,8 @@
 
 **Spec:** `docs/superpowers/specs/2026-10-07-analitica-anonima-matomo-design.md`
 
+**Estado (2026-10-07):** tareas 1 a 8 hechas (typecheck y 1054 tests unitarios en verde; faltan las pruebas de juego, que lanza David). Tarea 9: sitio y dimensiones creados, configuración local escrita, la compilación de producción envía los lotes y Matomo responde `{"status":"success"}` a un lote igual al del juego. Pendiente: que David vea los eventos en el registro de visitas (paso 6), activar el modo CNIL (7 y 8), Android (9), Play Console (11) y cerrar docs (12).
+
 ## Global Constraints
 
 - Rama `feat/analitica-matomo`. Todos los comandos se lanzan desde `game/`.
@@ -49,7 +51,7 @@
 **Interfaces:**
 - Produces: `Settings.stats: boolean` (por defecto `true`); `ToggleKey = 'music' | 'sfx' | 'joystick' | 'stats'`.
 
-- [ ] **Step 1: Escribir los tests que fallan**
+- [x] **Step 1: Escribir los tests que fallan**
 
 Añadir al final de `tests/unit/save.test.ts`:
 
@@ -76,12 +78,12 @@ describe('ajuste de estadísticas', () => {
 });
 ```
 
-- [ ] **Step 2: Comprobar que fallan**
+- [x] **Step 2: Comprobar que fallan**
 
 Run: `npx vitest run tests/unit/save.test.ts`
 Expected: FAIL en los cuatro tests nuevos (`stats` es `undefined`).
 
-- [ ] **Step 3: Implementar**
+- [x] **Step 3: Implementar**
 
 En `src/core/save.ts`:
 
@@ -118,7 +120,7 @@ En `parseSave`, la línea de `settings` pasa a ser:
     },
 ```
 
-- [ ] **Step 4: Actualizar las expectativas antiguas que comparan los ajustes enteros**
+- [x] **Step 4: Actualizar las expectativas antiguas que comparan los ajustes enteros**
 
 En `tests/unit/save.test.ts`:
 
@@ -132,12 +134,12 @@ En `tests/unit/session.test.ts`, test «updateSettings guarda y emite settings-c
     expect(handler).toHaveBeenCalledWith({ settings: { music: true, sfx: true, joystick: true, stats: true } });
 ```
 
-- [ ] **Step 5: Comprobar que todo pasa**
+- [x] **Step 5: Comprobar que todo pasa**
 
 Run: `npm run typecheck && npm test`
 Expected: PASS, sin fallos.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/core/save.ts tests/unit/save.test.ts tests/unit/session.test.ts
@@ -163,7 +165,7 @@ git commit -m "feat: ajuste de estadísticas en el guardado, encendido por defec
   - `sessionBucket(sessions: number): string`
   - `ageBucket(firstDay: string, today: string): string`
 
-- [ ] **Step 1: Escribir los tests que fallan**
+- [x] **Step 1: Escribir los tests que fallan**
 
 `tests/unit/activity.test.ts`:
 
@@ -269,12 +271,12 @@ describe('tramos', () => {
 });
 ```
 
-- [ ] **Step 2: Comprobar que fallan**
+- [x] **Step 2: Comprobar que fallan**
 
 Run: `npx vitest run tests/unit/activity.test.ts`
 Expected: FAIL, no existe `src/core/activity.ts`.
 
-- [ ] **Step 3: Implementar**
+- [x] **Step 3: Implementar**
 
 `src/core/activity.ts`:
 
@@ -360,12 +362,12 @@ export function ageBucket(firstDay: string, today: string): string {
 }
 ```
 
-- [ ] **Step 4: Comprobar que pasan**
+- [x] **Step 4: Comprobar que pasan**
 
 Run: `npx vitest run tests/unit/activity.test.ts && npm run typecheck`
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/core/activity.ts tests/unit/activity.test.ts
@@ -392,7 +394,7 @@ git commit -m "feat: banderas de actividad para contar jugadores sin identificar
   - `toQuery(hit: Hit, config: MatomoConfig, context: HitContext): string`
   - `toBulkBody(queries: readonly string[]): string`
 
-- [ ] **Step 1: Escribir los tests que fallan**
+- [x] **Step 1: Escribir los tests que fallan**
 
 `tests/unit/matomoRequest.test.ts`:
 
@@ -497,12 +499,12 @@ describe('toBulkBody', () => {
 });
 ```
 
-- [ ] **Step 2: Comprobar que fallan**
+- [x] **Step 2: Comprobar que fallan**
 
 Run: `npx vitest run tests/unit/matomoRequest.test.ts`
 Expected: FAIL, no existe el módulo.
 
-- [ ] **Step 3: Implementar**
+- [x] **Step 3: Implementar**
 
 `src/core/matomoRequest.ts`:
 
@@ -599,12 +601,12 @@ export function toBulkBody(queries: readonly string[]): string {
 }
 ```
 
-- [ ] **Step 4: Comprobar que pasan**
+- [x] **Step 4: Comprobar que pasan**
 
 Run: `npx vitest run tests/unit/matomoRequest.test.ts && npm run typecheck`
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/core/matomoRequest.ts tests/unit/matomoRequest.test.ts
@@ -622,7 +624,7 @@ git commit -m "feat: construcción de las peticiones a Matomo, sin identificador
 **Interfaces:**
 - Produces: `GameEvents['book-page']: { pageId: string }`, emitido por `Session.setBookPage` cuando la página cambia.
 
-- [ ] **Step 1: Escribir el test que falla**
+- [x] **Step 1: Escribir el test que falla**
 
 Añadir al final de `tests/unit/session.test.ts`:
 
@@ -643,12 +645,12 @@ describe('Session: libro', () => {
 });
 ```
 
-- [ ] **Step 2: Comprobar que falla**
+- [x] **Step 2: Comprobar que falla**
 
 Run: `npx vitest run tests/unit/session.test.ts`
 Expected: FAIL (error de tipos en `'book-page'` o `handler` sin llamadas).
 
-- [ ] **Step 3: Implementar**
+- [x] **Step 3: Implementar**
 
 En `src/systems/events.ts`, dentro de `GameEvents`, antes de `'settings-changed'`:
 
@@ -669,12 +671,12 @@ En `src/systems/session.ts`:
   }
 ```
 
-- [ ] **Step 4: Comprobar que pasa**
+- [x] **Step 4: Comprobar que pasa**
 
 Run: `npm run typecheck && npm test`
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/systems/events.ts src/systems/session.ts tests/unit/session.test.ts
@@ -697,7 +699,7 @@ git commit -m "feat: el libro avisa por el bus cuando cambia de página"
   - `class Analytics { constructor(deps: AnalyticsDeps); start(): Promise<void>; track(hit: Hit): void; screenView(name: string): void; flush(): void; setBackground(hidden: boolean): void; reportError(error: unknown): void }`
   - `setAnalytics(analytics: Analytics | null): void`, `getAnalytics(): Analytics | null`
 
-- [ ] **Step 1: Escribir los tests que fallan**
+- [x] **Step 1: Escribir los tests que fallan**
 
 `tests/unit/analytics.test.ts`:
 
@@ -1009,12 +1011,12 @@ describe('instancia en uso', () => {
 });
 ```
 
-- [ ] **Step 2: Comprobar que fallan**
+- [x] **Step 2: Comprobar que fallan**
 
 Run: `npx vitest run tests/unit/analytics.test.ts`
 Expected: FAIL, no existe `src/systems/analytics.ts`.
 
-- [ ] **Step 3: Implementar**
+- [x] **Step 3: Implementar**
 
 `src/systems/analytics.ts`:
 
@@ -1210,12 +1212,12 @@ export function getAnalytics(): Analytics | null {
 }
 ```
 
-- [ ] **Step 4: Comprobar que pasan**
+- [x] **Step 4: Comprobar que pasan**
 
 Run: `npx vitest run tests/unit/analytics.test.ts && npm run typecheck`
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/systems/analytics.ts tests/unit/analytics.test.ts
@@ -1236,7 +1238,7 @@ git commit -m "feat: estadísticas anónimas: cola, sesión y eventos del juego"
 
 No lleva test unitario propio: es el pegamento con Phaser, `fetch` y Capacitor. Se cubre con el typecheck, las pruebas de juego existentes (que comprueban que nada se rompe sin configuración) y la comprobación a mano de la Task 9.
 
-- [ ] **Step 1: Crear el instalador**
+- [x] **Step 1: Crear el instalador**
 
 `src/systems/analyticsInstall.ts`:
 
@@ -1306,7 +1308,7 @@ export async function installAnalytics(game: Phaser.Game): Promise<void> {
 }
 ```
 
-- [ ] **Step 2: Arrancarla al cargar la sesión**
+- [x] **Step 2: Arrancarla al cargar la sesión**
 
 En `src/scenes/PreloadScene.ts`, añadir el import `import { installAnalytics } from '../systems/analyticsInstall';` y dejar `startSession` así:
 
@@ -1322,7 +1324,7 @@ En `src/scenes/PreloadScene.ts`, añadir el import `import { installAnalytics } 
   }
 ```
 
-- [ ] **Step 3: Avisar del segundo plano**
+- [x] **Step 3: Avisar del segundo plano**
 
 En `src/systems/platform.ts`, añadir el import `import { getAnalytics } from './analytics';` y en `setBackground`, justo después de `sfx.setPaused('background', hidden);`:
 
@@ -1330,7 +1332,7 @@ En `src/systems/platform.ts`, añadir el import `import { getAnalytics } from '.
     getAnalytics()?.setBackground(hidden);
 ```
 
-- [ ] **Step 4: Avisar de los errores**
+- [x] **Step 4: Avisar de los errores**
 
 En `src/systems/errors.ts`, añadir el import `import { getAnalytics } from './analytics';` y dejar el principio de `handle` así:
 
@@ -1343,12 +1345,12 @@ async function handle(error: unknown): Promise<void> {
 
 (Se quita el comentario antiguo «Solo en el dispositivo: sin envío remoto».)
 
-- [ ] **Step 5: Comprobar**
+- [x] **Step 5: Comprobar**
 
 Run: `npm run typecheck && npm test && npm run test:e2e`
 Expected: PASS. Las pruebas de juego corren sin configuración, así que la analítica está apagada y el juego se comporta igual que antes.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/systems/analyticsInstall.ts src/scenes/PreloadScene.ts src/systems/platform.ts src/systems/errors.ts
@@ -1368,7 +1370,7 @@ git commit -m "feat: las estadísticas anónimas se conectan al juego (pantallas
 - Consumes: Task 1 (`ToggleKey` con `'stats'`).
 - Produces: `window.__ZOO__.settingsTogglePos('stats')`.
 
-- [ ] **Step 1: Escribir la prueba de juego que falla**
+- [x] **Step 1: Escribir la prueba de juego que falla**
 
 Añadir a `tests/e2e/polish.spec.ts`, después del test «menú ⚙️: apagar el sonido y ver los créditos»:
 
@@ -1388,12 +1390,12 @@ test('menú ⚙️: las estadísticas anónimas se pueden apagar y se quedan apa
 });
 ```
 
-- [ ] **Step 2: Comprobar que falla**
+- [x] **Step 2: Comprobar que falla**
 
 Run: `npx playwright test tests/e2e/polish.spec.ts -g "estadísticas"`
 Expected: FAIL (error de tipos en `'stats'` o tiempo agotado esperando la ficha).
 
-- [ ] **Step 3: Icono nuevo**
+- [x] **Step 3: Icono nuevo**
 
 En `scripts/make-ui-assets.mjs`, dentro de `ICONS`, después de `heart: 'heart',`:
 
@@ -1410,7 +1412,7 @@ export const ICONS = ['play', 'close', 'music', 'volume', 'joystick', 'gear', 'l
 Run: `npm run make:ui-assets`
 Expected: aparece `public/assets/ui/icons/chart.svg`. Con `git status --short public/assets/ui` solo debe salir ese archivo como nuevo; si el script ha tocado otros, descartar esos cambios con `git checkout -- <archivo>`.
 
-- [ ] **Step 4: Textos**
+- [x] **Step 4: Textos**
 
 En `src/data/strings/es.ts`, después de `'settings.joystick': 'Joystick',`:
 
@@ -1424,7 +1426,7 @@ En `src/data/strings/en.ts`, después de `'settings.joystick': 'Joystick',`:
   'settings.stats': 'Stats',
 ```
 
-- [ ] **Step 5: Ficha en el menú**
+- [x] **Step 5: Ficha en el menú**
 
 En `src/scenes/SettingsScene.ts`:
 
@@ -1439,7 +1441,7 @@ const TOGGLES: readonly { key: ToggleKey; icon: IconName; label: StringKey }[] =
 
 El comentario de la clase pasa a `Menú de ajustes: música, sonido, joystick, estadísticas, idioma, privacidad, salir y créditos.` y el de la fila a `// Cinco fichas en fila: los cuatro interruptores y el idioma.`
 
-- [ ] **Step 6: Gancho de pruebas**
+- [x] **Step 6: Gancho de pruebas**
 
 En `src/systems/testHooks.ts`, cambiar el import de tipos a `import type { Settings, ToggleKey } from '../core/save';` y la línea de la interfaz a:
 
@@ -1447,12 +1449,12 @@ En `src/systems/testHooks.ts`, cambiar el import de tipos a `import type { Setti
   settingsTogglePos(key: ToggleKey): Vec | null;
 ```
 
-- [ ] **Step 7: Comprobar**
+- [x] **Step 7: Comprobar**
 
 Run: `npm run typecheck && npm test && npm run test:e2e`
 Expected: PASS. Mirar además el menú de Ajustes en `npm run dev` a 1280×720 y con la ventana estrecha (unos 700×360): las cinco fichas caben y las etiquetas no se pisan. Si «Estadísticas» se pisa con las vecinas, acortar el texto español a «Datos» y volver a lanzar `npm test`.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add scripts/make-ui-assets.mjs src/ui/icons.ts public/assets/ui/icons/chart.svg src/scenes/SettingsScene.ts src/data/strings/es.ts src/data/strings/en.ts src/systems/testHooks.ts tests/e2e/polish.spec.ts
@@ -1466,7 +1468,7 @@ git commit -m "feat: ficha de estadísticas en Ajustes para apagar la medición 
 **Files:**
 - Modify: `public/privacidad.html`, `public/privacidad-en.html`, `tests/unit/legal.test.ts`, `../README.md`, `../docs/superpowers/specs/2026-09-27-motor-phaser-v3-design.md`, `../docs/superpowers/specs/2026-09-27-v3-hito-6a-pulido-design.md`
 
-- [ ] **Step 1: Actualizar el test de estructura**
+- [x] **Step 1: Actualizar el test de estructura**
 
 En `tests/unit/legal.test.ts`, test «la página en inglés tiene la misma estructura que la española»: `expect(count(en, 'h2')).toBe(9);`. Y añadir dentro del mismo `describe`:
 
@@ -1486,7 +1488,7 @@ En `tests/unit/legal.test.ts`, test «la página en inglés tiene la misma estru
 Run: `npx vitest run tests/unit/legal.test.ts`
 Expected: FAIL.
 
-- [ ] **Step 2: Página en español**
+- [x] **Step 2: Página en español**
 
 En `public/privacidad.html`:
 
@@ -1532,7 +1534,7 @@ En `public/privacidad.html`:
 - «Tus derechos», primera frase: `Como el juego no recoge datos personales, no tenemos datos tuyos que consultar, corregir o borrar; las estadísticas anónimas se apagan en Ajustes.` (el resto del párrafo no cambia).
 - «Cambios en esta página»: `Si el juego cambia y pasa a recoger algún dato más, esta página se actualizará antes, explicando qué se recoge y para qué.`
 
-- [ ] **Step 3: Página en inglés**
+- [x] **Step 3: Página en inglés**
 
 En `public/privacidad-en.html`, los mismos cambios y en el mismo orden:
 
@@ -1573,12 +1575,12 @@ En `public/privacidad-en.html`, los mismos cambios y en el mismo orden:
 
 Los dos archivos deben tener el mismo número de `<h2>` (9), `<p>` y `<strong>`.
 
-- [ ] **Step 4: Comprobar**
+- [x] **Step 4: Comprobar**
 
 Run: `npx vitest run tests/unit/legal.test.ts`
 Expected: PASS.
 
-- [ ] **Step 5: README y specs**
+- [x] **Step 5: README y specs**
 
 En `../README.md`:
 
@@ -1610,7 +1612,7 @@ En `../docs/superpowers/specs/2026-09-27-v3-hito-6a-pulido-design.md`, debajo de
   mensaje corto. Ver `2026-10-07-analitica-anonima-matomo-design.md`.)
 ```
 
-- [ ] **Step 6: Comprobar y commit**
+- [x] **Step 6: Comprobar y commit**
 
 Run: `npm test`
 Expected: PASS.
@@ -1626,7 +1628,7 @@ git commit -m "docs: la privacidad y el README explican las estadísticas anóni
 
 Esta tarea necesita a David. Los pasos 1 a 3 los hace él; el resto, quien ejecute el plan.
 
-- [ ] **Step 1 (David): crear el sitio en Matomo**
+- [x] **Step 1 (David): crear el sitio en Matomo**
 
 1. Entra en Matomo y pulsa la rueda dentada (arriba a la derecha).
 2. Menú izquierdo: **Sitios de internet → Administrar**.
@@ -1634,7 +1636,7 @@ Esta tarea necesita a David. Los pasos 1 a 3 los hace él; el resto, quien ejecu
 4. Nombre: `Zoo Esponji`. URL: `https://davidpladel.com/zoo`. Zona horaria: Madrid. Comercio electrónico: no. La URL es solo una etiqueta: la app de Android no la visita, pero Matomo pide una y el juego marca cada pantalla como `https://davidpladel.com/zoo/<pantalla>`.
 5. Guarda y apunta el **ID** que le da Matomo al sitio.
 
-- [ ] **Step 2 (David): crear las cinco dimensiones**
+- [x] **Step 2 (David): crear las cinco dimensiones**
 
 1. Rueda dentada → **Sitios de internet → Dimensiones personalizadas**.
 2. Arriba, elige el sitio **Zoo Esponji** (las dimensiones son de cada sitio).
@@ -1646,11 +1648,11 @@ Esta tarea necesita a David. Los pasos 1 a 3 los hace él; el resto, quien ejecu
    - `Antiguedad`
 4. Apunta el **ID** que Matomo le pone a cada una (sale en la lista).
 
-- [ ] **Step 3 (David): pasar los datos**
+- [x] **Step 3 (David): pasar los datos**
 
 Dile a Claude: la dirección de tu Matomo (la que sale en el navegador, hasta la primera barra), el ID del sitio y los cinco ID de las dimensiones en el orden de arriba. **No actives todavía el modo CNIL**: apaga el registro de visitas, que hace falta para la comprobación del paso 6.
 
-- [ ] **Step 4: Escribir la configuración, fuera de git**
+- [x] **Step 4: Escribir la configuración, fuera de git**
 
 Añadir a `.gitignore` (el de `game/`):
 
@@ -1675,7 +1677,7 @@ Expected: salen `.gitignore` y `.env.example`; **no** sale `.env.production.loca
 
 Avisar a David de que guarde una copia de ese archivo (por ejemplo en el repositorio privado `zooesponji-private`): si se pierde, la compilación sigue funcionando pero no mide nada.
 
-- [ ] **Step 5: Compilar y abrir la compilación de producción**
+- [x] **Step 5: Compilar y abrir la compilación de producción**
 
 Run: `npm run build`
 Expected: compila sin errores.
