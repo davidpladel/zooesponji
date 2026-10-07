@@ -27,7 +27,7 @@ function withoutComments(source: string): string {
 const PHRASE = /(['"`])((?:(?!\1)[^\\\n])*[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]{2,} [A-Za-zÁÉÍÓÚÜÑáéíóúüñ]{2,}(?:(?!\1)[^\\\n])*)\1/g;
 
 describe('ningún texto visible fuera de strings.ts', () => {
-  const files = ['scenes', 'world'].flatMap((dir) => {
+  const files = ['scenes', 'world', 'ui'].flatMap((dir) => {
     const path = fileURLToPath(new URL(`../../src/${dir}/`, import.meta.url));
     return readdirSync(path)
       .filter((name) => name.endsWith('.ts'))
@@ -37,8 +37,8 @@ describe('ningún texto visible fuera de strings.ts', () => {
   it.each(files)('%s', (_name, source) => {
     const found: string[] = [];
     for (const line of withoutComments(source).split('\n')) {
-      // Los mensajes de error son para quien programa; los import, rutas.
-      if (/new Error\(|^\s*import |console\./.test(line)) continue;
+      // Los mensajes de error son para quien programa; los import, rutas; la lista de tipografías es CSS.
+      if (/new Error\(|^\s*import |console\.|sans-serif/.test(line)) continue;
       for (const match of line.matchAll(PHRASE)) found.push(match[2]!);
     }
     expect(found).toEqual([]);
