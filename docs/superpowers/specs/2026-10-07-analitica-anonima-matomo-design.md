@@ -1,5 +1,7 @@
 # Analítica anónima con Matomo
 
+> La tabla de «Qué se mide» y el envío (cola, reintentos) están ampliados en `2026-10-07-analitica-detallada-design.md`.
+
 Fecha: 2026-10-07 · Estado: código implementado en la rama `feat/analitica-matomo` (2026-10-07); falta comprobar en Matomo, activar el modo CNIL, probar en Android y Play Console. Plan: `docs/superpowers/plans/2026-10-07-analitica-anonima-matomo.md`.
 
 ## Objetivo
