@@ -10,7 +10,7 @@
 
 **Spec:** `docs/superpowers/specs/2026-10-07-analitica-anonima-matomo-design.md`
 
-**Estado (2026-10-07):** tareas 1 a 8 hechas (typecheck y 1054 tests unitarios en verde; faltan las pruebas de juego, que lanza David). Tarea 9: sitio y dimensiones creados, configuración local escrita, la compilación de producción envía los lotes y Matomo responde `{"status":"success"}` a un lote igual al del juego. Pendiente: que David vea los eventos en el registro de visitas (paso 6), activar el modo CNIL (7 y 8), Android (9), Play Console (11) y cerrar docs (12).
+**Estado (2026-10-07):** tareas 1 a 8 hechas (typecheck y 1054 tests unitarios en verde; faltan las pruebas de juego, que lanza David). Tarea 9: sitio y dimensiones creados, configuración local escrita, la compilación de producción envía los lotes y Matomo responde `{"status":"success"}` a un lote igual al del juego. David vio la visita con sus eventos y dimensiones en el registro de visitas y activó el modo CNIL en el sitio. Pendiente: confirmar en Comportamiento → Eventos que siguen llegando con el modo CNIL (paso 8), Android (9), Play Console (11) y cerrar docs (12).
 
 ## Global Constraints
 
@@ -1684,14 +1684,14 @@ Expected: compila sin errores.
 
 Abrir con la herramienta de vista previa (`npm run preview`), jugar un minuto: pulsar jugar, abrir Ajustes, apagar y encender la música, dar de comer a un animal. En la pestaña de red deben verse peticiones `POST` a `…/matomo.php` cada 10 segundos como mucho, con un cuerpo `{"requests":[…]}`.
 
-- [ ] **Step 6: Comprobar que Matomo las acepta**
+- [x] **Step 6: Comprobar que Matomo las acepta**
 
 En Matomo, con el sitio **Zoo Esponji** elegido: **Visitantes → Registro de visitas**. Debe salir una visita de hoy con las pantallas (`titulo`, `mapa`, `ajustes`) y los eventos (`sesion / inicio`, `activo / nuevo`, `ajustes / musica`, `juego / comida-…`), y con las cinco dimensiones rellenas.
 
 - Si no llega nada: la petición `no-cors` con cuerpo `text/plain` no ha sido aceptada. Cambiar `send` en `src/systems/analyticsInstall.ts` para lanzar una petición `GET` por evento (`fetch(url + query, { mode: 'no-cors', keepalive: true, credentials: 'omit' })`) y `Analytics.flush` para pasarle la lista de consultas en vez del cuerpo por lotes; adaptar los tests de `analytics.test.ts`; repetir los pasos 5 y 6.
 - Si llega pero cada evento sale como una visita distinta: revisar que `_id` viaja en todas las peticiones y es el mismo dentro de la sesión.
 
-- [ ] **Step 7 (David): activar el modo CNIL en el sitio del juego**
+- [x] **Step 7 (David): activar el modo CNIL en el sitio del juego**
 
 1. Rueda dentada → **Privacidad → Cumplimiento**.
 2. En el desplegable, elige **Zoo Esponji**.
