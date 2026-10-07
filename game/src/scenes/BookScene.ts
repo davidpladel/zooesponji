@@ -64,7 +64,8 @@ export class BookScene extends Phaser.Scene {
     addVeil(this);
 
     const panelH = height * 0.84;
-    const panelW = Math.min(width * 0.78, panelH * 1.55);
+    // Libro abierto: dos hojas, dibujo a un lado y texto al otro.
+    const panelW = Math.min(width * 0.8, panelH * 2.1);
     const panelY = height * 0.55;
     this.panel = new Phaser.Geom.Rectangle(width / 2 - panelW / 2, panelY - panelH / 2, panelW, panelH);
     addPanel(this, width / 2, panelY, panelW, panelH);
@@ -202,44 +203,32 @@ export class BookScene extends Phaser.Scene {
 
   /** Portadilla de un capítulo: su nombre, su primer animal y cuántos amigos tienes ya en él. */
   private showDivider(page: BookPage): void {
-    const p = this.panel;
-    const size = this.titleSize();
-    this.heading(t(chapterTitleKey(page.chapter)));
-    this.content.push(...this.picture(page, p.centerX, p.y + p.height * 0.36, p.height * 0.34, true));
-    const text = t('book.chapter.count', chapterProgress(getSession().state, page.chapter));
-    this.content.push(this.fitText(text, p.centerX, p.y + p.height * 0.62, p.width * 0.86, p.height * 0.28, size));
+    const chapter = t(chapterTitleKey(page.chapter));
+    this.heading(chapter);
+    this.spread(page, true, chapter, t('book.chapter.count', chapterProgress(getSession().state, page.chapter)), null);
   }
 
   private showContent(page: BookPage): void {
     const session = getSession();
     const unlocked = isPageUnlocked(session.state, page);
     const isNew = unlocked && isContentPage(page) && !session.book.seen.includes(page.id);
-    const p = this.panel;
-    const pad = p.width * 0.07;
-    const titleSize = this.titleSize();
-    this.heading(unlocked ? t(pageTitleKey(page.id)) : t('book.locked'));
-
-    const pictureObjects = this.picture(page, p.centerX, p.y + p.height * 0.36, p.height * 0.34, unlocked);
-    this.content.push(...pictureObjects);
-
-    const text = unlocked ? t(pageTextKey(page.id)) : t('book.lockedHint');
-    this.content.push(this.fitText(text, p.centerX, p.y + p.height * 0.6, p.width - 2 * pad, p.height * 0.3, titleSize));
-
-    // Capítulo y número de página dentro de él ("Granja · 3 de 18"). La contraportada no lleva.
+    // El cartel dice en qué capítulo estás; el nombre del animal va en la hoja del texto.
+    this.heading(t(chapterTitleKey(page.chapter)));
+    // Número de página dentro del capítulo ("3 de 18"). La contraportada no lleva.
     const position = page.id === BOOK_BACK_ID ? null : pagePosition(page);
-    if (position) {
-      const where = `${t(chapterTitleKey(page.chapter))} · ${t('book.count', position)}`;
-      this.content.push(
-        addUiText(this, p.centerX, p.bottom - p.height * 0.06, where, { ...textStyle(Math.round(titleSize * 0.62), '#8d6e63'), strokeThickness: 0 }).setOrigin(0.5),
-      );
-    }
+    const tile = this.spread(
+      page,
+      unlocked,
+      unlocked ? t(pageTitleKey(page.id)) : t('book.locked'),
+      unlocked ? t(pageTextKey(page.id)) : t('book.lockedHint'),
+      position ? t('book.count', position) : null,
+    );
 
     if (isNew) {
-      // En la esquina de la ficha del dibujo (no del panel, donde está el cierre), por encima de ella.
-      const tile = pictureObjects[0] as Phaser.GameObjects.Image;
+      // En la esquina de la ficha del dibujo, por encima de ella.
       const corner = tile.getTopRight();
       const badge = this.add
-        .text(corner.x - 6, corner.y + 6, '✨', { fontSize: `${titleSize}px` })
+        .text(corner.x - 6, corner.y + 6, '✨', { fontSize: `${this.titleSize()}px` })
         .setOrigin(0.5)
         .setDepth(tile.depth + 2);
       this.tweens.add({ targets: badge, scale: 1.3, duration: 500, yoyo: true, repeat: -1 });
@@ -247,6 +236,39 @@ export class BookScene extends Phaser.Scene {
       void session.readPages([page.id]);
     }
     if (page.id === BOOK_BACK_ID) this.confetti();
+  }
+
+  /**
+   * Doble página: el dibujo en la hoja izquierda y, en la derecha, el título, el texto y el pie.
+   * Devuelve la ficha del dibujo.
+   */
+  private spread(page: BookPage, unlocked: boolean, title: string, text: string, footer: string | null): Phaser.GameObjects.Image {
+    const p = this.panel;
+    const size = this.titleSize();
+    const leftX = p.x + p.width * 0.27;
+    const rightX = p.x + p.width * 0.72;
+    const columnW = p.width * 0.42;
+    // Lomo del libro.
+    this.content.push(this.add.rectangle(p.centerX, p.y + p.height * 0.54, Math.max(2, p.width * 0.005), p.height * 0.74, 0xf0d9a8));
+
+    const pictureObjects = this.picture(page, leftX, p.y + p.height * 0.54, p.height * 0.5, unlocked, p.width * 0.36);
+    this.content.push(...pictureObjects);
+
+    const heading = addUiText(this, rightX, p.y + p.height * 0.17, title, {
+      ...textStyle(Math.round(size * 1.15), '#5d4037'),
+      strokeThickness: 0,
+      align: 'center',
+      wordWrap: { width: columnW },
+    }).setOrigin(0.5, 0);
+    const textTop = heading.y + heading.height + p.height * 0.03;
+    const textBottom = p.bottom - p.height * (footer ? 0.14 : 0.07);
+    this.content.push(heading, this.fitText(text, rightX, textTop, columnW, textBottom - textTop, size));
+    if (footer) {
+      this.content.push(
+        addUiText(this, rightX, p.bottom - p.height * 0.07, footer, { ...textStyle(Math.round(size * 0.62), '#8d6e63'), strokeThickness: 0 }).setOrigin(0.5),
+      );
+    }
+    return pictureObjects[0] as Phaser.GameObjects.Image;
   }
 
   /** Texto de la página, sin contorno (marrón sobre crema se lee mejor limpio): si no cabe (p. ej. en otro idioma), encoge la letra hasta un mínimo. */
@@ -257,7 +279,7 @@ export class BookScene extends Phaser.Scene {
   }
 
   /** Dibujo grande de la página. Bloqueada: silueta oscura, como en las colecciones de otros juegos. */
-  private picture(page: BookPage, x: number, y: number, maxH: number, unlocked: boolean): Phaser.GameObjects.GameObject[] {
+  private picture(page: BookPage, x: number, y: number, maxH: number, unlocked: boolean, maxW: number): Phaser.GameObjects.GameObject[] {
     const art = getArt();
     const pic = page.picture;
     let obj: Phaser.GameObjects.Sprite | Phaser.GameObjects.Image | Phaser.GameObjects.Text;
@@ -275,13 +297,14 @@ export class BookScene extends Phaser.Scene {
       obj = this.add.image(x, y, propKey('park-gate'));
     } else {
       const emoji = pic.kind === 'animal' || pic.kind === 'companion' ? ANIMALS[pic.animalId].emoji : pic.kind === 'keeper' ? '👩‍🌾' : pic.kind === 'logo' ? '🦁' : '🏞️';
-      obj = this.add.text(x, y, emoji, { fontSize: `${Math.round(maxH * 0.8)}px` }).setOrigin(0.5);
+      obj = this.add.text(x, y, emoji, { fontSize: `${Math.round(Math.min(maxH, maxW) * 0.8)}px` }).setOrigin(0.5);
     }
     if (!(obj instanceof Phaser.GameObjects.Text)) {
       // Escala entera: el pixel art se ve nítido.
       // El logo es un dibujo liso: se ajusta al hueco. El pixel art, a escala entera para verse nítido.
-      if (pic.kind === 'logo') obj.setScale(maxH / obj.height);
-      else obj.setScale(Math.max(1, Math.floor(maxH / obj.height)));
+      const fit = Math.min(maxH / obj.height, maxW / obj.width);
+      if (pic.kind === 'logo') obj.setScale(fit);
+      else obj.setScale(Math.max(1, Math.floor(fit)));
       if (!unlocked) obj.setTint(0x4e342e).setTintMode(Phaser.TintModes.FILL);
     } else if (!unlocked) {
       obj.setText('❔');
