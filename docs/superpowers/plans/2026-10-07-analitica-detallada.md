@@ -3328,7 +3328,23 @@ Expected: en `resumen.md` aparecen las comidas de la prueba, y en `events.json` 
 
 Comprobar además que el `AndroidManifest.xml` final sigue sin `AD_ID` ni permisos nuevos.
 
-- [ ] **Step 6: Cerrar**
+- [ ] **Step 6: Acortar la retención de los registros en bruto (David)**
+
+En Matomo: Administración → Privacidad → Anonimizar datos → «Eliminar regularmente los datos antiguos en bruto»: borrar los registros en bruto de más de 30–90 días y **conservar los informes agregados**. Motivo: dentro de una visita, las filas en bruto guardan el inventario del día (`tiene-*`), los tramos y las dimensiones junto a la IP recortada y los datos del dispositivo que Matomo deduce; con pocos jugadores, alguien con acceso a la base de datos podría enlazar las visitas de un mismo dispositivo de un día a otro. Los «25 meses» de las páginas de privacidad pasan a referirse a los informes.
+
+- [ ] **Step 7: Fila agrupada y límites del informe de eventos (con datos reales)**
+
+Mirar en `events.json` cómo etiqueta el servidor la fila agrupada del informe plano («Others», «Otros», `-1`, sola o como «acción - Others») y confirmar que `resumen.md` saca el aviso de informe incompleto cuando la hay. Revisar en `config.ini.php` los límites `datatable_archiving_maximum_rows_events` y `datatable_archiving_maximum_rows_subtable_events`; subirlos si las combinaciones animal × comida los superan.
+
+- [ ] **Step 8: Duplicados del último lote (tras la prueba en el móvil)**
+
+Comparar el número de `sesion / fin` del informe con las veces que de verdad se mandó la app a segundo plano en la prueba del Step 5. Si salen de más, Android mata la app después de enviar y antes de confirmar, y el último lote se repite al volver a abrir: anotarlo en «Riesgos y límites» de la spec con la proporción vista.
+
+- [ ] **Step 9: Tirones sin conexión en un móvil modesto**
+
+En un móvil de gama baja, jugar 15 minutos en modo avión y comprobar que no hay tirones cada 10 segundos: sin red la cola pendiente crece y se reescribe entera en el almacén en cada vaciado.
+
+- [ ] **Step 10: Cerrar**
 
 Actualizar el estado en las dos specs y en el README, marcar las casillas de este plan, y fusionar la rama.
 
