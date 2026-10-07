@@ -42,7 +42,7 @@ describe('Session: dar de comer', () => {
     events.on('animal-fed', fed);
     const session = await Session.load(createMemoryStore(), events);
     await session.feed('gordi', 'carne');
-    expect(fed).toHaveBeenCalledWith({ penId: 'cabra', residentId: 'gordi', reaction: 'rechaza' });
+    expect(fed).toHaveBeenCalledWith({ penId: 'cabra', residentId: 'gordi', foodId: 'carne', reaction: 'rechaza', coins: 0 });
   });
 
   it('dar de comer a un residente avisa de quién es y de su recinto', async () => {
@@ -52,12 +52,33 @@ describe('Session: dar de comer', () => {
     const session = await Session.load(createMemoryStore(), events);
     const result = await session.feed('gordi', 'piedra');
     expect(result).toEqual({ reaction: 'come', coins: 1 });
-    expect(fed).toEqual([{ penId: 'cabra', residentId: 'gordi', reaction: 'come' }]);
+    expect(fed).toEqual([{ penId: 'cabra', residentId: 'gordi', foodId: 'piedra', reaction: 'come', coins: 1 }]);
   });
 
   it('dar de comer a un residente que no existe es un error', async () => {
     const session = await Session.load(createMemoryStore(), new EventBus<GameEvents>());
     await expect(session.feed('nadie', 'piedra')).rejects.toThrow('nadie');
+  });
+});
+
+describe('Session: compras', () => {
+  it('comprar un recinto avisa de qué se ha comprado, quién llega y cuánto ha costado', async () => {
+    const events = new EventBus<GameEvents>();
+    const bought: GameEvents['purchase'][] = [];
+    events.on('purchase', (e) => bought.push(e));
+    const session = await Session.load(createMemoryStore(), events);
+    await session.earnCoins(60);
+    expect((await session.buy('pantera')).ok).toBe(true);
+    expect(bought).toEqual([{ itemId: 'pantera', penId: 'pantera', residentId: 'noche', cost: 50 }]);
+  });
+
+  it('una compra que no se puede hacer no avisa', async () => {
+    const events = new EventBus<GameEvents>();
+    const bought = vi.fn();
+    events.on('purchase', bought);
+    const session = await Session.load(createMemoryStore(), events);
+    expect((await session.buy('pantera')).ok).toBe(false);
+    expect(bought).not.toHaveBeenCalled();
   });
 });
 

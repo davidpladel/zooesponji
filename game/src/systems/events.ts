@@ -1,5 +1,6 @@
 import type { Settings } from '../core/save';
 import type { Reaction } from '../data/animals';
+import type { FoodId } from '../data/foods';
 import type { PenId } from '../data/pens';
 
 type Handler<T> = (payload: T) => void;
@@ -33,6 +34,9 @@ export class EventBus<E extends object> {
   }
 }
 
+export type ControlMode = 'toque' | 'joystick' | 'teclado';
+export type BookPageKind = 'contenido' | 'bloqueada' | 'paso';
+
 export interface GameEvents {
   'coins-changed': { coins: number };
   'shop-unlocked': Record<string, never>;
@@ -40,7 +44,31 @@ export interface GameEvents {
   /** Un residente más en un recinto que ya estaba abierto. */
   'animal-added': { penId: PenId; count: number; residentId: string };
   /** Se ha dado de comer a un residente: su recinto entero lo celebra. */
-  'animal-fed': { penId: PenId; residentId: string; reaction: Reaction };
+  'animal-fed': { penId: PenId; residentId: string; foodId: FoodId; reaction: Reaction; coins: number };
+  /** Se ha tocado un animal en el mapa: la cuidadora va hacia él. */
+  'animal-tapped': { residentId: string };
+  'feed-opened': { residentId: string };
+  'feed-closed': { residentId: string };
+  /** Una comida arrastrada y soltada fuera del animal. */
+  'food-missed': { residentId: string; foodId: FoodId };
+  /** La cuidadora lleva un rato junto a un recinto. */
+  'pen-near': { penId: PenId; locked: boolean };
+  'locked-tap': { penId: PenId };
+  /** Se ha pisado la puerta de la tienda sin monedas suficientes para abrirla. */
+  'shop-locked': { missing: number };
+  'control-used': { mode: ControlMode };
+  'shop-opened': Record<string, never>;
+  'shop-look': { itemId: string };
+  'shop-denied': { itemId: string; missing: number };
+  'purchase': { itemId: string; penId: PenId; residentId: string; cost: number };
+  'shop-closed': Record<string, never>;
+  'book-opened': { pageId: string };
+  'book-page-shown': { pageId: string; kind: BookPageKind };
+  'book-index': { chapter: string };
+  'book-closed': Record<string, never>;
+  'legal-opened': Record<string, never>;
+  'quit-asked': Record<string, never>;
+  'quit-answered': { leave: boolean };
   /** El libro se ha abierto por otra página. */
   'book-page': { pageId: string };
   'settings-changed': { settings: Settings };

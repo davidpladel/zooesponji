@@ -2,7 +2,8 @@ import { addCoins, purchase, type GameState, type PurchaseResult } from '../core
 import { resolveFeeding, type FeedResult } from '../core/reactions';
 import { loadSave, parseSave, writeSave, type BookProgress, type KeyValueStore, type SaveData, type Settings } from '../core/save';
 import type { FoodId } from '../data/foods';
-import { PEN_IDS, PENS, findResident } from '../data/pens';
+import { parseExtraItemId } from '../data/shop';
+import { PEN_IDS, PENS, findResident, type PenId } from '../data/pens';
 import { bus, type EventBus, type GameEvents } from './events';
 
 export class Session {
@@ -66,14 +67,19 @@ export class Session {
     const found = findResident(residentId);
     if (!found) throw new Error(`Residente desconocido: ${residentId}`);
     const result = resolveFeeding(found.resident.species, foodId);
-    this.events.emit('animal-fed', { penId: found.penId, residentId, reaction: result.reaction });
+    this.events.emit('animal-fed', { penId: found.penId, residentId, foodId, reaction: result.reaction, coins: result.coins });
     if (result.coins > 0) await this.earnCoins(result.coins);
     return result;
   }
 
   async buy(itemId: string): Promise<PurchaseResult> {
-    const result = purchase(this.data.state, itemId);
-    if (result.ok) await this.update(() => result.state);
+    const before = this.data.state;
+    const result = purchase(before, itemId);
+    if (!result.ok) return result;
+    await this.update(() => result.state);
+    const penId = parseExtraItemId(itemId) ?? (itemId as PenId);
+    const arrived = PENS[penId]?.residents[result.state.counts[penId] - 1];
+    if (arrived) this.events.emit('purchase', { itemId, penId, residentId: arrived.id, cost: before.coins - result.state.coins });
     return result;
   }
 
