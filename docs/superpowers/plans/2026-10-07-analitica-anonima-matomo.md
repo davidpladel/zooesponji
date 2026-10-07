@@ -4,7 +4,7 @@
 
 **Goal:** El juego envía eventos anónimos al Matomo de David (activos por día, semana y mes, pantallas, progreso, errores) sin cookies ni identificadores, con un interruptor en Ajustes para apagarlo.
 
-**Architecture:** Dos módulos puros en `core/` (banderas de actividad y construcción de la petición) y una clase `Analytics` en `systems/` con todas las dependencias inyectadas, que escucha el `bus` de eventos y envía por lotes a `matomo.php`. Un instalador la conecta al juego real. Sin configuración (`.env.production`) no hace nada, así que en desarrollo y en los tests queda apagada.
+**Architecture:** Dos módulos puros en `core/` (banderas de actividad y construcción de la petición) y una clase `Analytics` en `systems/` con todas las dependencias inyectadas, que escucha el `bus` de eventos y envía por lotes a `matomo.php`. Un instalador la conecta al juego real. Sin configuración (`.env.production.local`, fuera del repositorio) no hace nada, así que en desarrollo y en los tests queda apagada.
 
 **Tech Stack:** TypeScript estricto, Vite (variables `VITE_*`), Vitest, Playwright, Phaser 4, Capacitor. Ninguna dependencia nueva.
 
@@ -16,6 +16,7 @@
 - Ninguna dependencia nueva en `package.json`. Ningún SDK.
 - Nunca se envía `uid`, `cid`, `res`, `urlref`, `ua` ni `token_auth`. Nunca se guarda un identificador en el dispositivo.
 - `SAVE_VERSION` se queda en `2`.
+- El repositorio es público: la dirección de Matomo, el id del sitio y los ids de las dimensiones **no se escriben en ningún archivo con seguimiento de git** (ni código, ni tests, ni docs, ni mensajes de commit). Los tests usan `https://stats.example.com`.
 - Medir nunca rompe el juego: todo fallo de almacén o de red se traga.
 - Los eventos llevan ids (recinto, página, reacción), nunca nombres de residentes ni textos visibles.
 - Comentarios y mensajes de commit en español, con el estilo del repo (`feat:`, `fix:`, `docs:`, `test:`).
@@ -34,7 +35,8 @@
 | `src/systems/platform.ts`, `src/systems/errors.ts`, `src/scenes/PreloadScene.ts` | Enganches. |
 | `src/scenes/SettingsScene.ts`, `src/ui/icons.ts`, `scripts/make-ui-assets.mjs`, `src/data/strings/*.ts`, `src/systems/testHooks.ts` | Ficha «Estadísticas». |
 | `public/privacidad.html`, `public/privacidad-en.html`, `README.md`, specs | Textos. |
-| `.env.production` (nuevo) | Dirección de Matomo, sitio y dimensiones. |
+| `.env.production.local` (nuevo, **fuera de git**) | Dirección de Matomo, sitio y dimensiones. |
+| `.env.example` (nuevo), `.gitignore` | Plantilla sin valores reales y regla para no subir los `.env` locales. |
 
 ---
 
@@ -1344,7 +1346,7 @@ async function handle(error: unknown): Promise<void> {
 - [ ] **Step 5: Comprobar**
 
 Run: `npm run typecheck && npm test && npm run test:e2e`
-Expected: PASS. Las pruebas de juego corren sin `.env.production`, así que la analítica está apagada y el juego se comporta igual que antes.
+Expected: PASS. Las pruebas de juego corren sin configuración, así que la analítica está apagada y el juego se comporta igual que antes.
 
 - [ ] **Step 6: Commit**
 
@@ -1629,7 +1631,7 @@ Esta tarea necesita a David. Los pasos 1 a 3 los hace él; el resto, quien ejecu
 1. Entra en Matomo y pulsa la rueda dentada (arriba a la derecha).
 2. Menú izquierdo: **Sitios de internet → Administrar**.
 3. Pulsa **Agregar un nuevo sitio** y elige **Sitio web**.
-4. Nombre: `Zoo Esponji`. URL: `https://davidpladel.com/zoo`. Zona horaria: Madrid. Comercio electrónico: no.
+4. Nombre: `Zoo Esponji`. URL: `https://davidpladel.com/zoo`. Zona horaria: Madrid. Comercio electrónico: no. La URL es solo una etiqueta: la app de Android no la visita, pero Matomo pide una y el juego marca cada pantalla como `https://davidpladel.com/zoo/<pantalla>`.
 5. Guarda y apunta el **ID** que le da Matomo al sitio.
 
 - [ ] **Step 2 (David): crear las cinco dimensiones**
@@ -1648,17 +1650,30 @@ Esta tarea necesita a David. Los pasos 1 a 3 los hace él; el resto, quien ejecu
 
 Dile a Claude: la dirección de tu Matomo (la que sale en el navegador, hasta la primera barra), el ID del sitio y los cinco ID de las dimensiones en el orden de arriba. **No actives todavía el modo CNIL**: apaga el registro de visitas, que hace falta para la comprobación del paso 6.
 
-- [ ] **Step 4: Escribir la configuración**
+- [ ] **Step 4: Escribir la configuración, fuera de git**
 
-Crear `.env.production` con los valores de David (los de abajo son solo el formato):
+Añadir a `.gitignore` (el de `game/`):
 
 ```
-VITE_MATOMO_URL=https://DIRECCION-DE-MATOMO
-VITE_MATOMO_SITE=ID-DEL-SITIO
-VITE_MATOMO_DIMS=ID1,ID2,ID3,ID4,ID5
+.env*.local
 ```
 
-No son secretos: van dentro del juego publicado.
+Crear `.env.example` (este sí se sube, sin valores reales):
+
+```
+# Copiar a .env.production.local y rellenar. Ese archivo no se sube al repositorio.
+VITE_MATOMO_URL=
+VITE_MATOMO_SITE=
+# Cinco ids separados por comas: versión, plataforma, idioma, sesión, antigüedad.
+VITE_MATOMO_DIMS=
+```
+
+Crear `.env.production.local` con los valores de David, en el mismo formato. Comprobar que git no lo ve:
+
+Run: `git status --short`
+Expected: salen `.gitignore` y `.env.example`; **no** sale `.env.production.local`.
+
+Avisar a David de que guarde una copia de ese archivo (por ejemplo en el repositorio privado `zooesponji-private`): si se pierde, la compilación sigue funcionando pero no mide nada.
 
 - [ ] **Step 5: Compilar y abrir la compilación de producción**
 
@@ -1701,8 +1716,8 @@ David prueba la app en el móvil (comandos en PowerShell, en ventana aparte) y s
 - [ ] **Step 10: Commit**
 
 ```bash
-git add .env.production
-git commit -m "feat: configuración de Matomo para la compilación de producción"
+git add .gitignore .env.example
+git commit -m "feat: plantilla de configuración de Matomo; los valores reales quedan fuera del repositorio"
 ```
 
 - [ ] **Step 11 (David): Seguridad de los datos en Play Console**
