@@ -99,6 +99,8 @@ Se mantienen `musica`, `sonidos`, `joystick`, `idioma`. Se añaden `privacidad` 
 
 Tramos de saldo, alineados con los precios: `0-19`, `20-49`, `50-149`, `150-399`, `400-899`, `900-1599`, `1600+`. Es el denominador: «de los que tienen panda, cuántos le dieron de comer».
 
+**También al comprar:** en el momento de una compra se envía `tiene-animal` del animal que llega y, si el recinto es nuevo, `tiene-recinto` con valor 1. Sin ello, un animal comprado y alimentado el mismo día tendría `dia-animal` sin su `tiene-animal`, y el porcentaje saldría inflado (incluso por encima del 100 %) justo en los animales recién comprados. Un animal extra no repite el `tiene-recinto` del día.
+
 #### Alcance y descubrimiento (categoría `alcance`)
 
 Para cada tipo, tres acciones: primera vez **hoy**, primera vez **esta semana**, primera vez **en la vida**.
@@ -173,6 +175,9 @@ Clave aparte `zooesponji_v3_reach`. No toca la partida ni `SAVE_VERSION`.
 - Los eventos reenviados conservan el `_id` de su sesión original: Matomo los agrupa en la visita de aquel día.
 - Las banderas (activo, alcance, retención) se calculan en el momento real, con o sin red, y viajan en la cola como un evento más.
 - Apagar «Estadísticas» borra también la cola guardada.
+- **Las duraciones no cuentan el segundo plano:** `ventana-tiempo`, `tienda-fin`, `lee` y `libro-fin` descuentan el rato que el juego estuvo fuera de la pantalla. Una tableta bloqueada horas con el libro abierto no hincha las medias.
+- **Volver en otro día es otra sesión:** aunque la ausencia sea de menos de media hora, si al volver el día local ya no es el del inicio de la sesión, empieza una nueva, con su `activo / dia` y su estado diario. Así lo jugado pasada la medianoche tiene denominador de ese día.
+- **Nada se guarda ni se envía antes de leer la cola guardada:** un error nada más abrir espera en memoria a que el arranque una lo guardado con lo nuevo, y sale entonces. Con un envío en marcha, la cola se guarda igualmente al pasar a segundo plano.
 
 ### 5. Reparto del código
 
@@ -183,7 +188,7 @@ Clave aparte `zooesponji_v3_reach`. No toca la partida ni `SAVE_VERSION`.
 
 ### 6. Lectura de los datos (`tools/matomo/`, nuevo, fuera de `game/`)
 
-- `pull.mjs`: script de Node sin dependencias. Descarga por la API de informes, para un periodo dado, los eventos (acción × nombre, con apariciones, sesiones, suma, media, mínimo y máximo del valor), las dimensiones y las visitas por día. Guarda JSON en `tools/matomo/data/`.
+- `pull.mjs`: script de Node sin dependencias. Descarga por la API de informes, para un periodo dado, los eventos (acción × nombre, con apariciones, sesiones, suma, media, mínimo y máximo del valor), para el periodo entero y día a día, y las visitas por día. Guarda JSON en `tools/matomo/data/`.
 - `resumen.mjs`: calcula a partir de esos JSON las tablas habituales: animales y comidas por alcance entre quienes los tienen, combinaciones animal-comida, recintos visitados frente a alimentados, páginas leídas y tiempo medio, deseo (cerrados, sin monedas), tropiezos, embudo, retención por cohorte, medianas desde tramos y porcentaje de dato perdido.
 - **Regla de muestra:** toda cifra va con su tamaño de muestra; por debajo de 30 jugadores en el denominador el resultado se marca «insuficiente» y no se concluye nada de él.
 - Uso: David pide el análisis y Claude lanza los scripts y comenta el resultado.
@@ -238,4 +243,6 @@ Si el punto 3 falla, las medias por sesión se sacan de los tramos y de `sesion 
 - **Jugadores anteriores a esta versión:** sus «primera vez en la vida» llegan tarde. El análisis de descubrimiento y embudo usará solo jugadores con antigüedad `d0` en el momento del evento.
 - **Únicos:** por día natural, semana natural y vida. No hay «últimos 17 días».
 - **Pocos jugadores:** durante la prueba cerrada muchos cruces darán «insuficiente».
+- **Registros en bruto enlazables:** dentro de una visita, las filas en bruto de Matomo guardan el inventario del día, los tramos y las dimensiones junto a la IP recortada y los datos del dispositivo que Matomo deduce. Con pocos jugadores, quien tenga acceso a la base de datos podría enlazar las visitas de un mismo dispositivo de un día a otro. **Mitigación:** retención corta de los registros en bruto (30–90 días) conservando los informes agregados; los «25 meses» de la página de privacidad se refieren a los informes. Es un paso de David en el plan.
+- **Compra pasada la medianoche sin salir del juego:** el `tiene-animal` de la compra y el del estado diario de la siguiente sesión pueden caer en el mismo día y contar dos veces ese animal. Caso raro; se acepta.
 - **Sin recorridos individuales, sin mapas de calor, sin pruebas A/B:** fuera de alcance.
