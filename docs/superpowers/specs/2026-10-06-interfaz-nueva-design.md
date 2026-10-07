@@ -1,6 +1,6 @@
 # Interfaz nueva: menús, botones y portada
 
-Fecha: 2026-10-06 · Estado: implementada (2026-10-07) en la rama `interfaz-nueva`; pendiente de publicar.
+Fecha: 2026-10-06 · Estado: implementada y fusionada en `main` (2026-10-07); pendiente de publicar.
 
 ## Objetivo
 
@@ -208,6 +208,8 @@ Cada bloque deja el juego jugable y las pruebas en verde.
 - **Extra pedido por David (fuera del plan): la cuidadora empieza sobre el camino de la entrada**, 3 casillas más abajo (`inicio` pasa de la fila 30 a la 33 en `scripts/make-zoo-map.mjs`), para ver el portón del parque al empezar. La prueba e2e que anda desde el inicio ahora sube por el camino de la entrada.
 - **Extra pedido por David (fuera del plan): el cartel de los recintos cerrados** en el mundo (`src/world/Pens.ts`) es ahora una píldora gris con candado, moneda y precio, construida a tamaño de pantalla y escalada por 1/zoom.
 - **Pendiente a propósito:** la moneda voladora al dar de comer y otros emojis dentro del mundo (avisos con 🏪, reacciones) siguen siendo emojis; los textos de licencia de Baloo 2 y Tabler están nombrados en `THIRD_PARTY_NOTICES.md` pero aún no se incluyen junto a los archivos.
-- **Por comprobar a mano en el móvil:** modo inmersivo, splash azul cielo y arranque completo. Quedan también versión nueva, capturas nuevas para Play y la fusión en `main`.
+- **Probado por David en el móvil (2026-10-07):** todo bien («se ve de 10»). Quedan la versión nueva, las capturas nuevas para Play y el paquete para la tienda.
+- **Texto borroso en reposo:** al corregir el temblor, `UiText` desactivaba el redondeo de vértices y el texto quieto quedaba a medio píxel con filtro lineal. Se deja el modo por defecto de Phaser (`safeAuto`): quieto se ajusta a píxeles enteros y al escalar no se redondea.
+- **Libro a doble página (pedido por David tras verlo en el móvil):** el dibujo va en la hoja izquierda y, en la derecha, el nombre del animal como título, el texto (más grande y sin contorno) y el número de página. El cartel naranja dice el capítulo. El libro es más ancho y lleva una línea de lomo. El índice no cambia. Sustituye a lo descrito arriba para el libro.
 - **Revisión final del código (2026-10-07):** sin fallos graves. Arreglado a raíz de ella: restos de verde oscuro al arrancar (color del WebView en `capacitor.config.ts` y fondo de `BootScene`), las barras de Android que Capacitor volvía a mostrar al cargar (`plugins.SystemBars.hidden`), el brillo de «página nueva» del libro tapado por la chapa de cerrar, el candado que reaparecía al girar a media compra, y las licencias de la letra y los iconos, que ahora van junto a los archivos.
 - **Menores que quedan para más adelante:** las texturas de las piezas no se liberan al cambiar el tamaño de la ventana (solo se nota en web); el engranaje y las monedas no esquivan la muesca de la cámara; las flechas del libro se salen en pantallas 4:3; el aviso de girar el móvil y la pantalla de error siguen con el aspecto viejo.
