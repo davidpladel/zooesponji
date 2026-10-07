@@ -10,6 +10,9 @@ contraseñas) entre nunca en git.
 - Usa un fichero `.env` **local** (ignorado por git) para tus secretos. Si el proyecto necesita
   documentar qué variables hacen falta, hazlo con un `.env.example` de placeholders (`<...>`).
 - En la documentación usa placeholders, nunca valores reales.
+- El token de lectura de Matomo vive solo en `tools/matomo/.env.local`. Nunca lleva prefijo `VITE_`
+  (Vite mete en la app todo lo que empieza así) y pertenece a un usuario con permiso «ver» sobre un
+  único sitio. Los scripts lo envían en el cuerpo de la petición, nunca en la dirección, y no lo imprimen.
 
 ## 2. Pre-commit anti-secretos (Gitleaks)
 
