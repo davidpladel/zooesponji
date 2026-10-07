@@ -12,8 +12,7 @@ import { foodKey, getArt } from '../art/art';
 import { animalPortrait } from '../world/Actors';
 import { sceneryTexture } from '../ui/paint';
 import { textStyle } from '../ui/theme';
-import { addUiText } from '../ui/text';
-import type { UiText } from '../ui/text';
+import { addUiText, type UiText } from '../ui/text';
 import { HUD_COIN, addCloseBadge, addPanel, addRibbonTitle, addTile, addVeil, restartOnResize } from '../ui/widgets';
 
 export interface FeedSceneData {

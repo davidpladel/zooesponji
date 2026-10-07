@@ -32,7 +32,10 @@ for (const [name, source] of Object.entries(ICONS)) {
   const path = useFilled ? filled : outline;
   if (!existsSync(path)) throw new Error(`No existe el icono de Tabler: ${source}`);
   let svg = readFileSync(path, 'utf8').replaceAll('currentColor', '#ffffff');
-  if (!useFilled) svg = svg.replace('stroke-width="2"', 'stroke-width="2.6"');
+  if (!useFilled) {
+    if (!svg.includes('stroke-width="2"')) throw new Error(`El icono de trazo ${source} no trae stroke-width="2"`);
+    svg = svg.replace('stroke-width="2"', 'stroke-width="2.6"');
+  }
   writeFileSync(`${root}public/assets/ui/icons/${name}.svg`, svg);
   console.log(`${name}.svg ← ${useFilled ? 'filled' : 'outline'}/${source}`);
 }
@@ -41,3 +44,14 @@ mkdirSync(`${root}public/fonts`, { recursive: true });
 const font = 'baloo-2-latin-800-normal.woff2';
 copyFileSync(`${root}node_modules/@fontsource/baloo-2/files/${font}`, `${root}public/fonts/${font}`);
 console.log(font);
+
+// Las licencias viajan con lo que copiamos (SIL OFL de la letra, MIT de los iconos).
+const licences = [
+  [`${root}node_modules/@fontsource/baloo-2/LICENSE`, `${root}public/fonts/Baloo2-LICENSE.txt`],
+  [`${root}node_modules/@tabler/icons/LICENSE`, `${root}public/assets/ui/icons/LICENSE.txt`],
+];
+for (const [from, to] of licences) {
+  if (!existsSync(from)) throw new Error(`Falta el texto de la licencia: ${from}`);
+  copyFileSync(from, to);
+  console.log(to.slice(root.length));
+}

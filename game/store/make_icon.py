@@ -7,7 +7,6 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 RES = '../android/app/src/main/res/'
-FONT = 'C:/Windows/Fonts/ariblk.ttf'
 SPLASH_FONT = 'fonts/Baloo2.ttf'  # variable; se fija el peso 800
 SKY = (88, 176, 240, 255)  # #58B0F0, el cielo de la portada
 S = 2048  # lienzo de trabajo; el león ocupa ~80 %
