@@ -94,6 +94,7 @@ export class Session {
   async setBookPage(id: string): Promise<void> {
     if (this.data.book.page === id) return;
     this.data = { ...this.data, book: { ...this.data.book, page: id } };
+    this.events.emit('book-page', { pageId: id });
     await writeSave(this.store, this.data);
   }
 

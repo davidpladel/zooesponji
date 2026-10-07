@@ -180,7 +180,7 @@ describe('Session: dar de comer, comprar y ajustes', () => {
     const handler = vi.fn();
     events.on('settings-changed', handler);
     await session.updateSettings({ joystick: true });
-    expect(handler).toHaveBeenCalledWith({ settings: { music: true, sfx: true, joystick: true } });
+    expect(handler).toHaveBeenCalledWith({ settings: { music: true, sfx: true, joystick: true, stats: true } });
     const reloaded = await Session.load(store, new EventBus<GameEvents>());
     expect(reloaded.settings.joystick).toBe(true);
   });
@@ -192,5 +192,20 @@ describe('Session: dar de comer, comprar y ajustes', () => {
     expect(session.settings.language).toBe('en');
     const again = await Session.load(store, new EventBus<GameEvents>());
     expect(again.settings.language).toBe('en');
+  });
+});
+
+describe('Session: libro', () => {
+  it('setBookPage emite book-page solo cuando cambia de página', async () => {
+    const events = new EventBus<GameEvents>();
+    const handler = vi.fn();
+    events.on('book-page', handler);
+    const session = await Session.load(createMemoryStore(), events);
+
+    await session.setBookPage('bills');
+    await session.setBookPage('bills');
+
+    expect(handler).toHaveBeenCalledTimes(1);
+    expect(handler).toHaveBeenCalledWith({ pageId: 'bills' });
   });
 });
