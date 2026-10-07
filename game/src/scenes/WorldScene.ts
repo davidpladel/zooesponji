@@ -71,7 +71,7 @@ export class WorldScene extends Phaser.Scene {
     }
 
     const state = getSession().state;
-    this.pens = new Pens(this, readEnclosures(mapData), readGates(mapData), state, readProps(mapData));
+    this.pens = new Pens(this, readEnclosures(mapData), readGates(mapData), state, readProps(mapData), computeZoom(this.scale.width, this.scale.height));
     this.grid = withPenInteriors(this.pathGrid, this.pens.openSpaces(state), TILE_SIZE);
     const shopInfo = readShop(mapData);
     this.shop = shopInfo ? new ShopBuilding(this, shopInfo, state) : null;
@@ -350,6 +350,8 @@ export class WorldScene extends Phaser.Scene {
   }
 
   private applyZoom(): void {
-    this.cameras.main.setZoom(computeZoom(this.scale.width, this.scale.height));
+    const zoom = computeZoom(this.scale.width, this.scale.height);
+    this.cameras.main.setZoom(zoom);
+    this.pens?.setZoom(zoom);
   }
 }
