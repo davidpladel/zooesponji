@@ -54,7 +54,7 @@ describe('parseSave', () => {
     expect(parsed).toEqual({
       version: 2,
       state: { coins: 5, counts: { ...initialCounts(), leon: 1, cabra: 1, pantera: 0, panda: 1 }, shopUnlocked: true },
-      settings: { music: true, sfx: false, joystick: false },
+      settings: { music: true, sfx: false, joystick: false, stats: true },
       book: { seen: [], hinted: false, page: null },
     });
   });
@@ -84,7 +84,7 @@ describe('parseSave', () => {
       state: { coins: 0, counts: {}, shopUnlocked: false },
       settings: { music: false },
     });
-    expect(parsed?.settings).toEqual({ music: false, sfx: true, joystick: false });
+    expect(parsed?.settings).toEqual({ music: false, sfx: true, joystick: false, stats: true });
   });
 
   it('una partida de la 2.2.0 se lee igual tras separar recintos y especies', () => {
@@ -94,7 +94,7 @@ describe('parseSave', () => {
       settings: { music: false, sfx: true, joystick: true },
       book: { seen: ['cover', 'gordi'], hinted: true, page: 'gordi' },
     };
-    expect(parseSave(old)).toEqual(old);
+    expect(parseSave(old)).toEqual({ ...old, settings: { ...old.settings, stats: true } });
   });
 });
 
@@ -180,5 +180,26 @@ describe('ajustes: idioma', () => {
 
   it('no cambia la versión del guardado', () => {
     expect(SAVE_VERSION).toBe(2);
+  });
+});
+
+describe('ajuste de estadísticas', () => {
+  const withStats = (stats: unknown) => ({ ...defaultSave(), settings: { ...defaultSave().settings, stats } });
+
+  it('por defecto están encendidas', () => {
+    expect(defaultSave().settings.stats).toBe(true);
+  });
+
+  it('un guardado antiguo sin el ajuste las deja encendidas', () => {
+    const old = { version: 2, state: { coins: 0, counts: {}, shopUnlocked: false }, settings: { music: false } };
+    expect(parseSave(old)?.settings.stats).toBe(true);
+  });
+
+  it('se respeta el apagado', () => {
+    expect(parseSave(withStats(false))?.settings.stats).toBe(false);
+  });
+
+  it('un valor que no es sí o no cuenta como encendido', () => {
+    expect(parseSave(withStats('no'))?.settings.stats).toBe(true);
   });
 });
