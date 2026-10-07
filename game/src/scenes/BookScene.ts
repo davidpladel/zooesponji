@@ -21,7 +21,7 @@ export interface BookSceneData {
 /** Un deslizamiento de más de esto (px) pasa página. */
 const SWIPE_PX = 50;
 /** El texto se encoge hasta este tamaño mínimo si no cabe (idiomas que alargan). */
-const MIN_TEXT_PX = 14;
+const MIN_TEXT_PX = 16;
 
 export const pageTitleKey = (id: string): StringKey => `book.page.${id}.title` as StringKey;
 export const pageTextKey = (id: string): StringKey => `book.page.${id}.text` as StringKey;
@@ -64,7 +64,7 @@ export class BookScene extends Phaser.Scene {
     addVeil(this);
 
     const panelH = height * 0.84;
-    const panelW = Math.min(width * 0.78, panelH * 1.3);
+    const panelW = Math.min(width * 0.78, panelH * 1.55);
     const panelY = height * 0.55;
     this.panel = new Phaser.Geom.Rectangle(width / 2 - panelW / 2, panelY - panelH / 2, panelW, panelH);
     addPanel(this, width / 2, panelY, panelW, panelH);
@@ -205,9 +205,9 @@ export class BookScene extends Phaser.Scene {
     const p = this.panel;
     const size = this.titleSize();
     this.heading(t(chapterTitleKey(page.chapter)));
-    this.content.push(...this.picture(page, p.centerX, p.y + p.height * 0.4, p.height * 0.4, true));
+    this.content.push(...this.picture(page, p.centerX, p.y + p.height * 0.36, p.height * 0.34, true));
     const text = t('book.chapter.count', chapterProgress(getSession().state, page.chapter));
-    this.content.push(this.fitText(text, p.centerX, p.y + p.height * 0.7, p.width * 0.86, p.height * 0.2, Math.round(size * 0.8)));
+    this.content.push(this.fitText(text, p.centerX, p.y + p.height * 0.62, p.width * 0.86, p.height * 0.28, size));
   }
 
   private showContent(page: BookPage): void {
@@ -219,18 +219,18 @@ export class BookScene extends Phaser.Scene {
     const titleSize = this.titleSize();
     this.heading(unlocked ? t(pageTitleKey(page.id)) : t('book.locked'));
 
-    const pictureObjects = this.picture(page, p.centerX, p.y + p.height * 0.4, p.height * 0.4, unlocked);
+    const pictureObjects = this.picture(page, p.centerX, p.y + p.height * 0.36, p.height * 0.34, unlocked);
     this.content.push(...pictureObjects);
 
     const text = unlocked ? t(pageTextKey(page.id)) : t('book.lockedHint');
-    this.content.push(this.fitText(text, p.centerX, p.y + p.height * 0.66, p.width - 2 * pad, p.height * 0.2, Math.round(titleSize * 0.8)));
+    this.content.push(this.fitText(text, p.centerX, p.y + p.height * 0.6, p.width - 2 * pad, p.height * 0.3, titleSize));
 
     // Capítulo y número de página dentro de él ("Granja · 3 de 18"). La contraportada no lleva.
     const position = page.id === BOOK_BACK_ID ? null : pagePosition(page);
     if (position) {
       const where = `${t(chapterTitleKey(page.chapter))} · ${t('book.count', position)}`;
       this.content.push(
-        addUiText(this, p.centerX, p.bottom - p.height * 0.06, where, textStyle(Math.round(titleSize * 0.55), '#8d6e63', '#fff3d6')).setOrigin(0.5),
+        addUiText(this, p.centerX, p.bottom - p.height * 0.06, where, { ...textStyle(Math.round(titleSize * 0.62), '#8d6e63'), strokeThickness: 0 }).setOrigin(0.5),
       );
     }
 
@@ -249,9 +249,9 @@ export class BookScene extends Phaser.Scene {
     if (page.id === BOOK_BACK_ID) this.confetti();
   }
 
-  /** Texto de la página: si no cabe (p. ej. en otro idioma), encoge la letra hasta un mínimo. */
+  /** Texto de la página, sin contorno (marrón sobre crema se lee mejor limpio): si no cabe (p. ej. en otro idioma), encoge la letra hasta un mínimo. */
   private fitText(text: string, x: number, y: number, width: number, maxHeight: number, size: number): Phaser.GameObjects.Text {
-    const label = addUiText(this, x, y, text, { ...textStyle(size, '#3e2723', '#fff3d6'), align: 'center', wordWrap: { width }, lineSpacing: 4 }).setOrigin(0.5, 0);
+    const label = addUiText(this, x, y, text, { ...textStyle(size, '#3e2723'), strokeThickness: 0, align: 'center', wordWrap: { width }, lineSpacing: 4 }).setOrigin(0.5, 0);
     for (let s = size; label.height > maxHeight && s > MIN_TEXT_PX; s -= 2) label.setFontSize(s - 2);
     return label;
   }
