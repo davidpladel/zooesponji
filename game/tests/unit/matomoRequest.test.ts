@@ -1,10 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { parseConfig, toBulkBody, toQuery, trackerUrl, type HitContext, type MatomoConfig } from '../../src/core/matomoRequest';
+import { cdtParam, parseConfig, toBulkBody, toQuery, trackerUrl, type HitContext, type MatomoConfig } from '../../src/core/matomoRequest';
 
 const config: MatomoConfig = {
   url: 'https://stats.example.com',
   siteId: 7,
   dimensions: { version: 1, platform: 2, language: 3, sessions: 4, age: 5 },
+  replayHours: 23,
 };
 
 const context: HitContext = {
@@ -36,6 +37,14 @@ describe('parseConfig', () => {
     ['dimensión que no es un número', { ...env, VITE_MATOMO_DIMS: '1,2,x,4,5' }],
   ])('devuelve null: %s', (_label, bad) => {
     expect(parseConfig(bad)).toBeNull();
+  });
+
+  it('sin ventana de reenvío usa 23 horas', () => {
+    expect(parseConfig(env)?.replayHours).toBe(23);
+  });
+
+  it.each([['167', 167], ['0', 0], ['9999', 720], ['-3', 23], ['mucho', 23], ['', 23]])('ventana de reenvío %s → %i h', (raw, hours) => {
+    expect(parseConfig({ ...env, VITE_MATOMO_REPLAY_HOURS: raw })?.replayHours).toBe(hours);
   });
 });
 
@@ -94,5 +103,11 @@ describe('toQuery', () => {
 describe('toBulkBody', () => {
   it('es el JSON de seguimiento por lotes de Matomo, sin token', () => {
     expect(JSON.parse(toBulkBody(['?a=1', '?b=2']))).toEqual({ requests: ['?a=1', '?b=2'] });
+  });
+});
+
+describe('cdtParam', () => {
+  it('da la fecha y hora en UTC, codificada', () => {
+    expect(cdtParam(Date.UTC(2026, 9, 7, 8, 5, 9))).toBe('&cdt=2026-10-07%2008%3A05%3A09');
   });
 });
