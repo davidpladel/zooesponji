@@ -12,7 +12,7 @@
 
 **Bocetos:** `docs/superpowers/mockups/boceto-titulo.html` y `boceto-resto.html`. Mandan en colores, proporciones y composición.
 
-**Estado:** tareas 1 a 11 implementadas en la rama `interfaz-nueva` y documentación al día (2026-10-07): tipos limpios, 976 pruebas unitarias y e2e 29 pasadas + 1 omitida (la de capturas en inglés, solo a mano); el Java de Android compila. Pendiente: que David pruebe en el móvil el modo inmersivo, el splash y el arranque completo; subir versión; capturas nuevas para Google Play; fusionar en `main`. Una revisión final del código está en marcha y puede añadir arreglos.
+**Estado:** tareas 1 a 11 implementadas en la rama `interfaz-nueva` y documentación al día (2026-10-07): tipos limpios, 984 pruebas unitarias y e2e 29 pasadas + 1 omitida (la de capturas en inglés, solo a mano); el Java de Android compila. Pendiente: que David pruebe en el móvil el modo inmersivo, el splash y el arranque completo; subir versión; capturas nuevas para Google Play; fusionar en `main`. Revisión final hecha y sus arreglos aplicados (ver la spec).
 
 ## Global Constraints
 
