@@ -21,6 +21,7 @@ description = "Placeholders y ejemplos que no son secretos reales"
 regexes = [
   '''<[A-Z_]+>''',           # placeholders tipo <DB_PASSWORD>
   '''sk-(proj-)?[xX]{4,}''', # ejemplos sk-xxxx
+  '''zooesponji_v3_[a-z_]+''', # nombres de claves del almacén local del juego, no secretos
 ]
 paths = [
   '''\.env\.example$''',

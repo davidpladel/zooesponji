@@ -1,6 +1,6 @@
 # Analítica detallada: qué gusta del juego
 
-Fecha: 2026-10-07 · Estado: diseño aprobado en conversación, pendiente de revisión escrita y de plan. Amplía `2026-10-07-analitica-anonima-matomo-design.md`, que sigue vigente en todo lo que aquí no se cambia.
+Fecha: 2026-10-07 · Estado: diseño aprobado; sin implementar. Plan: `docs/superpowers/plans/2026-10-07-analitica-detallada.md`. Amplía `2026-10-07-analitica-anonima-matomo-design.md`, que sigue vigente en todo lo que aquí no se cambia.
 
 ## Objetivo
 
@@ -30,7 +30,7 @@ Saber, con el máximo detalle que permite una medición sin identificadores, **q
 
 Única fuente de verdad: categorías, acciones, constructores de nombre y tramos. Nadie escribe una cadena de evento fuera de este fichero. Un test comprueba que ninguna acción se repite y que la tabla de esta spec coincide con el código.
 
-Abreviaturas: `R` = id de residente, `C` = id de comida, `P` = id de recinto, `G` = id de página, `E` = especie, `A` = id de artículo de la tienda.
+Abreviaturas: `R` = residente, escrito siempre con su recinto delante (`cabra/gordi`), para que los datos se lean sin el catálogo del juego; `C` = id de comida, `P` = id de recinto, `G` = id de página, `E` = especie, `A` = id de artículo de la tienda.
 
 #### Comer (categoría `comer`)
 
@@ -46,7 +46,7 @@ Abreviaturas: `R` = id de residente, `C` = id de comida, `P` = id de recinto, `G
 | `ventana-tiempo` | `R` | segundos abierta | se cierra la ventana |
 | `ventana-vacia` | `R` | | se cierra sin dar nada |
 
-Sustituyen a `juego / comida-*`, que deja de enviarse. El recinto y la especie se deducen del residente con el catálogo del juego. La posición de cada comida en la bandeja es fija en el código: el análisis la tendrá en cuenta, porque lo primero de la bandeja se elige más.
+Sustituyen a `juego / comida-*`, que deja de enviarse. Un evento de comida se llama, por ejemplo, `cabra/gordi/zanahoria`. La posición de cada comida en la bandeja es fija en el código: el análisis la tendrá en cuenta, porque lo primero de la bandeja se elige más.
 
 #### Mapa (categoría `mapa`)
 
@@ -92,8 +92,9 @@ Se mantienen `musica`, `sonidos`, `joystick`, `idioma`. Se añaden `privacidad` 
 | Acción | Nombre | Valor |
 |---|---|---|
 | `tiene-recinto` | `P` | animales que tiene en él |
+| `tiene-animal` | `R` | (uno por cada animal que tiene) |
 | `tiene-saldo` | tramo de monedas | |
-| `tiene-paginas` | tramo de páginas leídas del libro | |
+| `tiene-paginas` | tramo de páginas leídas del libro: `0`, `1-5`, `6-15`, `16-30`, `31+` | |
 | `tiene-ajuste` | `musica-on`, `sonidos-off`, `joystick-on`… | |
 
 Tramos de saldo, alineados con los precios: `0-19`, `20-49`, `50-149`, `150-399`, `400-899`, `900-1599`, `1600+`. Es el denominador: «de los que tienen panda, cuántos le dieron de comer».
@@ -111,7 +112,7 @@ Para cada tipo, tres acciones: primera vez **hoy**, primera vez **esta semana**,
 | pantalla usada | `tienda`, `libro`, `ajustes` | `dia-pantalla`, `semana-pantalla`, `vida-pantalla` |
 | reacción especial vista | `E/C` | solo `vida-especial` |
 
-`dia-animal / gordi` dividido entre `tiene / tiene-recinto / cabra` del mismo día es el porcentaje de quienes tienen cabras que hoy dieron de comer a Gordi.
+`dia-animal / cabra/gordi` dividido entre `tiene-animal / cabra/gordi` del mismo día es el porcentaje de quienes tienen a Gordi que hoy le dieron de comer.
 
 #### Embudo de inicio (categoría `embudo`), cada paso una vez en la vida
 
@@ -140,7 +141,7 @@ Tramos de duración: `<1m`, `1-3m`, `3-10m`, `10-30m`, `30m+`. La unidad es el *
 | Acción | Nombre | Valor | Cuándo |
 |---|---|---|---|
 | `perdidos` | motivo: `cola-llena`, `caducado` | cuántos eventos | primera sesión con red tras perderlos |
-| `pendientes` | tramo de edad del más viejo: `<1h`, `1-6h`, `6-24h`, `1-3d`, `3-7d` | cuántos se reenvían | al arrancar con eventos guardados |
+| `pendientes` | tramo de edad del más viejo: `<1h`, `1-6h`, `6-24h`, `1-3d`, `3-7d`, `7d+` | cuántos se reenvían | al arrancar con eventos guardados |
 
 ### 2. Etapa del jugador: sin dimensión nueva
 
@@ -152,14 +153,14 @@ Clave aparte `zooesponji_v3_reach`. No toca la partida ni `SAVE_VERSION`.
 
 ```
 { day, week, today: string[], thisWeek: string[], ever: string[],
-  steps: string[], playSeconds: number, returned: string[] }
+  steps: string[], playSeconds: number }
 ```
 
 - `mark(state, tipo, id, hoy)` devuelve el estado nuevo y qué acciones de alcance toca enviar (ninguna, o hasta tres).
 - Al cambiar de día se vacía `today`; al cambiar de lunes, `thisWeek`.
 - `ever` crece como mucho hasta unos 400 ids cortos (animales, comidas, recintos, páginas, especiales): pocos KB.
 - Valor ilegible = estado vacío. Si el almacén falla, no se envía alcance (mejor no contar que contar de más), igual que en `activity.ts`.
-- `activity.ts` gana la semana de inicio y las banderas `vuelve-*`.
+- `activity.ts` gana la semana de inicio y las banderas `vuelve-*`; las ya enviadas se apuntan en su propio estado (`returned`).
 
 ### 4. Juego sin conexión (`src/core/hitQueue.ts`, nuevo, lógica pura)
 
@@ -175,7 +176,7 @@ Clave aparte `zooesponji_v3_reach`. No toca la partida ni `SAVE_VERSION`.
 
 ### 5. Reparto del código
 
-- **Escenas:** solo emiten eventos nuevos del `bus` (`feed-opened`, `feed-closed`, `food-missed`, `pen-near`, `locked-tap`, `shop-look`, `shop-denied`, `shop-closed`, `book-opened`, `book-page-left`, `book-index`, `book-closed`, `control-used`, `legal-opened`, `quit-asked`, `quit-answered`). `animal-fed` gana `foodId` y `coins`. No conocen Matomo.
+- **Escenas:** solo emiten eventos nuevos del `bus` (`animal-tapped`, `feed-opened`, `feed-closed`, `food-missed`, `pen-near`, `locked-tap`, `shop-locked`, `control-used`, `shop-opened`, `shop-look`, `shop-denied`, `purchase`, `shop-closed`, `book-opened`, `book-page-shown`, `book-index`, `book-closed`, `legal-opened`, `quit-asked`, `quit-answered`). `animal-fed` gana `foodId` y `coins`. No conocen Matomo.
 - **`src/systems/analyticsEvents.ts`** (nuevo): traduce el `bus` a eventos del catálogo y lleva los contadores por ventana y por rato.
 - **`src/systems/analytics.ts`:** se queda con sesión, cola y envío.
 - **`src/core/penNear.ts`** (nuevo, puro): decide entradas y permanencias junto a recintos a partir de la posición de la cuidadora.
