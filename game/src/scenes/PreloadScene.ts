@@ -5,6 +5,7 @@ import { withVersion } from '../core/cacheBust';
 import { MAPS } from '../config';
 import { phaserBackend, queueAudio, sfx } from '../systems/audio';
 import { createStore } from '../systems/createStore';
+import { installAnalytics } from '../systems/analyticsInstall';
 import { bus } from '../systems/events';
 import { deviceLanguages, resolveLanguage, setLanguage } from '../systems/language';
 import { Session, setSession } from '../systems/session';
@@ -86,6 +87,8 @@ export class PreloadScene extends Phaser.Scene {
     setSession(session);
     // El idioma elegido en Ajustes; si no hay ninguno, el del móvil.
     setLanguage(resolveLanguage(session.settings.language, deviceLanguages()));
+    // Antes del título, para que su pantalla ya se cuente.
+    await installAnalytics(this.game);
     this.scene.start('Title');
   }
 }

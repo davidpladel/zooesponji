@@ -1,4 +1,5 @@
 import { t } from '../data/strings';
+import { getAnalytics } from './analytics';
 import { getSession } from './session';
 
 let shown = false;
@@ -34,8 +35,9 @@ function showErrorScreen(): void {
 }
 
 async function handle(error: unknown): Promise<void> {
-  // Solo en el dispositivo: sin envío remoto.
   console.error('[ZooEsponji] Error no controlado:', error);
+  // A las estadísticas anónimas solo va un mensaje corto, sin traza.
+  getAnalytics()?.reportError(error);
   try {
     await getSession().saveIfValid();
   } catch {

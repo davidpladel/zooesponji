@@ -7,6 +7,7 @@ import type { QuitScene, QuitSceneData } from '../scenes/QuitScene';
 import type { BookScene } from '../scenes/BookScene';
 import type { SettingsScene } from '../scenes/SettingsScene';
 import type { ShopScene } from '../scenes/ShopScene';
+import { getAnalytics } from './analytics';
 import { sfx } from './audio';
 import { closeLegal } from './legal';
 import { getSession } from './session';
@@ -107,6 +108,7 @@ export class Platform {
   /** Al irse a segundo plano: guardar, pausar el mundo y la música; al volver, reanudar. */
   setBackground(hidden: boolean): void {
     sfx.setPaused('background', hidden);
+    getAnalytics()?.setBackground(hidden);
     if (hidden) {
       void getSessionSafe()?.save();
       this.pauseWorld('background');
