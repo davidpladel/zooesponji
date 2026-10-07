@@ -73,6 +73,7 @@ export class PreloadScene extends Phaser.Scene {
     }
     queueArt(this, manifest);
     this.load.once(Phaser.Loader.Events.COMPLETE, () => {
+      this.showProgress(1);
       registerArtAnims(this, manifest);
       setArt(manifest);
       void this.startSession();
