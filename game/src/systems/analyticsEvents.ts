@@ -60,6 +60,7 @@ export function knownSteps(state: GameState, book: BookProgress): Step[] {
 export class GameTracker implements AnalyticsHooks {
   /** `null` si el almacén ha fallado: sin él no se sabe qué es «primera vez» y no se cuenta. */
   private reach: ReachState | null = null;
+  private started = false;
   private stretchAt = 0;
   private feeds = 0;
   private readonly fedAnimals = new Set<string>();
@@ -71,17 +72,23 @@ export class GameTracker implements AnalyticsHooks {
   constructor(private readonly deps: TrackerDeps) {}
 
   async start(): Promise<void> {
+    if (this.started) return;
+    this.started = true;
     const { events, store } = this.deps;
     this.stretchAt = this.time();
-    try {
-      const saved = parseReach(await store.get(REACH_KEY));
-      this.reach = saved ?? seedSteps(emptyReach(this.today()), knownSteps(this.deps.state(), this.deps.book()));
-    } catch {
-      this.reach = null;
-    }
+    // Los avisos se registran antes de esperar al almacén: lo que pase mientras carga no se pierde.
     const on = <K extends keyof GameEvents>(event: K, handler: (payload: GameEvents[K]) => void): void => {
       events.on(event, (payload) => {
-        if (this.deps.sink.active) handler(payload);
+        this.safely(() => {
+          if (!this.deps.sink.active) {
+            // Nada de ventanas a medias de antes de apagar: no deben cerrarse al volver a encender.
+            this.feedWindow = null;
+            this.shop = null;
+            this.reading = null;
+            return;
+          }
+          handler(payload);
+        });
       });
     };
 
@@ -153,37 +160,52 @@ export class GameTracker implements AnalyticsHooks {
     on('legal-opened', () => this.send('ajustes', 'privacidad'));
     on('quit-asked', () => this.send('ajustes', 'salir-pregunta'));
     on('quit-answered', ({ leave }) => this.send('ajustes', leave ? 'salir-si' : 'salir-no'));
+
+    try {
+      const saved = parseReach(await store.get(REACH_KEY));
+      this.reach = saved ?? seedSteps(emptyReach(this.today()), knownSteps(this.deps.state(), this.deps.book()));
+    } catch {
+      this.reach = null;
+    }
   }
 
   // --- Avisos de Analytics ---
 
   sessionStarted(flags: readonly ActivityFlag[]): void {
-    this.stretchAt = this.time();
-    this.controls.clear();
-    this.feeds = 0;
-    this.fedAnimals.clear();
-    if (flags.includes('dia')) this.dailyState();
+    this.safely(() => {
+      this.stretchAt = this.time();
+      this.controls.clear();
+      this.feeds = 0;
+      this.fedAnimals.clear();
+      if (this.deps.sink.active && flags.includes('dia')) this.dailyState();
+    });
   }
 
   goingBackground(seconds: number): void {
-    if (!this.deps.sink.active) return;
-    this.send('sesion', 'rato-comidas', feedsBucket(this.feeds), this.feeds);
-    this.send('sesion', 'rato-animales', animalsBucket(this.fedAnimals.size), this.fedAnimals.size);
-    this.feeds = 0;
-    this.fedAnimals.clear();
-    if (this.reach) {
-      this.reach = addPlay(this.reach, seconds);
-      this.save();
-    }
-    this.stretchAt = this.time();
+    this.safely(() => {
+      if (!this.deps.sink.active) return;
+      this.send('sesion', 'rato-comidas', feedsBucket(this.feeds), this.feeds);
+      this.send('sesion', 'rato-animales', animalsBucket(this.fedAnimals.size), this.fedAnimals.size);
+      this.feeds = 0;
+      this.fedAnimals.clear();
+      if (this.reach) {
+        this.reach = addPlay(this.reach, seconds);
+        this.save();
+      }
+      this.stretchAt = this.time();
+    });
   }
 
   resumed(): void {
-    this.stretchAt = this.time();
+    this.safely(() => {
+      this.stretchAt = this.time();
+    });
   }
 
   screenShown(name: string): void {
-    if (this.deps.sink.active && REACH_SCREENS.includes(name)) this.touch('pantalla', name);
+    this.safely(() => {
+      if (this.deps.sink.active && REACH_SCREENS.includes(name)) this.touch('pantalla', name);
+    });
   }
 
   // --- Por dentro ---
@@ -277,7 +299,21 @@ export class GameTracker implements AnalyticsHooks {
   }
 
   private save(): void {
-    if (this.reach) void this.deps.store.set(REACH_KEY, JSON.stringify(this.reach)).catch(() => {});
+    if (!this.reach) return;
+    try {
+      void this.deps.store.set(REACH_KEY, JSON.stringify(this.reach)).catch(() => {});
+    } catch {
+      // Medir nunca rompe el juego.
+    }
+  }
+
+  /** Medir nunca rompe el juego: lo que falle aquí se descarta. */
+  private safely(fn: () => void): void {
+    try {
+      fn();
+    } catch {
+      // Descartado a propósito.
+    }
   }
 
   private send<C extends Category>(category: C, action: ActionOf<C>, name?: string, value?: number): void {
