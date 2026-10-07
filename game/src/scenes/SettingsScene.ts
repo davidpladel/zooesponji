@@ -5,6 +5,7 @@ import type { ToggleKey } from '../core/save';
 import { APP_VERSION } from '../core/version';
 import { t, type StringKey } from '../data/strings';
 import { sfx } from '../systems/audio';
+import { bus } from '../systems/events';
 import { getLanguage, otherLanguage, setLanguage } from '../systems/language';
 import { openLegal } from '../systems/legal';
 import { askQuit } from '../systems/platform';
@@ -208,6 +209,7 @@ export class SettingsScene extends Phaser.Scene {
   private press(key: ButtonKey): void {
     sfx.play('tap');
     if (key === 'privacy') {
+      bus.emit('legal-opened', {});
       openLegal();
       return;
     }

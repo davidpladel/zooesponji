@@ -253,6 +253,7 @@ export class ShopScene extends Phaser.Scene {
     if (this.closing || this.scene.isActive('Book')) return;
     sfx.play('tap');
     this.hint.hide();
+    bus.emit('book-opened', { pageId: getSession().book.page ?? 'cover' });
     this.scene.launch('Book');
   }
 
@@ -279,6 +280,7 @@ export class ShopScene extends Phaser.Scene {
   close(): void {
     if (!this.scene.isActive() || this.closing) return;
     this.closing = true;
+    bus.emit('shop-closed', {});
     this.hint.hide();
     this.cameras.main.fadeOut(180, 0, 0, 0);
     this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
@@ -437,6 +439,7 @@ export class ShopScene extends Phaser.Scene {
     this.hideBuyBubble();
     const product = id ? this.products.get(id) : undefined;
     if (!product) return;
+    if (!quiet && product.entry.status === 'buy') bus.emit('shop-look', { itemId: product.entry.id });
     if (!quiet) {
       this.greet(product);
       const entry = product.entry;
@@ -516,6 +519,7 @@ export class ShopScene extends Phaser.Scene {
         void getSession().setBookPage(fresh);
       }
     } else if (result.error === 'not-enough-coins') {
+      bus.emit('shop-denied', { itemId: entry.id, missing: Math.max(0, entry.cost - getSession().state.coins) });
       sfx.play('rechaza');
       const product = this.products.get(entry.id);
       if (product) this.tweens.add({ targets: product.animal, x: product.animal.x + 3 * s, duration: 50, yoyo: true, repeat: 3 });

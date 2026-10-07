@@ -2,6 +2,7 @@ import * as Phaser from 'phaser';
 import type { Vec } from '../core/movement';
 import { t } from '../data/strings';
 import { sfx } from '../systems/audio';
+import { bus } from '../systems/events';
 import { addPanel, addPillButton, addRibbonTitle, addVeil, restartOnResize } from '../ui/widgets';
 
 export interface QuitSceneData {
@@ -41,7 +42,11 @@ export class QuitScene extends Phaser.Scene {
     const left = width / 2 - (stayW + gap + leaveW) / 2;
     const y = panelY + panelH * 0.08;
     this.stay = addPillButton(this, left + stayW / 2, y, stayW, stayH, { color: 'green', icon: 'play', label: t('quit.stay'), onTap: () => this.close() });
-    this.yes = addPillButton(this, left + stayW + gap + leaveW / 2, y, leaveW, leaveH, { color: 'red', label: t('quit.leave'), onTap: () => this.onConfirm() });
+    this.yes = addPillButton(this, left + stayW + gap + leaveW / 2, y, leaveW, leaveH, { color: 'red', label: t('quit.leave'), onTap: () => {
+        bus.emit('quit-answered', { leave: true });
+        this.onConfirm();
+      },
+    });
     restartOnResize(this);
   }
 
@@ -56,6 +61,7 @@ export class QuitScene extends Phaser.Scene {
 
   close(): void {
     if (!this.scene.isActive()) return;
+    bus.emit('quit-answered', { leave: false });
     sfx.play('tap');
     this.scene.stop();
     this.scene.resume('World');

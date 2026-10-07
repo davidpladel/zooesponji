@@ -7,6 +7,7 @@ import { BOOK_BACK_ID, BOOK_CHAPTERS, BOOK_PAGES, CHAPTER_PENS, chapterPageId, c
 import { findResident } from '../data/pens';
 import { t, type StringKey } from '../data/strings';
 import { sfx } from '../systems/audio';
+import { bus, type BookPageKind } from '../systems/events';
 import { getSession } from '../systems/session';
 import { makePressable } from '../ui/press';
 import { textStyle } from '../ui/theme';
@@ -100,6 +101,7 @@ export class BookScene extends Phaser.Scene {
   close(): void {
     if (!this.scene.isActive()) return;
     sfx.play('tap');
+    bus.emit('book-closed', {});
     this.scene.stop();
     sfx.setPaused('menu', false);
     if (this.scene.isPaused('Shop')) this.scene.resume('Shop');
@@ -160,6 +162,8 @@ export class BookScene extends Phaser.Scene {
     this.arrows[0]?.setVisible(this.index > 0);
     this.arrows[1]?.setVisible(this.index < this.pages.length - 1);
     void getSession().setBookPage(page.id);
+    const kind: BookPageKind = !isContentPage(page) ? 'paso' : isPageUnlocked(getSession().state, page) ? 'contenido' : 'bloqueada';
+    bus.emit('book-page-shown', { pageId: page.id, kind });
     if (page.role === 'index') this.showIndex();
     else if (page.role === 'divider') this.showDivider(page);
     else this.showContent(page);
@@ -194,7 +198,9 @@ export class BookScene extends Phaser.Scene {
       row.add(addUiText(this, edge, 0, t('book.count', { n, total }), textStyle(Math.round(rowSize * 0.75), '#8d6e63', '#ffe9b8')).setOrigin(1, 0.5));
       // Un deslizamiento pasa página; solo un toque abre el capítulo.
       makePressable(row, (pointer) => {
-        if (pointer.getDistance() <= SWIPE_PX) this.goTo(chapterPageId(chapter));
+        if (pointer.getDistance() > SWIPE_PX) return;
+        bus.emit('book-index', { chapter });
+        this.goTo(chapterPageId(chapter));
       });
       this.content.push(row);
       this.indexRows.set(chapter, { x: p.centerX, y });

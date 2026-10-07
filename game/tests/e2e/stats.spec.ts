@@ -57,3 +57,25 @@ test('tocar un animal y moverse con el dedo deja rastro', async ({ page }) => {
   await page.mouse.click(box.x + pos.x, box.y + pos.y);
   await expect.poll(() => log(page)).toEqual(expect.arrayContaining(['animal-tapped', 'control-used']));
 });
+
+test('el libro deja rastro de cada página y del cierre', async ({ page }) => {
+  await startGame(page);
+  await page.evaluate(() => window.__ZOO__!.openBook('story'));
+  await page.waitForFunction(() => window.__ZOO__?.activeScenes().includes('Book'));
+  await page.evaluate(() => window.__ZOO__!.bookNext());
+  await page.keyboard.press('Escape');
+  await page.waitForFunction(() => !window.__ZOO__?.activeScenes().includes('Book'));
+  const events = await log(page);
+  expect(events.filter((name) => name === 'book-page-shown')).toHaveLength(2);
+  expect(events).toContain('book-closed');
+});
+
+test('abrir la privacidad desde ajustes deja rastro', async ({ page }) => {
+  await startGame(page);
+  await page.evaluate(() => window.__ZOO__!.openSettings());
+  await page.waitForFunction(() => window.__ZOO__?.activeScenes().includes('Settings'));
+  const pos = (await page.evaluate(() => window.__ZOO__!.settingsButtonPos('privacy')))!;
+  const box = await canvasBox(page);
+  await page.mouse.click(box.x + pos.x, box.y + pos.y);
+  await expect.poll(() => log(page)).toContain('legal-opened');
+});
