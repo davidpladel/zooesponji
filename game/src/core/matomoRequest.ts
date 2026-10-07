@@ -17,6 +17,8 @@ export interface MatomoConfig {
   url: string;
   siteId: number;
   dimensions: DimensionIds;
+  /** Horas hacia atrás que acepta Matomo una fecha propia sin token (su ventana de `cdt`). */
+  replayHours: number;
 }
 
 export interface MatomoEnv {
@@ -24,6 +26,8 @@ export interface MatomoEnv {
   VITE_MATOMO_SITE?: string;
   /** Cinco ids separados por comas: versión, plataforma, idioma, sesión, antigüedad. */
   VITE_MATOMO_DIMS?: string;
+  /** Opcional. Por defecto 23: la ventana de Matomo es de 24 horas. */
+  VITE_MATOMO_REPLAY_HOURS?: string;
 }
 
 export interface HitContext {
@@ -42,6 +46,20 @@ export interface HitContext {
 /** Matomo pide una dirección por acción: la de la web del juego más la pantalla. */
 const BASE_URL = 'https://davidpladel.com/zoo/';
 
+export const DEFAULT_REPLAY_HOURS = 23;
+const MAX_REPLAY_HOURS = 720;
+
+function parseReplayHours(raw: string | undefined): number {
+  const hours = Number(raw);
+  if (raw === undefined || raw.trim() === '' || !Number.isFinite(hours) || hours < 0) return DEFAULT_REPLAY_HOURS;
+  return Math.min(hours, MAX_REPLAY_HOURS);
+}
+
+/** Fecha y hora reales de un evento que se envía tarde. Matomo la quiere en UTC. */
+export function cdtParam(time: number): string {
+  return `&cdt=${encodeURIComponent(new Date(time).toISOString().slice(0, 19).replace('T', ' '))}`;
+}
+
 /** Sin configuración completa y válida no se mide (desarrollo, tests). */
 export function parseConfig(env: MatomoEnv): MatomoConfig | null {
   const url = (env.VITE_MATOMO_URL ?? '').trim().replace(/\/+$/, '');
@@ -50,7 +68,7 @@ export function parseConfig(env: MatomoEnv): MatomoConfig | null {
   const valid = (n: number): boolean => Number.isInteger(n) && n > 0;
   if (!url.startsWith('https://') || !valid(siteId) || dims.length !== 5 || !dims.every(valid)) return null;
   const [version, platform, language, sessions, age] = dims as [number, number, number, number, number];
-  return { url, siteId, dimensions: { version, platform, language, sessions, age } };
+  return { url, siteId, dimensions: { version, platform, language, sessions, age }, replayHours: parseReplayHours(env.VITE_MATOMO_REPLAY_HOURS) };
 }
 
 export function trackerUrl(config: MatomoConfig): string {

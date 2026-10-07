@@ -10,6 +10,7 @@ const config: MatomoConfig = {
   url: 'https://stats.example.com',
   siteId: 7,
   dimensions: { version: 1, platform: 2, language: 3, sessions: 4, age: 5 },
+  replayHours: 23,
 };
 
 type Sent = Record<string, string>;
