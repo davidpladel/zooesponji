@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { ageBucket, dayKey, nextActivity, parseActivity, sessionBucket, type ActivityState } from '../../src/core/activity';
+import { ageBucket, cohortWeek, dayKey, daysBetween, nextActivity, parseActivity, sessionBucket, type ActivityState } from '../../src/core/activity';
 
 const state = (firstDay: string, lastDay: string, sessions: number): ActivityState => ({ firstDay, lastDay, sessions });
 
@@ -15,6 +15,7 @@ describe('nextActivity', () => {
     expect(nextActivity(null, '2026-10-07')).toEqual({
       state: state('2026-10-07', '2026-10-07', 1),
       flags: ['nuevo', 'dia', 'semana', 'mes'],
+      returns: [],
     });
   });
 
@@ -22,6 +23,7 @@ describe('nextActivity', () => {
     expect(nextActivity(state('2026-10-07', '2026-10-07', 1), '2026-10-07')).toEqual({
       state: state('2026-10-07', '2026-10-07', 2),
       flags: [],
+      returns: [],
     });
   });
 
@@ -51,6 +53,7 @@ describe('nextActivity', () => {
     expect(nextActivity(state('2026-10-01', '2026-10-07', 4), '2026-10-03')).toEqual({
       state: state('2026-10-01', '2026-10-07', 5),
       flags: [],
+      returns: [],
     });
   });
 });
@@ -95,5 +98,39 @@ describe('tramos', () => {
     ['2026-10-01', 'd0'],
   ])('primer día 7-oct, hoy %s → %s', (today, bucket) => {
     expect(ageBucket('2026-10-07', today)).toBe(bucket);
+  });
+});
+
+describe('semana de inicio y retención', () => {
+  it('la semana de inicio es la semana ISO', () => {
+    expect(cohortWeek('2026-10-07')).toBe('2026-S41');
+    expect(cohortWeek('2027-01-03')).toBe('2026-S53');
+    expect(cohortWeek('2027-01-04')).toBe('2027-S01');
+  });
+
+  it('cuenta días entre dos fechas', () => {
+    expect(daysBetween('2026-10-07', '2026-10-08')).toBe(1);
+    expect(daysBetween('2026-12-31', '2027-01-07')).toBe(7);
+  });
+
+  it('volver al día siguiente avisa de d1, una sola vez', () => {
+    const first = nextActivity(state('2026-10-07', '2026-10-07', 1), '2026-10-08');
+    expect(first.returns).toEqual(['vuelve-d1']);
+    expect(first.state.returned).toEqual(['vuelve-d1']);
+    expect(nextActivity(first.state, '2026-10-09').returns).toEqual([]);
+  });
+
+  it('volver por primera vez a los 40 días avisa de las tres', () => {
+    const next = nextActivity(state('2026-10-07', '2026-10-07', 1), '2026-11-16');
+    expect(next.returns).toEqual(['vuelve-d1', 'vuelve-d7', 'vuelve-d30']);
+  });
+
+  it('el mismo día no hay retorno', () => {
+    expect(nextActivity(state('2026-10-07', '2026-10-07', 1), '2026-10-07').returns).toEqual([]);
+  });
+
+  it('lee y conserva lo ya avisado, y descarta valores raros', () => {
+    const raw = '{"firstDay":"2026-10-01","lastDay":"2026-10-07","sessions":4,"returned":["vuelve-d1","otra"]}';
+    expect(parseActivity(raw)?.returned).toEqual(['vuelve-d1']);
   });
 });
