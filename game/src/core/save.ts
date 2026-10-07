@@ -12,12 +12,14 @@ export interface Settings {
   music: boolean;
   sfx: boolean;
   joystick: boolean;
+  /** Estadísticas anónimas. Apagarlas es la forma de oponerse a la medición. */
+  stats: boolean;
   /** Idioma elegido en Ajustes. Ausente = automático: el del móvil. */
   language?: Language;
 }
 
 /** Los ajustes que son un interruptor de sí o no. */
-export type ToggleKey = 'music' | 'sfx' | 'joystick';
+export type ToggleKey = 'music' | 'sfx' | 'joystick' | 'stats';
 
 /** v1: `unlocked: PenId[]`. v2: `counts` por recinto (animales extra). */
 export const SAVE_VERSION = 2;
@@ -67,7 +69,7 @@ function countsFromUnlocked(ids: readonly PenId[]): Record<PenId, number> {
 }
 
 export function defaultSettings(): Settings {
-  return { music: true, sfx: true, joystick: false };
+  return { music: true, sfx: true, joystick: false, stats: true };
 }
 
 export function defaultBook(): BookProgress {
@@ -119,7 +121,13 @@ export function parseSave(value: unknown): SaveData | null {
   return {
     version: SAVE_VERSION,
     state: { coins, counts, shopUnlocked: state.shopUnlocked === true },
-    settings: { music: bool('music'), sfx: bool('sfx'), joystick: bool('joystick'), ...(language ? { language } : {}) },
+    settings: {
+      music: bool('music'),
+      sfx: bool('sfx'),
+      joystick: bool('joystick'),
+      stats: bool('stats'),
+      ...(language ? { language } : {}),
+    },
     book: parseBook(value.book),
   };
 }
