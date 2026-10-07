@@ -7,6 +7,7 @@ import { FOODS, type FoodId } from '../data/foods';
 import { findResident } from '../data/pens';
 import { t, type StringKey } from '../data/strings';
 import { sfx } from '../systems/audio';
+import { bus } from '../systems/events';
 import { getSession } from '../systems/session';
 import { foodKey, getArt } from '../art/art';
 import { animalPortrait } from '../world/Actors';
@@ -14,6 +15,9 @@ import { sceneryTexture } from '../ui/paint';
 import { textStyle } from '../ui/theme';
 import { addUiText, type UiText } from '../ui/text';
 import { HUD_COIN, addCloseBadge, addPanel, addRibbonTitle, addTile, addVeil, restartOnResize } from '../ui/widgets';
+
+/** Un arrastre más corto que esto es un toque sin querer, no una comida soltada fuera. */
+const MISS_MIN_DRAG = 24;
 
 export interface FeedSceneData {
   residentId: string;
@@ -110,6 +114,7 @@ export class FeedScene extends Phaser.Scene {
 
   close(): void {
     if (!this.scene.isActive()) return;
+    bus.emit('feed-closed', { residentId: this.residentId });
     this.scene.stop();
     this.scene.resume('World');
   }
@@ -171,6 +176,7 @@ export class FeedScene extends Phaser.Scene {
     if (!this.busy && isDropOnTarget({ x: pointer.x, y: pointer.y }, target, DROP_MARGIN)) {
       void this.feed(id, food);
     } else {
+      if (!this.busy && pointer.getDistance() > MISS_MIN_DRAG) bus.emit('food-missed', { residentId: this.residentId, foodId: id });
       this.returnHome(id, food);
     }
   }

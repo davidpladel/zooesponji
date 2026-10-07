@@ -273,6 +273,11 @@ export class Pens {
     return this.pen(penId).rect;
   }
 
+  /** Zona de cada recinto, abierto o no. */
+  rects(): { id: PenId; rect: Rect }[] {
+    return this.pens.map((pen) => ({ id: pen.id, rect: pen.rect }));
+  }
+
   /**
    * Granja de contacto. Cada animal, por orden: se aparta de quien pasa andando; sigue un rato a la
    * cuidadora cuando entra; el más cercano a un visitante parado se le acerca. Y cuando un visitante
