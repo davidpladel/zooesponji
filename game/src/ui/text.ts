@@ -1,16 +1,15 @@
 import * as Phaser from 'phaser';
 
 /**
- * Texto de la interfaz nueva. El juego usa pixelArt + roundPixels, y Phaser vuelve a subir la textura
- * del texto a la GPU con filtro «vecino» cada vez que se actualiza (setText, setStyle...), así que el
- * filtro lineal hay que reponerlo después de cada pintado. Además se desactiva el redondeo de vértices
- * de esta pieza: dentro de un contenedor que late o se encoge, redondear a píxeles enteros hace que las
- * letras salten. Con el texto quieto en escala 1 no cambia nada (queda sobre píxeles enteros igual).
+ * Texto de la interfaz nueva. El juego usa pixelArt, y Phaser vuelve a subir la textura del texto a la
+ * GPU con filtro «vecino» cada vez que se actualiza (setText, setStyle...), así que el filtro lineal hay
+ * que reponerlo después de cada pintado: así no tiembla mientras un botón late o se encoge.
+ * El redondeo de vértices se deja como viene (safeAuto): quieto se ajusta a píxeles enteros y se ve
+ * nítido; mientras se escala, Phaser ya no lo redondea.
  */
 export class UiText extends Phaser.GameObjects.Text {
   constructor(scene: Phaser.Scene, x: number, y: number, text: string, style: Phaser.Types.GameObjects.Text.TextStyle) {
     super(scene, x, y, text, style);
-    this.vertexRoundMode = 'off';
   }
 
   override updateText(): this {
