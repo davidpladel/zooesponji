@@ -1,6 +1,6 @@
 # Interfaz nueva: menús, botones y portada
 
-Fecha: 2026-10-06 · Estado: diseño aprobado, sin implementar.
+Fecha: 2026-10-06 · Estado: implementada (2026-10-07) en la rama `interfaz-nueva`; pendiente de publicar.
 
 ## Objetivo
 
@@ -197,3 +197,15 @@ Cada bloque deja el juego jugable y las pruebas en verde.
 - Rehacer el arte de la tienda o del mundo.
 - Nuevas capturas para Google Play (habrá que rehacerlas cuando esto se publique).
 - Emojis del mundo y de reserva de comidas y animales.
+
+## Decisiones tomadas durante la implementación
+
+- **API de Phaser:** el código del plan compiló contra Phaser 4.2.1 sin cambiar ningún nombre de API.
+- **Iconos de Tabler:** 8 en versión rellena (play, joystick, gear, lock, shield, left, right, heart) y 4 en contorno (close, door, music, volume; los dos últimos no tienen versión rellena).
+- **Comprobación de nitidez en el móvil:** hecha al terminar la portada. David vio nítidos el logo, el botón Jugar y el fondo pintado, así que el «Riesgo de nitidez» no se dio y no hace falta pintar a resolución real del dispositivo.
+- **Letras que temblaban:** en el móvil, las letras del botón se estremecían mientras éste cambiaba de tamaño. Con `pixelArt`, Phaser vuelve a subir la textura de un `Text` con filtro «nearest» en cada actualización y redondea los vértices por objeto. Arreglo: `src/ui/text.ts` (`UiText` / `addUiText`); todo el texto de la interfaz se crea con `addUiText`.
+- **Efecto al pulsar:** en la revisión se vio que, al pulsar rápido varias veces, se guardaba como escala de reposo una escala intermedia. Arreglado en `src/ui/press.ts`. La moneda dentro de las píldoras salía algo aplastada; arreglado en `src/ui/widgets.ts`.
+- **Extra pedido por David (fuera del plan): la cuidadora empieza sobre el camino de la entrada**, 3 casillas más abajo (`inicio` pasa de la fila 30 a la 33 en `scripts/make-zoo-map.mjs`), para ver el portón del parque al empezar. La prueba e2e que anda desde el inicio ahora sube por el camino de la entrada.
+- **Extra pedido por David (fuera del plan): el cartel de los recintos cerrados** en el mundo (`src/world/Pens.ts`) es ahora una píldora gris con candado, moneda y precio, construida a tamaño de pantalla y escalada por 1/zoom.
+- **Pendiente a propósito:** la moneda voladora al dar de comer y otros emojis dentro del mundo (avisos con 🏪, reacciones) siguen siendo emojis; los textos de licencia de Baloo 2 y Tabler están nombrados en `THIRD_PARTY_NOTICES.md` pero aún no se incluyen junto a los archivos.
+- **Por comprobar a mano en el móvil:** modo inmersivo, splash azul cielo y arranque completo. Quedan también versión nueva, capturas nuevas para Play y la fusión en `main`; la revisión final del código puede añadir arreglos.
