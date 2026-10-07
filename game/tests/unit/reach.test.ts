@@ -60,6 +60,15 @@ describe('una vez en la vida', () => {
   it('acumula el tiempo de juego', () => {
     expect(addPlay(addPlay(emptyReach(MON), 90), 30).playSeconds).toBe(120);
   });
+
+  it('un tiempo que no es un número no estropea lo guardado', () => {
+    const state = addPlay(emptyReach(MON), 90);
+    for (const bad of [Number.NaN, Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY]) {
+      const next = addPlay(state, bad);
+      expect(next.playSeconds).toBe(90);
+      expect(parseReach(JSON.stringify(next))).toEqual(next);
+    }
+  });
 });
 
 describe('guardado', () => {

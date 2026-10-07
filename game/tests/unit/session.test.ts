@@ -72,6 +72,16 @@ describe('Session: compras', () => {
     expect(bought).toEqual([{ itemId: 'pantera', penId: 'pantera', residentId: 'noche', cost: 50 }]);
   });
 
+  it('comprar un animal extra avisa de su recinto, de quién llega (el segundo) y de lo que ha costado', async () => {
+    const events = new EventBus<GameEvents>();
+    const bought: GameEvents['purchase'][] = [];
+    events.on('purchase', (e) => bought.push(e));
+    const session = await Session.load(createMemoryStore(), events);
+    await session.earnCoins(30);
+    expect((await session.buy('extra-cabra')).ok).toBe(true);
+    expect(bought).toEqual([{ itemId: 'extra-cabra', penId: 'cabra', residentId: 'nube', cost: 10 }]);
+  });
+
   it('una compra que no se puede hacer no avisa', async () => {
     const events = new EventBus<GameEvents>();
     const bought = vi.fn();

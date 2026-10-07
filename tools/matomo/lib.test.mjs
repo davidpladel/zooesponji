@@ -84,6 +84,16 @@ test('truncated detecta la fila agrupada de Matomo', () => {
   assert.equal(truncated({ result: 'error' }), false);
 });
 
+test('truncated detecta también la fila agrupada de una subtabla', () => {
+  assert.equal(truncated([{ label: 'come - a' }, { label: 'come - Others' }]), true);
+  assert.equal(truncated([{ label: 'come - Otros' }]), true);
+  assert.equal(truncated([{ label: 'Others - a' }]), true);
+  assert.equal(truncated([{ label: 'come - -1' }]), true);
+  assert.equal(truncated([{ label: 'x', Events_EventAction: 'come', Events_EventName: 'OTHERS' }]), true);
+  assert.equal(truncated([{ label: 'x', Events_EventAction: -1, Events_EventName: 'a' }]), true);
+  assert.equal(truncated([null, { label: 'come - cabra/gordi/otros-no' }]), false);
+});
+
 test('redact enmascara secretos y su forma codificada', () => {
   assert.equal(redact('fallo con tok123 y https://h.example/x', ['tok123', 'https://h.example']), 'fallo con *** y ***/x');
   assert.equal(redact('a%20b y a b', ['a b']), '*** y ***');
