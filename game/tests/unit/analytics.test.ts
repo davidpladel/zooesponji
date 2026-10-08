@@ -212,33 +212,60 @@ describe('Analytics: apagar y encender en Ajustes', () => {
 });
 
 describe('Analytics: segundo plano', () => {
-  it('al salir del juego el fin del rato queda enviado antes de cerrar', async () => {
+  it('al salir del juego el fin del rato queda guardado sin esperar a la red', async () => {
     const t = setup();
     await t.analytics.start();
     await t.analytics.flush();
     t.clock.time += 40_000;
     t.analytics.event('ajustes', 'salir-si');
     await t.analytics.close();
-    // Sin esperar nada más: al volver de `close()` la app se cierra.
-    expect(t.names()).toEqual(expect.arrayContaining(['ajustes/salir-si', 'sesion/fin']));
+    // Al volver de `close()` la app se cierra: lo último está en el móvil y no se ha tocado la red.
+    const stored = (await t.store.get(QUEUE_KEY))!;
+    expect(stored).toContain('e_a=salir-si');
+    expect(stored).toContain('e_a=fin');
+    expect(t.names()).not.toContain('sesion/fin');
   });
 
-  it('al salir sin red el fin del rato queda guardado para la próxima vez', async () => {
+  it('lo guardado al salir se envía al volver a abrir, con su fecha real', async () => {
+    const store = createMemoryStore();
+    const first = setup({ store });
+    await first.analytics.start();
+    await first.analytics.flush();
+    first.clock.time += 40_000;
+    const leftUtc = new Date(first.clock.time).toISOString().slice(0, 19).replace('T', ' ');
+    await first.analytics.close();
+
+    const second = setup({ store });
+    second.clock.time = first.clock.time + 3 * 3_600_000;
+    await second.analytics.start();
+    await second.analytics.flush();
+    const end = second.sent().find((p) => p.e_a === 'fin');
+    expect(end?.e_v).toBe('40');
+    expect(end?.cdt).toBe(leftUtc);
+  });
+
+  it('salir dos veces, o salir y pasar a segundo plano, apunta un solo fin', async () => {
     const t = setup();
     await t.analytics.start();
     await t.analytics.flush();
-    t.net.ok = false;
     t.clock.time += 40_000;
     await t.analytics.close();
-    expect(await t.store.get(QUEUE_KEY)).toContain('e_a=fin');
+    t.analytics.setBackground(true);
+    await t.analytics.close();
+    await settle();
+    const stored = (await t.store.get(QUEUE_KEY))!;
+    expect(stored.split('e_a=fin').length - 1).toBe(1);
+    expect(t.names()).not.toContain('sesion/fin');
   });
 
-  it('al salir no espera más que el tope si el envío se queda colgado', async () => {
-    const t = setup({ send: () => new Promise<boolean>(() => {}) });
+  it('si el almacén se queda colgado, salir no espera más que el tope', async () => {
+    const memory = createMemoryStore();
+    let hang = false;
+    const store: KeyValueStore = { get: (key) => memory.get(key), set: (key, value) => (hang ? new Promise<void>(() => {}) : memory.set(key, value)) };
+    const t = setup({ store });
     await t.analytics.start();
-    t.clock.time += 40_000;
+    hang = true;
     await expect(t.analytics.close(20)).resolves.toBeUndefined();
-    expect(await t.store.get(QUEUE_KEY)).toContain('e_a=fin');
   });
 
   it('salir con las estadísticas apagadas no hace nada ni lanza', async () => {

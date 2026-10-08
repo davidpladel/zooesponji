@@ -75,7 +75,7 @@ Sustituyen a `juego / comida-*`, que deja de enviarse. Un evento de comida se ll
 | Acción | Nombre | Valor | Cuándo |
 |---|---|---|---|
 | `abre` | `G` por la que se abre | | se abre el libro |
-| `lee` | `G` | segundos | se deja una página abierta al menos 1 s (desbloqueada, no índice ni portadilla) |
+| `lee` | `G` | segundos | se deja una página abierta al menos 1 s (desbloqueada; no portada, índice ni portadilla) |
 | `hojea` | `G` | | se deja antes de 1 s |
 | `bloqueada` | `G` | | se ve una página aún sin conseguir |
 | `indice` | capítulo | | toque en una fila del índice |
@@ -243,7 +243,14 @@ Si el punto 3 falla, las medias por sesión se sacan de los tramos y de `sesion 
 - **Modo CNIL:** los informes de eventos sin segmento dan cifras exactas. Los contadores en vivo sí se redondean a decenas y el registro de visitas está apagado.
 - **API:** el informe plano trae columnas separadas de acción y nombre (`Events_EventAction`, `Events_EventName`).
 - **Aviso:** Matomo descarta en silencio (respondiendo 200) lo que llega identificado como un programa y no como un navegador. La app no se ve afectada; la sonda se presenta como un móvil Android.
-- **Pendiente:** confirmar qué pasa con un lote que mezcla eventos buenos y uno demasiado viejo (el informe de hoy estaba en caché al mirarlo), el punto 5.
+- **Lote mezclado (punto 5):** en un lote con dos eventos buenos y uno demasiado viejo, los buenos llegan y el viejo se descarta. Un evento viejo no tira el lote.
+- **Visitas:** Matomo agrupa por dispositivo y no por el `_id` de sesión: su columna de visitas no cuenta sesiones. Las sesiones se cuentan con `sesion / inicio`.
+
+### Resultado de la prueba en el móvil (2026-10-08)
+
+- Lo jugado en modo avión llegó al volver la red (`pendientes`: 89 eventos, menos de una hora de espera), con el detalle de animal, comida, recinto, tienda y libro. Sin tirones al guardar la cola.
+- **Fallo encontrado:** con el botón «Salir», Android destruye la pantalla antes de que el aviso de segundo plano guarde nada, y se perdía lo de los últimos segundos (`fin`, resúmenes del rato, `salir-si`). Arreglo: «Salir» apunta el fin del rato y lo guarda en el móvil antes de cerrar, sin esperar a la red; se envía en la siguiente apertura con su fecha real. Pendiente de comprobar en el móvil, igual que el cierre con el botón de inicio y desde recientes.
+- La portada del libro deja de contar como página leída.
 
 ## Riesgos y límites
 
