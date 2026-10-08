@@ -1,6 +1,6 @@
 # Analítica detallada: qué gusta del juego
 
-Fecha: 2026-10-07 · Estado: código implementado en la rama `feat/analitica-detallada` (2026-10-08); falta comprobar contra el Matomo real, los pasos de David y la prueba en el móvil. Plan: `docs/superpowers/plans/2026-10-07-analitica-detallada.md`. Amplía `2026-10-07-analitica-anonima-matomo-design.md`, que sigue vigente en todo lo que aquí no se cambia.
+Fecha: 2026-10-07 · Estado: implementado y fusionado en `main` como 2.5.0 (2026-10-08), comprobado contra el Matomo real y en el móvil. Plan: `docs/superpowers/plans/2026-10-07-analitica-detallada.md`.
 
 ## Objetivo
 

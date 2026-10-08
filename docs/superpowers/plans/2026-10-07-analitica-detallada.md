@@ -3282,14 +3282,14 @@ git commit -m "docs: la privacidad explica el detalle y el juego sin conexión; 
 
 Esta tarea no se puede hacer sin David. No se da el trabajo por terminado hasta completarla.
 
-- [ ] **Step 1: Usuario de solo lectura (David)**
+- [x] **Step 1: Usuario de solo lectura (David)**
 
 En Matomo: Administración → Sistema → Usuarios → Añadir usuario. Darle permiso **Ver** únicamente en el sitio «Zoo Esponji - App» y ninguno en los demás. Entrar con ese usuario → Personal → Seguridad → crear un token de autenticación. Copiar `tools/matomo/.env.example` a `tools/matomo/.env.local` y rellenar las tres líneas.
 
 Run (raíz): `node tools/matomo/pull.mjs --date=last7`
 Expected: tres líneas con filas y «Hecho». Si dice que el fichero no está ignorado, parar y avisar.
 
-- [ ] **Step 2: Sonda de fechas (Claude lanza, David mira Matomo)**
+- [x] **Step 2: Sonda de fechas (Claude lanza, David mira Matomo)**
 
 Para ver los eventos uno a uno hace falta el registro de visitas, que el modo CNIL apaga. Desactivar el modo CNIL del sitio solo durante esta comprobación y volver a activarlo al acabar.
 
@@ -3302,14 +3302,14 @@ Anotar en la spec (sección «Comprobar contra el Matomo real») el resultado de
 3. Lote 2: ¿llegó `junto-a-uno-viejo`? ¿Qué pasó con `hace-30h`: no llegó, o llegó con la hora de ahora? (punto 5)
 4. Con el modo CNIL activado de nuevo: `node tools/matomo/pull.mjs --date=last7` y mirar en `events.json` si `nb_events` da cifras exactas (no múltiplos de 10) y si cada fila trae `Events_EventAction` y `Events_EventName` o solo `label` (puntos 3 y 4).
 
-- [ ] **Step 3: Actuar según lo visto**
+- [x] **Step 3: Actuar según lo visto**
 
 - Si `hace-30h` **llegó fechado ahora**: es dato falso. Bajar el margen: `DEFAULT_REPLAY_HOURS` de 23 a 20 en `matomoRequest.ts` (y su test) para alejarse del borde.
 - Si el lote 2 **se rechazó entero**: mismo ajuste; el descarte por caducidad del cliente ya evita enviar eventos viejos.
 - Si **ningún `cdt` funciona** sin token: poner `VITE_MATOMO_REPLAY_HOURS=0` en `game/.env.production.local`. Los eventos de más de 5 minutos se descartarán y se contarán como `caducado`; avisar a David de que lo jugado sin conexión no se recupera y replantear.
 - Si la API no trae las columnas de acción y nombre, `toRows` ya parte la etiqueta: comprobar con `node tools/matomo/resumen.mjs` que las tablas salen con nombres correctos.
 
-- [ ] **Step 4: Ampliar la ventana a 7 días (David, opcional y recomendado)**
+- [x] **Step 4: Ampliar la ventana a 7 días (David, opcional y recomendado)**
 
 Solo si el Step 2 confirma que `cdt` funciona. En el servidor, en `config/config.ini.php` del Matomo, dentro de `[Tracker]`:
 
@@ -3319,7 +3319,7 @@ tracking_requests_require_authentication_when_custom_timestamp_newer_than = 6048
 
 Es un ajuste de toda la instancia. Después, lanzar otra vez `node tools/matomo/probe.mjs` y comprobar que `hace-30h` llega ahora en su hora real. Si es así, poner `VITE_MATOMO_REPLAY_HOURS=167` en `game/.env.production.local` y recompilar.
 
-- [ ] **Step 5: Prueba real en el móvil**
+- [x] **Step 5: Prueba real en el móvil**
 
 Con una compilación de producción instalada: jugar un minuto con el modo avión puesto (dar de comer a dos animales, abrir la tienda), cerrar la app, esperar 10 minutos, quitar el modo avión y abrir la app. Al día siguiente:
 
@@ -3340,11 +3340,11 @@ Mirar en `events.json` cómo etiqueta el servidor la fila agrupada del informe p
 
 Comparar el número de `sesion / fin` del informe con las veces que de verdad se mandó la app a segundo plano en la prueba del Step 5. Si salen de más, Android mata la app después de enviar y antes de confirmar, y el último lote se repite al volver a abrir: anotarlo en «Riesgos y límites» de la spec con la proporción vista.
 
-- [ ] **Step 9: Tirones sin conexión en un móvil modesto**
+- [x] **Step 9: Tirones sin conexión en un móvil modesto**
 
 En un móvil de gama baja, jugar 15 minutos en modo avión y comprobar que no hay tirones cada 10 segundos: sin red la cola pendiente crece y se reescribe entera en el almacén en cada vaciado.
 
-- [ ] **Step 10: Cerrar**
+- [x] **Step 10: Cerrar**
 
 Actualizar el estado en las dos specs y en el README, marcar las casillas de este plan, y fusionar la rama.
 
