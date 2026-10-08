@@ -255,6 +255,8 @@ Si el punto 3 falla, las medias por sesión se sacan de los tramos y de `sesion 
 - Lo jugado en modo avión llegó al volver la red (`pendientes`: 89 eventos, menos de una hora de espera), con el detalle de animal, comida, recinto, tienda y libro. Sin tirones al guardar la cola.
 - **Fallo encontrado:** con el botón «Salir», Android destruye la pantalla antes de que el aviso de segundo plano guarde nada, y se perdía lo de los últimos segundos (`fin`, resúmenes del rato, `salir-si`). Arreglo: «Salir» apunta el fin del rato y lo guarda en el móvil antes de cerrar, sin esperar a la red; se envía en la siguiente apertura con su fecha real. Pendiente de comprobar en el móvil, igual que el cierre con el botón de inicio y desde recientes.
 - La portada del libro deja de contar como página leída.
+- Comprobado después en el móvil: llegan los `sesion / fin` (también tras «Salir», en la siguiente apertura), el tramo `cero` y la versión en `sesion / inicio`.
+- **Regla aprendida:** una acción lleva nombre siempre o nunca. Si se mezclan, el informe plano «acción × nombre» omite los eventos sin nombre. Los totales por acción se leen del informe solo por acción (`actions.json`).
 
 ## Riesgos y límites
 

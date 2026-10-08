@@ -117,3 +117,19 @@ export function redact(text, secrets) {
   for (const form of new Set(forms)) if (form) out = out.replaceAll(form, '***');
   return out;
 }
+
+/** Informe solo por acción → acción → veces. Es el total fiable de cada acción. */
+export function actionTotals(report) {
+  const totals = new Map();
+  if (!Array.isArray(report)) return totals;
+  for (const row of report) totals.set(String(row.Events_EventAction ?? row.label ?? ''), Number(row.nb_events ?? 0));
+  return totals;
+}
+
+/**
+ * Veces que ocurrió una acción, con o sin nombre. El informe plano «acción × nombre» omite los eventos
+ * sin nombre de una acción que también tiene eventos con nombre: el total sale del informe por acción.
+ */
+export function total(totals, index, action) {
+  return totals.get(action) ?? events(index, action);
+}

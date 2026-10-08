@@ -2,7 +2,7 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { DATA } from './config.mjs';
-import { MIN_SAMPLE, byAction, events, meanText, medianText, share, table, toRows, truncated } from './lib.mjs';
+import { MIN_SAMPLE, actionTotals, byAction, events, meanText, medianText, share, table, toRows, total, truncated } from './lib.mjs';
 
 const file = join(DATA, 'events.json');
 if (!existsSync(file)) {
@@ -13,7 +13,10 @@ const meta = existsSync(join(DATA, 'meta.json')) ? JSON.parse(readFileSync(join(
 const report = JSON.parse(readFileSync(file, 'utf8'));
 const rows = toRows(report);
 const index = byAction(rows);
-const n = (action, name) => events(index, action, name);
+const actionsFile = join(DATA, 'actions.json');
+const totals = actionTotals(existsSync(actionsFile) ? JSON.parse(readFileSync(actionsFile, 'utf8')) : null);
+// Sin nombre: el total de la acción, que no pierde los eventos sin nombre. Con nombre: esa fila.
+const n = (action, name) => (name === undefined ? total(totals, index, action) : events(index, action, name));
 const of = (action) => [...(index.get(action)?.values() ?? [])];
 const top = (list, key, limit = 20) => [...list].sort((a, b) => b[key] - a[key]).slice(0, limit);
 const FEED = ['come', 'rechaza', 'especial'];
@@ -49,7 +52,11 @@ out.push('## Muestra', '', table(['Dato', 'Valor'], [
 
 out.push('## Versiones del juego', '', table(
   ['Versión', 'Sesiones', 'Jugadores por día'],
-  [...new Set([...of('inicio'), ...of('dia')].map((r) => r.name))].sort().map((v) => [v || '(sin versión)', n('inicio', v), n('dia', v)]),
+  // Los eventos sin nombre (versiones anteriores) no salen en el informe plano: son el total menos los que llevan versión.
+  [
+    ...[...new Set([...of('inicio'), ...of('dia')].map((r) => r.name).filter(Boolean))].sort().map((v) => [v, n('inicio', v), n('dia', v)]),
+    ['(anterior, sin versión)', ...['inicio', 'dia'].map((action) => n(action) - of(action).filter((r) => r.name).reduce((sum, r) => sum + r.events, 0))],
+  ],
 ), '');
 
 out.push('## Animales: quién gusta más entre quienes lo tienen', '', table(
