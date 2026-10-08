@@ -88,6 +88,20 @@ describe('recintos', () => {
     expect(findResident('nadie')).toBeNull();
   });
 
+  it('Sasha, la leona, come con Bills: se la encuentra en su recinto, con nombre, sin contar como animal', () => {
+    expect(findResident('sasha')).toEqual({ penId: 'leon', index: -1, resident: PENS.leon.companion, companion: true });
+    expect(PENS.leon.companion?.species).toBe('leon');
+    expect(STRINGS_ES['book.page.sasha.title']).toBeTruthy();
+    expect(penCapacity('leon')).toBe(1);
+    expect(residentsIn('leon', 99).map((r) => r.id)).toEqual(['bills']);
+  });
+
+  it('solo el león tiene acompañante, y su id no choca con el de ningún animal', () => {
+    expect(PEN_IDS.filter((id) => PENS[id].companion)).toEqual(['leon']);
+    const ids = PEN_IDS.flatMap((id) => PENS[id].residents.map((r) => r.id));
+    expect(ids).not.toContain('sasha');
+  });
+
   it('isPenId distingue ids válidos', () => {
     expect(isPenId('panda')).toBe(true);
     expect(isPenId('tigre')).toBe(false);

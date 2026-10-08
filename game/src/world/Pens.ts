@@ -19,7 +19,7 @@ import type { Petting } from './VisitorCrowd';
 /** Algo que pasea dentro de un recinto: un animal o su acompañante (la leona). */
 interface Wanderer {
   walker: Walker;
-  /** Qué animal es; null en los acompañantes (la leona). */
+  /** Qué animal es (la leona también: se le da de comer); null si el acompañante no tiene nombre. */
   residentId: string | null;
   /** Su especie; null en los acompañantes. */
   species: AnimalId | null;
@@ -154,7 +154,7 @@ export class Pens {
       });
       const companionAt = spot(count);
       const companionWalker = hasCompanion ? createCompanion(scene, lead, companionAt.x, companionAt.y) : null;
-      const companion = companionWalker ? wanderer(companionWalker, null, null, radiusOf(lead), 500 + Math.random() * 1500) : null;
+      const companion = companionWalker ? wanderer(companionWalker, def.companion?.id ?? null, null, radiusOf(lead), 500 + Math.random() * 1500) : null;
       for (const w of [...animals, ...(companion ? [companion] : [])]) w.walker.object.setAlpha(unlocked ? 1 : LOCKED_ALPHA);
 
       this.pens.push({ id, rect, space, gate: gate.tile, home, animals, companion, lock, lockAt: { x: home.x, y: home.y + 14 }, lockPrice: price, petting: def.visitors === true, keeperInside: false, followLeft: 0, shown: unlocked });
@@ -222,7 +222,7 @@ export class Pens {
     let bestDistance = radius;
     for (const pen of this.pens) {
       if (!isPenOpen(state, pen.id)) continue;
-      for (const w of pen.animals) {
+      for (const w of this.members(pen)) {
         if (w.residentId === null) continue;
         const distance = tapDistance({ x: w.walker.x, y: w.walker.y }, w.radius, point);
         if (distance <= bestDistance) {
@@ -340,7 +340,7 @@ export class Pens {
 
   private find(residentId: string): Wanderer | null {
     for (const pen of this.pens) {
-      const w = pen.animals.find((a) => a.residentId === residentId);
+      const w = this.members(pen).find((a) => a.residentId === residentId);
       if (w) return w;
     }
     return null;

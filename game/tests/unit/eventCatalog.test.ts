@@ -33,6 +33,7 @@ describe('nombres combinados', () => {
   it('un residente lleva su recinto delante', () => {
     expect(residentName('gordi')).toBe('cabra/gordi');
     expect(part(residentName('gordi'), 'zanahoria')).toBe('cabra/gordi/zanahoria');
+    expect(residentName('sasha')).toBe('leon/sasha');
   });
 
   it('un residente desconocido se queda como viene', () => {

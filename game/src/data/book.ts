@@ -40,8 +40,9 @@ function penPages(chapter: ChapterId, penId: PenId): BookPage[] {
   return PENS[penId].residents.flatMap((resident, index): BookPage[] => {
     const unlock = { penId, count: index + 1 };
     const page: BookPage = { id: resident.id, chapter, unlock, picture: { kind: 'animal', animalId: resident.species } };
-    if (resident.id !== 'bills') return [page];
-    return [page, { id: 'sasha', chapter, unlock, picture: { kind: 'companion', animalId: resident.species } }];
+    const companion = index === 0 ? PENS[penId].companion : undefined;
+    if (!companion) return [page];
+    return [page, { id: companion.id, chapter, unlock, picture: { kind: 'companion', animalId: companion.species } }];
   });
 }
 

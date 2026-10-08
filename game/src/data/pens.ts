@@ -23,6 +23,8 @@ export interface PenDef {
   cost?: number;
   /** Por orden de llegada: el primero viene con el recinto, el resto se compran de uno en uno. */
   residents: readonly ResidentDef[];
+  /** Acompañante del primero (la leona): pasea y come con él, pero ni se compra ni cuenta en el recinto. */
+  companion?: ResidentDef;
   /** Granja de contacto: los visitantes también entran. */
   visitors?: boolean;
 }
@@ -34,7 +36,7 @@ const residents = (species: AnimalId, ...ids: string[]): ResidentDef[] =>
 const one = (id: string, species: AnimalId, look?: string): ResidentDef => ({ id, species, look: look ? `${species}-${look}` : species });
 
 export const PENS: Record<PenId, PenDef> = {
-  leon: { id: 'leon', nameKey: 'animal.leon', residents: residents('leon', 'bills') },
+  leon: { id: 'leon', nameKey: 'animal.leon', residents: residents('leon', 'bills'), companion: { id: 'sasha', species: 'leon', look: 'leon' } },
   cabra: {
     id: 'cabra',
     nameKey: 'animal.cabra',
@@ -129,10 +131,13 @@ export function nextResident(id: PenId, count: number): ResidentDef | null {
   return PENS[id].residents[count] ?? null;
 }
 
-export function findResident(residentId: string): { penId: PenId; index: number; resident: ResidentDef } | null {
+/** Localiza a un animal o a un acompañante (este con `index` -1 y `companion`). */
+export function findResident(residentId: string): { penId: PenId; index: number; resident: ResidentDef; companion?: true } | null {
   for (const penId of PEN_IDS) {
     const index = PENS[penId].residents.findIndex((r) => r.id === residentId);
     if (index >= 0) return { penId, index, resident: PENS[penId].residents[index]! };
+    const companion = PENS[penId].companion;
+    if (companion?.id === residentId) return { penId, index: -1, resident: companion, companion: true };
   }
   return null;
 }
