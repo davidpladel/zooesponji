@@ -129,6 +129,16 @@ export class FeedScene extends Phaser.Scene {
     return this.busy;
   }
 
+  /** ¿Están todas las comidas quietas en su hueco, listas para arrastrarse? (para pruebas) */
+  foodsAtHome(): boolean {
+    if (this.dragging) return false;
+    for (const [id, home] of this.homes) {
+      const food = this.foods.get(id);
+      if (!food || this.tweens.isTweening(food) || food.x !== home.x || food.y !== home.y) return false;
+    }
+    return true;
+  }
+
   private createTray(width: number, height: number, panelW: number): void {
     const tray = trayFoods(this.animalId);
     const size = Phaser.Math.Clamp(Math.round(height * 0.12), 56, 96);

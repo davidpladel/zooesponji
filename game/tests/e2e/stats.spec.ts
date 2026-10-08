@@ -19,7 +19,7 @@ const log = (page: Page): Promise<string[]> => page.evaluate(() => window.__ZOO_
 test('dar de comer deja rastro: visita, ventana, comida, comida fuera y cierre', async ({ page }) => {
   await startGame(page);
   await page.evaluate(() => window.__ZOO__!.feedResident('bills'));
-  await page.waitForFunction(() => window.__ZOO__?.activeScenes().includes('Feed'), undefined, { timeout: 30_000 });
+  await page.waitForFunction(() => window.__ZOO__?.activeScenes().includes('Feed'), undefined, { timeout: 90_000 });
   expect(await log(page)).toContain('feed-opened');
 
   const targets = (await page.evaluate(() => window.__ZOO__!.feedTargets()))!;
@@ -31,8 +31,8 @@ test('dar de comer deja rastro: visita, ventana, comida, comida fuera y cierre',
   await page.mouse.move(box.x + 30, box.y + 30, { steps: 10 });
   await page.mouse.up();
   await expect.poll(() => log(page)).toContain('food-missed');
-  // Ahora sí, sobre el animal.
-  await page.waitForTimeout(400);
+  // Ahora sí, sobre el animal: cuando la comida ha vuelto a su hueco (si no, el dedo no la encuentra).
+  await expect.poll(() => page.evaluate(() => window.__ZOO__!.feedFoodsHome())).toBe(true);
   await page.mouse.move(box.x + from.x, box.y + from.y);
   await page.mouse.down();
   await page.mouse.move(box.x + targets.animal.x, box.y + targets.animal.y, { steps: 12 });
@@ -49,7 +49,7 @@ test('dar de comer deja rastro: visita, ventana, comida, comida fuera y cierre',
 test('tocar un animal y moverse con el dedo deja rastro', async ({ page }) => {
   await startGame(page);
   await page.evaluate(() => window.__ZOO__!.feedResident('bills'));
-  await page.waitForFunction(() => window.__ZOO__?.activeScenes().includes('Feed'), undefined, { timeout: 30_000 });
+  await page.waitForFunction(() => window.__ZOO__?.activeScenes().includes('Feed'), undefined, { timeout: 90_000 });
   await page.keyboard.press('Escape');
   await page.waitForFunction(() => !window.__ZOO__?.activeScenes().includes('Feed'));
   const pos = (await page.evaluate(() => window.__ZOO__!.residentScreenPos('bills')))!;

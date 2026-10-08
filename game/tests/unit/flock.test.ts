@@ -45,6 +45,9 @@ describe('cinco cabras en su recinto', () => {
     const rng = seeded(11);
     let herd: Roamer[] = spreadPositions(space, 5, rng).map((pos) => ({ pos, target: null, rest: 0 }));
     let moved = 0;
+    // Los fallos se apuntan y se comprueban al final: 45 000 `expect` dentro del bucle eran casi todo
+    // el tiempo de la prueba y, con la máquina cargada, la pasaban del tope de 5 s.
+    const failures: string[] = [];
     for (let step = 0; step < 3000; step++) {
       herd = herd.map((_r, i) => {
         const next = stepRoamer(herd[i]!, herd.filter((_o, j) => j !== i), space, 50, rng);
@@ -53,10 +56,14 @@ describe('cinco cabras en su recinto', () => {
         return next;
       });
       for (const [i, r] of herd.entries()) {
-        expect(space.obstacles.some((o) => rectContains(o, r.pos))).toBe(false);
-        for (const other of herd.slice(i + 1)) expect(distance(r.pos, other.pos)).toBeGreaterThanOrEqual(MIN_GAP - 1e-9);
+        if (space.obstacles.some((o) => rectContains(o, r.pos))) failures.push(`paso ${step}: la cabra ${i} pisa un obstáculo`);
+        for (let j = i + 1; j < herd.length; j++) {
+          const d = distance(r.pos, herd[j]!.pos);
+          if (!(d >= MIN_GAP - 1e-9)) failures.push(`paso ${step}: las cabras ${i} y ${j} están a ${d}`);
+        }
       }
     }
+    expect(failures.slice(0, 5)).toEqual([]);
     expect(moved).toBeGreaterThan(500);
   });
 });
