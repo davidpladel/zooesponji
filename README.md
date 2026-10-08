@@ -2,7 +2,7 @@
 
 Creado por y para Daniela y Adrián, con la ayuda de su padre y de Claude + OpenCode + DeepSeek + ChatGPT.
 
-**Versión actual: 2.5.1** (2026-10-08, en `main`) · Juega en la web: https://davidpladel.com/zoo/ (aún con una versión anterior) · Android: prueba cerrada de Google Play con la 2.3.0 (versionCode 5); la 2.5.1 (versionCode 6) está compilada, pendiente de subir
+**Versión actual: 2.5.1** (2026-10-08, en `main`) · Juega en la web: https://davidpladel.com/zoo/ (aún con una versión anterior) · Android: prueba cerrada de Google Play con la 2.5.1 (versionCode 6)
 
 ## La idea
 
@@ -83,7 +83,7 @@ El juego se ha hecho por hitos: spec de diseño → plan → ejecución.
 4. ✅ Tienda y desbloqueos, visitantes, joystick
 5. ✅ Arte (VectoRaith + panda y pantera de los niños) y decoración (5b)
 6. ✅ 6a Pulido: agua, extras, menú, sonido, móvil, errores → **2.0.0**, publicada en la web
-7. ⬜ 6b Publicación en Google Play: privacidad, ficha, firma y prueba cerrada (prueba cerrada en marcha con la 2.3.0; falta el acceso a producción)
+7. ⬜ 6b Publicación en Google Play: privacidad, ficha, firma y prueba cerrada (prueba cerrada en marcha con la 2.5.1; falta el acceso a producción)
 
 ✅ **2.1.0 / 2.1.1** (2026-09-28, publicada en la web; la 2.1.1 y la 2.1.2 rehacen la catarata): tienda por dentro (fases C y B), muro y portón del parque, plaza con fuente animada, catarata con acantilado, pasillos estrechos, cámara más alejada, comida al llegar a la puerta y carne con dibujo.
 
@@ -93,13 +93,13 @@ El juego se ha hecho por hitos: spec de diseño → plan → ejecución.
 
 ✅ **2.5.0** (2026-10-08, fusionada en `main`, etiqueta `v2.5.0`): la interfaz nueva (todos los menús, la portada y el arranque, y modo inmersivo en Android) y las estadísticas detalladas. Comprobado contra el Matomo real y en el móvil de David: lo jugado sin conexión llega con su fecha, los finales de rato llegan también tras «Salir», y el servidor acepta fechas de hasta 7 días. Faltan las capturas nuevas para Google Play y el paquete para la tienda; David ha pedido no prepararlo todavía. Pendiente en Matomo, opcional: conservación corta de los registros en bruto del sitio del juego.
 
-Google Play: la 2.3.0 (versionCode 5) está en la prueba cerrada; a 2026-10-06 van 5 de los 14 días seguidos con 12 testers que pide Google para poder solicitar el acceso a producción. La 2.5.0 no se llegó a subir. La 2.5.1 (versionCode 6) está compilada y firmada, lista para subir a la prueba cerrada (guía en `docs/privado/play-store.md`).
+Google Play: la 2.3.0 (versionCode 5) está en la prueba cerrada; a 2026-10-06 van 5 de los 14 días seguidos con 12 testers que pide Google para poder solicitar el acceso a producción. La 2.5.0 no se llegó a subir. La 2.5.1 (versionCode 6) está subida a la prueba cerrada desde el 2026-10-08 (guía en `docs/privado/play-store.md`).
 
-✅ **2.5.1** (2026-10-08, fusionada en `main`, etiqueta `v2.5.1`): a Sasha, la leona, se le da de comer igual que a Bills (en las estadísticas sale como `leon/sasha`), y al salir con «Salir» o con atrás en la portada el juego desaparece de las aplicaciones recientes de Android (`autoRemoveFromRecents` en el manifiesto). Pruebas pasadas por David. Lo de las aplicaciones recientes solo se puede comprobar en el móvil con el paquete nuevo: pendiente.
+✅ **2.5.1** (2026-10-08, fusionada en `main`, etiqueta `v2.5.1`): a Sasha, la leona, se le da de comer igual que a Bills (en las estadísticas sale como `leon/sasha`), y al salir con «Salir» o con atrás en la portada el juego desaparece de las aplicaciones recientes de Android (`autoRemoveFromRecents` en el manifiesto). Pruebas pasadas por David. David la probó en el móvil con el paquete de Play el 2026-10-08: todo bien, también lo de las aplicaciones recientes.
 
 Ficha de Play al día (2026-10-08): David subió las capturas nuevas de `game/store/play/` (`captura-1` a `captura-6`, 1920×1080: leones, dar de comer a la pantera, cabras, tienda, libro y panteras) y el gráfico de funciones rehecho (portada pintada, letra Baloo 2, león del icono y lema).
 
-Pendiente, por orden: subir la 2.5.1 a la prueba cerrada de Play y comprobar en el móvil que «Salir» la quita de recientes; publicar la 2.5.1 en la web; completar los 14 días con 12 testers y pedir el acceso a producción (6b). Opcional en Matomo: conservación corta de los registros en bruto. Cabos sueltos de la 2.4.0: la prueba `zoo-grande.spec.ts:104` («sin comprar las ovejas, ningún visitante entra en su recinto») falló una vez en una tanda completa y pasó las demás, sin que se llegara a ver el error; y cambiar de idioma con la ventana de comer abierta, o con el libro sobre la tienda, no tiene prueba de juego propia. Ideas para después, cada una con su spec: bañar y limpiar, día y noche, clínica veterinaria y acuario con delfines.
+Pendiente, por orden: publicar la 2.5.1 en la web; completar los 14 días con 12 testers y pedir el acceso a producción (6b). Opcional en Matomo: conservación corta de los registros en bruto. Cabos sueltos de la 2.4.0: la prueba `zoo-grande.spec.ts:104` («sin comprar las ovejas, ningún visitante entra en su recinto») falló una vez en una tanda completa y pasó las demás, sin que se llegara a ver el error; y cambiar de idioma con la ventana de comer abierta, o con el libro sobre la tienda, no tiene prueba de juego propia. Ideas para después, cada una con su spec: bañar y limpiar, día y noche, clínica veterinaria y acuario con delfines.
 
 **Más adelante:** clínica veterinaria, bañar animales, limpiar jaulas, ciclo día-noche, acuario con delfines, más animales y zonas.
 
