@@ -19,7 +19,7 @@ def text(d, xy, s, size, fill, stroke, sw, anchor='mm'):
 # El icono 512 y los iconos de Android los genera make_icon.py (león dibujado); ejecutarlo antes.
 
 # --- Gráfico de funciones 1024x500
-shot = Image.open('out/2-entrada.png').convert('RGB')
+shot = Image.open('out/entrada.png').convert('RGB')
 bg = shot.crop((0, 200, 1920, 200+ int(1920*500/1024))).resize((1024, 500), Image.LANCZOS)
 bg = bg.filter(ImageFilter.GaussianBlur(3))
 ov = Image.new('RGBA', (1024, 500), (20, 50, 20, 120))
@@ -37,7 +37,10 @@ text(tag, (330, 430), 'Sin anuncios · Para peques de 5 a 12 años', 26, (255, 2
 g.convert('RGB').save(OUT + 'grafico-funciones-1024x500.png')
 
 # --- Capturas (16:9, 1920x1080; Play admite 320-3840 px por lado)
-for src, dst in [('leon-carne', 'captura-1-dar-de-comer'), 
-                 ('5-tienda', 'captura-2-tienda'), ('2-entrada', 'captura-3-entrada')]:
+# De los recintos shots.mjs saca varias tomas (los animales pasean): aquí se elige la mejor de cada uno.
+SHOTS = [('leones-5', 'captura-1-leones'), ('pantera-comiendo', 'captura-2-dar-de-comer'),
+         ('cabras-5', 'captura-3-cabras'), ('tienda', 'captura-4-tienda'), ('libro-mary', 'captura-5-libro'),
+         ('panteras-5', 'captura-6-panteras'), ('titulo', 'captura-7-titulo')]
+for src, dst in SHOTS:
     Image.open(f'out/{src}.png').convert('RGB').save(OUT + dst + '.png')
 print(os.listdir(OUT))

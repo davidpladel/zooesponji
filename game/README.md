@@ -18,7 +18,7 @@ npx cap sync android # copia la build al proyecto Android
 npx cap open android # abre Android Studio (▶ Run para probar en el móvil)
 ```
 
-Icono y ficha de Play (desde `game/store/`, Python + Pillow + numpy): `python make_icon.py` dibuja el león y genera el icono 512, los iconos de Android y los splash; después `python make.py` compone el gráfico de funciones 1024×500 y copia las capturas a `play/`. El splash usa la letra `store/fonts/Baloo2.ttf` sobre el azul cielo `#58B0F0`.
+Icono y ficha de Play (desde `game/store/`, Python + Pillow + numpy): `python make_icon.py` dibuja el león y genera el icono 512, los iconos de Android y los splash; con el juego en marcha (`npm run dev`), `node store/shots.mjs` saca las capturas a `store/out/` (varias tomas de cada recinto, para elegir); después `python make.py` compone el gráfico de funciones 1024×500 y copia las capturas a `play/`. El splash usa la letra `store/fonts/Baloo2.ttf` sobre el azul cielo `#58B0F0`.
 
 ## Arte
 
