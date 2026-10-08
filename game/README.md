@@ -111,4 +111,4 @@ Girar el móvil: los navegadores avisan del giro antes de dar el tamaño nuevo, 
 
 ## Versión
 
-`version` en `package.json` y `versionName` en `android/app/build.gradle`: **2.5.0**. `versionCode` sube en 1 con cada subida a Play: el 5 es la 2.3.0, que está en la prueba cerrada; el **6** queda preparado para la siguiente subida.
+`version` en `package.json` y `versionName` en `android/app/build.gradle`: **2.5.1**. `versionCode` sube en 1 con cada subida a Play: el 5 es la 2.3.0, que está en la prueba cerrada; el **6** es la 2.5.1, compilada y pendiente de subir. La siguiente será el 7.
