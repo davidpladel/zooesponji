@@ -39,6 +39,7 @@ export class FeedScene extends Phaser.Scene {
   private residentId = 'bills';
   private animalId: AnimalId = 'leon';
   private look = 'leon';
+  private companion = false;
   private animal!: Phaser.GameObjects.Sprite | Phaser.GameObjects.Text;
   private baseScale = 1;
   private speech!: UiText;
@@ -58,6 +59,7 @@ export class FeedScene extends Phaser.Scene {
     this.residentId = data.residentId;
     this.animalId = found.resident.species;
     this.look = found.resident.look;
+    this.companion = found.companion === true;
     this.foods.clear();
     this.homes.clear();
     this.dragging = null;
@@ -77,7 +79,7 @@ export class FeedScene extends Phaser.Scene {
     addPanel(this, width / 2, panelY, panelW, panelH);
     // Ventana con cielo y prado donde se asoma el animal.
     this.add.image(width / 2, height * 0.37, sceneryTexture(this, panelW * 0.9, height * 0.44));
-    this.animal = animalPortrait(this, this.animalId, width / 2, height * 0.37, height * 0.3, this.look);
+    this.animal = animalPortrait(this, this.animalId, width / 2, height * 0.37, height * 0.3, this.look, this.companion);
     this.baseScale = this.animal.scaleX;
     const title = t(`book.page.${this.residentId}.title` as StringKey);
     addRibbonTitle(this, width / 2, top, Math.min(panelW * 0.6, 440), Phaser.Math.Clamp(height * 0.14, 40, 80), title);

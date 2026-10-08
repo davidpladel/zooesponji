@@ -122,7 +122,7 @@ export function createAnimal(scene: Phaser.Scene, species: AnimalId, x: number, 
   );
 }
 
-/** Retrato grande del animal (pose quieta de perfil, la más reconocible) con escala entera para que el pixel art se vea nítido. */
+/** Retrato grande del animal, o de su acompañante con `companion` (pose quieta de perfil, la más reconocible) con escala entera para que el pixel art se vea nítido. */
 export function animalPortrait(
   scene: Phaser.Scene,
   species: AnimalId,
@@ -130,8 +130,14 @@ export function animalPortrait(
   y: number,
   targetHeight: number,
   look: string = species,
+  companion = false,
 ): Phaser.GameObjects.Sprite | Phaser.GameObjects.Text {
   const art = getArt();
+  const sheet = companion ? art?.companions[species] : undefined;
+  if (sheet) {
+    const scale = Math.max(1, Math.floor(targetHeight / sheet.frameHeight));
+    return scene.add.sprite(x, y, companionKey(species), idleFrame('right')).setScale(scale);
+  }
   if (art) {
     const use = lookOr(look, species);
     const scale = Math.max(1, Math.floor(targetHeight / animalSheet(art, use).frameHeight));

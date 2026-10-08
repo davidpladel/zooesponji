@@ -59,6 +59,38 @@ test('tocar al león: la cuidadora entra en su recinto y se le da de comer arras
   expect(await page.evaluate(() => window.__ZOO__!.activeScenes())).not.toContain('Feed');
 });
 
+test('a Sasha, la leona, se le da de comer como al león', async ({ page }) => {
+  await startGame(page);
+  // Sin el arte no hay leona paseando por el recinto.
+  const there = await page.evaluate(() => window.__ZOO__!.residentScreenPos('sasha') !== null);
+  test.skip(!there, 'La leona solo sale con el arte importado');
+
+  expect(await page.evaluate(() => window.__ZOO__!.feedResident('sasha'))).toBe(true);
+  await page.waitForFunction(() => window.__ZOO__?.activeScenes().includes('Feed'), undefined, { timeout: 90_000 });
+  expect(await page.evaluate(() => window.__ZOO__!.keeperInPen('leon'))).toBe(true);
+  expect(await page.evaluate(() => window.__ZOO__!.busLog())).toContain('feed-opened');
+
+  await dragFood(page, 'carne');
+  await expect.poll(() => page.evaluate(() => window.__ZOO__!.hudCoinsText())).toBe('1');
+
+  await page.keyboard.press('Escape');
+  await page.waitForFunction(() => !window.__ZOO__?.activeScenes().includes('Feed'));
+
+  // Con el dedo: tocarla a ella abre su comida, no la de Bills.
+  const pos = (await page.evaluate(() => window.__ZOO__!.residentScreenPos('sasha')))!;
+  const box = await canvasBox(page);
+  await page.mouse.click(box.x + pos.x, box.y + pos.y);
+  await page.waitForFunction(() => window.__ZOO__?.activeScenes().includes('Feed'), undefined, { timeout: 90_000 });
+});
+
+test('la ventana de dar de comer se abre para Sasha aunque no haya arte', async ({ page }) => {
+  await startGame(page);
+  await page.evaluate(() => window.__ZOO__!.openFeed('sasha'));
+  await page.waitForFunction(() => window.__ZOO__?.activeScenes().includes('Feed'));
+  await dragFood(page, 'carne');
+  await expect.poll(() => page.evaluate(() => window.__ZOO__!.hudCoinsText())).toBe('1');
+});
+
 test('con el dedo: tocar al animal que está al lado abre su comida', async ({ page }) => {
   await startGame(page);
   await page.evaluate(() => window.__ZOO__!.feedResident('bills'));
