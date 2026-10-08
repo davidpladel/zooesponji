@@ -18,22 +18,28 @@ def text(d, xy, s, size, fill, stroke, sw, anchor='mm'):
 
 # El icono 512 y los iconos de Android los genera make_icon.py (león dibujado); ejecutarlo antes.
 
-# --- Gráfico de funciones 1024x500
-shot = Image.open('out/entrada.png').convert('RGB')
-bg = shot.crop((0, 200, 1920, 200+ int(1920*500/1024))).resize((1024, 500), Image.LANCZOS)
-bg = bg.filter(ImageFilter.GaussianBlur(3))
-ov = Image.new('RGBA', (1024, 500), (20, 50, 20, 120))
-g = Image.alpha_composite(bg.convert('RGBA'), ov)
-d = ImageDraw.Draw(g)
-text(d, (330, 190), 'Zoo Esponji', 92, (255, 214, 64), (90, 45, 10), 8)
-text(d, (300, 275), 'Da de comer a los animales', 30, (255, 255, 255), (30, 60, 20), 5)
-text(d, (300, 315), 'y abre tu propio zoo', 30, (255, 255, 255), (30, 60, 20), 5)
+# --- Gráfico de funciones 1024x500: la portada pintada, el nombre como en el juego y el león del icono
+BALOO = 'fonts/Baloo2.ttf'
+def baloo(d, xy, s, size, fill, stroke, sw):
+    f = ImageFont.truetype(BALOO, size)
+    f.set_variation_by_name('ExtraBold')
+    d.text(xy, s, font=f, fill=fill, anchor='mm', stroke_width=sw, stroke_fill=stroke)
+
+cover = Image.open('../public/assets/ui/title-bg.webp').convert('RGB')
+h = int(cover.width * 500 / 1024)
+top = int((cover.height - h) * 0.42)
+g = cover.crop((0, top, cover.width, top + h)).resize((1024, 500), Image.LANCZOS).convert('RGBA')
 lion = Image.open('out/leon-icono-master.png')
 lion = lion.crop(lion.getbbox())
-lion = lion.resize((int(lion.width * 440 / lion.height), 440), Image.LANCZOS)
-g.alpha_composite(lion, (1024 - lion.width - 50, 500 - lion.height - 20))
-tag = ImageDraw.Draw(g)
-text(tag, (330, 430), 'Sin anuncios · Para peques de 5 a 12 años', 26, (255, 255, 255), (30, 60, 20), 4)
+lion = lion.resize((int(lion.width * 430 / lion.height), 430), Image.LANCZOS)
+g.alpha_composite(lion, (1024 - lion.width - 45, 500 - lion.height - 25))
+d = ImageDraw.Draw(g)
+CX = 330
+baloo(d, (CX, 120), 'Zoo Esponji', 108, (255, 200, 61), (255, 255, 255), 16)
+baloo(d, (CX, 120), 'Zoo Esponji', 108, (255, 200, 61), (138, 59, 18), 7)
+baloo(d, (CX, 245), 'Da de comer a los animales', 40, (255, 255, 255), (90, 50, 16), 5)
+baloo(d, (CX, 295), 'y abre tu propio zoo', 40, (255, 255, 255), (90, 50, 16), 5)
+baloo(d, (CX, 425), 'Sin anuncios · Para peques de 5 a 12 años', 28, (255, 255, 255), (90, 50, 16), 4)
 g.convert('RGB').save(OUT + 'grafico-funciones-1024x500.png')
 
 # --- Capturas (16:9, 1920x1080; Play admite 320-3840 px por lado)
