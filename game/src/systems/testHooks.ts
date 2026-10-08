@@ -32,6 +32,7 @@ export interface ZooTestApi {
   openFeed(residentId: string): void;
   feedTargets(): { animal: Vec; foods: Partial<Record<FoodId, Vec>> } | null;
   isFeedBusy(): boolean;
+  feedFoodsHome(): boolean;
   openShop(): void;
   shopCardScreenPos(itemId: string): Vec | null;
   shopCardStatus(itemId: string): string | null;
@@ -128,6 +129,7 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
     },
     feedTargets: () => activeScene<FeedScene>('Feed')?.targetsOnScreen() ?? null,
     isFeedBusy: () => activeScene<FeedScene>('Feed')?.isBusy() ?? false,
+    feedFoodsHome: () => activeScene<FeedScene>('Feed')?.foodsAtHome() ?? false,
     openShop: () => {
       if (game.scene.isActive('World')) game.scene.pause('World');
       game.scene.start('Shop');

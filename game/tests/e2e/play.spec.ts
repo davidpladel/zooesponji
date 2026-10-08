@@ -40,7 +40,7 @@ async function dragFood(page: Page, food: string): Promise<void> {
 test('tocar al león: la cuidadora entra en su recinto y se le da de comer arrastrando', async ({ page }) => {
   await startGame(page);
   expect(await page.evaluate(() => window.__ZOO__!.feedResident('bills'))).toBe(true);
-  await page.waitForFunction(() => window.__ZOO__?.activeScenes().includes('Feed'), undefined, { timeout: 30_000 });
+  await page.waitForFunction(() => window.__ZOO__?.activeScenes().includes('Feed'), undefined, { timeout: 90_000 });
   expect(await page.evaluate(() => window.__ZOO__!.keeperInPen('leon'))).toBe(true);
 
   await dragFood(page, 'carne');
@@ -62,7 +62,7 @@ test('tocar al león: la cuidadora entra en su recinto y se le da de comer arras
 test('con el dedo: tocar al animal que está al lado abre su comida', async ({ page }) => {
   await startGame(page);
   await page.evaluate(() => window.__ZOO__!.feedResident('bills'));
-  await page.waitForFunction(() => window.__ZOO__?.activeScenes().includes('Feed'), undefined, { timeout: 30_000 });
+  await page.waitForFunction(() => window.__ZOO__?.activeScenes().includes('Feed'), undefined, { timeout: 90_000 });
   await page.keyboard.press('Escape');
   await page.waitForFunction(() => !window.__ZOO__?.activeScenes().includes('Feed'));
 

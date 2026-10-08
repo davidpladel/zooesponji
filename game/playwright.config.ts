@@ -2,7 +2,10 @@ import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
   testDir: 'tests/e2e',
-  timeout: 60_000, // la cuidadora empieza en la entrada y los paseos son largos
+  // Los topes solo cazan cuelgues, no miden velocidad: con la máquina cargada el juego va a pocos
+  // fotogramas y todo tarda varias veces más (una prueba normal dura 5–25 s; los paseos, unos 12 s).
+  timeout: 180_000,
+  expect: { timeout: 15_000 },
   retries: process.env.CI ? 1 : 0,
   use: {
     ...devices['Desktop Chrome'],
