@@ -46,7 +46,7 @@ g.convert('RGB').save(OUT + 'grafico-funciones-1024x500.png')
 # De los recintos shots.mjs saca varias tomas (los animales pasean): aquí se elige la mejor de cada uno.
 SHOTS = [('leones-5', 'captura-1-leones'), ('pantera-comiendo', 'captura-2-dar-de-comer'),
          ('cabras-5', 'captura-3-cabras'), ('tienda', 'captura-4-tienda'), ('libro-mary', 'captura-5-libro'),
-         ('panteras-5', 'captura-6-panteras'), ('titulo', 'captura-7-titulo')]
+         ('panteras-5', 'captura-6-panteras')]
 for src, dst in SHOTS:
     Image.open(f'out/{src}.png').convert('RGB').save(OUT + dst + '.png')
 print(os.listdir(OUT))
