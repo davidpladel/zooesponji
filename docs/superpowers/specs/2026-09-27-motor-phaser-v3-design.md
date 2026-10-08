@@ -440,6 +440,12 @@ Cada hito termina con algo jugable.
   así que sigue sin hacer falta puerta parental; esa misma página es la URL para la ficha de Google
   Play (`davidpladel.com/zoo/privacidad.html`). «Salir» solo sale en la app y pasa por el «¿Salir?»
   de siempre. El botón atrás cierra primero la página de privacidad.
+- **Sasha come y «Salir» cierra del todo (2026-10-08, en la 2.5.1):** la leona deja de ser solo
+  decorado: es la `companion` del recinto del león en `data/pens.ts` (id `sasha`), se la toca y se le
+  da de comer como a Bills (misma especie, misma comida y monedas), sin contar como animal del recinto
+  ni salir en la tienda. Es la única acompañante. En Android, `autoRemoveFromRecents` en el manifiesto
+  hace que al salir con «Salir» (o atrás en la portada) el juego desaparezca de las aplicaciones
+  recientes; salir con el botón de inicio lo deja en recientes, como antes.
 
 ### Pendiente fuera de los hitos
 
