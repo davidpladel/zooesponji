@@ -20,6 +20,7 @@ async function exitApp(): Promise<void> {
     // Sin sesión (aún en el título) no hay nada que guardar.
   }
   // Antes de cerrar: al salir así, Android no da tiempo a que el aviso de segundo plano guarde nada.
+  // Solo guarda en el móvil; no espera a la red.
   try {
     await getAnalytics()?.close();
   } catch {

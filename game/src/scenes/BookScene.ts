@@ -162,7 +162,9 @@ export class BookScene extends Phaser.Scene {
     this.arrows[0]?.setVisible(this.index > 0);
     this.arrows[1]?.setVisible(this.index < this.pages.length - 1);
     void getSession().setBookPage(page.id);
-    const kind: BookPageKind = !isContentPage(page) ? 'paso' : isPageUnlocked(getSession().state, page) ? 'contenido' : 'bloqueada';
+    // La portada lleva el logo, no un personaje: no cuenta como página leída.
+    const passing = !isContentPage(page) || page.picture.kind === 'logo';
+    const kind: BookPageKind = passing ? 'paso' : isPageUnlocked(getSession().state, page) ? 'contenido' : 'bloqueada';
     bus.emit('book-page-shown', { pageId: page.id, kind });
     if (page.role === 'index') this.showIndex();
     else if (page.role === 'divider') this.showDivider(page);
