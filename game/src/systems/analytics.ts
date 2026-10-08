@@ -52,6 +52,8 @@ export class Analytics {
   private ready = false;
   /** Alguien pidió enviar antes de tiempo: se hace al terminar de arrancar. */
   private flushAsked = false;
+  /** El envío lanzado al irse a segundo plano: quien cierra el juego puede esperarlo. */
+  private leaving: Promise<void> | null = null;
   private hooks: AnalyticsHooks | null = null;
   private visitorId = '';
   private screen = '';
@@ -198,7 +200,7 @@ export class Analytics {
       const seconds = Math.round((now - this.startedAt) / 1000);
       if (this.active) this.notify((hooks) => hooks.goingBackground(seconds));
       this.event('sesion', 'fin', durationBucket(seconds), seconds);
-      void this.flush();
+      this.leaving = this.flush();
       return;
     }
     if (this.hiddenAt === null) return;
@@ -212,6 +214,18 @@ export class Analytics {
     }
     this.startedAt = now;
     if (this.active) this.notify((hooks) => hooks.resumed());
+  }
+
+  /**
+   * El jugador ha pulsado «Salir»: Android destruye la pantalla al instante y el aviso de segundo plano
+   * no llega a guardar nada. Aquí se apunta el fin del rato y se espera, con tope, a que quede guardado
+   * y, si hay red, enviado.
+   */
+  async close(limitMs = 1500): Promise<void> {
+    this.setBackground(true);
+    const leaving = this.leaving;
+    if (!leaving) return;
+    await Promise.race([leaving.catch(() => {}), new Promise<void>((resolve) => setTimeout(resolve, limitMs))]);
   }
 
   /** Solo el mensaje, sin traza ni direcciones, y se envía ya: tras un error puede no haber otra ocasión. */
