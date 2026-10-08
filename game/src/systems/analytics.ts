@@ -298,8 +298,10 @@ export class Analytics {
     } catch {
       // Sin almacén no se sabe si es nuevo: mejor no contar que contar de más.
     }
-    this.event('sesion', 'inicio');
-    for (const flag of flags) this.event('activo', flag, flag === 'nuevo' ? cohort : undefined);
+    // La versión va en el nombre: sesiones y jugadores del día por versión, sin usar segmentos.
+    const version = this.deps.version || undefined;
+    this.event('sesion', 'inicio', version);
+    for (const flag of flags) this.event('activo', flag, flag === 'nuevo' ? cohort : flag === 'dia' ? version : undefined);
     for (const flag of returns) this.event('activo', flag, cohort);
     if (this.screen) this.track({ kind: 'screen', name: this.screen });
     this.notify((hooks) => hooks.sessionStarted(flags));

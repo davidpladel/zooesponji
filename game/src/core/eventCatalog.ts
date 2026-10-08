@@ -63,14 +63,17 @@ function bucket(value: number, edges: Edges, last: string): string {
   return last;
 }
 
+/** Matomo guarda el nombre «0» como vacío y lo pierde en los informes: el tramo de cero lleva otro nombre. */
+const ZERO = 'cero';
+
 /** Comidas dadas en un rato de juego. */
-export const feedsBucket = (n: number): string => bucket(n, [[0, '0'], [2, '1-2'], [5, '3-5'], [10, '6-10'], [20, '11-20']], '21+');
+export const feedsBucket = (n: number): string => bucket(n, [[0, ZERO], [2, '1-2'], [5, '3-5'], [10, '6-10'], [20, '11-20']], '21+');
 /** Animales distintos alimentados en un rato de juego. */
-export const animalsBucket = (n: number): string => bucket(n, [[0, '0'], [1, '1'], [3, '2-3'], [6, '4-6']], '7+');
+export const animalsBucket = (n: number): string => bucket(n, [[0, ZERO], [1, '1'], [3, '2-3'], [6, '4-6']], '7+');
 /** Páginas leídas en una apertura del libro. */
-export const pagesBucket = (n: number): string => bucket(n, [[0, '0'], [1, '1'], [3, '2-3'], [7, '4-7']], '8+');
+export const pagesBucket = (n: number): string => bucket(n, [[0, ZERO], [1, '1'], [3, '2-3'], [7, '4-7']], '8+');
 /** Páginas del libro leídas en total. */
-export const bookBucket = (n: number): string => bucket(n, [[0, '0'], [5, '1-5'], [15, '6-15'], [30, '16-30']], '31+');
+export const bookBucket = (n: number): string => bucket(n, [[0, ZERO], [5, '1-5'], [15, '6-15'], [30, '16-30']], '31+');
 export const durationBucket = (seconds: number): string => bucket(seconds, [[59, '<1m'], [179, '1-3m'], [599, '3-10m'], [1799, '10-30m']], '30m+');
 /** Alineado con los precios de la tienda: dice qué se puede permitir el jugador. */
 export const coinsBucket = (coins: number): string =>

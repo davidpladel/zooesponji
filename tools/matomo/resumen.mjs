@@ -41,11 +41,16 @@ out.push('## Muestra', '', table(['Dato', 'Valor'], [
   ['Jugadores por día (suma)', playerDays],
   ['Sesiones', sessions],
   ['Comidas por sesión (media)', meanText(FEED.reduce((s, a) => s + n(a), 0) / sessions, sessions)],
-  ['Comidas por rato de juego (mediana, tramo)', median('rato-comidas', ['0', '1-2', '3-5', '6-10', '11-20', '21+'])],
-  ['Animales distintos por rato (mediana, tramo)', median('rato-animales', ['0', '1', '2-3', '4-6', '7+'])],
+  ['Comidas por rato de juego (mediana, tramo)', median('rato-comidas', ['cero', '1-2', '3-5', '6-10', '11-20', '21+'])],
+  ['Animales distintos por rato (mediana, tramo)', median('rato-animales', ['cero', '1', '2-3', '4-6', '7+'])],
   ['Duración del rato (mediana, tramo)', median('fin', ['<1m', '1-3m', '3-10m', '10-30m', '30m+'])],
   ['Eventos perdidos (sin red o caducados)', `${lost} frente a ${allEvents} recibidos`],
 ]), '');
+
+out.push('## Versiones del juego', '', table(
+  ['Versión', 'Sesiones', 'Jugadores por día'],
+  [...new Set([...of('inicio'), ...of('dia')].map((r) => r.name))].sort().map((v) => [v || '(sin versión)', n('inicio', v), n('dia', v)]),
+), '');
 
 out.push('## Animales: quién gusta más entre quienes lo tienen', '', table(
   ['Animal', 'Le dan de comer (de quienes lo tienen)', 'Comidas', 'Ventanas', 'Ventanas vacías'],
@@ -72,7 +77,7 @@ out.push('## Recintos: visitados, alimentados y deseados', '', table(
 out.push('## Libro', '', table(['Dato', 'Valor'], [
   ['Abren el libro (de los jugadores del día)', share(n('dia-pantalla', 'libro'), playerDays)],
   ['Aperturas', n('abre')],
-  ['Páginas leídas por apertura (mediana, tramo)', median('libro-fin', ['0', '1', '2-3', '4-7', '8+'])],
+  ['Páginas leídas por apertura (mediana, tramo)', median('libro-fin', ['cero', '1', '2-3', '4-7', '8+'])],
 ]), '', table(
   ['Página', 'Leída (veces)', 'Segundos (media)', 'Hojeada', 'Vista bloqueada'],
   top([...new Set([...of('lee'), ...of('hojea'), ...of('bloqueada')].map((r) => r.name))].map((name) => ({ name, events: n('lee', name), seen: n('lee', name) + n('hojea', name) + n('bloqueada', name) })), 'seen', 80)

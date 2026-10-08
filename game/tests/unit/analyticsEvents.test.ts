@@ -310,7 +310,7 @@ describe('GameTracker: sesión', () => {
     expect(t.sent).toEqual(expect.arrayContaining([
       'tiene | tiene-recinto | leon', 'tiene | tiene-recinto | cabra', 'tiene | tiene-animal | leon/bills',
       'tiene | tiene-animal | cabra/gordi', 'tiene | tiene-saldo | 50-149',
-      'tiene | tiene-paginas | 0', 'tiene | tiene-ajuste | musica-on', 'tiene | tiene-ajuste | sonidos-on',
+      'tiene | tiene-paginas | cero', 'tiene | tiene-ajuste | musica-on', 'tiene | tiene-ajuste | sonidos-on',
     ]));
     expect(t.values.get('tiene | tiene-recinto | cabra')).toBe(1);
     expect(t.sent.some((k) => k.startsWith('tiene | tiene-recinto | panda'))).toBe(false);
@@ -336,7 +336,7 @@ describe('GameTracker: sesión', () => {
     expect(t.values.get('sesion | rato-animales | 2-3')).toBe(2);
     t.tracker.resumed();
     t.tracker.goingBackground(5);
-    expect(t.values.get('sesion | rato-comidas | 0')).toBe(0);
+    expect(t.values.get('sesion | rato-comidas | cero')).toBe(0);
   });
 
   it('las pantallas de tienda, libro y ajustes cuentan para el alcance; el mapa no', async () => {
