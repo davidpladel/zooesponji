@@ -3,6 +3,8 @@
 import { randomBytes } from 'node:crypto';
 import { loadConfig } from './config.mjs';
 
+// Matomo descarta en silencio lo que se identifica como un programa (Node): la sonda se presenta como la app en un móvil.
+const USER_AGENT = 'Mozilla/5.0 (Linux; Android 14; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Mobile Safari/537.36';
 const config = loadConfig();
 const hex = () => randomBytes(8).toString('hex');
 const visitor = hex();
@@ -15,7 +17,7 @@ const hit = (name, hoursAgo) => {
 const body = (requests) => JSON.stringify({ requests });
 // Solo se imprime el código HTTP: el cuerpo de la respuesta no se muestra.
 const post = async (label, requests) => {
-  const response = await fetch(`${config.url}/matomo.php`, { method: 'POST', body: body(requests), headers: { 'Content-Type': 'text/plain' } });
+  const response = await fetch(`${config.url}/matomo.php`, { method: 'POST', body: body(requests), headers: { 'Content-Type': 'text/plain', 'User-Agent': USER_AGENT } });
   console.log(`${label}: HTTP ${response.status}`);
 };
 
