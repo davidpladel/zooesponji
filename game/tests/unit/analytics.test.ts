@@ -212,6 +212,42 @@ describe('Analytics: apagar y encender en Ajustes', () => {
 });
 
 describe('Analytics: segundo plano', () => {
+  it('al salir del juego el fin del rato queda enviado antes de cerrar', async () => {
+    const t = setup();
+    await t.analytics.start();
+    await t.analytics.flush();
+    t.clock.time += 40_000;
+    t.analytics.event('ajustes', 'salir-si');
+    await t.analytics.close();
+    // Sin esperar nada más: al volver de `close()` la app se cierra.
+    expect(t.names()).toEqual(expect.arrayContaining(['ajustes/salir-si', 'sesion/fin']));
+  });
+
+  it('al salir sin red el fin del rato queda guardado para la próxima vez', async () => {
+    const t = setup();
+    await t.analytics.start();
+    await t.analytics.flush();
+    t.net.ok = false;
+    t.clock.time += 40_000;
+    await t.analytics.close();
+    expect(await t.store.get(QUEUE_KEY)).toContain('e_a=fin');
+  });
+
+  it('al salir no espera más que el tope si el envío se queda colgado', async () => {
+    const t = setup({ send: () => new Promise<boolean>(() => {}) });
+    await t.analytics.start();
+    t.clock.time += 40_000;
+    await expect(t.analytics.close(20)).resolves.toBeUndefined();
+    expect(await t.store.get(QUEUE_KEY)).toContain('e_a=fin');
+  });
+
+  it('salir con las estadísticas apagadas no hace nada ni lanza', async () => {
+    const t = setup({ settings: { ...defaultSettings(), stats: false } });
+    await t.analytics.start();
+    await expect(t.analytics.close()).resolves.toBeUndefined();
+    expect(t.bodies).toEqual([]);
+  });
+
   it('al irse envía el fin de sesión con los segundos jugados', async () => {
     const t = setup();
     await t.analytics.start();
