@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { byAction, events, meanText, medianBucket, medianText, parseEnv, redact, share, table, toRows, truncated } from './lib.mjs';
+import { actionTotals, total } from './lib.mjs';
 
 test('parseEnv lee claves, ignora comentarios y quita comillas', () => {
   assert.deepEqual(parseEnv('# nota\nMATOMO_URL=https://stats.example.com/\nMATOMO_SITE="7"\n\nMATOMO_TOKEN=abc=def\n'), {
@@ -98,4 +99,18 @@ test('redact enmascara secretos y su forma codificada', () => {
   assert.equal(redact('fallo con tok123 y https://h.example/x', ['tok123', 'https://h.example']), 'fallo con *** y ***/x');
   assert.equal(redact('a%20b y a b', ['a b']), '*** y ***');
   assert.equal(redact('nada', ['', undefined]), 'nada');
+});
+
+test('el total de una acción sale del informe por acción, que no pierde los eventos sin nombre', () => {
+  // En el informe plano «acción × nombre», Matomo omite los eventos sin nombre de una acción que también tiene eventos con nombre.
+  const index = byAction(toRows([{ label: 'inicio - 2.5.0', nb_events: 1 }]));
+  const totals = actionTotals([{ label: 'inicio', nb_events: 8 }, { label: 'dia', nb_events: '3' }]);
+  assert.equal(total(totals, index, 'inicio'), 8);
+  assert.equal(total(totals, index, 'dia'), 3);
+});
+
+test('sin informe por acción, el total es la suma de los nombres', () => {
+  const index = byAction(toRows([{ label: 'come - a', nb_events: 3 }, { label: 'come - b', nb_events: 2 }]));
+  assert.equal(total(actionTotals({ result: 'error' }), index, 'come'), 5);
+  assert.equal(total(actionTotals([]), index, 'nada'), 0);
 });

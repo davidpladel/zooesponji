@@ -13,6 +13,7 @@ const config = loadConfig();
 const eventsReport = { secondaryDimension: 'eventName', flat: '1' };
 const downloads = [
   ['events.json', 'Events.getAction', { period: 'range', date, ...eventsReport }],
+  ['actions.json', 'Events.getAction', { period: 'range', date }],
   ['events-daily.json', 'Events.getAction', { period: 'day', date, ...eventsReport }],
   ['visits-daily.json', 'VisitsSummary.get', { period: 'day', date }],
 ];
