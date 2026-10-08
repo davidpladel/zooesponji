@@ -41,13 +41,17 @@ describe('nombres combinados', () => {
 });
 
 describe('tramos, en sus bordes', () => {
-  it.each([[0, '0'], [1, '1-2'], [2, '1-2'], [3, '3-5'], [5, '3-5'], [6, '6-10'], [10, '6-10'], [11, '11-20'], [20, '11-20'], [21, '21+']])(
+  it('ningún tramo se llama «0»: Matomo guarda ese nombre como vacío y lo pierde en los informes', () => {
+    for (const name of [feedsBucket(0), animalsBucket(0), pagesBucket(0), bookBucket(0), coinsBucket(0), durationBucket(0), pendingBucket(0)]) expect(name).not.toBe('0');
+  });
+
+  it.each([[0, 'cero'], [1, '1-2'], [2, '1-2'], [3, '3-5'], [5, '3-5'], [6, '6-10'], [10, '6-10'], [11, '11-20'], [20, '11-20'], [21, '21+']])(
     'comidas %i → %s', (n, label) => expect(feedsBucket(n)).toBe(label));
-  it.each([[0, '0'], [1, '1'], [2, '2-3'], [3, '2-3'], [4, '4-6'], [6, '4-6'], [7, '7+']])(
+  it.each([[0, 'cero'], [1, '1'], [2, '2-3'], [3, '2-3'], [4, '4-6'], [6, '4-6'], [7, '7+']])(
     'animales %i → %s', (n, label) => expect(animalsBucket(n)).toBe(label));
-  it.each([[0, '0'], [1, '1'], [2, '2-3'], [3, '2-3'], [4, '4-7'], [7, '4-7'], [8, '8+']])(
+  it.each([[0, 'cero'], [1, '1'], [2, '2-3'], [3, '2-3'], [4, '4-7'], [7, '4-7'], [8, '8+']])(
     'páginas de una lectura %i → %s', (n, label) => expect(pagesBucket(n)).toBe(label));
-  it.each([[0, '0'], [1, '1-5'], [5, '1-5'], [6, '6-15'], [15, '6-15'], [16, '16-30'], [30, '16-30'], [31, '31+']])(
+  it.each([[0, 'cero'], [1, '1-5'], [5, '1-5'], [6, '6-15'], [15, '6-15'], [16, '16-30'], [30, '16-30'], [31, '31+']])(
     'páginas del libro %i → %s', (n, label) => expect(bookBucket(n)).toBe(label));
   it.each([[0, '<1m'], [59, '<1m'], [60, '1-3m'], [179, '1-3m'], [180, '3-10m'], [599, '3-10m'], [600, '10-30m'], [1799, '10-30m'], [1800, '30m+']])(
     'duración %i s → %s', (s, label) => expect(durationBucket(s)).toBe(label));

@@ -81,7 +81,7 @@ Sustituyen a `juego / comida-*`, que deja de enviarse. Un evento de comida se ll
 | `indice` | capítulo | | toque en una fila del índice |
 | `libro-fin` | tramo de páginas leídas | segundos abierto | se cierra el libro |
 
-Sustituyen a `libro / pagina`. **Corrige un fallo actual:** hoy cuenta como página vista la que la tienda deja marcada tras una compra, y las bloqueadas cuentan igual que las leídas. Tramos de páginas: `0`, `1`, `2-3`, `4-7`, `8+`.
+Sustituyen a `libro / pagina`. **Corrige un fallo actual:** hoy cuenta como página vista la que la tienda deja marcada tras una compra, y las bloqueadas cuentan igual que las leídas. Tramos de páginas: `cero`, `1`, `2-3`, `4-7`, `8+`. El tramo de cero se llama `cero` en todos los tramos: Matomo guarda el nombre «0» como vacío y lo pierde en los informes (comprobado el 2026-10-08).
 
 #### Ajustes y salida (categoría `ajustes`)
 
@@ -94,7 +94,7 @@ Se mantienen `musica`, `sonidos`, `joystick`, `idioma`. Se añaden `privacidad` 
 | `tiene-recinto` | `P` | animales que tiene en él |
 | `tiene-animal` | `R` | (uno por cada animal que tiene) |
 | `tiene-saldo` | tramo de monedas | |
-| `tiene-paginas` | tramo de páginas leídas del libro: `0`, `1-5`, `6-15`, `16-30`, `31+` | |
+| `tiene-paginas` | tramo de páginas leídas del libro: `cero`, `1-5`, `6-15`, `16-30`, `31+` | |
 | `tiene-ajuste` | `musica-on`, `sonidos-off`, `joystick-on`… | |
 
 Tramos de saldo, alineados con los precios: `0-19`, `20-49`, `50-149`, `150-399`, `400-899`, `900-1599`, `1600+`. Es el denominador: «de los que tienen panda, cuántos le dieron de comer».
@@ -127,14 +127,18 @@ En una instalación que ya tenía partida, los pasos que se deducen del guardado
 - `nuevo` gana nombre: la semana de inicio, `AAAA-Snn`.
 - Nuevas acciones `vuelve-d1`, `vuelve-d7`, `vuelve-d30`, nombre = semana de inicio. Cada una se envía una vez en la vida, en la primera sesión que ocurre 1, 7 o 30 días o más después del primer día. Retención = `vuelve-d7` ÷ `nuevo` de la misma semana.
 
+#### Versión del juego
+
+La versión viaja en la dimensión de visita `Version`, que solo se cruza con eventos mediante segmentos (redondeados en modo CNIL). Por eso va además en el nombre de `sesion / inicio` y de `activo / dia`: sesiones y jugadores del día por versión, exactos. Para comparar versiones, cada publicación sube el número de versión.
+
 #### Resumen por rato de juego (categoría `sesion`)
 
 Al pasar a segundo plano, además de `fin` (que gana nombre: tramo de duración):
 
 | Acción | Nombre | Valor |
 |---|---|---|
-| `rato-comidas` | tramo `0`, `1-2`, `3-5`, `6-10`, `11-20`, `21+` | comidas dadas |
-| `rato-animales` | tramo `0`, `1`, `2-3`, `4-6`, `7+` | animales distintos alimentados |
+| `rato-comidas` | tramo `cero`, `1-2`, `3-5`, `6-10`, `11-20`, `21+` | comidas dadas |
+| `rato-animales` | tramo `cero`, `1`, `2-3`, `4-6`, `7+` | animales distintos alimentados |
 
 Tramos de duración: `<1m`, `1-3m`, `3-10m`, `10-30m`, `30m+`. La unidad es el **rato en primer plano**, no la sesión: una sesión interrumpida por una llamada da dos ratos. Las medias por sesión salen de totales ÷ `sesion / inicio`.
 

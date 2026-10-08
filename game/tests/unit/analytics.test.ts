@@ -560,6 +560,22 @@ describe('Analytics: sin conexión', () => {
 });
 
 describe('Analytics: retención y colaborador', () => {
+  it('el inicio de sesión y el aviso del día llevan la versión del juego', async () => {
+    const t = setup();
+    await t.analytics.start();
+    await t.analytics.flush();
+    expect(t.sent().find((p) => p.e_a === 'inicio')?.e_n).toBe('2.5.0');
+    expect(t.sent().find((p) => p.e_a === 'dia')?.e_n).toBe('2.5.0');
+    expect(t.sent().find((p) => p.e_a === 'semana')?.e_n).toBeUndefined();
+  });
+
+  it('sin versión conocida van sin nombre', async () => {
+    const t = setup({ version: '' });
+    await t.analytics.start();
+    await t.analytics.flush();
+    expect(t.sent().find((p) => p.e_a === 'inicio')?.e_n).toBeUndefined();
+  });
+
   it('el nuevo lleva su semana de inicio', async () => {
     const t = setup();
     await t.analytics.start();
