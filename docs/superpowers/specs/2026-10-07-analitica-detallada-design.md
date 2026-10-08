@@ -236,6 +236,15 @@ Clave aparte `zooesponji_v3_reach`. No toca la partida ni `SAVE_VERSION`.
 
 Si el punto 3 falla, las medias por sesión se sacan de los tramos y de `sesion / inicio`, que no dependen de cómo agrupe Matomo.
 
+### Resultado de la sonda (2026-10-08, Matomo 5.14.1)
+
+- **Fechas antiguas sin token:** funcionan. Eventos de hace 3, 20, 30, 72 y 160 horas cayeron en su día real. Los de hace 200 y 400 horas no llegaron: la ventana del servidor es de 7 días, y lo más viejo se descarta sin fecharlo mal.
+- **Días pasados:** los informes de días ya calculados se rehacen solos al llegar un evento atrasado (el del 7 de octubre pasó de 42 a 44 filas).
+- **Modo CNIL:** los informes de eventos sin segmento dan cifras exactas. Los contadores en vivo sí se redondean a decenas y el registro de visitas está apagado.
+- **API:** el informe plano trae columnas separadas de acción y nombre (`Events_EventAction`, `Events_EventName`).
+- **Aviso:** Matomo descarta en silencio (respondiendo 200) lo que llega identificado como un programa y no como un navegador. La app no se ve afectada; la sonda se presenta como un móvil Android.
+- **Pendiente:** confirmar qué pasa con un lote que mezcla eventos buenos y uno demasiado viejo (el informe de hoy estaba en caché al mirarlo), el punto 5.
+
 ## Riesgos y límites
 
 - **Duplicados:** si la app muere después de enviar un lote y antes de confirmarlo, se reenvía al arrancar. Afecta sobre todo al último lote de un rato. No se puede medir; se espera pequeño.
