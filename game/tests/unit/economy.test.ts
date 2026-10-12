@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { addCoins, penCount, buyExtra, initialState, isPenOpen, purchase, openPens, type GameState } from '../../src/core/economy';
+import { adReward, addCoins, penCount, buyExtra, initialState, isPenOpen, purchase, openPens, type GameState } from '../../src/core/economy';
 import { PENS } from '../../src/data/pens';
+import { SHOP_ITEMS } from '../../src/data/shop';
 
 function withCoins(coins: number, extra: Partial<GameState> = {}): GameState {
   return { ...initialState(), coins, shopUnlocked: coins >= 20, ...extra };
@@ -153,5 +154,33 @@ describe('comprar por recinto', () => {
     buy('extra-establo'); // Pepa, gallina: 30
     buy('extra-establo'); // Lucero, caballo: 60
     expect([state.counts.establo, state.coins]).toEqual([3, 510]);
+  });
+});
+
+describe('adReward', () => {
+  /** Estado con abiertos todos los recintos más baratos que `cheapest`. */
+  const withCheapestClosed = (cheapest: number | null): GameState => {
+    const counts = { ...initialState().counts };
+    for (const item of SHOP_ITEMS) if (cheapest === null || item.cost < cheapest) counts[item.penId] = 1;
+    return { ...initialState(), counts };
+  };
+
+  it.each([
+    [50, 10], [100, 10], [150, 15], [250, 25], [400, 40], [600, 60], [900, 90], [1300, 130], [1600, 160],
+  ])('con el recinto de %i como el más barato por abrir, el premio es %i', (cost, reward) => {
+    expect(adReward(withCheapestClosed(cost))).toBe(reward);
+  });
+
+  it('con todo abierto, la décima parte del recinto más caro', () => {
+    expect(adReward(withCheapestClosed(null))).toBe(160);
+  });
+
+  it('al empezar el juego son 10 monedas', () => {
+    expect(adReward(initialState())).toBe(10);
+  });
+
+  it('mira el más barato que queda, no el orden de la tienda', () => {
+    const counts = { ...initialState().counts, pantera: 1, estanque: 1 };
+    expect(adReward({ ...initialState(), counts })).toBe(Math.round(PENS.panda.cost! / 10));
   });
 });

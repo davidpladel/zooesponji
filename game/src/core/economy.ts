@@ -1,6 +1,6 @@
 import { ANIMALS } from '../data/animals';
 import { PEN_IDS, PENS, nextResident, type PenId } from '../data/pens';
-import { SHOP_UNLOCK_COINS, getShopItem, parseExtraItemId } from '../data/shop';
+import { SHOP_ITEMS, SHOP_UNLOCK_COINS, getShopItem, parseExtraItemId } from '../data/shop';
 
 export interface GameState {
   readonly coins: number;
@@ -74,4 +74,16 @@ export function purchase(state: GameState, itemId: string): PurchaseResult {
   if (isPenOpen(state, item.penId)) return { ok: false, error: 'already-owned' };
   if (state.coins < item.cost) return { ok: false, error: 'not-enough-coins' };
   return { ok: true, state: withCount(state, item.penId, 1, item.cost) };
+}
+
+const AD_REWARD_MIN = 10;
+
+/**
+ * Monedas por ver un anuncio: la décima parte del recinto más barato que queda por abrir, con un mínimo.
+ * Con todo abierto, la décima parte del más caro. Así el premio crece con el zoo.
+ */
+export function adReward(state: GameState): number {
+  const closed = SHOP_ITEMS.filter((item) => !isPenOpen(state, item.penId)).map((item) => item.cost);
+  const base = closed.length > 0 ? Math.min(...closed) : Math.max(...SHOP_ITEMS.map((item) => item.cost));
+  return Math.max(AD_REWARD_MIN, Math.round(base / 10));
 }
