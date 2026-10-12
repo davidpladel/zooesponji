@@ -79,7 +79,7 @@ test('al entrar en la tienda salta el panel y el botón verde da las monedas', a
   await expect.poll(() => coins(page)).toBe('10');
   await expect.poll(() => scenes(page)).toContain('Shop');
   expect(await scenes(page)).not.toContain('AdOffer');
-  expect((await log(page)).filter((name) => name.startsWith('ad-'))).toEqual(['ad-offered', 'ad-accepted', 'ad-watched']);
+  expect((await log(page)).filter((name) => name.startsWith('ad-'))).toEqual(['ad-offered', 'ad-accepted', 'ad-closed', 'ad-watched']);
 });
 
 test('la X cierra el panel sin anuncio ni monedas, y no vuelve a saltar al momento', async ({ page }) => {
@@ -172,7 +172,7 @@ test('pausa: al volver al mapa tras 15 minutos salta el panel y el anuncio empie
   // Sin tocar nada: a los 5 segundos empieza el anuncio.
   await expect.poll(() => coins(page), { timeout: 12_000 }).toBe('10');
   await expect.poll(() => scenes(page)).toContain('World');
-  expect((await log(page)).filter((name) => name.startsWith('ad-'))).toEqual(['ad-offered', 'ad-accepted', 'ad-watched']);
+  expect((await log(page)).filter((name) => name.startsWith('ad-'))).toEqual(['ad-offered', 'ad-accepted', 'ad-closed', 'ad-watched']);
 });
 
 test('pausa: la X se salta el anuncio', async ({ page }) => {
