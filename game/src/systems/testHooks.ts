@@ -94,6 +94,8 @@ export interface ZooTestApi {
   /** Con el panel del anuncio abierto: dónde están el botón verde y la X. */
   adOfferPos(key: 'yes' | 'no'): Vec | null;
   adOfferAmount(): number | null;
+  /** Toca la X y, en el mismo instante, la pantalla cambia de tamaño (como al volver de un anuncio a pantalla completa). */
+  adOfferDeclineAndResize(): void;
   /** Milisegundos que quedan de cuenta atrás; `null` si no hay panel o no la tiene. */
   adOfferCountdown(): number | null;
   /** Nombres de los eventos de estadísticas que ha emitido el juego, en orden. */
@@ -216,6 +218,13 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
     adOfferPos: (key) => {
       const scene = activeScene<AdOfferScene>('AdOffer');
       return (key === 'yes' ? scene?.yesPos() : scene?.noPos()) ?? null;
+    },
+    adOfferDeclineAndResize: () => {
+      const scene = activeScene<AdOfferScene>('AdOffer');
+      if (!scene) return;
+      scene.decline();
+      const { gameSize, baseSize, displaySize } = game.scale;
+      game.scale.emit('resize', gameSize, baseSize, displaySize, 0, 0);
     },
     adOfferAmount: () => activeScene<AdOfferScene>('AdOffer')?.offeredAmount() ?? null,
     adOfferCountdown: () => activeScene<AdOfferScene>('AdOffer')?.countdownLeft() ?? null,

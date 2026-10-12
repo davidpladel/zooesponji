@@ -201,3 +201,17 @@ test('pausa: no salta al volver de Ajustes', async ({ page }) => {
   await page.waitForTimeout(1200);
   expect(await scenes(page)).not.toContain('AdOffer');
 });
+
+test('si la pantalla cambia de tamaño justo al cerrarse el panel, el juego no se queda tapado', async ({ page }) => {
+  await startGame(page);
+  await page.evaluate(() => window.__ZOO__!.adsFake('visto'));
+  await page.evaluate(() => window.__ZOO__!.adsAdvance(300));
+  await enterShop(page);
+  await panelOpen(page);
+  await page.evaluate(() => window.__ZOO__!.adOfferDeclineAndResize());
+  await page.waitForTimeout(800);
+  const active = await scenes(page);
+  expect(active).not.toContain('AdOffer');
+  expect(active).toContain('Shop');
+});
+

@@ -34,6 +34,9 @@ export class AdOfferScene extends Phaser.Scene {
   private left = COUNTDOWN_MS;
   private busy = false;
   private fresh = true;
+  /** El panel ya se ha cerrado: un cambio de tamaño que llegue después no debe volver a montarlo. */
+  private closed = false;
+  private onResize: (() => void) | null = null;
   private yes: Phaser.GameObjects.Container | null = null;
   private no: Phaser.GameObjects.Container | null = null;
   private ring: Phaser.GameObjects.Graphics | null = null;
@@ -50,6 +53,7 @@ export class AdOfferScene extends Phaser.Scene {
     // El premio se fija una vez, al abrir el panel: es el que se enseña y el que se paga.
     this.fresh = data.amount === undefined;
     this.amount = data.amount ?? getAds()?.offer(data.slot) ?? 0;
+    this.closed = false;
     this.yes = null;
     this.no = null;
     this.ring = null;
@@ -59,9 +63,11 @@ export class AdOfferScene extends Phaser.Scene {
     const { width, height } = this.scale;
     addVeil(this);
     const restart = (): void => {
+      if (this.closed) return;
       const data: AdOfferSceneData = { slot: this.slot, resume: this.resumeKey, amount: this.amount, left: this.left, busy: this.busy };
       this.scene.restart(data);
     };
+    this.onResize = restart;
     this.scale.once(Phaser.Scale.Events.RESIZE, restart);
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.scale.off(Phaser.Scale.Events.RESIZE, restart));
     if (!getAds()) {
@@ -156,6 +162,10 @@ export class AdOfferScene extends Phaser.Scene {
   }
 
   private finish(): void {
+    // Parar la escena va a la cola de Phaser: hasta entonces, un cambio de tamaño la volvería a montar solo con el velo.
+    this.closed = true;
+    if (this.onResize) this.scale.off(Phaser.Scale.Events.RESIZE, this.onResize);
+    this.onResize = null;
     this.scene.stop();
     this.scene.resume(this.resumeKey);
   }
