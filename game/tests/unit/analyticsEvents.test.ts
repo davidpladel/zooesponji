@@ -416,3 +416,40 @@ describe('GameTracker: nunca rompe el juego', () => {
     expect(t.sent).toEqual([]);
   });
 });
+
+describe('GameTracker: publicidad', () => {
+  it('cada paso del panel se cuenta con el hueco y el saldo que tenía el niño', async () => {
+    const t = setup();
+    await t.tracker.start();
+    t.events.emit('ad-offered', { slot: 'tienda', coins: 25, balance: 120 });
+    t.events.emit('ad-accepted', { slot: 'tienda', balance: 120 });
+    t.events.emit('ad-watched', { slot: 'tienda', coins: 25, balance: 120 });
+    t.events.emit('ad-declined', { slot: 'pausa', balance: 0 });
+
+    expect(t.sent).toEqual([
+      'anuncio | anuncio-ofrece | tienda/50-149',
+      'anuncio | anuncio-acepta | tienda/50-149',
+      'anuncio | anuncio-visto | tienda/50-149',
+      'anuncio | anuncio-no | pausa/0-19',
+    ]);
+    expect(t.values.get('anuncio | anuncio-ofrece | tienda/50-149')).toBe(25);
+    expect(t.values.get('anuncio | anuncio-visto | tienda/50-149')).toBe(25);
+    expect(t.values.get('anuncio | anuncio-acepta | tienda/50-149')).toBeUndefined();
+  });
+
+  it('cortado, fallo y vacío llevan solo el hueco', async () => {
+    const t = setup();
+    await t.tracker.start();
+    t.events.emit('ad-cut', { slot: 'pausa' });
+    t.events.emit('ad-failed', { slot: 'tienda' });
+    t.events.emit('ad-empty', { slot: 'tienda' });
+    expect(t.sent).toEqual(['anuncio | anuncio-cortado | pausa', 'anuncio | anuncio-fallo | tienda', 'anuncio | anuncio-vacio | tienda']);
+  });
+
+  it('con las estadísticas apagadas no se cuenta nada', async () => {
+    const t = setup({ active: false });
+    await t.tracker.start();
+    t.events.emit('ad-offered', { slot: 'tienda', coins: 25, balance: 120 });
+    expect(t.sent).toEqual([]);
+  });
+});

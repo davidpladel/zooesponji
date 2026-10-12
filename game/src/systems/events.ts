@@ -1,3 +1,4 @@
+import type { AdSlot } from '../core/adPacing';
 import type { Settings } from '../core/save';
 import type { Reaction } from '../data/animals';
 import type { FoodId } from '../data/foods';
@@ -72,6 +73,20 @@ export interface GameEvents {
   /** El libro se ha abierto por otra página. */
   'book-page': { pageId: string };
   'settings-changed': { settings: Settings };
+  /** Publicidad con premio (solo Android). `balance`: las monedas que tenía el niño al saltar el panel. */
+  'ad-offered': { slot: AdSlot; coins: number; balance: number };
+  /** Tocó el botón verde, o la cuenta atrás llegó a cero. */
+  'ad-accepted': { slot: AdSlot; balance: number };
+  /** Tocó la X. */
+  'ad-declined': { slot: AdSlot; balance: number };
+  /** Anuncio visto entero: se han pagado `coins`. */
+  'ad-watched': { slot: AdSlot; coins: number; balance: number };
+  /** Anuncio cerrado antes de tiempo. */
+  'ad-cut': { slot: AdSlot };
+  /** El anuncio no se pudo enseñar. */
+  'ad-failed': { slot: AdSlot };
+  /** Las reglas dejaban ofrecerlo y no había anuncio listo. */
+  'ad-empty': { slot: AdSlot };
   toast: { text: string };
 }
 
