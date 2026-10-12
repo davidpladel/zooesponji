@@ -40,8 +40,7 @@ const UNIT_KEYS = ['VITE_ADMOB_REWARDED', 'VITE_ADMOB_REWARDED_INTERSTITIAL'];
 /** Lo que impide publicar en `.env.production.local` (`null`: no existe): anuncios de prueba encendidos o bloques reales que faltan. */
 export function envProblems(text: string | null): string[] {
   const env = new Map<string, string>();
-  for (const line of (text ?? '').split(/?
-/)) {
+  for (const line of (text ?? '').split(/\r?\n/)) {
     const match = /^\s*([A-Z0-9_]+)\s*=\s*(.*?)\s*$/.exec(line);
     if (match) env.set(match[1]!, match[2]!);
   }
