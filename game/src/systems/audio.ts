@@ -15,8 +15,8 @@ export const MUSIC_KEY = 'music';
 const SFX_VOLUME = 0.6;
 const MUSIC_VOLUME = 0.25;
 
-/** Motivos por los que la música se para: menú de ajustes, app en segundo plano, móvil en vertical. */
-export type PauseReason = 'menu' | 'background' | 'rotate';
+/** Motivos por los que la música se para: menú de ajustes, app en segundo plano, móvil en vertical, anuncio en pantalla. */
+export type PauseReason = 'menu' | 'background' | 'rotate' | 'ad';
 
 /** Lo mínimo del gestor de sonido de Phaser que usa el juego (se sustituye en los tests). */
 export interface SoundBackend {
