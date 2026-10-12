@@ -233,7 +233,7 @@ Irán escritos paso a paso en el plan:
 ## Riesgos
 
 - **Pocos anuncios o ninguno en España.** Los anuncios para niños son pocos y en Europa solo se sirven los «limitados». Puede que el intersticial bonificado no tenga. Alternativa, a decidir con David si pasa: que `pausa` use el formato bonificado y pierda la cuenta atrás (el anuncio solo empieza si el niño toca el botón).
-- **No se puede medir con anuncios reales antes de publicar.** AdMob limita los anuncios reales hasta que la app está pública en una tienda y la revisa. Antes de publicar se prueba con anuncios de prueba; el dato real llegará con `anuncio-vacio` tras la salida.
+- **No se puede medir con anuncios reales antes de publicar.** AdMob limita los anuncios reales hasta que la app está pública en una tienda, enlazada en AdMob y revisada por ellos, lo que suele tardar un par de días ([requisitos de AdMob](https://support.google.com/admob/answer/10564477)). Una app en prueba cerrada no se puede enlazar. Antes de publicar se prueba con anuncios de prueba; el dato real llegará con `anuncio-vacio` tras la salida.
 - **Revisión de Google.** Es la primera versión con un SDK de anuncios y con niños es más estricta. El panel previo, la X a los 5 segundos, el permiso quitado y la marca de niños van por eso.
 - **Contenido de los anuncios.** No se elige. AdMob permite bloquear categorías; queda como paso manual.
 - **Ingresos bajos.** Con estos límites y este público, el ingreso por jugador será pequeño. Solo sumará con muchos jugadores.
