@@ -1,11 +1,13 @@
 import type * as Phaser from 'phaser';
 import { getArt } from '../art/art';
+import { AD_SLOTS } from '../core/adPacing';
 import { openPens } from '../core/economy';
 import type { Vec } from '../core/movement';
 import type { Settings, ToggleKey } from '../core/save';
 import { BOOK_CHAPTERS } from '../data/book';
 import type { FoodId } from '../data/foods';
 import type { PenId } from '../data/pens';
+import type { AdOfferScene } from '../scenes/AdOfferScene';
 import type { FeedScene } from '../scenes/FeedScene';
 import type { HudScene } from '../scenes/HudScene';
 import type { BookScene } from '../scenes/BookScene';
@@ -14,6 +16,8 @@ import type { SettingsScene } from '../scenes/SettingsScene';
 import type { ShopScene } from '../scenes/ShopScene';
 import type { TitleScene } from '../scenes/TitleScene';
 import type { WorldScene } from '../scenes/WorldScene';
+import { getAds } from './ads';
+import { startAds } from './adsInstall';
 import { bus, type GameEvents } from './events';
 import { getLanguage } from './language';
 import type { Platform } from './platform';
@@ -83,6 +87,15 @@ export interface ZooTestApi {
   gateApproachTile(penId: string): { x: number; y: number } | null;
   shopDoorTile(): { x: number; y: number } | null;
   spawnTile(): { x: number; y: number } | null;
+  /** Monta la publicidad con un proveedor falso. `outcome`: qué pasa al enseñar el anuncio; `ready`: si hay anuncio que cargar. */
+  adsFake(outcome: 'visto' | 'cortado' | 'fallo', ready?: boolean): Promise<void>;
+  /** Hace pasar segundos de juego para la publicidad y espera a que terminen las cargas. */
+  adsAdvance(seconds: number): Promise<void>;
+  /** Con el panel del anuncio abierto: dónde están el botón verde y la X. */
+  adOfferPos(key: 'yes' | 'no'): Vec | null;
+  adOfferAmount(): number | null;
+  /** Milisegundos que quedan de cuenta atrás; `null` si no hay panel o no la tiene. */
+  adOfferCountdown(): number | null;
   /** Nombres de los eventos de estadísticas que ha emitido el juego, en orden. */
   busLog(): string[];
 }
@@ -106,6 +119,7 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
     'animal-tapped', 'feed-opened', 'animal-fed', 'food-missed', 'feed-closed', 'pen-near', 'locked-tap', 'shop-locked',
     'control-used', 'shop-opened', 'shop-look', 'shop-denied', 'purchase', 'shop-closed', 'book-opened', 'book-page-shown',
     'book-index', 'book-closed', 'legal-opened', 'quit-asked', 'quit-answered',
+    'ad-offered', 'ad-accepted', 'ad-declined', 'ad-watched', 'ad-cut', 'ad-failed', 'ad-empty',
   ];
   const busLog: string[] = [];
   for (const name of logged) bus.on(name, () => busLog.push(name));
@@ -186,6 +200,25 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
     gateApproachTile: (penId) => activeScene<WorldScene>('World')?.gateApproachTile(penId) ?? null,
     shopDoorTile: () => activeScene<WorldScene>('World')?.shopDoorTile() ?? null,
     spawnTile: () => activeScene<WorldScene>('World')?.spawnTile() ?? null,
+    adsFake: async (outcome, ready = true) => {
+      await startAds(
+        game,
+        { load: async () => ready, show: async () => ({ shown: outcome !== 'fallo', rewarded: outcome === 'visto' }) },
+        AD_SLOTS,
+      );
+    },
+    adsAdvance: async (seconds) => {
+      const ads = getAds();
+      if (!ads) return;
+      ads.tick(seconds);
+      await ads.settled();
+    },
+    adOfferPos: (key) => {
+      const scene = activeScene<AdOfferScene>('AdOffer');
+      return (key === 'yes' ? scene?.yesPos() : scene?.noPos()) ?? null;
+    },
+    adOfferAmount: () => activeScene<AdOfferScene>('AdOffer')?.offeredAmount() ?? null,
+    adOfferCountdown: () => activeScene<AdOfferScene>('AdOffer')?.countdownLeft() ?? null,
     busLog: () => [...busLog],
   };
 }

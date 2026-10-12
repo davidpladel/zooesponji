@@ -2,11 +2,13 @@ import { App } from '@capacitor/app';
 import { Capacitor } from '@capacitor/core';
 import type * as Phaser from 'phaser';
 import { decideBack, type BackAction } from '../core/back';
+import type { AdOfferScene } from '../scenes/AdOfferScene';
 import type { FeedScene } from '../scenes/FeedScene';
 import type { QuitScene, QuitSceneData } from '../scenes/QuitScene';
 import type { BookScene } from '../scenes/BookScene';
 import type { SettingsScene } from '../scenes/SettingsScene';
 import type { ShopScene } from '../scenes/ShopScene';
+import { getAds } from './ads';
 import { getAnalytics } from './analytics';
 import { sfx } from './audio';
 import { bus } from './events';
@@ -99,6 +101,9 @@ export class Platform {
         if (this.active('Book')) scene<BookScene>('Book').close();
         else scene<SettingsScene>('Settings').close();
         break;
+      case 'close-ad':
+        scene<AdOfferScene>('AdOffer').decline();
+        break;
       case 'close-overlay':
         if (this.active('Feed')) scene<FeedScene>('Feed').close();
         if (this.active('Shop')) scene<ShopScene>('Shop').close();
@@ -119,6 +124,7 @@ export class Platform {
   setBackground(hidden: boolean): void {
     sfx.setPaused('background', hidden);
     getAnalytics()?.setBackground(hidden);
+    getAds()?.setBackground(hidden);
     if (hidden) {
       void getSessionSafe()?.save();
       this.pauseWorld('background');
