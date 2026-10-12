@@ -187,6 +187,12 @@ Eventos nuevos del `bus` y categoría `anuncio` en `eventCatalog.ts`. El nombre 
 | `anuncio-fallo` | no se pudo enseñar | |
 | `anuncio-vacio` | las reglas lo permitían y no había anuncio listo | |
 
+**Monedas que tenía el niño:** `anuncio-ofrece`, `anuncio-acepta`, `anuncio-no` y `anuncio-visto` llevan en el nombre el hueco y el tramo de saldo al saltar el panel (`tienda/100-499`), con el `coinsBucket` que ya existe. Así el cruce viaja hecho y se lee sin segmentos. Las demás acciones llevan solo el hueco.
+
+**Qué se puede leer con esto:** cuántos paneles saltan, qué parte se acepta y qué parte se rechaza, cuántos anuncios se ven enteros, cuántas monedas se reparten (suma del valor de `anuncio-visto`) y si rechazan más los que tienen muchas monedas. `tools/matomo/resumen.mjs` gana un apartado «Anuncios» con esas cifras.
+
+**Lo que no sale aquí:** el dinero real. Los ingresos en euros solo están en el panel de AdMob.
+
 `anuncio-vacio` se envía una vez por ocasión. Es el dato que dice si faltan anuncios. `AdOffer` entra en la lista de pantallas como `anuncio`.
 
 ### 8. Configuración
