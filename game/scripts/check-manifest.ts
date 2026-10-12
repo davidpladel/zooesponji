@@ -3,7 +3,7 @@
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { manifestProblems } from './manifestRules.ts';
+import { envProblems, manifestProblems } from './manifestRules.ts';
 
 const ROOT = fileURLToPath(new URL('../android/app/build/intermediates/', import.meta.url));
 
@@ -22,7 +22,12 @@ if (files.length === 0) {
   process.exit(1);
 }
 const newest = files.sort((a, b) => statSync(b).mtimeMs - statSync(a).mtimeMs)[0]!;
-const problems = manifestProblems(readFileSync(newest, 'utf8'), { release: process.argv.includes('--publicar') });
+const release = process.argv.includes('--publicar');
+const problems = manifestProblems(readFileSync(newest, 'utf8'), { release });
+if (release) {
+  const envFile = fileURLToPath(new URL('../.env.production.local', import.meta.url));
+  problems.push(...envProblems(existsSync(envFile) ? readFileSync(envFile, 'utf8') : null));
+}
 if (problems.length > 0) {
   console.error(`El manifiesto no pasa (${newest}):\n- ${problems.join('\n- ')}`);
   process.exit(1);

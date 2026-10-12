@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { AdConfig } from '../../src/core/adConfig';
-import { SHOW_TIMEOUT_MS, createAdMobProvider, type AdMobLike, type Wait } from '../../src/systems/adProvider';
+import { OPEN_TIMEOUT_MS, SHOW_TIMEOUT_MS, createAdMobProvider, type AdMobLike, type Wait } from '../../src/systems/adProvider';
 
 const config: AdConfig = { units: { tienda: 'unidad-tienda', pausa: 'unidad-pausa' }, testing: true };
 const settle = (): Promise<void> => new Promise((resolve) => setTimeout(resolve, 0));
@@ -144,12 +144,12 @@ describe('proveedor de AdMob: enseñar', () => {
     expect(await shown).toEqual({ shown: false, rewarded: false });
   });
 
-  it('una vez abierto el anuncio, el vigilante se retira', async () => {
+  it('una vez abierto el anuncio, el vigilante de apertura se retira y queda el tope de cierre', async () => {
     const t = fake();
     const shown = t.provider.show('tienda');
     await settle();
     t.fire('tienda:showed');
-    expect(t.timers).toEqual([]);
+    expect(t.timers.map((timer) => timer.ms)).toEqual([OPEN_TIMEOUT_MS]);
     t.fire('tienda:dismissed');
     expect(await shown).toEqual({ shown: true, rewarded: false });
   });
@@ -181,5 +181,37 @@ describe('proveedor de AdMob: enseñar', () => {
     expect(done).toBe(false);
     t.fire('tienda:dismissed');
     expect(await shown).toEqual({ shown: true, rewarded: true });
+  });
+});
+
+describe('proveedor de AdMob: el anuncio se abre y el SDK no avisa de que se cerró', () => {
+  it('pasado el tope se da por cerrado, para que el juego no se quede parado', async () => {
+    const t = fake();
+    const result = t.provider.show('tienda');
+    await settle();
+    t.fire('tienda:showed');
+    expect(t.timers.map((timer) => timer.ms)).toEqual([OPEN_TIMEOUT_MS]);
+    t.timers[0]!.fn();
+    expect(await result).toEqual({ shown: true, rewarded: false });
+  });
+
+  it('si el premio ya estaba ganado, se conserva', async () => {
+    const t = fake();
+    const result = t.provider.show('pausa');
+    await settle();
+    t.fire('pausa:showed');
+    t.fire('pausa:rewarded');
+    t.timers[0]!.fn();
+    expect(await result).toEqual({ shown: true, rewarded: true });
+  });
+
+  it('al cerrarse a tiempo, el tope se retira', async () => {
+    const t = fake();
+    const result = t.provider.show('tienda');
+    await settle();
+    t.fire('tienda:showed');
+    t.fire('tienda:dismissed');
+    await result;
+    expect(t.timers).toEqual([]);
   });
 });

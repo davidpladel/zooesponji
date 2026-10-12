@@ -20,6 +20,8 @@ export type Wait = (ms: number, fn: () => void) => () => void;
 
 /** Si en este tiempo el SDK no avisa de que el anuncio se abrió, se da por fallido: el juego no se queda parado. */
 export const SHOW_TIMEOUT_MS = 10_000;
+/** Tope con el anuncio abierto: si el SDK no avisa de que se cerró, el juego sigue igualmente. */
+export const OPEN_TIMEOUT_MS = 5 * 60_000;
 
 const timeout: Wait = (ms, fn) => {
   const id = setTimeout(fn, ms);
@@ -83,6 +85,7 @@ export function createAdMobProvider(admob: AdMobLike, config: AdConfig, wait: Wa
         listen('showed', () => {
           shown = true;
           cancel();
+          cancel = wait(OPEN_TIMEOUT_MS, () => finish({ shown: true, rewarded }));
         });
         listen('failed', failed);
         listen('dismissed', () => finish({ shown: true, rewarded }));

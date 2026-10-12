@@ -32,3 +32,25 @@ export function manifestProblems(xml: string, opts: { release?: boolean } = {}):
   if (metaValue(xml, DELAY_NAME) !== 'true') problems.push(`Falta retrasar la medición del SDK (${DELAY_NAME} = true).`);
   return problems;
 }
+
+const UNIT = /^ca-app-pub-\d{16}\/\d{10}$/;
+const TEST_PUBLISHER = 'ca-app-pub-3940256099942544';
+const UNIT_KEYS = ['VITE_ADMOB_REWARDED', 'VITE_ADMOB_REWARDED_INTERSTITIAL'];
+
+/** Lo que impide publicar en `.env.production.local` (`null`: no existe): anuncios de prueba encendidos o bloques reales que faltan. */
+export function envProblems(text: string | null): string[] {
+  const env = new Map<string, string>();
+  for (const line of (text ?? '').split(/?
+/)) {
+    const match = /^\s*([A-Z0-9_]+)\s*=\s*(.*?)\s*$/.exec(line);
+    if (match) env.set(match[1]!, match[2]!);
+  }
+  const problems: string[] = [];
+  if (env.get('VITE_ADMOB_TESTING') === '1') problems.push('VITE_ADMOB_TESTING=1: el paquete pediría anuncios de prueba. Quita esa línea antes de publicar.');
+  const missing = UNIT_KEYS.filter((key) => {
+    const unit = env.get(key) ?? '';
+    return !UNIT.test(unit) || unit.startsWith(TEST_PUBLISHER);
+  });
+  if (missing.length > 0) problems.push(`Falta el bloque real de AdMob en .env.production.local: ${missing.join(', ')}.`);
+  return problems;
+}
