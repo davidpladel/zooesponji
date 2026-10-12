@@ -76,6 +76,11 @@ export class Ads {
     return this.busy;
   }
 
+  /** Hay un panel abierto o un anuncio en pantalla. */
+  get panelOpen(): boolean {
+    return this.pending !== null || this.busy;
+  }
+
   /** Pasan `seconds` de juego: el juego en pantalla y la partida empezada. */
   tick(seconds: number): void {
     if (this.busy || !this.pacing) return;
@@ -152,6 +157,7 @@ export class Ads {
     this.emit('ad-accepted', { slot, balance: pending.balance });
     this.sound(true);
     let result = { shown: false, rewarded: false };
+    const openedAt = this.time();
     try {
       result = await this.deps.provider.show(slot);
     } catch {
@@ -166,7 +172,9 @@ export class Ads {
       this.emit('ad-failed', { slot });
       return 'fallo';
     }
-    if (result.rewarded !== true) {
+    const rewarded = result.rewarded === true;
+    this.emit('ad-closed', { slot, result: rewarded ? 'visto' : 'cortado', seconds: Math.max(0, Math.round((this.time() - openedAt) / 1000)) });
+    if (!rewarded) {
       this.emit('ad-cut', { slot });
       return 'cortado';
     }

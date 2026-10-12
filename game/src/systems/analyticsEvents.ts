@@ -172,6 +172,7 @@ export class GameTracker implements AnalyticsHooks {
     on('ad-declined', ({ slot, balance }) => this.send('anuncio', 'anuncio-no', adName(slot, balance)));
     on('ad-watched', ({ slot, coins, balance }) => this.send('anuncio', 'anuncio-visto', adName(slot, balance), coins));
     on('ad-cut', ({ slot }) => this.send('anuncio', 'anuncio-cortado', slot));
+    on('ad-closed', ({ slot, result, seconds }) => this.send('anuncio', 'anuncio-segundos', part(slot, result), seconds));
     on('ad-failed', ({ slot }) => this.send('anuncio', 'anuncio-fallo', slot));
     on('ad-empty', ({ slot }) => this.send('anuncio', 'anuncio-vacio', slot));
 

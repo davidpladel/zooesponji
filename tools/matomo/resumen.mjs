@@ -2,7 +2,7 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { DATA } from './config.mjs';
-import { MIN_SAMPLE, actionTotals, adByBalance, adTotals, byAction, events, meanText, medianText, share, table, toRows, total, truncated } from './lib.mjs';
+import { MIN_SAMPLE, actionTotals, adByBalance, adSeconds, adTotals, byAction, events, meanText, medianText, share, table, toRows, total, truncated } from './lib.mjs';
 
 const file = join(DATA, 'events.json');
 if (!existsSync(file)) {
@@ -118,6 +118,12 @@ out.push('## Anuncios', '', 'Solo Android. El dinero real no sale aquí: los ing
   AD_SLOTS.map((slot) => {
     const a = adTotals(index, slot);
     return [slot, a.offered, share(a.accepted, a.offered), share(a.declined, a.offered), share(a.watched, a.accepted), a.cut, a.failed, a.empty, a.coins];
+  }),
+), '', 'Segundos con el anuncio en pantalla, de media. Si los vistos enteros duran mucho más que el propio anuncio, a los niños les cuesta cerrarlo.', '', table(
+  ['Hueco', 'Vistos enteros', 'Cortados'],
+  AD_SLOTS.map((slot) => {
+    const s = adSeconds(index, slot);
+    return [slot, meanText(s.watched.mean, s.watched.n), meanText(s.cut.mean, s.cut.n)];
   }),
 ), '', table(
   ['Monedas que tenía', 'Paneles', 'Rechazados (X)'],

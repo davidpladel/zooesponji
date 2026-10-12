@@ -123,7 +123,7 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
     'animal-tapped', 'feed-opened', 'animal-fed', 'food-missed', 'feed-closed', 'pen-near', 'locked-tap', 'shop-locked',
     'control-used', 'shop-opened', 'shop-look', 'shop-denied', 'purchase', 'shop-closed', 'book-opened', 'book-page-shown',
     'book-index', 'book-closed', 'legal-opened', 'quit-asked', 'quit-answered',
-    'ad-offered', 'ad-accepted', 'ad-declined', 'ad-watched', 'ad-cut', 'ad-failed', 'ad-empty',
+    'ad-offered', 'ad-accepted', 'ad-declined', 'ad-watched', 'ad-cut', 'ad-failed', 'ad-empty', 'ad-closed',
   ];
   const busLog: string[] = [];
   for (const name of logged) bus.on(name, () => busLog.push(name));

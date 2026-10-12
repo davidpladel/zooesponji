@@ -186,6 +186,7 @@ Eventos nuevos del `bus` y categoría `anuncio` en `eventCatalog.ts`. El nombre 
 | `anuncio-cortado` | cerrado antes de tiempo | |
 | `anuncio-fallo` | no se pudo enseñar | |
 | `anuncio-vacio` | las reglas lo permitían y no había anuncio listo | |
+| `anuncio-segundos` | se cierra un anuncio que llegó a enseñarse; el nombre es el hueco y cómo acabó (`tienda/visto`, `pausa/cortado`) | segundos en pantalla |
 
 **Monedas que tenía el niño:** `anuncio-ofrece`, `anuncio-acepta`, `anuncio-no` y `anuncio-visto` llevan en el nombre el hueco y el tramo de saldo al saltar el panel (`tienda/100-499`), con el `coinsBucket` que ya existe. Así el cruce viaja hecho y se lee sin segmentos. Las demás acciones llevan solo el hueco.
 
@@ -268,6 +269,7 @@ Pendiente: pasos de David en AdMob y Play Console, la prueba en Android con anun
 - La prueba `legal.test.ts` pasa a exigir 10 apartados en la página de privacidad (antes 9).
 - «Permisos» de la página de privacidad nombra también los permisos técnicos que declara el SDK de anuncios (estado de la red, mantener el aparato despierto, segundo plano).
 - Tras la revisión final: con el anuncio abierto, si el SDK no avisa de que se cerró en 5 minutos se da por cerrado; `check:manifest -- --publicar` lee también `.env.production.local` (rechaza `VITE_ADMOB_TESTING=1` y la falta de bloques reales); y el panel deja de escuchar los cambios de tamaño en cuanto se cierra.
+- Tras la prueba en el móvil (2026-10-12): el anuncio se pide en modo inmersivo y el juego esconde las barras de Android en la pantalla del anuncio (tapaban su botón de cerrar); con el panel abierto se esconde la X de la tienda; y se mide `anuncio-segundos`, los segundos que el anuncio estuvo en pantalla, para saber si a los niños les cuesta cerrarlo.
 
 ## Avisos menores de la revisión, sin tocar
 

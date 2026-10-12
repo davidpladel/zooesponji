@@ -83,6 +83,8 @@ export interface GameEvents {
   'ad-watched': { slot: AdSlot; coins: number; balance: number };
   /** Anuncio cerrado antes de tiempo. */
   'ad-cut': { slot: AdSlot };
+  /** El anuncio se ha cerrado: cuántos segundos estuvo en pantalla y cómo acabó. */
+  'ad-closed': { slot: AdSlot; result: 'visto' | 'cortado'; seconds: number };
   /** El anuncio no se pudo enseñar. */
   'ad-failed': { slot: AdSlot };
   /** Las reglas dejaban ofrecerlo y no había anuncio listo. */

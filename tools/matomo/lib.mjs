@@ -153,6 +153,16 @@ export function adTotals(index, slot) {
   };
 }
 
+/** Media de segundos con el anuncio en pantalla, según acabara visto entero o cortado. */
+export function adSeconds(index, slot) {
+  const of = (result) => {
+    const rows = rowsOf(index, 'anuncio-segundos').filter((row) => row.name === `${slot}/${result}`);
+    const n = rows.reduce((total, row) => total + row.events, 0);
+    return { mean: n ? rows.reduce((total, row) => total + row.sum, 0) / n : 0, n };
+  };
+  return { watched: of('visto'), cut: of('cortado') };
+}
+
 /** Paneles y rechazos según las monedas que tenía el niño, sumando los huecos. */
 export function adByBalance(index, buckets) {
   const sum = (action, bucket) => rowsOf(index, action).filter((row) => row.name.endsWith(`/${bucket}`)).reduce((total, row) => total + row.events, 0);

@@ -7,8 +7,8 @@ import {
 } from '../../src/core/eventCatalog';
 
 describe('catálogo de eventos', () => {
-  it('la publicidad tiene sus siete acciones', () => {
-    expect(CATALOG.anuncio).toEqual(['anuncio-ofrece', 'anuncio-acepta', 'anuncio-no', 'anuncio-visto', 'anuncio-cortado', 'anuncio-fallo', 'anuncio-vacio']);
+  it('la publicidad tiene sus ocho acciones', () => {
+    expect(CATALOG.anuncio).toEqual(['anuncio-ofrece', 'anuncio-acepta', 'anuncio-no', 'anuncio-visto', 'anuncio-cortado', 'anuncio-fallo', 'anuncio-vacio', 'anuncio-segundos']);
   });
   it('ninguna acción se repite, ni dentro de una categoría ni entre dos', () => {
     const all = Object.values(CATALOG).flat();

@@ -488,3 +488,67 @@ describe('Ads: nunca rompe el juego', () => {
     expect(await ads.accept('tienda')).toBe('visto');
   });
 });
+
+describe('Ads: panel abierto y segundos con el anuncio en pantalla', () => {
+  it('panelOpen es verdadero desde que se ofrece hasta que se resuelve', async () => {
+    const t = setup();
+    await t.ads.start();
+    await t.play(300);
+    expect(t.ads.panelOpen).toBe(false);
+    t.ads.offer('tienda');
+    expect(t.ads.panelOpen).toBe(true);
+    t.ads.decline('tienda');
+    expect(t.ads.panelOpen).toBe(false);
+  });
+
+  it('panelOpen sigue verdadero con el anuncio en pantalla y acaba al cerrarse', async () => {
+    let during: boolean | null = null;
+    const t = setup({
+      provider: {
+        show: async () => {
+          during = t.ads.panelOpen;
+          return { shown: true, rewarded: true };
+        },
+      },
+    });
+    await t.ads.start();
+    await t.play(300);
+    t.ads.offer('tienda');
+    await t.ads.accept('tienda');
+    expect(during).toBe(true);
+    expect(t.ads.panelOpen).toBe(false);
+  });
+
+  it.each([
+    [true, 'visto'],
+    [false, 'cortado'],
+  ] as const)('avisa de los segundos que estuvo el anuncio en pantalla (premio: %s)', async (rewarded, result) => {
+    const t = setup({
+      provider: {
+        show: async () => {
+          t.clock.time += 42_400;
+          return { shown: true, rewarded };
+        },
+      },
+    });
+    const seen: unknown[] = [];
+    t.events.on('ad-closed', (payload) => seen.push(payload));
+    await t.ads.start();
+    await t.play(300);
+    t.ads.offer('tienda');
+    await t.ads.accept('tienda');
+    expect(seen).toEqual([{ slot: 'tienda', result, seconds: 42 }]);
+  });
+
+  it('si el anuncio no llegó a enseñarse, no hay segundos que contar', async () => {
+    const t = setup();
+    t.answers.show = { shown: false, rewarded: false };
+    const seen: unknown[] = [];
+    t.events.on('ad-closed', (payload) => seen.push(payload));
+    await t.ads.start();
+    await t.play(300);
+    t.ads.offer('tienda');
+    await t.ads.accept('tienda');
+    expect(seen).toEqual([]);
+  });
+});

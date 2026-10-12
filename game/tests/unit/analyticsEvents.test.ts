@@ -453,3 +453,15 @@ describe('GameTracker: publicidad', () => {
     expect(t.sent).toEqual([]);
   });
 });
+
+describe('GameTracker: segundos con el anuncio en pantalla', () => {
+  it('van como valor, con el hueco y cómo acabó en el nombre', async () => {
+    const t = setup();
+    await t.tracker.start();
+    t.events.emit('ad-closed', { slot: 'tienda', result: 'visto', seconds: 42 });
+    t.events.emit('ad-closed', { slot: 'pausa', result: 'cortado', seconds: 7 });
+    expect(t.sent).toEqual(['anuncio | anuncio-segundos | tienda/visto', 'anuncio | anuncio-segundos | pausa/cortado']);
+    expect(t.values.get('anuncio | anuncio-segundos | tienda/visto')).toBe(42);
+    expect(t.values.get('anuncio | anuncio-segundos | pausa/cortado')).toBe(7);
+  });
+});

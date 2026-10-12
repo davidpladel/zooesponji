@@ -115,7 +115,7 @@ test('sin informe por acción, el total es la suma de los nombres', () => {
   assert.equal(total(actionTotals([]), index, 'nada'), 0);
 });
 
-import { adByBalance, adTotals } from './lib.mjs';
+import { adByBalance, adSeconds, adTotals } from './lib.mjs';
 
 const adRow = (action, name, events, sum = 0) => ({ action, name, events, visits: events, sum, avg: 0, min: 0, max: 0 });
 const adIndex = () => byAction([
@@ -150,4 +150,14 @@ test('adByBalance cruza paneles y rechazos por tramo de saldo, sumando los hueco
     { bucket: '20-49', offered: 0, declined: 0 },
     { bucket: '50-149', offered: 10, declined: 7 },
   ]);
+});
+
+test('adSeconds da la media de segundos con el anuncio en pantalla, por hueco y resultado', () => {
+  const index = byAction(toRows([
+    { label: 'anuncio-segundos - tienda/visto', nb_events: 4, sum_event_value: 160 },
+    { label: 'anuncio-segundos - tienda/cortado', nb_events: 2, sum_event_value: 14 },
+    { label: 'anuncio-segundos - pausa/visto', nb_events: 1, sum_event_value: 31 },
+  ]));
+  assert.deepEqual(adSeconds(index, 'tienda'), { watched: { mean: 40, n: 4 }, cut: { mean: 7, n: 2 } });
+  assert.deepEqual(adSeconds(index, 'pausa'), { watched: { mean: 31, n: 1 }, cut: { mean: 0, n: 0 } });
 });
