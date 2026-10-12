@@ -105,5 +105,6 @@ app/src/main/res/xml/config.xml
 
 # Firma de Play (nunca al repo)
 keystore.properties
+admob.properties
 *.jks
 *.keystore
