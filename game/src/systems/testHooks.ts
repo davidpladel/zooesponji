@@ -94,6 +94,8 @@ export interface ZooTestApi {
   /** Con el panel del anuncio abierto: dónde están el botón verde y la X. */
   adOfferPos(key: 'yes' | 'no'): Vec | null;
   adOfferAmount(): number | null;
+  /** Si se ve la X de la tienda (aunque la tienda esté en pausa debajo del panel del anuncio). */
+  shopCloseVisible(): boolean;
   /** Toca la X y, en el mismo instante, la pantalla cambia de tamaño (como al volver de un anuncio a pantalla completa). */
   adOfferDeclineAndResize(): void;
   /** Milisegundos que quedan de cuenta atrás; `null` si no hay panel o no la tiene. */
@@ -226,6 +228,7 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
       const { gameSize, baseSize, displaySize } = game.scale;
       game.scale.emit('resize', gameSize, baseSize, displaySize, 0, 0);
     },
+    shopCloseVisible: () => (game.scene.getScene('Shop') as ShopScene).closeVisible(),
     adOfferAmount: () => activeScene<AdOfferScene>('AdOffer')?.offeredAmount() ?? null,
     adOfferCountdown: () => activeScene<AdOfferScene>('AdOffer')?.countdownLeft() ?? null,
     busLog: () => [...busLog],

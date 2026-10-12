@@ -79,6 +79,7 @@ export class ShopScene extends Phaser.Scene {
   private nextHintMs = HINT_FIRST_MS;
   private busy = false;
   private closing = false;
+  private closeBadge: Phaser.GameObjects.Container | null = null;
   private book: Phaser.GameObjects.Text | null = null;
   private bookOut = false;
 
@@ -126,7 +127,8 @@ export class ShopScene extends Phaser.Scene {
     this.time.addEvent({ delay: 1800, loop: true, callback: () => this.floatHeart() });
     this.interior.doorMat(() => this.onDoorTap());
     this.addBook();
-    addCloseBadge(this, width - 16 - 32, 16 + 32, () => this.close(), 56).setDepth(4000);
+    // Con el panel del anuncio encima se esconde: que el niño vea una sola X, la del panel.
+    this.closeBadge = addCloseBadge(this, width - 16 - 32, 16 + 32, () => this.close(), 56).setDepth(4000).setVisible(!this.scene.isActive('AdOffer'));
 
     const keyboard = this.input.keyboard;
     if (keyboard) {
@@ -148,6 +150,8 @@ export class ShopScene extends Phaser.Scene {
   }
 
   update(_time: number, delta: number): void {
+    // Vuelve en cuanto el panel del anuncio se va (la tienda puede estar en pausa o recién montada por un giro).
+    this.closeBadge?.setVisible(!this.scene.isActive('AdOffer'));
     if (this.closing) return;
     const direction = this.inputDirection();
     if (direction.x !== 0 || direction.y !== 0) this.endEntry();
@@ -284,10 +288,16 @@ export class ShopScene extends Phaser.Scene {
   }
 
   /** Si toca y hay anuncio listo, se ofrece: la tienda queda en pausa debajo del panel. */
+  /** Para pruebas: si se ve la X de la tienda. */
+  closeVisible(): boolean {
+    return this.closeBadge?.visible ?? false;
+  }
+
   private offerAd(): void {
     if (this.closing || !this.scene.isActive() || this.scene.isActive('Book')) return;
     if (!getAds()?.canOffer('tienda')) return;
     const data: AdOfferSceneData = { slot: 'tienda', resume: 'Shop' };
+    this.closeBadge?.setVisible(false);
     this.scene.pause();
     this.scene.launch('AdOffer', data);
   }

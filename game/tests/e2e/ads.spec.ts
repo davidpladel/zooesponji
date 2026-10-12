@@ -215,3 +215,23 @@ test('si la pantalla cambia de tamaño justo al cerrarse el panel, el juego no s
   expect(active).toContain('Shop');
 });
 
+test('con el panel abierto solo se ve una X: la de la tienda se esconde y vuelve al cerrarlo', async ({ page }) => {
+  await startGame(page);
+  await page.evaluate(() => window.__ZOO__!.adsFake('visto'));
+  await enterShop(page);
+  expect(await page.evaluate(() => window.__ZOO__!.shopCloseVisible())).toBe(true);
+  await page.keyboard.press('Escape');
+  await page.waitForFunction(() => !window.__ZOO__!.activeScenes().includes('Shop'));
+  await page.evaluate(() => window.__ZOO__!.adsAdvance(300));
+  await enterShop(page);
+  await panelOpen(page);
+  expect(await page.evaluate(() => window.__ZOO__!.shopCloseVisible())).toBe(false);
+  await page.setViewportSize({ width: 1100, height: 640 });
+  await page.waitForTimeout(600);
+  await panelOpen(page);
+  expect(await page.evaluate(() => window.__ZOO__!.shopCloseVisible())).toBe(false);
+  await tap(page, 'no');
+  await page.waitForFunction(() => !window.__ZOO__!.activeScenes().includes('AdOffer'));
+  await expect.poll(() => page.evaluate(() => window.__ZOO__!.shopCloseVisible())).toBe(true);
+});
+
