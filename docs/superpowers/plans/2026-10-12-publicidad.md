@@ -3426,7 +3426,7 @@ Tiene que decir `check-manifest: correcto`. Si dice que lleva el identificador d
 
 - Apartado nuevo al final, «9. Publicidad (desde la 2.6.0)», con los «Pasos manuales de David» de este plan copiados tal cual.
 
-- [ ] **Step 6: Pedir a David la tanda completa**
+- [x] **Step 6: Pedir a David la tanda completa**
 
 Avisar a David de que toca pasar las pruebas en una ventana aparte, con estos comandos:
 

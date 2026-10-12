@@ -267,3 +267,14 @@ Pendiente: pasos de David en AdMob y Play Console, la prueba en Android con anun
 - La política de Google va escrita en la página de privacidad, no como enlace pulsable.
 - La prueba `legal.test.ts` pasa a exigir 10 apartados en la página de privacidad (antes 9).
 - «Permisos» de la página de privacidad nombra también los permisos técnicos que declara el SDK de anuncios (estado de la red, mantener el aparato despierto, segundo plano).
+- Tras la revisión final: con el anuncio abierto, si el SDK no avisa de que se cerró en 5 minutos se da por cerrado; `check:manifest -- --publicar` lee también `.env.production.local` (rechaza `VITE_ADMOB_TESTING=1` y la falta de bloques reales); y el panel deja de escuchar los cambios de tamaño en cuanto se cierra.
+
+## Avisos menores de la revisión, sin tocar
+
+- Un anuncio que se abre pasado el segundo 10 sale sobre el juego ya reanudado y no da premio.
+- Si la carga de un anuncio no termina nunca, ese hueco no se vuelve a intentar en esa ejecución.
+- `Ads.offer()` no está protegido contra errores como el resto de la clase.
+- Si el panel se detuviera sin aceptar ni rechazar (hoy no hay camino que lo haga), no habría más anuncios en esa ejecución.
+- El estado guardado acepta un día imposible (`9999-99-99`).
+- La cuenta atrás de la pausa sigue corriendo debajo de «gira el móvil».
+- El arranque espera a la publicidad antes de la portada.
