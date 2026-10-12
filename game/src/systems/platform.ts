@@ -81,6 +81,7 @@ export class Platform {
       quitDialogOpen: this.active('Quit'),
       settingsOpen: this.active('Settings') || this.active('Book'),
       overlayOpen: this.active('Feed') || this.active('Shop'),
+      adOfferOpen: this.active('AdOffer'),
       screen,
     });
   }

@@ -1,9 +1,16 @@
 import { describe, expect, it } from 'vitest';
 import { decideBack, type BackContext } from '../../src/core/back';
 
-const base: BackContext = { quitDialogOpen: false, settingsOpen: false, overlayOpen: false, screen: 'world' };
+const base: BackContext = { quitDialogOpen: false, settingsOpen: false, overlayOpen: false, adOfferOpen: false, screen: 'world' };
 
 describe('decideBack', () => {
+  it('con el panel del anuncio abierto, atrás equivale a la X', () => {
+    expect(decideBack({ ...base, adOfferOpen: true })).toBe('close-ad');
+  });
+
+  it('el panel del anuncio va antes que la tienda sobre la que se abrió', () => {
+    expect(decideBack({ ...base, adOfferOpen: true, overlayOpen: true })).toBe('close-ad');
+  });
   it('en el mundo pregunta antes de salir', () => {
     expect(decideBack(base)).toBe('ask-quit');
   });
