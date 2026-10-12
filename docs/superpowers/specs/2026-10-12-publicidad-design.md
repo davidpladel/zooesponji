@@ -1,6 +1,6 @@
 # Publicidad con premio para niños
 
-Fecha: 2026-10-12 · Estado: implementada, en `main` (etiqueta `v2.6.0`) y subida a la prueba cerrada de Play el 2026-10-12 (versionCode 7); Play Console y la página pública de privacidad, al día. Pendiente la revisión de Google.
+Fecha: 2026-10-12 · Estado: implementada, en `main` (etiqueta `v2.6.0`) y subida a la prueba cerrada de Play el 2026-10-12 (versionCode 7); Play Console y la página pública de privacidad, al día. Google la revisó y la publicó en la prueba cerrada sin rechazos ni avisos.
 
 Primera de tres piezas. Las otras dos (buzón de sugerencias y fallos, y votaciones) tendrán su propia spec.
 
