@@ -121,4 +121,4 @@ Anuncios con premio de AdMob, en modo infantil. Sin configuración no hay public
 
 ## Versión
 
-`version` en `package.json` y `versionName` en `android/app/build.gradle`: **2.6.0**. `versionCode` sube en 1 con cada subida a Play: el 6 es la 2.5.1, que está en la prueba cerrada; el **7** es la 2.6.0 (primera con anuncios, sin compilar ni subir todavía). La siguiente será el 8.
+`version` en `package.json` y `versionName` en `android/app/build.gradle`: **2.6.0**. `versionCode` sube en 1 con cada subida a Play: el **7** es la 2.6.0 (primera con anuncios), subida a la prueba cerrada el 2026-10-12. La siguiente será el 8.
