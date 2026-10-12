@@ -1,6 +1,6 @@
 # Publicidad con premio para niños
 
-Fecha: 2026-10-12 · Estado: implementada en la rama `feat/publicidad` (2.6.0); faltan los pasos manuales de David y la prueba en Android.
+Fecha: 2026-10-12 · Estado: implementada y fusionada en `main` (2.6.0, sin publicar); probada por David en el móvil con anuncios de prueba; faltan Play Console y la página pública de privacidad.
 
 Primera de tres piezas. Las otras dos (buzón de sugerencias y fallos, y votaciones) tendrán su propia spec.
 
