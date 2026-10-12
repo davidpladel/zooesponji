@@ -8,7 +8,7 @@ Creado por y para Daniela y Adrián, con la ayuda de su padre y de Claude + Open
 
 Eres la cuidadora del zoo y das de comer a los animales. Cada animal tiene sus gustos: si le ofreces la comida que le gusta se la come feliz, y si le ofreces otra pone cara de asco. Algún animal tiene además una reacción especial: la cabra y el panda se hacen amigos del conejo en vez de comérselo 💕. Con las monedas que ganas abres la tienda y compras nuevos animales y recintos.
 
-Pensado para niños de 6 a 9 años: sin textos largos, sin perder y sin anuncios.
+Pensado para niños de 6 a 9 años: sin textos largos y sin perder. En Android hay algún anuncio con premio, pocos y siempre rechazables; la web no tiene anuncios.
 
 ## Cómo se juega
 
@@ -50,7 +50,7 @@ Pensado para niños de 6 a 9 años: sin textos largos, sin perder y sin anuncios
 - La lógica (reacciones, monedas, guardado, caminos A\*, rebaños…) es TypeScript puro en `game/src/core/`, sin Phaser, y está probada con **Vitest**; las escenas solo dibujan y recogen toques. Pruebas de juego en el navegador con **Playwright**; CI en **GitHub Actions**.
 - **Mapas:** generados por script en formato **Tiled**; colisiones, recintos, puertas y punto de inicio salen del propio mapa. Terreno con autotile (formato RPG Maker A2).
 - **Android:** **Capacitor** (`appId` `com.davidpladel.zooesponji`), horizontal, guardado nativo.
-- **Google Play (Families Policy):** sin anuncios, sin permiso `AD_ID`, sin enlaces externos y sin SDK de terceros. Estadísticas anónimas hacia un Matomo propio (sin cookies ni identificadores; se apagan en Ajustes).
+- **Google Play (Families Policy):** en Android, solo anuncios con premio de Google AdMob (red certificada para Familias), marcados como dirigidos a niños, sin personalizar, sin permiso `AD_ID` y sin formulario de consentimiento; como mucho uno cada 15 minutos de juego y cuatro al día. Sin enlaces externos. Estadísticas anónimas hacia un Matomo propio (sin cookies ni identificadores; se apagan en Ajustes).
 - **Por qué no Godot / Unity:** el requisito es web + Android a la vez desde el terminal; el export web de Godot pesa 30–40 MB y va flojo en el navegador del móvil. Detalle en la [spec](docs/superpowers/specs/2026-09-27-motor-phaser-v3-design.md).
 
 Para arrancarlo, probarlo, compilar para Android o publicar en la web: [game/README.md](game/README.md).
@@ -73,6 +73,7 @@ El juego se ha hecho por hitos: spec de diseño → plan → ejecución.
 | [Spec](docs/superpowers/specs/2026-10-06-idiomas-es-en-design.md) y [plan idiomas](docs/superpowers/plans/2026-10-06-idiomas-es-en.md) | Idiomas español e inglés: detección, botón en Ajustes, textos y privacidad |
 | [Spec](docs/superpowers/specs/2026-10-07-analitica-anonima-matomo-design.md) y [plan analítica](docs/superpowers/plans/2026-10-07-analitica-anonima-matomo.md) | Estadísticas anónimas con Matomo: usuarios activos sin identificadores, eventos y ficha en Ajustes |
 | [Spec](docs/superpowers/specs/2026-10-07-analitica-detallada-design.md) y [plan analítica detallada](docs/superpowers/plans/2026-10-07-analitica-detallada.md) | Estadísticas detalladas (2.5.0): eventos por animal, comida, recinto y página; jugadores únicos sin identificador; juego sin conexión; lectura por API con `tools/matomo/` |
+| [Spec](docs/superpowers/specs/2026-10-12-publicidad-design.md) y [plan publicidad](docs/superpowers/plans/2026-10-12-publicidad.md) | Publicidad con premio para niños (2.6.0, solo Android): panel que no depende de leer, ritmo, premio que crece con el zoo, AdMob en modo infantil y estadísticas de anuncios |
 | [Spec](docs/superpowers/specs/2026-08-08-mvp-zooesponji-design.md) y [plan 1.0](docs/superpowers/plans/2026-08-08-mvp-zooesponji.md), [spec](docs/superpowers/specs/2026-08-15-escenas-inmersivas-design.md) y [plan del prototipo](docs/superpowers/plans/2026-08-15-escenas-inmersivas.md) | Histórico (1.x y prototipo Canvas) |
 
 ## Hoja de ruta
@@ -97,9 +98,11 @@ Google Play: la 2.3.0 (versionCode 5) está en la prueba cerrada; a 2026-10-06 v
 
 ✅ **2.5.1** (2026-10-08, fusionada en `main`, etiqueta `v2.5.1`): a Sasha, la leona, se le da de comer igual que a Bills (en las estadísticas sale como `leon/sasha`), y al salir con «Salir» o con atrás en la portada el juego desaparece de las aplicaciones recientes de Android (`autoRemoveFromRecents` en el manifiesto). Pruebas pasadas por David. David la probó en el móvil con el paquete de Play el 2026-10-08: todo bien, también lo de las aplicaciones recientes.
 
+🚧 **2.6.0** (en la rama `feat/publicidad`, sin publicar): publicidad con premio en Android. Un panel con monedas, un botón verde y una X ofrece ver un anuncio al entrar en la tienda (a partir de 5 minutos de juego) y, una vez por partida, al volver al mapa (a partir de 15 minutos, con cuenta atrás). Como mucho un panel cada 15 minutos de juego y 4 anuncios al día; el premio crece con el zoo. Probado con un proveedor falso; faltan los pasos de David en AdMob y Play Console y la prueba en el móvil con anuncios de prueba.
+
 Ficha de Play al día (2026-10-08): David subió las capturas nuevas de `game/store/play/` (`captura-1` a `captura-6`, 1920×1080: leones, dar de comer a la pantera, cabras, tienda, libro y panteras) y el gráfico de funciones rehecho (portada pintada, letra Baloo 2, león del icono y lema).
 
-Pendiente, por orden: publicar la 2.5.1 en la web; completar los 14 días con 12 testers y pedir el acceso a producción (6b). Opcional en Matomo: conservación corta de los registros en bruto. Cabos sueltos de la 2.4.0: la prueba `zoo-grande.spec.ts:104` («sin comprar las ovejas, ningún visitante entra en su recinto») falló una vez en una tanda completa y pasó las demás, sin que se llegara a ver el error; y cambiar de idioma con la ventana de comer abierta, o con el libro sobre la tienda, no tiene prueba de juego propia. Ideas para después, cada una con su spec: bañar y limpiar, día y noche, clínica veterinaria y acuario con delfines.
+Pendiente, por orden: pasos de David para la 2.6.0 (cuenta de AdMob, identificadores, Play Console y prueba en el móvil con anuncios de prueba); publicar la 2.5.1 en la web; completar los 14 días con 12 testers y pedir el acceso a producción (6b). Opcional en Matomo: conservación corta de los registros en bruto. Cabos sueltos de la 2.4.0: la prueba `zoo-grande.spec.ts:104` («sin comprar las ovejas, ningún visitante entra en su recinto») falló una vez en una tanda completa y pasó las demás, sin que se llegara a ver el error; y cambiar de idioma con la ventana de comer abierta, o con el libro sobre la tienda, no tiene prueba de juego propia. Ideas para después, cada una con su spec: bañar y limpiar, día y noche, clínica veterinaria y acuario con delfines.
 
 **Más adelante:** clínica veterinaria, bañar animales, limpiar jaulas, ciclo día-noche, acuario con delfines, más animales y zonas.
 

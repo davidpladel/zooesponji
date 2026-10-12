@@ -1,6 +1,6 @@
 # Publicidad con premio para niños
 
-Fecha: 2026-10-12 · Estado: diseño acordado con David en conversación; falta su revisión de este documento y el plan.
+Fecha: 2026-10-12 · Estado: implementada en la rama `feat/publicidad` (2.6.0); faltan los pasos manuales de David y la prueba en Android.
 
 Primera de tres piezas. Las otras dos (buzón de sugerencias y fallos, y votaciones) tendrán su propia spec.
 
@@ -248,3 +248,22 @@ Irán escritos paso a paso en el plan:
 ## Fuera de alcance
 
 Pagar por quitar anuncios, anuncios en la web, tiras fijas, anuncios sin premio, mediación con otras redes, formulario de consentimiento, interruptor en Ajustes, y el buzón y las votaciones.
+
+## Estado de implementación
+
+Hecho y con pruebas: ritmo (`core/adPacing`), premio (`adReward`), configuración (`core/adConfig`), sistema (`systems/ads`), avisos del SDK (`systems/adProvider`), arranque (`systems/adsInstall`), panel (`scenes/AdOfferScene`), los dos momentos (tienda y pausa), botón atrás, estadísticas y resumen, manifiesto sin identificador de publicidad con su comprobación, y textos de privacidad.
+
+Pendiente: pasos de David en AdMob y Play Console, la prueba en Android con anuncios de prueba y la página pública de davidpladel.com. Ver el plan.
+
+## Decisiones tomadas durante la implementación
+
+- `anuncio-vacio` se envía una vez por hueco hasta que se resuelve un panel o empieza otra partida.
+- El complemento solo se toca en `adsInstall.ts`; `adProvider.ts` recibe una fachada mínima y tiene pruebas.
+- Si el SDK no avisa de que el anuncio se abrió en 10 segundos, se da por fallido.
+- El botón verde es redondo, con la cuenta atrás como anillo alrededor.
+- El panel de la pausa salta 300 ms después de volver al mapa. La pantalla de dar de comer reanuda el mapa con `{ from: 'feed' }`.
+- Los tramos de saldo son los de `coinsBucket` (`0-19` … `1600+`).
+- El identificador de la app de AdMob se lee de `ZOO_ADMOB_APP_ID` o de `game/android/admob.properties`.
+- La política de Google va escrita en la página de privacidad, no como enlace pulsable.
+- La prueba `legal.test.ts` pasa a exigir 10 apartados en la página de privacidad (antes 9).
+- «Permisos» de la página de privacidad nombra también los permisos técnicos que declara el SDK de anuncios (estado de la red, mantener el aparato despierto, segundo plano).

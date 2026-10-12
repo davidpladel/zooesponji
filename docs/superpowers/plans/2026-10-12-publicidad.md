@@ -87,7 +87,7 @@ Cada línea tiene su prueba en la tarea que se indica.
 **Interfaces:**
 - Produces: `manifestProblems(xml: string, opts?: { release?: boolean }): string[]`, `TEST_APP_ID`; script `npm run check:manifest` (con `-- --publicar` exige el identificador real); paquete `@capacitor-community/admob` instalado.
 
-- [ ] **Step 1: Escribir la prueba que falla**
+- [x] **Step 1: Escribir la prueba que falla**
 
 `game/tests/unit/androidManifest.test.ts`:
 
@@ -145,12 +145,12 @@ describe('manifiesto fusionado de Android', () => {
 });
 ```
 
-- [ ] **Step 2: Lanzarla y ver que falla**
+- [x] **Step 2: Lanzarla y ver que falla**
 
 Run: `npx vitest run tests/unit/androidManifest.test.ts`
 Expected: FAIL, no encuentra `scripts/manifestRules.ts`.
 
-- [ ] **Step 3: Escribir las reglas**
+- [x] **Step 3: Escribir las reglas**
 
 `game/scripts/manifestRules.ts`:
 
@@ -232,12 +232,12 @@ En `game/package.json`, dentro de `"scripts"`, después de `"check:dist"`:
     "check:manifest": "node scripts/check-manifest.ts",
 ```
 
-- [ ] **Step 4: Lanzar la prueba y ver que pasa**
+- [x] **Step 4: Lanzar la prueba y ver que pasa**
 
 Run: `npx vitest run tests/unit/androidManifest.test.ts`
 Expected: PASS, 10 pruebas.
 
-- [ ] **Step 5: Instalar el complemento**
+- [x] **Step 5: Instalar el complemento**
 
 ```powershell
 npm install @capacitor-community/admob@^8.2.1
@@ -248,7 +248,7 @@ Expected: `cap sync` lista `@capacitor-community/admob` entre los complementos d
 
 Abrir `node_modules/@capacitor-community/admob/dist/esm/index.d.ts` y los `.d.ts` que reexporta, y apuntar los nombres exactos de: `AdMob.initialize` y sus opciones (`initializeForTesting`, `tagForChildDirectedTreatment`, `maxAdContentRating`), `MaxAdContentRating.General`, `prepareRewardVideoAd` / `showRewardVideoAd`, `prepareRewardInterstitialAd` / `showRewardInterstitialAd`, y los avisos `Showed`, `FailedToShow`, `Dismissed` y `Rewarded` de `RewardAdPluginEvents` y `RewardInterstitialAdPluginEvents`. La Tarea 8 los usa escritos de memoria: si alguno se llama distinto, allí se usa el nombre real (solo cambia `capacitorAdMob`, nada más).
 
-- [ ] **Step 6: Manifiesto y Gradle**
+- [x] **Step 6: Manifiesto y Gradle**
 
 En `game/android/app/src/main/AndroidManifest.xml`, la etiqueta raíz pasa a ser:
 
@@ -307,7 +307,7 @@ En `game/android/.gitignore`, junto a `keystore.properties`:
 admob.properties
 ```
 
-- [ ] **Step 7: Comprobar el manifiesto fusionado**
+- [x] **Step 7: Comprobar el manifiesto fusionado**
 
 ```powershell
 $env:JAVA_HOME = "C:\Users\david\.jdks\jbr-21.0.11"; cd android; .\gradlew.bat :app:processReleaseMainManifest; cd ..
@@ -320,7 +320,7 @@ Expected: `check-manifest: correcto (...)`.
 
 Si `check:manifest` señala otro permiso con `AD_ID` o `ADSERVICES`, añadir su línea `tools:node="remove"` al manifiesto, repetir este paso y apuntar el nombre en el mensaje del commit. Abrir además el manifiesto fusionado y apuntar la lista completa de `<uses-permission>` que queda: hace falta en la Tarea 11 (apartado «Permisos») y en los pasos manuales de Play Console.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add game/package.json game/package-lock.json game/scripts/manifestRules.ts game/scripts/check-manifest.ts game/tests/unit/androidManifest.test.ts game/android/app/src/main/AndroidManifest.xml game/android/app/build.gradle game/android/.gitignore game/android/app/capacitor.build.gradle game/android/capacitor.settings.gradle
@@ -339,7 +339,7 @@ git commit -m "feat: complemento de AdMob en Android, sin identificador de publi
 - Consumes: `SHOP_ITEMS` de `src/data/shop.ts`, `isPenOpen` de `economy.ts`.
 - Produces: `adReward(state: GameState): number`.
 
-- [ ] **Step 1: Escribir la prueba que falla**
+- [x] **Step 1: Escribir la prueba que falla**
 
 Al final de `game/tests/unit/economy.test.ts` (añadir `adReward` al import de `../../src/core/economy`, y estos dos imports si no están):
 
@@ -378,12 +378,12 @@ describe('adReward', () => {
 
 Si `GameState` no está importado en el archivo de prueba, añadirlo: `import { ..., type GameState } from '../../src/core/economy';`.
 
-- [ ] **Step 2: Lanzarla y ver que falla**
+- [x] **Step 2: Lanzarla y ver que falla**
 
 Run: `npx vitest run tests/unit/economy.test.ts`
 Expected: FAIL, `adReward` no existe.
 
-- [ ] **Step 3: Implementar**
+- [x] **Step 3: Implementar**
 
 En `game/src/core/economy.ts`, cambiar el import de la tienda y añadir la función al final:
 
@@ -405,12 +405,12 @@ export function adReward(state: GameState): number {
 }
 ```
 
-- [ ] **Step 4: Lanzar y ver que pasa**
+- [x] **Step 4: Lanzar y ver que pasa**
 
 Run: `npx vitest run tests/unit/economy.test.ts`
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add game/src/core/economy.ts game/tests/unit/economy.test.ts
@@ -434,7 +434,7 @@ git commit -m "feat: el premio de un anuncio crece con el zoo"
   - `secondsUntil(slot, state, session, today): number` (`Infinity` si no puede saltar en esta partida o este día), `canOffer(slot, state, session, today): boolean`.
   - `resolvePanel(slot, outcome, state, session, today): { state; session }`.
 
-- [ ] **Step 1: Escribir las pruebas que fallan**
+- [x] **Step 1: Escribir las pruebas que fallan**
 
 `game/tests/unit/adPacing.test.ts`:
 
@@ -620,12 +620,12 @@ describe('estado guardado', () => {
 });
 ```
 
-- [ ] **Step 2: Lanzarlas y ver que fallan**
+- [x] **Step 2: Lanzarlas y ver que fallan**
 
 Run: `npx vitest run tests/unit/adPacing.test.ts`
 Expected: FAIL, no existe `src/core/adPacing`.
 
-- [ ] **Step 3: Implementar**
+- [x] **Step 3: Implementar**
 
 `game/src/core/adPacing.ts`:
 
@@ -743,12 +743,12 @@ export function resolvePanel(
 }
 ```
 
-- [ ] **Step 4: Lanzar y ver que pasan**
+- [x] **Step 4: Lanzar y ver que pasan**
 
 Run: `npx vitest run tests/unit/adPacing.test.ts`
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add game/src/core/adPacing.ts game/tests/unit/adPacing.test.ts
@@ -775,7 +775,7 @@ git commit -m "feat: reglas de ritmo de la publicidad"
 
 `balance` son las monedas que tenía el niño al saltar el panel.
 
-- [ ] **Step 1: Escribir las pruebas que fallan**
+- [x] **Step 1: Escribir las pruebas que fallan**
 
 En `game/tests/unit/eventCatalog.test.ts`, la lista de specs de la prueba «toda acción está escrita…» gana la de publicidad (y el título deja de decir «dos»):
 
@@ -833,12 +833,12 @@ describe('GameTracker: publicidad', () => {
 });
 ```
 
-- [ ] **Step 2: Lanzarlas y ver que fallan**
+- [x] **Step 2: Lanzarlas y ver que fallan**
 
 Run: `npx vitest run tests/unit/eventCatalog.test.ts tests/unit/analyticsEvents.test.ts`
 Expected: FAIL (no existe `CATALOG.anuncio`; los eventos `ad-*` no existen en `GameEvents`).
 
-- [ ] **Step 3: Implementar**
+- [x] **Step 3: Implementar**
 
 En `game/src/systems/events.ts`, añadir el import:
 
@@ -885,12 +885,12 @@ En `game/src/systems/analyticsEvents.ts`, dentro de `start()`, después del bloq
     on('ad-empty', ({ slot }) => this.send('anuncio', 'anuncio-vacio', slot));
 ```
 
-- [ ] **Step 4: Lanzar y ver que pasan**
+- [x] **Step 4: Lanzar y ver que pasan**
 
 Run: `npx vitest run tests/unit/eventCatalog.test.ts tests/unit/analyticsEvents.test.ts && npm run typecheck`
 Expected: PASS y sin errores de tipos.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add game/src/systems/events.ts game/src/core/eventCatalog.ts game/src/systems/analyticsEvents.ts game/tests/unit/eventCatalog.test.ts game/tests/unit/analyticsEvents.test.ts
@@ -913,7 +913,7 @@ git commit -m "feat: eventos y estadísticas de la publicidad"
   - `systems/ads.ts`: `interface AdProvider { load(slot: AdSlot): Promise<boolean>; show(slot: AdSlot): Promise<{ shown: boolean; rewarded: boolean }> }`, `type AdResult = 'visto' | 'cortado' | 'fallo'`, `interface AdsDeps`, `class Ads` con `start(): Promise<void>`, `tick(seconds: number): void`, `setBackground(hidden: boolean): void`, `canOffer(slot): boolean`, `offer(slot): number`, `accept(slot): Promise<AdResult>`, `decline(slot): void`, `isReady(slot): boolean`, `settled(): Promise<void>`, `readonly showing: boolean`; `getAds(): Ads | null`, `setAds(ads: Ads | null): void`.
   - `PauseReason` gana `'ad'`.
 
-- [ ] **Step 1: Pruebas de la configuración**
+- [x] **Step 1: Pruebas de la configuración**
 
 `game/tests/unit/adConfig.test.ts`:
 
@@ -957,12 +957,12 @@ describe('configuración de la publicidad', () => {
 });
 ```
 
-- [ ] **Step 2: Lanzarlas y ver que fallan**
+- [x] **Step 2: Lanzarlas y ver que fallan**
 
 Run: `npx vitest run tests/unit/adConfig.test.ts`
 Expected: FAIL, no existe `src/core/adConfig`.
 
-- [ ] **Step 3: Implementar la configuración**
+- [x] **Step 3: Implementar la configuración**
 
 `game/src/core/adConfig.ts`:
 
@@ -1022,7 +1022,7 @@ VITE_ADMOB_TESTING=
 Run: `npx vitest run tests/unit/adConfig.test.ts`
 Expected: PASS.
 
-- [ ] **Step 4: Pruebas de `Ads` con un proveedor falso**
+- [x] **Step 4: Pruebas de `Ads` con un proveedor falso**
 
 `game/tests/unit/ads.test.ts`:
 
@@ -1519,12 +1519,12 @@ describe('Ads: nunca rompe el juego', () => {
 });
 ```
 
-- [ ] **Step 5: Lanzarlas y ver que fallan**
+- [x] **Step 5: Lanzarlas y ver que fallan**
 
 Run: `npx vitest run tests/unit/ads.test.ts`
 Expected: FAIL, no existe `src/systems/ads`.
 
-- [ ] **Step 6: Implementar `Ads`**
+- [x] **Step 6: Implementar `Ads`**
 
 En `game/src/systems/audio.ts`, sustituir el comentario y el tipo `PauseReason`:
 
@@ -1827,14 +1827,14 @@ export function getAds(): Ads | null {
 }
 ```
 
-- [ ] **Step 7: Lanzar y ver que pasan**
+- [x] **Step 7: Lanzar y ver que pasan**
 
 Run: `npx vitest run tests/unit/ads.test.ts tests/unit/adConfig.test.ts tests/unit/audio.test.ts && npm run typecheck`
 Expected: PASS y sin errores de tipos.
 
 Si la prueba «un oyente del bus que lanza» falla porque `EventBus.emit` corta al primer oyente que lanza y el registro de `setup` no llega a apuntar el evento, no es un fallo de `Ads`: esa prueba no mira `t.log`.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add game/src/core/adConfig.ts game/src/systems/ads.ts game/src/systems/audio.ts game/.env.example game/tests/unit/adConfig.test.ts game/tests/unit/ads.test.ts
@@ -1860,7 +1860,7 @@ git commit -m "feat: sistema de anuncios con proveedor inyectado"
 
 `AdMobLike` es una fachada mínima sobre el complemento; quien la implementa de verdad es `capacitorAdMob()` en la Tarea 8. `initialize` siempre arranca el SDK en modo infantil.
 
-- [ ] **Step 1: Escribir las pruebas que fallan**
+- [x] **Step 1: Escribir las pruebas que fallan**
 
 `game/tests/unit/adProvider.test.ts`:
 
@@ -2052,12 +2052,12 @@ describe('proveedor de AdMob: enseñar', () => {
 });
 ```
 
-- [ ] **Step 2: Lanzarlas y ver que fallan**
+- [x] **Step 2: Lanzarlas y ver que fallan**
 
 Run: `npx vitest run tests/unit/adProvider.test.ts`
 Expected: FAIL, no existe `src/systems/adProvider`.
 
-- [ ] **Step 3: Implementar**
+- [x] **Step 3: Implementar**
 
 `game/src/systems/adProvider.ts`:
 
@@ -2168,12 +2168,12 @@ export function createAdMobProvider(admob: AdMobLike, config: AdConfig, wait: Wa
 }
 ```
 
-- [ ] **Step 4: Lanzar y ver que pasan**
+- [x] **Step 4: Lanzar y ver que pasan**
 
 Run: `npx vitest run tests/unit/adProvider.test.ts && npm run typecheck`
 Expected: PASS y sin errores de tipos.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add game/src/systems/adProvider.ts game/tests/unit/adProvider.test.ts
@@ -2191,7 +2191,7 @@ git commit -m "feat: proveedor de AdMob guiado por los avisos del SDK"
 **Interfaces:**
 - Produces: `BackContext` gana `adOfferOpen: boolean`; `BackAction` gana `'close-ad'`. `Platform.backAction()` ya pasa `adOfferOpen`; el caso `'close-ad'` de `Platform.back()` llega en la Tarea 8, con la escena.
 
-- [ ] **Step 1: Escribir la prueba que falla**
+- [x] **Step 1: Escribir la prueba que falla**
 
 En `game/tests/unit/back.test.ts`, la base gana el campo nuevo:
 
@@ -2211,12 +2211,12 @@ y dentro del `describe`:
   });
 ```
 
-- [ ] **Step 2: Lanzarla y ver que falla**
+- [x] **Step 2: Lanzarla y ver que falla**
 
 Run: `npx vitest run tests/unit/back.test.ts`
 Expected: FAIL (`close-ad` no se devuelve).
 
-- [ ] **Step 3: Implementar**
+- [x] **Step 3: Implementar**
 
 `game/src/core/back.ts` queda así:
 
@@ -2253,12 +2253,12 @@ En `game/src/systems/platform.ts`, en `backAction()`, el objeto que recibe `deci
       adOfferOpen: this.active('AdOffer'),
 ```
 
-- [ ] **Step 4: Lanzar y ver que pasa**
+- [x] **Step 4: Lanzar y ver que pasa**
 
 Run: `npx vitest run tests/unit/back.test.ts && npm run typecheck`
 Expected: PASS y sin errores de tipos.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add game/src/core/back.ts game/src/systems/platform.ts game/tests/unit/back.test.ts
@@ -2283,7 +2283,7 @@ git commit -m "feat: el botón atrás rechaza el panel del anuncio"
 
 Esta tarea no tiene prueba propia que falle primero: lo que dibuja se comprueba con las pruebas de juego de la Tarea 9. Aquí se exige `npm run typecheck`, las pruebas unitarias de textos y que el juego arranque.
 
-- [ ] **Step 1: Textos**
+- [x] **Step 1: Textos**
 
 En `game/src/data/strings/es.ts`, junto a las claves `toast.*`:
 
@@ -2301,7 +2301,7 @@ En `game/src/data/strings/en.ts`, en el mismo sitio:
   'ad.none': 'No ad right now',
 ```
 
-- [ ] **Step 2: La escena del panel**
+- [x] **Step 2: La escena del panel**
 
 `game/src/scenes/AdOfferScene.ts`:
 
@@ -2489,7 +2489,7 @@ export class AdOfferScene extends Phaser.Scene {
 }
 ```
 
-- [ ] **Step 3: El arranque (único archivo que toca el complemento)**
+- [x] **Step 3: El arranque (único archivo que toca el complemento)**
 
 `game/src/systems/adsInstall.ts`. Los nombres del complemento se comprueban contra los `.d.ts` apuntados en la Tarea 1; si alguno se llama distinto, se corrige solo dentro de `capacitorAdMob`:
 
@@ -2584,7 +2584,7 @@ export async function installAds(game: Phaser.Game): Promise<void> {
 }
 ```
 
-- [ ] **Step 4: Enchufar la escena, el botón atrás, las estadísticas y el arranque**
+- [x] **Step 4: Enchufar la escena, el botón atrás, las estadísticas y el arranque**
 
 `game/src/main.ts`: importar la escena y ponerla después de `HudScene` (se dibuja encima del contador de monedas, y debajo de ajustes, salir y girar):
 
@@ -2637,7 +2637,7 @@ import { installAds } from '../systems/adsInstall';
     this.scene.start('Title');
 ```
 
-- [ ] **Step 5: Ganchos de prueba**
+- [x] **Step 5: Ganchos de prueba**
 
 `game/src/systems/testHooks.ts`. Imports nuevos:
 
@@ -2692,7 +2692,7 @@ En `window.__ZOO__ = { ... }`, antes de `busLog`:
     adOfferCountdown: () => activeScene<AdOfferScene>('AdOffer')?.countdownLeft() ?? null,
 ```
 
-- [ ] **Step 6: Comprobar**
+- [x] **Step 6: Comprobar**
 
 Run: `npm run typecheck && npx vitest run tests/unit/strings.test.ts tests/unit/back.test.ts tests/unit/analyticsWiring.test.ts tests/unit/hud.test.ts`
 Expected: sin errores de tipos y PASS.
@@ -2702,7 +2702,7 @@ Si `typecheck` se queja de un nombre del complemento, corregirlo dentro de `capa
 Run: `npm run build`
 Expected: compila y `check-dist: sin tokens en la compilación.` (la web sigue compilando con el complemento instalado).
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add game/src/scenes/AdOfferScene.ts game/src/systems/adsInstall.ts game/src/data/strings/es.ts game/src/data/strings/en.ts game/src/main.ts game/src/systems/platform.ts game/src/systems/analyticsInstall.ts game/src/scenes/PreloadScene.ts game/src/systems/testHooks.ts
@@ -2721,7 +2721,7 @@ git commit -m "feat: panel que ofrece el anuncio y arranque de la publicidad en 
 - Consumes: `getAds().canOffer(slot)`, escena `'AdOffer'` con `AdOfferSceneData`, ganchos `adsFake`, `adsAdvance`, `adOfferPos`, `adOfferAmount`, `adOfferCountdown` (Tarea 8).
 - Produces: `FeedScene.close()` reanuda el mapa con `{ from: 'feed' }`.
 
-- [ ] **Step 1: Escribir las pruebas de juego que fallan**
+- [x] **Step 1: Escribir las pruebas de juego que fallan**
 
 `game/tests/e2e/ads.spec.ts`:
 
@@ -2931,12 +2931,12 @@ test('pausa: no salta al volver de Ajustes', async ({ page }) => {
 });
 ```
 
-- [ ] **Step 2: Lanzarlas y ver que fallan**
+- [x] **Step 2: Lanzarlas y ver que fallan**
 
 Run: `npx playwright test tests/e2e/ads.spec.ts`
 Expected: las tres primeras pasan (no salta nada) y fallan las que esperan el panel, por tiempo agotado en `panelOpen`.
 
-- [ ] **Step 3: La tienda**
+- [x] **Step 3: La tienda**
 
 En `game/src/scenes/ShopScene.ts`, imports nuevos:
 
@@ -2972,7 +2972,7 @@ Y el método, junto a `close()`:
   }
 ```
 
-- [ ] **Step 4: El mapa y la pantalla de dar de comer**
+- [x] **Step 4: El mapa y la pantalla de dar de comer**
 
 En `game/src/scenes/FeedScene.ts`, en `close()`, la última línea pasa a ser:
 
@@ -3015,7 +3015,7 @@ const AD_OFFER_MS = 300;
   }
 ```
 
-- [ ] **Step 5: Lanzar las pruebas de juego**
+- [x] **Step 5: Lanzar las pruebas de juego**
 
 Run: `npx playwright test tests/e2e/ads.spec.ts`
 Expected: PASS, 12 pruebas.
@@ -3023,7 +3023,7 @@ Expected: PASS, 12 pruebas.
 Run: `npx playwright test tests/e2e/shop.spec.ts tests/e2e/stats.spec.ts`
 Expected: PASS (la tienda y dar de comer siguen igual sin publicidad montada).
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add game/src/scenes/ShopScene.ts game/src/scenes/WorldScene.ts game/src/scenes/FeedScene.ts game/tests/e2e/ads.spec.ts
@@ -3043,7 +3043,7 @@ git commit -m "feat: el panel del anuncio salta en la tienda y al volver al mapa
 
 Los comandos de esta tarea se lanzan desde la raíz del repositorio.
 
-- [ ] **Step 1: Escribir la prueba que falla**
+- [x] **Step 1: Escribir la prueba que falla**
 
 Al final de `tools/matomo/lib.test.mjs`:
 
@@ -3086,12 +3086,12 @@ test('adByBalance cruza paneles y rechazos por tramo de saldo, sumando los hueco
 });
 ```
 
-- [ ] **Step 2: Lanzarla y ver que falla**
+- [x] **Step 2: Lanzarla y ver que falla**
 
 Run: `node --test tools/matomo/lib.test.mjs`
 Expected: FAIL, `adTotals` no existe en `lib.mjs`.
 
-- [ ] **Step 3: Implementar**
+- [x] **Step 3: Implementar**
 
 Al final de `tools/matomo/lib.mjs`:
 
@@ -3140,7 +3140,7 @@ out.push('## Anuncios', '', 'Solo Android. El dinero real no sale aquí: los ing
 ), '');
 ```
 
-- [ ] **Step 4: Lanzar y ver que pasa**
+- [x] **Step 4: Lanzar y ver que pasa**
 
 Run: `node --test tools/matomo/lib.test.mjs`
 Expected: PASS.
@@ -3148,7 +3148,7 @@ Expected: PASS.
 Run: `node --check tools/matomo/resumen.mjs`
 Expected: sin salida (la sintaxis es correcta).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add tools/matomo/lib.mjs tools/matomo/lib.test.mjs tools/matomo/resumen.mjs
@@ -3166,7 +3166,7 @@ git commit -m "feat: apartado de anuncios en el resumen de estadísticas"
 
 Si la lista de permisos apuntada en la Tarea 1 trae alguno que este texto no cubre (por ejemplo, el estado de la red), ajustar la frase de «Permisos» para que lo nombre.
 
-- [ ] **Step 1: Página en español**
+- [x] **Step 1: Página en español**
 
 En `game/public/privacidad.html`:
 
@@ -3242,7 +3242,7 @@ En «Tus derechos», después de «las estadísticas anónimas se apagan en Ajus
       </p>
 ```
 
-- [ ] **Step 2: Página en inglés**
+- [x] **Step 2: Página en inglés**
 
 En `game/public/privacidad-en.html`, los mismos cambios:
 
@@ -3310,14 +3310,14 @@ En «Your rights», después de la frase que dice que las estadísticas se apaga
       </p>
 ```
 
-- [ ] **Step 3: Comprobar**
+- [x] **Step 3: Comprobar**
 
 Run: `npx vitest run tests/unit/legal.test.ts`
 Expected: PASS.
 
 Abrir las dos páginas en el navegador (`npm run dev` y `http://localhost:5173/privacidad.html`, `.../privacidad-en.html`) y comprobar que se leen bien y que no ha quedado ninguna frase que diga que el juego «no tiene anuncios» / «has no ads».
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add game/public/privacidad.html game/public/privacidad-en.html
@@ -3331,7 +3331,7 @@ git commit -m "docs: la página de privacidad explica la publicidad de Android"
 **Files:**
 - Modify: `game/package.json`, `game/package-lock.json`, `game/android/app/build.gradle`, `README.md`, `game/README.md`, `docs/superpowers/specs/2026-10-12-publicidad-design.md`, `docs/superpowers/specs/2026-09-27-motor-phaser-v3-design.md`, `docs/privado/play-store.md`, este plan (casillas marcadas)
 
-- [ ] **Step 1: Versión**
+- [x] **Step 1: Versión**
 
 `game/package.json`: `"version": "2.6.0"`. Lanzar `npm install --package-lock-only` para que `package-lock.json` la recoja.
 
@@ -3342,7 +3342,7 @@ git commit -m "docs: la página de privacidad explica la publicidad de Android"
         versionName "2.6.0"
 ```
 
-- [ ] **Step 2: `README.md` (raíz)**
+- [x] **Step 2: `README.md` (raíz)**
 
 - Línea 11, «Pensado para niños de 6 a 9 años: sin textos largos, sin perder y sin anuncios.» pasa a: «Pensado para niños de 6 a 9 años: sin textos largos y sin perder. En Android hay algún anuncio con premio, pocos y siempre rechazables; la web no tiene anuncios.»
 - La línea de «Google Play (Families Policy)» pasa a: «**Google Play (Families Policy):** en Android, solo anuncios con premio de Google AdMob (red certificada para Familias), marcados como dirigidos a niños, sin personalizar, sin permiso `AD_ID` y sin formulario de consentimiento; como mucho uno cada 15 minutos de juego y cuatro al día. Sin enlaces externos. Estadísticas anónimas hacia un Matomo propio (sin cookies ni identificadores; se apagan en Ajustes)».
@@ -3360,7 +3360,7 @@ git commit -m "docs: la página de privacidad explica la publicidad de Android"
 
 - En «Pendiente, por orden», añadir al principio: «pasos de David para la 2.6.0 (cuenta de AdMob, identificadores, Play Console y prueba en el móvil con anuncios de prueba);».
 
-- [ ] **Step 3: `game/README.md`**
+- [x] **Step 3: `game/README.md`**
 
 - En «Comandos», añadir: «`npm run check:manifest` — comprueba el manifiesto fusionado de Android (sin identificador de publicidad, con el identificador de AdMob). Con `-- --publicar` exige el identificador real. Hay que compilar antes con Gradle.»
 - En «Estructura»: en `src/core/` añadir «`adPacing` (ritmo de la publicidad), `adConfig` (configuración de AdMob)»; en `src/systems/` añadir «`ads` (publicidad con premio: cuándo se pide y se ofrece un anuncio), `adProvider` (avisos del SDK), `adsInstall` (único archivo que toca el complemento de AdMob; solo instala en Android)»; en `src/scenes/` añadir «AdOffer (panel que ofrece un anuncio)».
@@ -3379,7 +3379,7 @@ Anuncios con premio de AdMob, en modo infantil. Sin configuración no hay public
 
 - «Versión»: «**2.6.0**»; el `versionCode` **7** es la 2.6.0; la siguiente será el 8.
 
-- [ ] **Step 4: Las specs**
+- [x] **Step 4: Las specs**
 
 En `docs/superpowers/specs/2026-10-12-publicidad-design.md`:
 
@@ -3407,7 +3407,7 @@ Pendiente: pasos de David en AdMob y Play Console, la prueba en Android con anun
 
 En `docs/superpowers/specs/2026-09-27-motor-phaser-v3-design.md`, en su apartado de estado actual, añadir: «2.6.0 (rama `feat/publicidad`): publicidad con premio en Android. Ver `2026-10-12-publicidad-design.md` y su plan. Cambia la política de Play: la app pasa a declarar anuncios.»
 
-- [ ] **Step 5: `docs/privado/play-store.md`**
+- [x] **Step 5: `docs/privado/play-store.md`**
 
 - En «1. Subir la versión», añadir al historial: «→ 5 (2.3.0) → 6 (2.5.1) → **7** (2.6.0, primera con anuncios)».
 - En «2. Comprobaciones previas», añadir: «Para la 2.6.0 en adelante hacen falta `game/.env.production.local` con los dos bloques de AdMob y `game/android/admob.properties` con `appId=`. Ninguno de los dos se sube.»
@@ -3450,7 +3450,7 @@ node --test tools/matomo/lib.test.mjs
 
 Expected: todo en verde. Las unitarias suben en unas 150 pruebas respecto a la 2.5.1 y las de juego en 12 (`ads.spec.ts`).
 
-- [ ] **Step 7: Marcar las casillas de este plan y commit**
+- [x] **Step 7: Marcar las casillas de este plan y commit**
 
 ```bash
 git add game/package.json game/package-lock.json game/android/app/build.gradle README.md game/README.md docs/superpowers/specs/2026-10-12-publicidad-design.md docs/superpowers/specs/2026-09-27-motor-phaser-v3-design.md docs/privado/play-store.md docs/superpowers/plans/2026-10-12-publicidad.md

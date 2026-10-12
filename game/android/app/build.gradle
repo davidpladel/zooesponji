@@ -30,8 +30,8 @@ android {
         applicationId "com.davidpladel.zooesponji"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 6
-        versionName "2.5.1"
+        versionCode 7
+        versionName "2.6.0"
         manifestPlaceholders += [admobAppId: zooAdmobAppId]
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {

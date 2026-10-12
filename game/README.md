@@ -12,6 +12,7 @@ npm run dev          # juego en http://localhost:5173
 npm test             # tests de lógica (Vitest)
 npm run test:e2e     # 30 pruebas de juego (29 corren solas; la de capturas en inglés, solo a mano con CAPTURAS=1) en el navegador (Playwright; en local usa el Chrome instalado; si alguna falla por tiempo, --workers=1)
 npm run build        # build de producción en dist/
+npm run check:manifest # comprueba el manifiesto fusionado de Android (sin identificador de publicidad, con el de AdMob); con `-- --publicar` exige el identificador real. Compilar antes con Gradle
 npm run make:ui-assets # copia la letra y los iconos de la interfaz a public/ (solo si cambian)
 npm run make:test-map  # regenera el mapa de prueba
 npx cap sync android # copia la build al proyecto Android
@@ -70,10 +71,10 @@ Las piezas de los menús (píldoras, paneles, carteles, chapa de cerrar, monedas
 
 ## Estructura
 
-- `src/core/` — lógica pura sin Phaser (reacciones, economía y extras, guardado, A*, mapas, movimiento, `flock` para que los animales no se pisen, `petting` para el aforo de la granja de contacto, `back` para el botón atrás). Todo con tests.
+- `src/core/` — lógica pura sin Phaser (reacciones, economía y extras, guardado, A*, mapas, movimiento, `flock` para que los animales no se pisen, `petting` para el aforo de la granja de contacto, `back` para el botón atrás, `adPacing` para el ritmo de la publicidad, `adConfig` para la configuración de AdMob). Todo con tests.
 - `src/data/` — contenido: animales, comidas, tienda, libro del zoo (`book.ts`: ids de página y qué las desbloquea) y textos (`strings/`: `es.ts` y `en.ts`, una clave por texto; `en.ts` no compila si le falta una; todo texto visible pasa por `t()`, que usa el idioma activo).
-- `src/systems/` — eventos, sesión, almacenamiento, zoom, `audio` (samples y música), `platform` (botón atrás, segundo plano, girar el móvil), `errors` (pantalla ¡Ups!), `language` (idioma activo y detección por el idioma del móvil).
-- `src/scenes/` — escenas de Phaser (solo dibujan y recogen input): Boot, Preload, Title, World, Feed (dar de comer), Shop (tienda), Book (libro del zoo), Hud, Settings (menú ⚙️: ajustes, idioma, créditos, privacidad y salir), Quit (¿Salir?), Rotate (gira el móvil).
+- `src/systems/` — eventos, sesión, almacenamiento, zoom, `audio` (samples y música), `platform` (botón atrás, segundo plano, girar el móvil), `errors` (pantalla ¡Ups!), `language` (idioma activo y detección por el idioma del móvil), `ads` (publicidad con premio: cuándo se pide y se ofrece un anuncio), `adProvider` (avisos del SDK), `adsInstall` (único archivo que toca el complemento de AdMob; solo instala en Android).
+- `src/scenes/` — escenas de Phaser (solo dibujan y recogen input): Boot, Preload, Title, World, Feed (dar de comer), Shop (tienda), Book (libro del zoo), Hud, Settings (menú ⚙️: ajustes, idioma, créditos, privacidad y salir), Quit (¿Salir?), Rotate (gira el móvil), AdOffer (panel que ofrece un anuncio).
 - `src/world/` — ayudantes del mundo: `Pens` (los animales de cada recinto, cada uno con su identidad, los candados y el toque sobre un animal para darle de comer; los recintos que no se ven no se actualizan), `ShopBuilding` (edificio y puerta de la tienda), `ShopInterior` (la tienda por dentro), `ShopKeeperWalker` (la cuidadora dentro de la tienda), `Shopkeeper` (el tendero), `ShopHint` (huellas de pista), `VisitorCrowd` (visitantes; en el recinto de ovejas entran a acariciar, 3 como mucho, y salen corazones).
 
 ## Añadir un animal
@@ -109,6 +110,15 @@ Caché: el JS lleva huella en el nombre (Vite); el arte, el audio y el mapa se p
 
 Girar el móvil: los navegadores avisan del giro antes de dar el tamaño nuevo, así que `Platform` vuelve a medir la pantalla varias veces tras cada giro (sin recargar la página).
 
+## Publicidad (solo Android)
+
+Anuncios con premio de AdMob, en modo infantil. Sin configuración no hay publicidad: el juego es el de siempre.
+
+- `game/.env.production.local` (no se sube): `VITE_ADMOB_REWARDED` y `VITE_ADMOB_REWARDED_INTERSTITIAL`, los dos bloques de anuncios. Con `VITE_ADMOB_TESTING=1` la compilación pide los anuncios de prueba de Google.
+- `game/android/admob.properties` (no se sube), con una línea `appId=ca-app-pub-...~...`, o la variable `ZOO_ADMOB_APP_ID`. Sin ninguno, el paquete lleva el identificador de pruebas de Google y `npm run check:manifest -- --publicar` falla.
+- **Nunca tocar anuncios reales en el propio móvil:** AdMob lo cuenta como tráfico no válido. Para probar, `VITE_ADMOB_TESTING=1`.
+- En el navegador se prueba con un proveedor falso: `window.__ZOO__.adsFake('visto')` y `window.__ZOO__.adsAdvance(300)`.
+
 ## Versión
 
-`version` en `package.json` y `versionName` en `android/app/build.gradle`: **2.5.1**. `versionCode` sube en 1 con cada subida a Play: el 5 es la 2.3.0, que está en la prueba cerrada; el **6** es la 2.5.1, compilada y pendiente de subir. La siguiente será el 7.
+`version` en `package.json` y `versionName` en `android/app/build.gradle`: **2.6.0**. `versionCode` sube en 1 con cada subida a Play: el 6 es la 2.5.1, que está en la prueba cerrada; el **7** es la 2.6.0 (primera con anuncios, sin compilar ni subir todavía). La siguiente será el 8.
