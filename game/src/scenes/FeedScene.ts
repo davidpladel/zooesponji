@@ -118,7 +118,7 @@ export class FeedScene extends Phaser.Scene {
     if (!this.scene.isActive()) return;
     bus.emit('feed-closed', { residentId: this.residentId });
     this.scene.stop();
-    this.scene.resume('World');
+    this.scene.resume('World', { from: 'feed' });
   }
 
   targetsOnScreen(): { animal: Vec; foods: Partial<Record<FoodId, Vec>> } {
