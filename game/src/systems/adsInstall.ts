@@ -34,7 +34,8 @@ function capacitorAdMob(): AdMobLike {
     initialize: (testing) =>
       AdMob.initialize({ initializeForTesting: testing, tagForChildDirectedTreatment: true, maxAdContentRating: MaxAdContentRating.General }),
     prepare: async (slot, adId, testing) => {
-      const options = { adId, isTesting: testing };
+      // Inmersivo: sin la barra de navegación de Android encima del anuncio (taparía su botón de cerrar).
+      const options = { adId, isTesting: testing, immersiveMode: true };
       if (slot === 'tienda') await AdMob.prepareRewardVideoAd(options);
       else await AdMob.prepareRewardInterstitialAd(options);
     },
