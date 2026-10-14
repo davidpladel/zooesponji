@@ -17,3 +17,6 @@ docs/privado/
 
 # Informes descargados de Matomo: nunca al repo público
 tools/matomo/data/
+
+# Envíos descargados del servidor de comunidad: llevan nombres de menores
+tools/comunidad/data/

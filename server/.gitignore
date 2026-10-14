@@ -1,0 +1,8 @@
+herramientas/
+.phpunit.cache/
+app/config.php
+app/datos/*.json
+app/datos/*.ok
+!app/datos/comunidad.example.json
+public/dibujos/*.png
+app/datos/*.sqlite

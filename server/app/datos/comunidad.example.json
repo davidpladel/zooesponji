@@ -1,0 +1,15 @@
+{
+  "votacion": {
+    "id": "2026-11-a",
+    "abre": "2026-11-01",
+    "cierra": "2026-11-15",
+    "opciones": [
+      { "id": "delfines", "titulo": { "es": "Delfines", "en": "Dolphins" }, "dibujo": "delfines.png", "ideaDe": "Lucía" },
+      { "id": "koalas", "titulo": { "es": "Koalas", "en": "Koalas" }, "dibujo": "koalas.png" }
+    ],
+    "ganadora": null
+  },
+  "muro": [
+    { "titulo": { "es": "Pingüinos", "en": "Penguins" }, "dibujo": "pinguinos.png", "ideaDe": "Adrián", "estado": "hecha", "recinto": "pinguino" }
+  ]
+}

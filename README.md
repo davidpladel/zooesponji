@@ -74,6 +74,7 @@ El juego se ha hecho por hitos: spec de diseño → plan → ejecución.
 | [Spec](docs/superpowers/specs/2026-10-07-analitica-anonima-matomo-design.md) y [plan analítica](docs/superpowers/plans/2026-10-07-analitica-anonima-matomo.md) | Estadísticas anónimas con Matomo: usuarios activos sin identificadores, eventos y ficha en Ajustes |
 | [Spec](docs/superpowers/specs/2026-10-07-analitica-detallada-design.md) y [plan analítica detallada](docs/superpowers/plans/2026-10-07-analitica-detallada.md) | Estadísticas detalladas (2.5.0): eventos por animal, comida, recinto y página; jugadores únicos sin identificador; juego sin conexión; lectura por API con `tools/matomo/` |
 | [Spec](docs/superpowers/specs/2026-08-08-mvp-zooesponji-design.md) y [plan 1.0](docs/superpowers/plans/2026-08-08-mvp-zooesponji.md), [spec](docs/superpowers/specs/2026-08-15-escenas-inmersivas-design.md) y [plan del prototipo](docs/superpowers/plans/2026-08-15-escenas-inmersivas.md) | Histórico (1.x y prototipo Canvas) |
+| [Spec](docs/superpowers/specs/2026-10-12-comunidad-design.md) y [plan 1 de comunidad](docs/superpowers/plans/2026-10-12-comunidad-1-servidor-y-web.md) | Votaciones e ideas: servidor, página web para adultos y herramientas (`server/`, `tools/comunidad/`) |
 
 ## Hoja de ruta
 
@@ -100,6 +101,8 @@ Google Play: la 2.3.0 (versionCode 5) está en la prueba cerrada; a 2026-10-06 v
 Ficha de Play al día (2026-10-08): David subió las capturas nuevas de `game/store/play/` (`captura-1` a `captura-6`, 1920×1080: leones, dar de comer a la pantera, cabras, tienda, libro y panteras) y el gráfico de funciones rehecho (portada pintada, letra Baloo 2, león del icono y lema).
 
 Pendiente, por orden: publicar la 2.5.1 en la web; completar los 14 días con 12 testers y pedir el acceso a producción (6b). Opcional en Matomo: conservación corta de los registros en bruto. Cabos sueltos de la 2.4.0: la prueba `zoo-grande.spec.ts:104` («sin comprar las ovejas, ningún visitante entra en su recinto») falló una vez en una tanda completa y pasó las demás, sin que se llegara a ver el error; y cambiar de idioma con la ventana de comer abierta, o con el libro sobre la tienda, no tiene prueba de juego propia. Ideas para después, cada una con su spec: bañar y limpiar, día y noche, clínica veterinaria y acuario con delfines.
+
+⬜ **Comunidad** (en la rama `feat/comunidad`): servidor de votaciones e ideas (`server/`, en `api.zooesponji.com`), página web para adultos y herramientas para preparar cada votación (`tools/comunidad/`). Falta instalarlo en el VPS y el tablón dentro del juego (plan 2).
 
 **Más adelante:** clínica veterinaria, bañar animales, limpiar jaulas, ciclo día-noche, acuario con delfines, más animales y zonas.
 

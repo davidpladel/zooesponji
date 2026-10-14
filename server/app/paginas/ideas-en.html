@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Ideas and bugs · Zoo Esponji</title>
+  <link rel="stylesheet" href="ideas.css">
+</head>
+<body>
+<main>
+  <h1>Ideas and bugs</h1>
+  <p>This page is for adults. Here you can suggest an idea for Zoo Esponji, report a bug, or both. <a href="./">Español</a></p>
+
+  <form id="form" novalidate data-idioma="en" data-condiciones="2026-10"
+        data-vacio="Write an idea or a bug."
+        data-aceptacion="Tick the boxes to send."
+        data-peticion="Check the texts: one is too long or has characters we can't accept."
+        data-error="We couldn't send it. Please try again in a while."
+        data-bien="Thank you! We got it.">
+    <label for="idea">An idea for the zoo
+      <span class="nota">A new animal, a place, something to do… Up to 300 characters.</span></label>
+    <textarea id="idea" name="idea" maxlength="300"></textarea>
+
+    <label for="nombre">Child's first name or nickname (optional)
+      <span class="nota">First name only, no surname. It will appear in the game as "…'s idea" if the idea goes to a vote.</span></label>
+    <input type="text" id="nombre" name="nombre" maxlength="15" autocomplete="off">
+
+    <label for="fallo">A bug in the game
+      <span class="nota">What you were doing and what happened. Up to 500 characters.</span></label>
+    <textarea id="fallo" name="fallo" maxlength="500"></textarea>
+
+    <label for="version">Game version (optional)
+      <span class="nota">It is written on the zoo board and in Settings.</span></label>
+    <input type="text" id="version" name="version" maxlength="20" autocomplete="off">
+
+    <label for="modelo">Phone or tablet model (optional)</label>
+    <input type="text" id="modelo" name="modelo" maxlength="60" autocomplete="off">
+
+    <div class="trampa" aria-hidden="true">
+      <label for="web">Leave this field empty</label>
+      <input type="text" id="web" name="web" tabindex="-1" autocomplete="off">
+    </div>
+
+    <label class="casilla"><input type="checkbox" id="mayor">
+      <span>I am 18 or older and I accept the <a href="../terms.html" target="_blank" rel="noopener">terms</a>.</span></label>
+    <label class="casilla" id="fila-tutor" hidden><input type="checkbox" id="tutor">
+      <span>I am their parent or guardian, or I have their permission to send their name.</span></label>
+
+    <button type="submit" id="enviar">Send</button>
+    <p class="aviso" id="aviso" role="status" hidden></p>
+  </form>
+
+  <p class="legal">
+    <strong>What we do with what you send.</strong> Controller: David Salvador Plaza Delmarés (davidpladel),
+    android@davidpladel.com. We use your message only to improve the game and, if you gave a name, to show it
+    next to the idea inside the game. We do this because you send it and accept it. We do not ask for email
+    or surname, we do not store your IP address with your message and we do not share this data with anyone. Messages are
+    deleted after 90 days. You can ask us to delete yours sooner, or to remove a name from the game, by
+    writing to that address. Like any website, the server keeps visits for a few days in technical logs, used only to run it and keep it secure. You can also complain to the Spanish Data Protection Agency (aepd.es).
+    More in the <a href="https://www.davidpladel.com/privacidad-zoo-esponji/">privacy policy</a>.
+  </p>
+</main>
+<script src="ideas.js"></script>
+</body>
+</html>

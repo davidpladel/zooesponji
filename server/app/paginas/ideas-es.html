@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Ideas y fallos · Zoo Esponji</title>
+  <link rel="stylesheet" href="ideas.css">
+</head>
+<body>
+<main>
+  <h1>Ideas y fallos</h1>
+  <p>Esta página es para personas adultas. Aquí puedes proponer una idea para Zoo Esponji, avisar de un fallo, o las dos cosas. <a href="en.php">English</a></p>
+
+  <form id="form" novalidate data-idioma="es" data-condiciones="2026-10"
+        data-vacio="Escribe una idea o un fallo."
+        data-aceptacion="Marca las casillas para poder enviar."
+        data-peticion="Revisa los textos: alguno es demasiado largo o tiene caracteres que no se admiten."
+        data-error="No se ha podido enviar. Prueba otra vez dentro de un rato."
+        data-bien="¡Gracias! Lo hemos recibido.">
+    <label for="idea">Una idea para el zoo
+      <span class="nota">Un animal nuevo, un sitio, algo que hacer… Hasta 300 letras.</span></label>
+    <textarea id="idea" name="idea" maxlength="300"></textarea>
+
+    <label for="nombre">Nombre de pila o apodo del niño o la niña (opcional)
+      <span class="nota">Solo el nombre, sin apellidos. Saldrá en el juego como «idea de…» si la idea llega a votarse.</span></label>
+    <input type="text" id="nombre" name="nombre" maxlength="15" autocomplete="off">
+
+    <label for="fallo">Un fallo del juego
+      <span class="nota">Qué estabas haciendo y qué pasó. Hasta 500 letras.</span></label>
+    <textarea id="fallo" name="fallo" maxlength="500"></textarea>
+
+    <label for="version">Versión del juego (opcional)
+      <span class="nota">Está escrita en el tablón del zoo y en Ajustes.</span></label>
+    <input type="text" id="version" name="version" maxlength="20" autocomplete="off">
+
+    <label for="modelo">Modelo del móvil o la tableta (opcional)</label>
+    <input type="text" id="modelo" name="modelo" maxlength="60" autocomplete="off">
+
+    <div class="trampa" aria-hidden="true">
+      <label for="web">No rellenes este campo</label>
+      <input type="text" id="web" name="web" tabindex="-1" autocomplete="off">
+    </div>
+
+    <label class="casilla"><input type="checkbox" id="mayor">
+      <span>Tengo 18 años o más y acepto las <a href="../condiciones.html" target="_blank" rel="noopener">condiciones</a>.</span></label>
+    <label class="casilla" id="fila-tutor" hidden><input type="checkbox" id="tutor">
+      <span>Soy su padre, madre o tutor, o tengo su permiso para enviar su nombre.</span></label>
+
+    <button type="submit" id="enviar">Enviar</button>
+    <p class="aviso" id="aviso" role="status" hidden></p>
+  </form>
+
+  <p class="legal">
+    <strong>Qué hacemos con lo que envías.</strong> Responsable: David Salvador Plaza Delmarés (davidpladel),
+    android@davidpladel.com. Usamos tu mensaje solo para mejorar el juego y, si diste un nombre, para ponerlo
+    junto a la idea dentro del juego. Lo hacemos porque tú lo envías y lo aceptas. No pedimos correo ni
+    apellidos, no guardamos tu dirección IP con tu mensaje y no cedemos estos datos a nadie. Los mensajes se borran a los
+    90 días. Puedes pedir antes que borremos el tuyo, o que quitemos un nombre del juego, escribiendo a ese
+    correo. Como en cualquier web, el servidor anota las visitas durante unos días en registros técnicos, que solo se usan para que funcione y para su seguridad. También puedes reclamar ante la Agencia Española de Protección de Datos (aepd.es).
+    Más detalle en la <a href="https://www.davidpladel.com/privacidad-zoo-esponji/">política de privacidad</a>.
+  </p>
+</main>
+<script src="ideas.js"></script>
+</body>
+</html>
