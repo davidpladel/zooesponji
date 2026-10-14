@@ -9,6 +9,7 @@ use Zoo\Servicio;
 $app = require __DIR__ . '/ruta.php';
 require $app . '/autoload.php';
 
+Http::soloDesde('https://www.zooesponji.com', 'https://zooesponji.com');
 if (!Http::metodo('POST')) {
     return;
 }

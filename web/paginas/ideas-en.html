@@ -3,14 +3,24 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="robots" content="noindex">
   <title>Ideas and bugs · Zoo Esponji</title>
-  <link rel="stylesheet" href="ideas.css">
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#6d4c41">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
+  <link rel="stylesheet" href="/assets/sitio.css">
+  <link rel="stylesheet" href="/assets/ideas.css">
 </head>
-<body>
-<main>
-  <h1>Ideas and bugs</h1>
-  <p>This page is for adults. Here you can suggest an idea for Zoo Esponji, report a bug, or both. <a href="./">Español</a></p>
+<body class="pagina-texto">
+<header class="cabecera-texto">
+  <div class="envoltura">
+    <a class="marca" href="/en"><img src="/assets/img/icono-192.png" alt="" width="40" height="40">Zoo Esponji</a>
+    <nav class="idiomas" aria-label="Language"><a href="/ideas" lang="es">ES</a><a href="/ideas/en" aria-current="page" lang="en">EN</a></nav>
+  </div>
+</header>
+<main class="contenido">
+<h1>Ideas and bugs</h1>
+  <p>This page is for adults. Here you can suggest an idea for Zoo Esponji, report a bug, or both.</p>
 
   <form id="form" novalidate data-idioma="en" data-condiciones="2026-10"
         data-vacio="Write an idea or a bug."
@@ -43,7 +53,7 @@
     </div>
 
     <label class="casilla"><input type="checkbox" id="mayor">
-      <span>I am 18 or older and I accept the <a href="../terms.html" target="_blank" rel="noopener">terms</a>.</span></label>
+      <span>I am 18 or older and I accept the <a href="/terms" target="_blank" rel="noopener">terms</a>.</span></label>
     <label class="casilla" id="fila-tutor" hidden><input type="checkbox" id="tutor">
       <span>I am their parent or guardian, or I have their permission to send their name.</span></label>
 
@@ -58,9 +68,20 @@
     or surname, we do not store your IP address with your message and we do not share this data with anyone. Messages are
     deleted after 90 days. You can ask us to delete yours sooner, or to remove a name from the game, by
     writing to that address. Like any website, the server keeps visits for a few days in technical logs, used only to run it and keep it secure. You can also complain to the Spanish Data Protection Agency (aepd.es).
-    More in the <a href="https://www.davidpladel.com/privacidad-zoo-esponji/">privacy policy</a>.
+    More in the <a href="/privacy">privacy policy</a>.
   </p>
 </main>
-<script src="ideas.js"></script>
+<footer class="pie">
+  <div class="envoltura">
+    <nav aria-label="Legal">
+      <a href="/privacy">Privacy</a>
+      <a href="/terms">Idea terms</a>
+      <a href="https://www.davidpladel.com/aviso-legal" rel="noopener">Legal notice</a>
+      <a href="mailto:android@davidpladel.com">Contact</a>
+    </nav>
+    <p>© 2026 Zoo Esponji · Art by VectoRaith · Google Play and the Google Play logo are trademarks of Google LLC.</p>
+  </div>
+</footer>
+<script src="/assets/ideas.js"></script>
 </body>
 </html>

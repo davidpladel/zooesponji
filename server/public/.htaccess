@@ -1,13 +1,14 @@
 Options -Indexes
 <IfModule mod_rewrite.c>
   RewriteEngine On
-  # /ideas/en abre la versión en inglés sin enseñar .php (la dirección del QR en inglés).
-  RewriteRule ^ideas/en/$ /ideas/en [R=301,L]
-  RewriteRule ^ideas/en$ ideas/en.php [L]
+  # Las páginas para personas viven en www.zooesponji.com; aquí solo queda lo que usa el juego.
+  RewriteRule ^ideas/?$ https://www.zooesponji.com/ideas [R=301,L]
+  RewriteRule ^ideas/index\.php$ https://www.zooesponji.com/ideas [R=301,L]
+  RewriteRule ^ideas/en(\.php)?/?$ https://www.zooesponji.com/ideas/en [R=301,L]
+  RewriteRule ^condiciones\.html$ https://www.zooesponji.com/condiciones [R=301,L]
+  RewriteRule ^terms\.html$ https://www.zooesponji.com/terms [R=301,L]
 </IfModule>
 <IfModule mod_headers.c>
-  Header always set Content-Security-Policy "default-src 'self'; img-src 'self' data:; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"
-  Header always set X-Frame-Options "DENY"
   Header always set X-Content-Type-Options "nosniff"
   Header always set Referrer-Policy "no-referrer"
 </IfModule>

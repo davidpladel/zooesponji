@@ -8,6 +8,22 @@ final class Http
 {
     public const MAX_BYTES = 8192;
 
+    /** Quién puede leer las respuestas desde un navegador. `envio.php` lo limita a la web. */
+    private static string $origen = '*';
+
+    /** Solo la web de www.zooesponji.com puede usar el formulario desde un navegador. */
+    public static function soloDesde(string ...$permitidos): void
+    {
+        $pedido = $_SERVER['HTTP_ORIGIN'] ?? null;
+        self::$origen = self::elegirOrigen(is_string($pedido) ? $pedido : null, $permitidos);
+    }
+
+    /** El origen que pide, si está permitido; si no, el primero de la lista (el navegador bloqueará la respuesta). */
+    public static function elegirOrigen(?string $pedido, array $permitidos): string
+    {
+        return in_array($pedido, $permitidos, true) ? $pedido : $permitidos[0];
+    }
+
     /** Responde `OPTIONS` y los métodos no admitidos. `true`: hay que seguir. */
     public static function metodo(string ...$admitidos): bool
     {
@@ -50,33 +66,14 @@ final class Http
         echo json_encode($cuerpo, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     }
 
-    /** Cabeceras de las páginas HTML: no se pueden meter en otra web ni cargar nada de fuera. */
-    public static function cabecerasPagina(): array
-    {
-        return [
-            'Content-Type: text/html; charset=utf-8',
-            "Content-Security-Policy: default-src 'self'; img-src 'self' data:; frame-ancestors 'none'; base-uri 'none'; form-action 'self'",
-            'X-Frame-Options: DENY',
-            'X-Content-Type-Options: nosniff',
-            'Referrer-Policy: no-referrer',
-        ];
-    }
-
-    /** Sirve una página de `app/paginas/` con sus cabeceras (nginx no lee `.htaccess`). */
-    public static function pagina(string $archivo): void
-    {
-        header_remove('X-Powered-By');
-        foreach (self::cabecerasPagina() as $cabecera) {
-            header($cabecera);
-        }
-        readfile($archivo);
-    }
-
     private static function cabeceras(int $cacheSegundos): void
     {
         header_remove('X-Powered-By');
         header('Content-Type: application/json; charset=utf-8');
-        header('Access-Control-Allow-Origin: *');
+        header('Access-Control-Allow-Origin: ' . self::$origen);
+        if (self::$origen !== '*') {
+            header('Vary: Origin');
+        }
         header('X-Content-Type-Options: nosniff');
         header('Cache-Control: ' . ($cacheSegundos > 0 ? "public, max-age=$cacheSegundos" : 'no-store'));
     }

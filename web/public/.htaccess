@@ -1,0 +1,14 @@
+Options -Indexes
+DirectoryIndex pagina.php
+ErrorDocument 404 /pagina.php?p=404
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  # Una sola dirección: www.zooesponji.com
+  RewriteCond %{HTTP_HOST} ^zooesponji\.com$ [NC]
+  RewriteRule ^(.*)$ https://www.zooesponji.com/$1 [R=301,L]
+  RewriteRule ^$ pagina.php?p=inicio [QSA,L]
+  RewriteRule ^en/?$ pagina.php?p=home [QSA,L]
+  RewriteRule ^ideas/?$ pagina.php?p=ideas [QSA,L]
+  RewriteRule ^ideas/en/?$ pagina.php?p=ideas-en [QSA,L]
+  RewriteRule ^(condiciones|terms|privacidad|privacy)/?$ pagina.php?p=$1 [QSA,L]
+</IfModule>

@@ -24,7 +24,7 @@ PHP 8.1 o superior y MySQL. Sin Composer ni librerías. Diseño: `docs/superpowe
 5. **Contenido.** Copia `private/app/datos/comunidad.example.json` a `private/app/datos/comunidad.json`
    y cambia `"votacion": {...}` por `"votacion": null` hasta que haya una de verdad.
 6. **Comprobar.** Abre `https://api.zooesponji.com/estado.php`: debe salir `{"hoy":"…","ideas":0,"votacion":null,…}`.
-   Abre `https://api.zooesponji.com/ideas/` y envía una idea de prueba.
+   La página del formulario está en la web (`web/`, www.zooesponji.com/ideas).
 7. **Comprobar que lo privado no se ve.** `https://api.zooesponji.com/ruta.php` debe dar «prohibido», y no
    debe existir ninguna dirección que enseñe `config.php`.
 

@@ -44,7 +44,7 @@
     enviando = true;
     boton.disabled = true;
     try {
-      const respuesta = await fetch('../envio.php', {
+      const respuesta = await fetch('https://api.zooesponji.com/envio.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(datos),

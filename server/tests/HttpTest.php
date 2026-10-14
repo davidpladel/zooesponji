@@ -6,34 +6,28 @@ use Zoo\Http;
 
 final class HttpTest extends TestCase
 {
-    public function testLasPaginasLlevanSusCabecerasDeSeguridad(): void
+    private const WEB = ['https://www.zooesponji.com', 'https://zooesponji.com'];
+
+    public function testElFormularioSoloSeAceptaDesdeLaWeb(): void
     {
-        $cabeceras = implode("\n", Http::cabecerasPagina());
-        self::assertStringContainsString("Content-Security-Policy: default-src 'self'", $cabeceras);
-        self::assertStringContainsString("frame-ancestors 'none'", $cabeceras);
-        self::assertStringContainsString('X-Frame-Options: DENY', $cabeceras);
-        self::assertStringContainsString('X-Content-Type-Options: nosniff', $cabeceras);
-        self::assertStringContainsString('Referrer-Policy: no-referrer', $cabeceras);
-        self::assertStringContainsString('Content-Type: text/html; charset=utf-8', $cabeceras);
+        self::assertSame('https://www.zooesponji.com', Http::elegirOrigen('https://www.zooesponji.com', self::WEB));
+        self::assertSame('https://zooesponji.com', Http::elegirOrigen('https://zooesponji.com', self::WEB));
+        self::assertSame('https://www.zooesponji.com', Http::elegirOrigen('https://malo.example', self::WEB));
+        self::assertSame('https://www.zooesponji.com', Http::elegirOrigen(null, self::WEB));
     }
 
-    public function testLosFormulariosSeSirvenPorPhpNoComoHtmlSuelto(): void
+    public function testApiYaNoTienePaginasDePersonas(): void
     {
-        foreach (['index.html', 'en.html'] as $suelto) {
-            self::assertFileDoesNotExist(__DIR__ . '/../public/ideas/' . $suelto);
-        }
-        foreach (['index.php', 'en.php'] as $entrada) {
-            self::assertFileExists(__DIR__ . '/../public/ideas/' . $entrada);
-        }
-        foreach (['ideas-es.html', 'ideas-en.html'] as $pagina) {
-            self::assertFileExists(__DIR__ . '/../app/paginas/' . $pagina);
+        foreach (['public/ideas', 'public/condiciones.html', 'public/terms.html', 'app/paginas'] as $viejo) {
+            self::assertFileDoesNotExist(__DIR__ . '/../' . $viejo);
         }
     }
 
-    public function testLaVersionInglesaSeAbreComoIdeasEn(): void
+    public function testLasDireccionesViejasRedirigenALaWeb(): void
     {
         $htaccess = (string) file_get_contents(__DIR__ . '/../public/.htaccess');
-        self::assertMatchesRegularExpression('#RewriteRule \^ideas/en\$ ideas/en\.php#', $htaccess);
-        self::assertStringContainsString('<a href="en">English</a>', (string) file_get_contents(__DIR__ . '/../app/paginas/ideas-es.html'));
+        foreach (['ideas', 'ideas/en', 'condiciones', 'terms'] as $destino) {
+            self::assertStringContainsString("https://www.zooesponji.com/$destino [R=301", $htaccess);
+        }
     }
 }

@@ -3,14 +3,24 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="robots" content="noindex">
   <title>Ideas y fallos · Zoo Esponji</title>
-  <link rel="stylesheet" href="ideas.css">
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#6d4c41">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
+  <link rel="stylesheet" href="/assets/sitio.css">
+  <link rel="stylesheet" href="/assets/ideas.css">
 </head>
-<body>
-<main>
-  <h1>Ideas y fallos</h1>
-  <p>Esta página es para personas adultas. Aquí puedes proponer una idea para Zoo Esponji, avisar de un fallo, o las dos cosas. <a href="en">English</a></p>
+<body class="pagina-texto">
+<header class="cabecera-texto">
+  <div class="envoltura">
+    <a class="marca" href="/"><img src="/assets/img/icono-192.png" alt="" width="40" height="40">Zoo Esponji</a>
+    <nav class="idiomas" aria-label="Idioma"><a href="/ideas" aria-current="page" lang="es">ES</a><a href="/ideas/en" lang="en">EN</a></nav>
+  </div>
+</header>
+<main class="contenido">
+<h1>Ideas y fallos</h1>
+  <p>Esta página es para personas adultas. Aquí puedes proponer una idea para Zoo Esponji, avisar de un fallo, o las dos cosas.</p>
 
   <form id="form" novalidate data-idioma="es" data-condiciones="2026-10"
         data-vacio="Escribe una idea o un fallo."
@@ -43,7 +53,7 @@
     </div>
 
     <label class="casilla"><input type="checkbox" id="mayor">
-      <span>Tengo 18 años o más y acepto las <a href="../condiciones.html" target="_blank" rel="noopener">condiciones</a>.</span></label>
+      <span>Tengo 18 años o más y acepto las <a href="/condiciones" target="_blank" rel="noopener">condiciones</a>.</span></label>
     <label class="casilla" id="fila-tutor" hidden><input type="checkbox" id="tutor">
       <span>Soy su padre, madre o tutor, o tengo su permiso para enviar su nombre.</span></label>
 
@@ -58,9 +68,20 @@
     apellidos, no guardamos tu dirección IP con tu mensaje y no cedemos estos datos a nadie. Los mensajes se borran a los
     90 días. Puedes pedir antes que borremos el tuyo, o que quitemos un nombre del juego, escribiendo a ese
     correo. Como en cualquier web, el servidor anota las visitas durante unos días en registros técnicos, que solo se usan para que funcione y para su seguridad. También puedes reclamar ante la Agencia Española de Protección de Datos (aepd.es).
-    Más detalle en la <a href="https://www.davidpladel.com/privacidad-zoo-esponji/">política de privacidad</a>.
+    Más detalle en la <a href="/privacidad">política de privacidad</a>.
   </p>
 </main>
-<script src="ideas.js"></script>
+<footer class="pie">
+  <div class="envoltura">
+    <nav aria-label="Legal">
+      <a href="/privacidad">Privacidad</a>
+      <a href="/condiciones">Condiciones de las ideas</a>
+      <a href="https://www.davidpladel.com/aviso-legal" rel="noopener">Aviso legal</a>
+      <a href="mailto:android@davidpladel.com">Contacto</a>
+    </nav>
+    <p>© 2026 Zoo Esponji · Arte de VectoRaith · Google Play y el logotipo de Google Play son marcas de Google LLC.</p>
+  </div>
+</footer>
+<script src="/assets/ideas.js"></script>
 </body>
 </html>
