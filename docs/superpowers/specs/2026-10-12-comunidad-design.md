@@ -35,7 +35,7 @@ Fuentes: [Familias](https://support.google.com/googleplay/android-developer/answ
 - **David elige qué se vota.** Nada de lo recibido pasa a votación por sí solo. Los nombres que se ven en el juego los escribe David.
 - **Servidor:** PHP y MySQL en el VPS de David. n8n solo avisa de cada envío.
 - **Sin panel de administración.** David edita un archivo y lo sube con el gestor de archivos de Hestia.
-- **El QR lo crea David.** El juego enseña la imagen.
+- **El QR lo crea David** con su acortador: apunta a `https://dsc.davidpladel.com/lzx9og?qr=1`, que redirige a `https://api.zooesponji.com/ideas/?utm_source=app&utm_medium=qr&utm_campaign=zooesponji`. David puede cambiar el destino sin tocar el juego. La imagen está en `game/public/assets/ui/qr-ideas.png` (400×400) y el juego la enseña tal cual. La página de ideas no mide nada: los `utm_` solo sirven si el acortador cuenta las visitas.
 - **Play Games:** descartado.
 
 ## Diseño
@@ -194,7 +194,7 @@ Categoría `tablon` en `eventCatalog.ts`: `tablon-abre`, `tablon-aviso` (salta e
 
 - Crear la base de datos y subir `server/` al VPS; rellenar su configuración.
 - Montar en n8n el aviso (correo o Telegram).
-- Crear el QR de la dirección del formulario y pasar la imagen.
+- ~~Crear el QR~~ hecho el 2026-10-14 (ver Decisiones).
 - Dibujos de cada votación (los genera él, como la portada).
 - Revisar las condiciones.
 
