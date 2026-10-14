@@ -1,0 +1,101 @@
+{
+  "name": "Zoo Esponji · aviso de ideas y fallos",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "zoo-comunidad",
+        "authentication": "headerAuth",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "f9000bf1-59c7-44b2-adda-2f5119b2042c",
+      "name": "Envío desde api.zooesponji.com",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "3d2761bb-2435-4d0d-b2be-ff51769e791c",
+      "credentials": {
+        "httpHeaderAuth": {
+          "name": "Zoo comunidad (X-Zoo-Clave)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "android@davidpladel.com",
+        "toEmail": "android@davidpladel.com",
+        "subject": "=Zoo Esponji · {{ $json.body.idea ? 'idea' : 'fallo' }} nº {{ $json.body.id }}",
+        "emailFormat": "text",
+        "text": "=Zoo Esponji · envío {{ $json.body.id }} ({{ $json.body.idioma }}) · {{ $json.body.fecha }} UTC\nIdea: {{ $json.body.idea || '—' }}\nNombre: {{ $json.body.nombre || '—' }}\nFallo: {{ $json.body.fallo || '—' }}\nVersión: {{ $json.body.version || '—' }} · Modelo: {{ $json.body.modelo || '—' }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "id": "27252cc3-df47-46a8-b628-26d7c63a4668",
+      "name": "Correo",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        300,
+        -100
+      ],
+      "credentials": {
+        "smtp": {
+          "name": "SMTP"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "",
+        "text": "=Zoo Esponji · envío {{ $json.body.id }} ({{ $json.body.idioma }}) · {{ $json.body.fecha }} UTC\nIdea: {{ $json.body.idea || '—' }}\nNombre: {{ $json.body.nombre || '—' }}\nFallo: {{ $json.body.fallo || '—' }}\nVersión: {{ $json.body.version || '—' }} · Modelo: {{ $json.body.modelo || '—' }}",
+        "additionalFields": {
+          "appendAttribution": false,
+          "disable_web_page_preview": true
+        }
+      },
+      "id": "9336c013-c71c-4bc8-929c-871e5f896484",
+      "name": "Telegram (opcional)",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        300,
+        100
+      ],
+      "disabled": true,
+      "credentials": {
+        "telegramApi": {
+          "name": "Telegram"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Envío desde api.zooesponji.com": {
+      "main": [
+        [
+          {
+            "node": "Correo",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Telegram (opcional)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataSuccessExecution": "none",
+    "saveDataErrorExecution": "all"
+  },
+  "pinData": {}
+}

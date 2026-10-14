@@ -32,18 +32,19 @@ Si algo responde `{"error":"no-disponible"}`, el motivo está en el registro de 
 
 ## Aviso por n8n
 
-1. Flujo nuevo con un nodo **Webhook**: método POST, ruta a tu gusto, autenticación «Header Auth» con
-   nombre `X-Zoo-Clave` y valor igual a `n8n_clave`.
-2. Nodo de **Telegram** o de **correo**. Escribe el mensaje con los campos como texto plano, sin formato
-   Markdown ni HTML (así nada de lo que escriba la gente puede cambiar el mensaje):
+El flujo está hecho: `server/n8n/aviso-comunidad.json`. Para ponerlo en marcha:
 
-       Zoo Esponji · envío {{ $json.body.id }} ({{ $json.body.idioma }})
-       Idea: {{ $json.body.idea }}
-       Fallo: {{ $json.body.fallo }}
-       Nombre: {{ $json.body.nombre }}
-       Versión: {{ $json.body.version }} · Modelo: {{ $json.body.modelo }}
+1. En n8n: **Importar desde archivo** y elige ese JSON.
+2. En el nodo **Envío desde api.zooesponji.com**, crea la credencial «Header Auth» llamada
+   `Zoo comunidad (X-Zoo-Clave)`: nombre `X-Zoo-Clave`, valor el de `n8n_clave` de `private/app/config.php`
+   (cópialo desde el gestor de archivos de Hestia; no lo pegues en ningún otro sitio).
+3. En el nodo **Correo**, elige tu credencial SMTP (o crea una). Va de `android@davidpladel.com` a
+   `android@davidpladel.com`; cámbialo si quieres.
+4. Opcional: activa el nodo **Telegram**, elige su credencial y pon tu chat. Va desactivado.
+5. Activa el flujo y copia la «Production URL» del webhook en `n8n_url` de `config.php`.
 
-3. Activa el flujo y pega la dirección de producción del webhook en `n8n_url` de `config.php`.
+Los mensajes van en texto plano, sin Markdown ni HTML: nada de lo que escriba la gente puede cambiar su formato.
+El flujo no guarda las ejecuciones que van bien, para no dejar copias de los envíos en n8n.
 
 Si n8n está caído, los envíos se guardan igual; se ven con `tools/comunidad/envios.mjs`.
 
