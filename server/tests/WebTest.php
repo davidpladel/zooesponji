@@ -12,10 +12,13 @@ final class WebTest extends TestCase
     private static function archivosDeTexto(): array
     {
         $todos = [];
-        $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(self::WEB, FilesystemIterator::SKIP_DOTS));
-        foreach ($it as $f) {
+        // Solo lo que se publica: public/ y paginas/ (el README no se sube).
+        foreach (['/public', '/paginas'] as $carpeta) {
+            $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(self::WEB . $carpeta, FilesystemIterator::SKIP_DOTS));
+            foreach ($it as $f) {
             if (preg_match('/\.(html|php|css|js|txt|md)$/', $f->getFilename()) === 1 && $f->getFilename() !== 'Baloo2-LICENSE.txt') {
-                $todos[] = $f->getPathname();
+                    $todos[] = $f->getPathname();
+                }
             }
         }
         return $todos;
