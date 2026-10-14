@@ -39,7 +39,7 @@ baloo(d, (CX, 120), 'Zoo Esponji', 108, (255, 200, 61), (255, 255, 255), 16)
 baloo(d, (CX, 120), 'Zoo Esponji', 108, (255, 200, 61), (138, 59, 18), 7)
 baloo(d, (CX, 245), 'Da de comer a los animales', 40, (255, 255, 255), (90, 50, 16), 5)
 baloo(d, (CX, 295), 'y abre tu propio zoo', 40, (255, 255, 255), (90, 50, 16), 5)
-baloo(d, (CX, 425), 'Sin anuncios · Para peques de 5 a 12 años', 28, (255, 255, 255), (90, 50, 16), 4)
+baloo(d, (CX, 425), 'Gratis · Para peques de 5 a 12 años', 28, (255, 255, 255), (90, 50, 16), 4)
 g.convert('RGB').save(OUT + 'grafico-funciones-1024x500.png')
 
 # --- Capturas (16:9, 1920x1080; Play admite 320-3840 px por lado)
