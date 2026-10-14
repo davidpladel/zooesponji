@@ -133,3 +133,38 @@ export function actionTotals(report) {
 export function total(totals, index, action) {
   return totals.get(action) ?? events(index, action);
 }
+
+const rowsOf = (index, action) => [...(index.get(action)?.values() ?? [])];
+
+/** Cifras de publicidad de un hueco. El nombre es el hueco solo (`tienda`) o con el tramo de saldo (`tienda/50-149`). */
+export function adTotals(index, slot) {
+  const sum = (action, key = 'events') =>
+    rowsOf(index, action).filter((row) => row.name === slot || row.name.startsWith(`${slot}/`)).reduce((total, row) => total + row[key], 0);
+  return {
+    offered: sum('anuncio-ofrece'),
+    accepted: sum('anuncio-acepta'),
+    declined: sum('anuncio-no'),
+    watched: sum('anuncio-visto'),
+    cut: sum('anuncio-cortado'),
+    failed: sum('anuncio-fallo'),
+    empty: sum('anuncio-vacio'),
+    /** Monedas repartidas: la suma del valor de los anuncios vistos enteros. */
+    coins: sum('anuncio-visto', 'sum'),
+  };
+}
+
+/** Media de segundos con el anuncio en pantalla, según acabara visto entero o cortado. */
+export function adSeconds(index, slot) {
+  const of = (result) => {
+    const rows = rowsOf(index, 'anuncio-segundos').filter((row) => row.name === `${slot}/${result}`);
+    const n = rows.reduce((total, row) => total + row.events, 0);
+    return { mean: n ? rows.reduce((total, row) => total + row.sum, 0) / n : 0, n };
+  };
+  return { watched: of('visto'), cut: of('cortado') };
+}
+
+/** Paneles y rechazos según las monedas que tenía el niño, sumando los huecos. */
+export function adByBalance(index, buckets) {
+  const sum = (action, bucket) => rowsOf(index, action).filter((row) => row.name.endsWith(`/${bucket}`)).reduce((total, row) => total + row.events, 0);
+  return buckets.map((bucket) => ({ bucket, offered: sum('anuncio-ofrece', bucket), declined: sum('anuncio-no', bucket) }));
+}

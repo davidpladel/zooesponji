@@ -7,13 +7,16 @@ import {
 } from '../../src/core/eventCatalog';
 
 describe('catálogo de eventos', () => {
+  it('la publicidad tiene sus ocho acciones', () => {
+    expect(CATALOG.anuncio).toEqual(['anuncio-ofrece', 'anuncio-acepta', 'anuncio-no', 'anuncio-visto', 'anuncio-cortado', 'anuncio-fallo', 'anuncio-vacio', 'anuncio-segundos']);
+  });
   it('ninguna acción se repite, ni dentro de una categoría ni entre dos', () => {
     const all = Object.values(CATALOG).flat();
     expect(new Set(all).size).toBe(all.length);
   });
 
-  it('toda acción está escrita en alguna de las dos specs de analítica', () => {
-    const specs = ['2026-10-07-analitica-anonima-matomo-design.md', '2026-10-07-analitica-detallada-design.md']
+  it('toda acción está escrita en alguna de las specs que definen eventos', () => {
+    const specs = ['2026-10-07-analitica-anonima-matomo-design.md', '2026-10-07-analitica-detallada-design.md', '2026-10-12-publicidad-design.md']
       .map((name) => readFileSync(new URL(`../../../docs/superpowers/specs/${name}`, import.meta.url), 'utf8'))
       .join('\n');
     for (const action of Object.values(CATALOG).flat()) expect(specs.includes(action), action).toBe(true);

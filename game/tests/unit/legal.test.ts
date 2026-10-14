@@ -19,7 +19,7 @@ describe('página de privacidad', () => {
     const en = read(legalPage('en'));
     expect(en).toContain('<html lang="en">');
     for (const tag of ['h1', 'h2', 'p', 'strong']) expect(count(en, tag), tag).toBe(count(es, tag));
-    expect(count(en, 'h2')).toBe(9);
+    expect(count(en, 'h2')).toBe(10);
   });
 
   it('explica las estadísticas anónimas y cómo apagarlas, en los dos idiomas', () => {

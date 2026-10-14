@@ -1,13 +1,14 @@
 {
   "name": "zooesponji",
   "private": true,
-  "version": "2.5.1",
+  "version": "2.6.0",
   "type": "module",
   "license": "SEE LICENSE IN ../LICENSE",
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build && node scripts/check-dist.mjs",
     "check:dist": "node scripts/check-dist.mjs",
+    "check:manifest": "node scripts/check-manifest.ts",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
@@ -27,6 +28,7 @@
     "art:props-sheet": "node scripts/art/propsSheet.ts"
   },
   "dependencies": {
+    "@capacitor-community/admob": "^8.2.1",
     "@capacitor/android": "^8.5.2",
     "@capacitor/app": "^8.1.1",
     "@capacitor/core": "^8.5.2",

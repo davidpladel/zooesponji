@@ -21,6 +21,7 @@ export const CATALOG = {
   tienda: ['mira', 'compra', 'sin-monedas', 'tienda-fin', 'tienda-sin-compra'],
   libro: ['abre', 'lee', 'hojea', 'bloqueada', 'indice', 'libro-fin'],
   ajustes: ['musica', 'sonidos', 'joystick', 'idioma', 'privacidad', 'salir-pregunta', 'salir-si', 'salir-no'],
+  anuncio: ['anuncio-ofrece', 'anuncio-acepta', 'anuncio-no', 'anuncio-visto', 'anuncio-cortado', 'anuncio-fallo', 'anuncio-vacio', 'anuncio-segundos'],
   tiene: ['tiene-recinto', 'tiene-animal', 'tiene-saldo', 'tiene-paginas', 'tiene-ajuste'],
   alcance: [
     'dia-animal', 'semana-animal', 'vida-animal',

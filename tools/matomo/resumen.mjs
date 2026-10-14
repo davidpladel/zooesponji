@@ -2,7 +2,7 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { DATA } from './config.mjs';
-import { MIN_SAMPLE, actionTotals, byAction, events, meanText, medianText, share, table, toRows, total, truncated } from './lib.mjs';
+import { MIN_SAMPLE, actionTotals, adByBalance, adSeconds, adTotals, byAction, events, meanText, medianText, share, table, toRows, total, truncated } from './lib.mjs';
 
 const file = join(DATA, 'events.json');
 if (!existsSync(file)) {
@@ -110,5 +110,24 @@ out.push('## Retención por semana de inicio', '', table(
   of('nuevo').sort((a, b) => a.name.localeCompare(b.name)).map((r) => [r.name, r.events, share(n('vuelve-d1', r.name), r.events), share(n('vuelve-d7', r.name), r.events), share(n('vuelve-d30', r.name), r.events)]),
 ), '');
 
+const AD_SLOTS = ['tienda', 'pausa'];
+// Los tramos de `coinsBucket` del juego (src/core/eventCatalog.ts).
+const AD_BALANCES = ['0-19', '20-49', '50-149', '150-399', '400-899', '900-1599', '1600+'];
+out.push('## Anuncios', '', 'Solo Android. El dinero real no sale aquí: los ingresos están en el panel de AdMob. «Sin anuncio listo» dice cuántas veces tocaba ofrecer uno y Google no había dado ninguno.', '', table(
+  ['Hueco', 'Paneles', 'Aceptados', 'Rechazados (X)', 'Vistos enteros (de los aceptados)', 'Cortados', 'Fallos', 'Sin anuncio listo', 'Monedas repartidas'],
+  AD_SLOTS.map((slot) => {
+    const a = adTotals(index, slot);
+    return [slot, a.offered, share(a.accepted, a.offered), share(a.declined, a.offered), share(a.watched, a.accepted), a.cut, a.failed, a.empty, a.coins];
+  }),
+), '', 'Segundos con el anuncio en pantalla, de media. Si los vistos enteros duran mucho más que el propio anuncio, a los niños les cuesta cerrarlo.', '', table(
+  ['Hueco', 'Vistos enteros', 'Cortados'],
+  AD_SLOTS.map((slot) => {
+    const s = adSeconds(index, slot);
+    return [slot, meanText(s.watched.mean, s.watched.n), meanText(s.cut.mean, s.cut.n)];
+  }),
+), '', table(
+  ['Monedas que tenía', 'Paneles', 'Rechazados (X)'],
+  adByBalance(index, AD_BALANCES).map((row) => [row.bucket, row.offered, share(row.declined, row.offered)]),
+), '');
 writeFileSync(join(DATA, 'resumen.md'), `${out.join('\n')}\n`);
 console.log('Resumen escrito en tools/matomo/data/resumen.md');

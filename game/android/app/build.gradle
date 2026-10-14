@@ -13,6 +13,16 @@ def zooStoreFile = keystoreProps['storeFile'] ?: "${System.getProperty('user.hom
 def zooKeyAlias = keystoreProps['keyAlias'] ?: 'zooesponji'
 def zooCanSign = zooStorePass != null && file(zooStoreFile).exists()
 
+// Identificador de la app de AdMob. El real NO está en el repo: se lee de la variable de entorno
+// ZOO_ADMOB_APP_ID o de android/admob.properties (ignorado por git), con una línea `appId=ca-app-pub-...~...`.
+// Sin ninguno de los dos se usa el identificador público de pruebas de Google: el SDK cierra la app si falta.
+def admobProps = new Properties()
+def admobPropsFile = rootProject.file('admob.properties')
+if (admobPropsFile.exists()) {
+    admobPropsFile.withInputStream { admobProps.load(it) }
+}
+def zooAdmobAppId = System.getenv('ZOO_ADMOB_APP_ID') ?: admobProps['appId'] ?: 'ca-app-pub-3940256099942544~3347511713'
+
 android {
     namespace = "com.davidpladel.zooesponji"
     compileSdk = rootProject.ext.compileSdkVersion
@@ -20,8 +30,9 @@ android {
         applicationId "com.davidpladel.zooesponji"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 6
-        versionName "2.5.1"
+        versionCode 7
+        versionName "2.6.0"
+        manifestPlaceholders += [admobAppId: zooAdmobAppId]
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.

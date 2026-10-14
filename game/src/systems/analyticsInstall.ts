@@ -20,6 +20,7 @@ const SCREENS: Record<string, string> = {
   Feed: 'comer',
   Settings: 'ajustes',
   Quit: 'salir',
+  AdOffer: 'anuncio',
 };
 
 function randomId(): string {

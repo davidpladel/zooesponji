@@ -114,3 +114,50 @@ test('sin informe por acción, el total es la suma de los nombres', () => {
   assert.equal(total(actionTotals({ result: 'error' }), index, 'come'), 5);
   assert.equal(total(actionTotals([]), index, 'nada'), 0);
 });
+
+import { adByBalance, adSeconds, adTotals } from './lib.mjs';
+
+const adRow = (action, name, events, sum = 0) => ({ action, name, events, visits: events, sum, avg: 0, min: 0, max: 0 });
+const adIndex = () => byAction([
+  adRow('anuncio-ofrece', 'tienda/0-19', 10, 100),
+  adRow('anuncio-ofrece', 'tienda/50-149', 6, 150),
+  adRow('anuncio-ofrece', 'pausa/50-149', 4, 100),
+  adRow('anuncio-acepta', 'tienda/0-19', 8),
+  adRow('anuncio-acepta', 'pausa/50-149', 3),
+  adRow('anuncio-no', 'tienda/0-19', 2),
+  adRow('anuncio-no', 'tienda/50-149', 6),
+  adRow('anuncio-no', 'pausa/50-149', 1),
+  adRow('anuncio-visto', 'tienda/0-19', 5, 50),
+  adRow('anuncio-visto', 'pausa/50-149', 2, 50),
+  adRow('anuncio-cortado', 'tienda', 2),
+  adRow('anuncio-fallo', 'tienda', 1),
+  adRow('anuncio-vacio', 'tienda', 7),
+  adRow('anuncio-vacio', 'pausa', 9),
+]);
+
+test('adTotals suma por hueco, con o sin tramo de saldo en el nombre', () => {
+  assert.deepEqual(adTotals(adIndex(), 'tienda'), { offered: 16, accepted: 8, declined: 8, watched: 5, cut: 2, failed: 1, empty: 7, coins: 50 });
+  assert.deepEqual(adTotals(adIndex(), 'pausa'), { offered: 4, accepted: 3, declined: 1, watched: 2, cut: 0, failed: 0, empty: 9, coins: 50 });
+});
+
+test('adTotals sin datos da ceros', () => {
+  assert.deepEqual(adTotals(byAction([]), 'tienda'), { offered: 0, accepted: 0, declined: 0, watched: 0, cut: 0, failed: 0, empty: 0, coins: 0 });
+});
+
+test('adByBalance cruza paneles y rechazos por tramo de saldo, sumando los huecos', () => {
+  assert.deepEqual(adByBalance(adIndex(), ['0-19', '20-49', '50-149']), [
+    { bucket: '0-19', offered: 10, declined: 2 },
+    { bucket: '20-49', offered: 0, declined: 0 },
+    { bucket: '50-149', offered: 10, declined: 7 },
+  ]);
+});
+
+test('adSeconds da la media de segundos con el anuncio en pantalla, por hueco y resultado', () => {
+  const index = byAction(toRows([
+    { label: 'anuncio-segundos - tienda/visto', nb_events: 4, sum_event_value: 160 },
+    { label: 'anuncio-segundos - tienda/cortado', nb_events: 2, sum_event_value: 14 },
+    { label: 'anuncio-segundos - pausa/visto', nb_events: 1, sum_event_value: 31 },
+  ]));
+  assert.deepEqual(adSeconds(index, 'tienda'), { watched: { mean: 40, n: 4 }, cut: { mean: 7, n: 2 } });
+  assert.deepEqual(adSeconds(index, 'pausa'), { watched: { mean: 31, n: 1 }, cut: { mean: 0, n: 0 } });
+});

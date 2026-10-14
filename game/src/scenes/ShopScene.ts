@@ -11,6 +11,7 @@ import { ENTRY_TARGET, approachPoint, hintTarget, onDoorMat, openInteriorGrid, p
 import { buildWalkGrid, type TiledMap } from '../core/tiledmap';
 import { MAPS } from '../config';
 import { t, type StringKey } from '../data/strings';
+import { getAds } from '../systems/ads';
 import { sfx } from '../systems/audio';
 import { bus } from '../systems/events';
 import { joystickState } from '../systems/joystickState';
@@ -23,9 +24,12 @@ import { Shopkeeper } from '../world/Shopkeeper';
 import { textStyle } from '../ui/theme';
 import { addUiText } from '../ui/text';
 import { addCloseBadge, addPillButton, restartOnResize } from '../ui/widgets';
+import type { AdOfferSceneData } from './AdOfferScene';
 
 /** Si el dedo se desplaza más que esto entre pulsar y soltar, no es un toque. */
 const TAP_MAX_DISTANCE = 12;
+/** El panel del anuncio salta medio segundo después de entrar. */
+const AD_OFFER_MS = 500;
 /** Pista: a los 6 s quieto sale el rastro de huellas, y luego cada 8 s. */
 const HINT_FIRST_MS = 6000;
 const HINT_REPEAT_MS = 8000;
@@ -75,6 +79,9 @@ export class ShopScene extends Phaser.Scene {
   private nextHintMs = HINT_FIRST_MS;
   private busy = false;
   private closing = false;
+  private closeBadge: Phaser.GameObjects.Container | null = null;
+  /** Se ha pedido abrir el panel del anuncio y la tienda aún no ha quedado en pausa. */
+  private adRequested = false;
   private book: Phaser.GameObjects.Text | null = null;
   private bookOut = false;
 
@@ -122,7 +129,15 @@ export class ShopScene extends Phaser.Scene {
     this.time.addEvent({ delay: 1800, loop: true, callback: () => this.floatHeart() });
     this.interior.doorMat(() => this.onDoorTap());
     this.addBook();
-    addCloseBadge(this, width - 16 - 32, 16 + 32, () => this.close(), 56).setDepth(4000);
+    // Con el panel del anuncio encima se esconde: que el niño vea una sola X, la del panel.
+    this.closeBadge = addCloseBadge(this, width - 16 - 32, 16 + 32, () => this.close(), 56).setDepth(4000);
+    this.adRequested = false;
+    const resumed = (): void => {
+      this.adRequested = false;
+    };
+    this.events.on(Phaser.Scenes.Events.RESUME, resumed);
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.events.off(Phaser.Scenes.Events.RESUME, resumed));
+    this.syncCloseBadge();
 
     const keyboard = this.input.keyboard;
     if (keyboard) {
@@ -133,6 +148,8 @@ export class ShopScene extends Phaser.Scene {
     }
     this.input.on(Phaser.Input.Events.POINTER_UP, this.onPointerUp, this);
     restartOnResize(this, () => ({ keeper: this.entering ? ENTRY_TARGET : this.keeper.feet, stock: this.stock }) satisfies ShopSceneData);
+    // Solo al entrar de verdad: al volver a montarse por un giro no se repite.
+    if (!this.restored) this.time.delayedCall(AD_OFFER_MS, () => this.offerAd());
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
       this.input.keyboard?.off('keydown-ESC', this.close, this);
       this.input.keyboard?.off('keydown', this.endEntry, this);
@@ -142,6 +159,7 @@ export class ShopScene extends Phaser.Scene {
   }
 
   update(_time: number, delta: number): void {
+    this.syncCloseBadge();
     if (this.closing) return;
     const direction = this.inputDirection();
     if (direction.x !== 0 || direction.y !== 0) this.endEntry();
@@ -275,6 +293,27 @@ export class ShopScene extends Phaser.Scene {
     this.entering = false;
     this.keeper.stopRoute();
     if (this.shopkeeper.message === t('shop.hello')) this.shopkeeper.hideBubble();
+  }
+
+  /** Si toca y hay anuncio listo, se ofrece: la tienda queda en pausa debajo del panel. */
+  /** La X de la tienda solo se ve sin panel de anuncio: en pausa debajo de él, o recién montada por un giro. */
+  private syncCloseBadge(): void {
+    this.closeBadge?.setVisible(!this.adRequested && !(getAds()?.panelOpen ?? false));
+  }
+
+  /** Para pruebas: si se ve la X de la tienda. */
+  closeVisible(): boolean {
+    return this.closeBadge?.visible ?? false;
+  }
+
+  private offerAd(): void {
+    if (this.closing || !this.scene.isActive() || this.scene.isActive('Book')) return;
+    if (!getAds()?.canOffer('tienda')) return;
+    const data: AdOfferSceneData = { slot: 'tienda', resume: 'Shop' };
+    this.adRequested = true;
+    this.syncCloseBadge();
+    this.scene.pause();
+    this.scene.launch('AdOffer', data);
   }
 
   close(): void {

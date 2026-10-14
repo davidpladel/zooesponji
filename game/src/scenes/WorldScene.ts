@@ -12,6 +12,7 @@ import { buildWalkGrid, readEnclosures, readGates, readProps, readShop, readSpaw
 import type { PenId } from '../data/pens';
 import { SHOP_UNLOCK_COINS } from '../data/shop';
 import { t } from '../data/strings';
+import { getAds } from '../systems/ads';
 import { sfx } from '../systems/audio';
 import { bus, type ControlMode } from '../systems/events';
 import { joystickState } from '../systems/joystickState';
@@ -23,6 +24,7 @@ import { ShopBuilding } from '../world/ShopBuilding';
 import { Decor } from '../world/Decor';
 import { TerrainArt } from '../world/TerrainArt';
 import { VisitorCrowd } from '../world/VisitorCrowd';
+import type { AdOfferSceneData } from './AdOfferScene';
 import type { FeedSceneData } from './FeedScene';
 
 /** Si el dedo se desplaza más que esto entre pulsar y soltar, no es un toque. */
@@ -31,6 +33,8 @@ const TAP_MAX_DISTANCE = 12;
 const TAP_REACH = 14;
 /** Distancia (px) a la que la cuidadora ya puede dar de comer a un animal. */
 const FEED_REACH = 18;
+/** El panel de la pausa salta un momento después de volver al mapa: deja acabar el fundido de la tienda. */
+const AD_OFFER_MS = 300;
 
 type WasdKeys = Record<'W' | 'A' | 'S' | 'D', Phaser.Input.Keyboard.Key>;
 
@@ -368,6 +372,18 @@ export class WorldScene extends Phaser.Scene {
   private onResume(_sys: Phaser.Scenes.Systems, data?: { from?: string }): void {
     if (data?.from === 'shop') this.leaveShop();
     this.refresh();
+    // Una pausa natural: se vuelve de dar de comer o de la tienda. De Ajustes, del libro o de «¿Salir?», no.
+    if (data?.from === 'shop' || data?.from === 'feed') this.time.delayedCall(AD_OFFER_MS, () => this.offerAd());
+  }
+
+  /** Si toca y hay anuncio listo, se ofrece: el mundo queda en pausa debajo del panel. */
+  private offerAd(): void {
+    if (!this.scene.isActive()) return;
+    if (!getAds()?.canOffer('pausa')) return;
+    const data: AdOfferSceneData = { slot: 'pausa', resume: 'World' };
+    this.stopWalking();
+    this.scene.pause();
+    this.scene.launch('AdOffer', data);
   }
 
   /** Al salir de la tienda la cuidadora aparece delante de la puerta, mirando hacia abajo (y no vuelve a entrar). */

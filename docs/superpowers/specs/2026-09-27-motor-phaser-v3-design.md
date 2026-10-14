@@ -446,6 +446,8 @@ Cada hito termina con algo jugable.
   ni salir en la tienda. Es la única acompañante. En Android, `autoRemoveFromRecents` en el manifiesto
   hace que al salir con «Salir» (o atrás en la portada) el juego desaparezca de las aplicaciones
   recientes; salir con el botón de inicio lo deja en recientes, como antes.
+- **2.6.0 (2026-10-12, en la prueba cerrada de Play con versionCode 7):** publicidad con premio en Android. Ver
+  `2026-10-12-publicidad-design.md` y su plan. Cambia la política de Play: la app pasa a declarar anuncios.
 
 ### Pendiente fuera de los hitos
 

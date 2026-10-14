@@ -165,6 +165,16 @@ export class GameTracker implements AnalyticsHooks {
     on('legal-opened', () => this.send('ajustes', 'privacidad'));
     on('quit-asked', () => this.send('ajustes', 'salir-pregunta'));
     on('quit-answered', ({ leave }) => this.send('ajustes', leave ? 'salir-si' : 'salir-no'));
+    // Publicidad: el hueco y el tramo de saldo viajan juntos en el nombre, para leer el cruce sin segmentos.
+    const adName = (slot: string, balance: number): string => part(slot, coinsBucket(balance));
+    on('ad-offered', ({ slot, coins, balance }) => this.send('anuncio', 'anuncio-ofrece', adName(slot, balance), coins));
+    on('ad-accepted', ({ slot, balance }) => this.send('anuncio', 'anuncio-acepta', adName(slot, balance)));
+    on('ad-declined', ({ slot, balance }) => this.send('anuncio', 'anuncio-no', adName(slot, balance)));
+    on('ad-watched', ({ slot, coins, balance }) => this.send('anuncio', 'anuncio-visto', adName(slot, balance), coins));
+    on('ad-cut', ({ slot }) => this.send('anuncio', 'anuncio-cortado', slot));
+    on('ad-closed', ({ slot, result, seconds }) => this.send('anuncio', 'anuncio-segundos', part(slot, result), seconds));
+    on('ad-failed', ({ slot }) => this.send('anuncio', 'anuncio-fallo', slot));
+    on('ad-empty', ({ slot }) => this.send('anuncio', 'anuncio-vacio', slot));
 
     try {
       const saved = parseReach(await store.get(REACH_KEY));

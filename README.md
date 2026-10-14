@@ -2,13 +2,13 @@
 
 Creado por y para Daniela y Adrián, con la ayuda de su padre y de Claude + OpenCode + DeepSeek + ChatGPT.
 
-**Versión actual: 2.5.1** (2026-10-08, en `main`) · Juega en la web: https://davidpladel.com/zoo/ (aún con una versión anterior) · Android: prueba cerrada de Google Play con la 2.5.1 (versionCode 6)
+**Versión actual: 2.6.0** (2026-10-12, en `main`) · Juega en la web: https://davidpladel.com/zoo/ (aún con una versión anterior) · Android: prueba cerrada de Google Play con la 2.6.0 (versionCode 7), la primera con anuncios
 
 ## La idea
 
 Eres la cuidadora del zoo y das de comer a los animales. Cada animal tiene sus gustos: si le ofreces la comida que le gusta se la come feliz, y si le ofreces otra pone cara de asco. Algún animal tiene además una reacción especial: la cabra y el panda se hacen amigos del conejo en vez de comérselo 💕. Con las monedas que ganas abres la tienda y compras nuevos animales y recintos.
 
-Pensado para niños de 6 a 9 años: sin textos largos, sin perder y sin anuncios.
+Pensado para niños de 6 a 9 años: sin textos largos y sin perder. En Android hay algún anuncio con premio, pocos y siempre rechazables; la web no tiene anuncios.
 
 ## Cómo se juega
 
@@ -29,6 +29,7 @@ Pensado para niños de 6 a 9 años: sin textos largos, sin perder y sin anuncios
 
 | Versión | Fecha | Qué trajo |
 |---|---|---|
+| **2.6.0** | 2026-10-12 | **Monedas extra por ver un anuncio (solo Android).** Un panel con monedas, un botón verde y una X ofrece ver un anuncio a cambio de monedas: al entrar en la tienda y, una vez por partida, al volver al mapa. Como mucho uno cada 15 minutos de juego y cuatro al día, y siempre se puede decir que no. La web sigue sin anuncios. |
 | **2.5.1** | 2026-10-08 | **Sasha come y «Salir» cierra del todo.** A Sasha, la leona, se le da de comer igual que a Bills (misma comida y mismas monedas). En Android, al salir con «Salir» o con atrás en la portada el juego desaparece también de las aplicaciones recientes. |
 | **2.5.0** | 2026-10-08 | **Interfaz nueva y estadísticas detalladas** (sin publicar en Google Play: faltan las capturas nuevas y el paquete para la tienda). Estadísticas anónimas con más detalle, siempre sin identificadores: a qué animal se da de comer y con qué comida, recintos visitados, páginas leídas del libro, tienda y tropiezos; lo jugado sin conexión se guarda y se envía después con su fecha real; «Salir» ya no pierde lo último del rato; scripts para leer los datos con un usuario de solo lectura. Menús lisos y brillantes con botones píldora, paneles crema, letra Baloo 2 e iconos propios; portada pintada con pantalla de carga a juego; engranaje que solo se ve andando; modo inmersivo y splash azul cielo en Android; la cuidadora empieza junto a la entrada del zoo; libro a doble página (dibujo a un lado, título y texto al otro). 984 tests y 29 pruebas de juego |
 | **2.4.0** | 2026-10-06 | **Español e inglés.** El juego sale en español o en inglés según el idioma del móvil, y en Ajustes hay un botón de madera para cambiarlo, que se queda guardado. Todo el juego está traducido: menús, tienda, lo que cuenta el tendero y las 49 páginas del libro (los nombres propios y «Zoo Esponji» no se traducen). La página de privacidad también se lee en inglés dentro del juego. 963 tests y 28 pruebas de juego |
@@ -50,7 +51,7 @@ Pensado para niños de 6 a 9 años: sin textos largos, sin perder y sin anuncios
 - La lógica (reacciones, monedas, guardado, caminos A\*, rebaños…) es TypeScript puro en `game/src/core/`, sin Phaser, y está probada con **Vitest**; las escenas solo dibujan y recogen toques. Pruebas de juego en el navegador con **Playwright**; CI en **GitHub Actions**.
 - **Mapas:** generados por script en formato **Tiled**; colisiones, recintos, puertas y punto de inicio salen del propio mapa. Terreno con autotile (formato RPG Maker A2).
 - **Android:** **Capacitor** (`appId` `com.davidpladel.zooesponji`), horizontal, guardado nativo.
-- **Google Play (Families Policy):** sin anuncios, sin permiso `AD_ID`, sin enlaces externos y sin SDK de terceros. Estadísticas anónimas hacia un Matomo propio (sin cookies ni identificadores; se apagan en Ajustes).
+- **Google Play (Families Policy):** en Android, solo anuncios con premio de Google AdMob (red certificada para Familias), marcados como dirigidos a niños, sin personalizar, sin permiso `AD_ID` y sin formulario de consentimiento; como mucho uno cada 15 minutos de juego y cuatro al día. Sin enlaces externos. Estadísticas anónimas hacia un Matomo propio (sin cookies ni identificadores; se apagan en Ajustes).
 - **Por qué no Godot / Unity:** el requisito es web + Android a la vez desde el terminal; el export web de Godot pesa 30–40 MB y va flojo en el navegador del móvil. Detalle en la [spec](docs/superpowers/specs/2026-09-27-motor-phaser-v3-design.md).
 
 Para arrancarlo, probarlo, compilar para Android o publicar en la web: [game/README.md](game/README.md).
@@ -73,6 +74,7 @@ El juego se ha hecho por hitos: spec de diseño → plan → ejecución.
 | [Spec](docs/superpowers/specs/2026-10-06-idiomas-es-en-design.md) y [plan idiomas](docs/superpowers/plans/2026-10-06-idiomas-es-en.md) | Idiomas español e inglés: detección, botón en Ajustes, textos y privacidad |
 | [Spec](docs/superpowers/specs/2026-10-07-analitica-anonima-matomo-design.md) y [plan analítica](docs/superpowers/plans/2026-10-07-analitica-anonima-matomo.md) | Estadísticas anónimas con Matomo: usuarios activos sin identificadores, eventos y ficha en Ajustes |
 | [Spec](docs/superpowers/specs/2026-10-07-analitica-detallada-design.md) y [plan analítica detallada](docs/superpowers/plans/2026-10-07-analitica-detallada.md) | Estadísticas detalladas (2.5.0): eventos por animal, comida, recinto y página; jugadores únicos sin identificador; juego sin conexión; lectura por API con `tools/matomo/` |
+| [Spec](docs/superpowers/specs/2026-10-12-publicidad-design.md) y [plan publicidad](docs/superpowers/plans/2026-10-12-publicidad.md) | Publicidad con premio para niños (2.6.0, solo Android): panel que no depende de leer, ritmo, premio que crece con el zoo, AdMob en modo infantil y estadísticas de anuncios |
 | [Spec](docs/superpowers/specs/2026-08-08-mvp-zooesponji-design.md) y [plan 1.0](docs/superpowers/plans/2026-08-08-mvp-zooesponji.md), [spec](docs/superpowers/specs/2026-08-15-escenas-inmersivas-design.md) y [plan del prototipo](docs/superpowers/plans/2026-08-15-escenas-inmersivas.md) | Histórico (1.x y prototipo Canvas) |
 | [Spec](docs/superpowers/specs/2026-10-12-comunidad-design.md) y [plan 1 de comunidad](docs/superpowers/plans/2026-10-12-comunidad-1-servidor-y-web.md) | Votaciones e ideas: servidor, página web para adultos y herramientas (`server/`, `tools/comunidad/`) |
 
@@ -84,7 +86,7 @@ El juego se ha hecho por hitos: spec de diseño → plan → ejecución.
 4. ✅ Tienda y desbloqueos, visitantes, joystick
 5. ✅ Arte (VectoRaith + panda y pantera de los niños) y decoración (5b)
 6. ✅ 6a Pulido: agua, extras, menú, sonido, móvil, errores → **2.0.0**, publicada en la web
-7. ⬜ 6b Publicación en Google Play: privacidad, ficha, firma y prueba cerrada (prueba cerrada en marcha con la 2.5.1; falta el acceso a producción)
+7. ⬜ 6b Publicación en Google Play: privacidad, ficha, firma y prueba cerrada (prueba cerrada en marcha con la 2.6.0; falta el acceso a producción)
 
 ✅ **2.1.0 / 2.1.1** (2026-09-28, publicada en la web; la 2.1.1 y la 2.1.2 rehacen la catarata): tienda por dentro (fases C y B), muro y portón del parque, plaza con fuente animada, catarata con acantilado, pasillos estrechos, cámara más alejada, comida al llegar a la puerta y carne con dibujo.
 
@@ -98,9 +100,11 @@ Google Play: la 2.3.0 (versionCode 5) está en la prueba cerrada; a 2026-10-06 v
 
 ✅ **2.5.1** (2026-10-08, fusionada en `main`, etiqueta `v2.5.1`): a Sasha, la leona, se le da de comer igual que a Bills (en las estadísticas sale como `leon/sasha`), y al salir con «Salir» o con atrás en la portada el juego desaparece de las aplicaciones recientes de Android (`autoRemoveFromRecents` en el manifiesto). Pruebas pasadas por David. David la probó en el móvil con el paquete de Play el 2026-10-08: todo bien, también lo de las aplicaciones recientes.
 
+✅ **2.6.0** (2026-10-12, en `main`, etiqueta `v2.6.0`, subida a la prueba cerrada de Play con versionCode 7; sin publicar en la web): publicidad con premio en Android. Un panel con monedas, un botón verde y una X ofrece ver un anuncio al entrar en la tienda (a partir de 5 minutos de juego) y, una vez por partida, al volver al mapa (a partir de 15 minutos, con cuenta atrás). Como mucho un panel cada 15 minutos de juego y 4 anuncios al día; el premio crece con el zoo. David la probó en el móvil con anuncios de prueba el 2026-10-12 (panel, premio y anuncio a pantalla completa). En Play Console quedó declarado: anuncios sí, seguridad de los datos rehecha (ubicación aproximada, interacciones, diagnóstico, registros de fallos e identificadores del dispositivo), público de hasta 12 años dentro de «Diseñado para Familias» e identificador de publicidad en «No». La página pública de privacidad de davidpladel.com dice lo mismo que la del juego. Google la revisó y la publicó en la prueba cerrada sin rechazos ni avisos (dicho por David el 2026-10-12). También están hechos en AdMob la clasificación máxima «G» y `app-ads.txt` en davidpladel.com.
+
 Ficha de Play al día (2026-10-08): David subió las capturas nuevas de `game/store/play/` (`captura-1` a `captura-6`, 1920×1080: leones, dar de comer a la pantera, cabras, tienda, libro y panteras) y el gráfico de funciones rehecho (portada pintada, letra Baloo 2, león del icono y lema).
 
-Pendiente, por orden: publicar la 2.5.1 en la web; completar los 14 días con 12 testers y pedir el acceso a producción (6b). Opcional en Matomo: conservación corta de los registros en bruto. Cabos sueltos de la 2.4.0: la prueba `zoo-grande.spec.ts:104` («sin comprar las ovejas, ningún visitante entra en su recinto») falló una vez en una tanda completa y pasó las demás, sin que se llegara a ver el error; y cambiar de idioma con la ventana de comer abierta, o con el libro sobre la tienda, no tiene prueba de juego propia. Ideas para después, cada una con su spec: bañar y limpiar, día y noche, clínica veterinaria y acuario con delfines.
+Pendiente, por orden: cuando haya datos de la 2.6.0, mirar `anuncio-vacio` y `anuncio-segundos` en Matomo; al pasar a producción, enlazar la app en AdMob con su ficha de Play; publicar la 2.5.1 en la web; completar los 14 días con 12 testers y pedir el acceso a producción (6b). Opcional en Matomo: conservación corta de los registros en bruto. Cabo suelto de la 2.6.0: la prueba `zoo-grande.spec.ts:46` («se compra el estanque…») falló una vez en la tanda completa del 2026-10-12 (el maíz no llegó al pato, con el equipo lento) y pasó tres veces seguidas lanzada sola. Cabos sueltos de la 2.4.0: la prueba `zoo-grande.spec.ts:104` («sin comprar las ovejas, ningún visitante entra en su recinto») falló una vez en una tanda completa y pasó las demás, sin que se llegara a ver el error; y cambiar de idioma con la ventana de comer abierta, o con el libro sobre la tienda, no tiene prueba de juego propia. Ideas para después, cada una con su spec: bañar y limpiar, día y noche, clínica veterinaria y acuario con delfines.
 
 ⬜ **Comunidad** (en la rama `feat/comunidad`): servidor de votaciones e ideas (`server/`, en `api.zooesponji.com`), página web para adultos y herramientas para preparar cada votación (`tools/comunidad/`). Falta instalarlo en el VPS y el tablón dentro del juego (plan 2).
 

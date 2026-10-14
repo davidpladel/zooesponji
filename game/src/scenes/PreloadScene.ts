@@ -5,6 +5,7 @@ import { withVersion } from '../core/cacheBust';
 import { MAPS } from '../config';
 import { phaserBackend, queueAudio, sfx } from '../systems/audio';
 import { createStore } from '../systems/createStore';
+import { installAds } from '../systems/adsInstall';
 import { installAnalytics } from '../systems/analyticsInstall';
 import { bus } from '../systems/events';
 import { deviceLanguages, resolveLanguage, setLanguage } from '../systems/language';
@@ -89,6 +90,8 @@ export class PreloadScene extends Phaser.Scene {
     setLanguage(resolveLanguage(session.settings.language, deviceLanguages()));
     // Antes del título, para que su pantalla ya se cuente.
     await installAnalytics(this.game);
+    // Después de las estadísticas: los avisos de la publicidad ya tienen quien los escuche.
+    await installAds(this.game);
     this.scene.start('Title');
   }
 }
