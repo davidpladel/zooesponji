@@ -1,4 +1,10 @@
 Options -Indexes
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  # /ideas/en abre la versión en inglés sin enseñar .php (la dirección del QR en inglés).
+  RewriteRule ^ideas/en/$ /ideas/en [R=301,L]
+  RewriteRule ^ideas/en$ ideas/en.php [L]
+</IfModule>
 <IfModule mod_headers.c>
   Header always set Content-Security-Policy "default-src 'self'; img-src 'self' data:; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"
   Header always set X-Frame-Options "DENY"

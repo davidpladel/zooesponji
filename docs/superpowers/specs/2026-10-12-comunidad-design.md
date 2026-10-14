@@ -35,7 +35,7 @@ Fuentes: [Familias](https://support.google.com/googleplay/android-developer/answ
 - **David elige qué se vota.** Nada de lo recibido pasa a votación por sí solo. Los nombres que se ven en el juego los escribe David.
 - **Servidor:** PHP y MySQL en el VPS de David. n8n solo avisa de cada envío.
 - **Sin panel de administración.** David edita un archivo y lo sube con el gestor de archivos de Hestia.
-- **El QR lo crea David** con su acortador: apunta a `https://dsc.davidpladel.com/lzx9og?qr=1`, que redirige a `https://api.zooesponji.com/ideas/?utm_source=app&utm_medium=qr&utm_campaign=zooesponji`. David puede cambiar el destino sin tocar el juego. La imagen está en `game/public/assets/ui/qr-ideas.png` (400×400) y el juego la enseña tal cual. La página de ideas no mide nada: los `utm_` solo sirven si el acortador cuenta las visitas.
+- **El QR lo crea David** con su acortador: apunta a `https://dsc.davidpladel.com/lzx9og?qr=1`, que redirige a `https://api.zooesponji.com/ideas/?utm_source=app&utm_medium=qr&utm_campaign=zooesponji`. David puede cambiar el destino sin tocar el juego. Hay otro para inglés: `https://dsc.davidpladel.com/trdbuk?qr=1` → `https://api.zooesponji.com/ideas/en?…` (misma campaña). Las imágenes están en `game/public/assets/ui/qr-ideas.png` y `qr-ideas-en.png` (400×400); el juego enseña la del idioma del juego, tal cual. La página de ideas no mide nada: los `utm_` solo sirven si el acortador cuenta las visitas.
 - **Play Games:** descartado.
 
 ## Diseño

@@ -29,4 +29,11 @@ final class HttpTest extends TestCase
             self::assertFileExists(__DIR__ . '/../app/paginas/' . $pagina);
         }
     }
+
+    public function testLaVersionInglesaSeAbreComoIdeasEn(): void
+    {
+        $htaccess = (string) file_get_contents(__DIR__ . '/../public/.htaccess');
+        self::assertMatchesRegularExpression('#RewriteRule \^ideas/en\$ ideas/en\.php#', $htaccess);
+        self::assertStringContainsString('<a href="en">English</a>', (string) file_get_contents(__DIR__ . '/../app/paginas/ideas-es.html'));
+    }
 }
