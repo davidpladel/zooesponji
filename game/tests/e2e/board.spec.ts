@@ -73,10 +73,13 @@ async function closeNoticeIfAny(page: Page): Promise<void> {
 }
 
 test('sin tablón configurado no hay tablón ni aviso', async ({ page }) => {
+  const requests: string[] = [];
+  page.on('request', (r) => { if (r.url().startsWith(BASE)) requests.push(r.url()); });
   await startGame(page);
   await page.waitForTimeout(1500);
   expect(await page.evaluate(() => window.__ZOO__!.boardTile())).toBeNull();
   expect(await scenes(page)).not.toContain('PollNotice');
+  expect(requests).toEqual([]);
 });
 
 test('el aviso salta una vez, y el botón verde lleva al tablón', async ({ page }) => {
@@ -130,6 +133,7 @@ test('girar el móvil con una tarjeta marcada la conserva y no envía nada', asy
   await page.evaluate(() => window.__ZOO__!.boardResize());
   await page.waitForFunction(() => window.__ZOO__!.boardView() === 'cards');
   expect(await page.evaluate(() => window.__ZOO__!.boardPicked())).toBe('koalas');
+  expect(await page.evaluate(() => window.__ZOO__!.boardConfirmPos())).not.toBeNull();
   expect(fake.votes).toEqual([]);
 });
 
@@ -167,6 +171,7 @@ test('la respuesta tarda y el tablón aparece después, con estrellita y cartel'
   await page.waitForFunction(() => window.__ZOO__!.boardTile() !== null, undefined, { timeout: 15_000 });
   expect(await page.evaluate(() => window.__ZOO__!.boardSparkling())).toBe(true);
   expect(await page.evaluate(() => window.__ZOO__!.ideaSignCount())).toBe(1);
+  await page.waitForFunction(() => window.__ZOO__!.pollNoticePos('yes') !== null, undefined, { timeout: 10_000 });
 });
 
 test('el tarro enseña el número de verdad y el QR se cuenta', async ({ page }) => {
@@ -193,14 +198,21 @@ test('andando a la casilla del tablón se abre', async ({ page }) => {
   await expect.poll(() => scenes(page), { timeout: 30_000 }).toContain('Board');
 });
 
-test('el aviso no salta encima del panel del anuncio', async ({ page }) => {
+test('el aviso no salta encima del panel del anuncio, y sale al cerrarlo', async ({ page }) => {
   await fakeServer(page);
   await startGame(page);
   await page.evaluate(() => window.__ZOO__!.adsFake('visto'));
-  await page.evaluate(() => window.__ZOO__!.adsAdvance(900));
-  // Que la comunidad arranque con el mapa en pausa debajo de la tienda.
+  await page.evaluate(() => window.__ZOO__!.adsAdvance(300));
   await page.evaluate(() => window.__ZOO__!.openShop());
+  await page.waitForFunction(() => window.__ZOO__!.adOfferPos('yes') !== null);
   await page.evaluate((b) => window.__ZOO__!.communityStart(b), BASE);
-  await page.waitForTimeout(600);
+  await page.waitForFunction(() => window.__ZOO__!.communityPhase() === 'open');
+  await page.waitForTimeout(2000);
   expect(await scenes(page)).not.toContain('PollNotice');
+  expect(await page.evaluate(() => window.__ZOO__!.adOfferPos('yes'))).not.toBeNull();
+  // Se cierra el panel (X), se sale de la tienda y entonces sí salta el aviso.
+  await click(page, await page.evaluate(() => window.__ZOO__!.adOfferPos('no')));
+  await expect.poll(() => scenes(page)).toContain('Shop');
+  await page.evaluate(() => window.__ZOO__!.back());
+  await page.waitForFunction(() => window.__ZOO__!.pollNoticePos('yes') !== null, undefined, { timeout: 10_000 });
 });
