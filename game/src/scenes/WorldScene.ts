@@ -37,6 +37,8 @@ const TAP_REACH = 14;
 const FEED_REACH = 18;
 /** El panel de la pausa salta un momento después de volver al mapa: deja acabar el fundido de la tienda. */
 const AD_OFFER_MS = 300;
+/** El aviso de votación se mira un poco después del anuncio, para no pisarse. */
+const NOTICE_MS = AD_OFFER_MS + 250;
 
 type WasdKeys = Record<'W' | 'A' | 'S' | 'D', Phaser.Input.Keyboard.Key>;
 
@@ -113,7 +115,10 @@ export class WorldScene extends Phaser.Scene {
     }
 
     const offShopUnlocked = bus.on('shop-unlocked', () => this.shop?.sync(getSession().state));
-    const offCommunity = bus.on('community-updated', () => this.board?.sync());
+    const offCommunity = bus.on('community-updated', () => {
+      this.board?.sync();
+      this.maybeNotice();
+    });
     const offFed = bus.on('animal-fed', ({ residentId, reaction }) => this.pens.celebrate(residentId, reaction));
     this.events.on(Phaser.Scenes.Events.RESUME, this.onResume, this);
 
@@ -125,6 +130,7 @@ export class WorldScene extends Phaser.Scene {
       offFed();
       offCommunity();
     });
+    this.time.delayedCall(NOTICE_MS, () => this.maybeNotice());
   }
 
   update(time: number, delta: number): void {
@@ -415,6 +421,17 @@ export class WorldScene extends Phaser.Scene {
     this.board?.sync();
     // Una pausa natural: se vuelve de dar de comer o de la tienda. De Ajustes, del libro o de «¿Salir?», no.
     if (data?.from === 'shop' || data?.from === 'feed') this.time.delayedCall(AD_OFFER_MS, () => this.offerAd());
+    if (data?.from !== 'notice' && data?.from !== 'board') this.time.delayedCall(NOTICE_MS, () => this.maybeNotice());
+  }
+
+  /** Una vez por votación, al llegar al mapa, si no hay otro panel abierto. Si lo hay, espera a otra vuelta. */
+  private maybeNotice(): void {
+    if (!this.scene.isActive() || this.scene.isActive('AdOffer') || this.scene.isActive('PollNotice')) return;
+    if (getAds()?.panelOpen) return;
+    if (!getCommunity()?.notify()) return;
+    this.stopWalking();
+    this.scene.pause();
+    this.scene.launch('PollNotice');
   }
 
   /** Si toca y hay anuncio listo, se ofrece: el mundo queda en pausa debajo del panel. */
