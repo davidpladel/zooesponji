@@ -9,6 +9,8 @@ return [
     'terms' => 'terms.html',
     'privacidad' => 'privacidad.html',
     'privacy' => 'privacy.html',
+    'aviso-legal' => 'aviso-legal.html',
+    'legal-notice' => 'legal-notice.html',
     'cookies' => 'cookies.html',
     'cookies-en' => 'cookies-en.html',
     '404' => '404.html',
