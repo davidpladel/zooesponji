@@ -23,6 +23,11 @@ dibujos (PNG cuadrados de 256 px) en `tools/comunidad/data/dibujos/`.
 
     node tools/comunidad/check.mjs tools/comunidad/data/comunidad.json tools/comunidad/data/dibujos
 
+**Cachés.** `estado.php` se lee siempre al momento: el juego lo pide sin caché y lo nuevo de `comunidad.json`
+se ve al arrancar el juego y cada vez que se abre el tablón. Los dibujos, en cambio, se guardan un día en los móviles.
+Por eso **nunca se cambia un dibujo con el mismo nombre**: cada dibujo nuevo, o retocado, lleva un nombre nuevo
+(por ejemplo `2026-11-delfines.png`, o `-v2`), y se cambia también en `comunidad.json`.
+
 Si dice que vale, subir con el gestor de archivos de Hestia: los dibujos a `dibujos/` de la carpeta
 pública y `comunidad.json` a `app/datos/`. Los dibujos primero.
 
