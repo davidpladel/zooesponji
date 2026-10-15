@@ -94,8 +94,10 @@ export class BoardScene extends Phaser.Scene {
       bus.emit('board-opened', { phase: community.phase() });
       if (!community.online) bus.emit('board-offline', {});
       // Al abrir se pide lo último; si cambia algo, se vuelve a montar.
+      const wasOnline = community.online;
       void community.refresh().then((ok) => {
-        if (ok && this.scene.isActive() && !this.busy) this.restart();
+        // Se rehace si llegó algo nuevo o si cambió la conexión (franja 📡 y botón ✓).
+        if ((ok || community.online !== wasOnline) && this.scene.isActive() && !this.busy) this.restart();
       });
       this.opened = false;
     }

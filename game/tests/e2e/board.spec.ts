@@ -144,9 +144,7 @@ test('sin conexión y sin nada guardado: pantalla de sin internet y no se vota',
   expect(fake.votes).toEqual([]);
 });
 
-// FALLO REAL DEL JUEGO (ver informe de la tarea 9): si la petición de «lo último» al abrir falla,
-// BoardScene no se vuelve a montar (solo lo hace si ok) y el botón ✓ sigue a la vista aunque ya no haya conexión.
-test.fail('con lo guardado y sin conexión: se ve el tablón pero no deja votar', async ({ page }) => {
+test('con lo guardado y sin conexión: se ve el tablón pero no deja votar', async ({ page }) => {
   const fake = await fakeServer(page);
   await startGame(page);
   await page.evaluate((b) => window.__ZOO__!.communityStart(b), BASE);
