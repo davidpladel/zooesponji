@@ -253,14 +253,11 @@ export class BoardScene extends Phaser.Scene {
       this.drawing(entry.dibujo, b.x + pic / 2, y, pic);
       // Sello a la derecha, en una píldora de color: se lee de lejos.
       const done = entry.estado === 'hecha';
-      // Sin contorno: a este tamaño el contorno oscuro se comía los bordes de las letras.
-      const stampText = addUiText(this, 0, 0, done ? t('board.done') : t('board.chosen'), { ...textStyle(Math.round(rowH * 0.34), '#ffffff'), strokeThickness: 0 });
-      fitText(stampText, b.width * 0.3);
-      const stampW = stampText.width + rowH * 0.5;
+      // Misma píldora que los botones (sin toque): la dibujada a mano salía con escalones por el pixelArt.
+      const stampW = Math.min(b.width * 0.3, rowH * 3.2);
       const stampX = b.right - stampW / 2;
-      const pill = this.add.graphics();
-      pill.fillStyle(done ? 0x43a047 : 0x1e88e5, 1).fillRoundedRect(stampX - stampW / 2, y - rowH * 0.3, stampW, rowH * 0.6, rowH * 0.3);
-      stampText.setPosition(stampX, y).setOrigin(0.5).setDepth(1);
+      const stampH = rowH * 0.62;
+      addPillButton(this, stampX, y + stampH * 0.045, stampW, stampH, { color: done ? 'green' : 'blue', label: done ? t('board.done') : t('board.chosen') });
       // Título grande y, debajo, de quién fue la idea.
       const textX = b.x + pic + rowH * 0.25;
       const room = stampX - stampW / 2 - 12 - textX;
