@@ -34,3 +34,5 @@ Letras: solo dos, Baloo 2 (títulos y botones) y Nunito (texto), servidas desde 
 - El formulario es una sola caja (idea **o** fallo), con el nombre del peque primero; lo envía una persona adulta.
 - Las imágenes salen del arte del juego y de la ficha de Play. El botón de Google Play es el oficial, sin modificar.
 - `app-ads.txt` es una copia del de davidpladel.com, por si la web de desarrollador de Play pasa a ser este dominio.
+
+**Caché:** el servidor guarda `assets/` en el navegador 10 años. Al cambiar un `.css` o `.js`, sube el `?v=AAAAMMDD` de sus enlaces en todas las páginas (`paginas/*.html`).
