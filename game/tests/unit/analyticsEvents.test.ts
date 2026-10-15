@@ -465,3 +465,29 @@ describe('GameTracker: segundos con el anuncio en pantalla', () => {
     expect(t.values.get('anuncio | anuncio-segundos | pausa/cortado')).toBe(7);
   });
 });
+
+describe('GameTracker: tablón', () => {
+  it('abrir, aviso, voto, QR y sin red', async () => {
+    const t = setup();
+    await t.tracker.start();
+    t.events.emit('board-opened', { phase: 'open' });
+    t.events.emit('poll-notice', { poll: '2026-11-a' });
+    t.events.emit('board-voted', { poll: '2026-11-a', option: 'delfines', changed: false });
+    t.events.emit('board-qr', {});
+    t.events.emit('board-offline', {});
+    expect(t.sent).toEqual([
+      'tablon | tablon-abre | open',
+      'tablon | tablon-aviso | 2026-11-a',
+      'tablon | tablon-vota | 2026-11-a/delfines',
+      'tablon | tablon-qr',
+      'tablon | tablon-sin-red',
+    ]);
+  });
+
+  it('la pantalla del tablón cuenta para el alcance', async () => {
+    const t = setup();
+    await t.tracker.start();
+    t.tracker.screenShown('tablon');
+    expect(t.sent).toEqual(['alcance | dia-pantalla | tablon', 'alcance | semana-pantalla | tablon', 'alcance | vida-pantalla | tablon']);
+  });
+});

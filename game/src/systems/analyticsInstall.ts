@@ -21,6 +21,7 @@ const SCREENS: Record<string, string> = {
   Settings: 'ajustes',
   Quit: 'salir',
   AdOffer: 'anuncio',
+  Board: 'tablon',
 };
 
 function randomId(): string {
