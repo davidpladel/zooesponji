@@ -30,6 +30,9 @@ Letras: solo dos, Baloo 2 (títulos y botones) y Nunito (texto), servidas desde 
 ## Reglas
 
 - Ningún enlace a GitHub ni a una versión web del juego (lo comprueba `server/tests/WebTest.php`).
+- `/ideas` e `/ideas/en` no se indexan (`noindex` y `robots.txt`), para que lleguen menos robots al formulario.
+- Para compartir: cada página lleva Open Graph y X con `assets/img/compartir-1200.jpg` (o `-en`), 1200×630.
+- Para publicar: copiar `public/` encima de `public_html` y `paginas/` encima de `private/paginas` (antes, copia de seguridad en `~/copia-web/`).
 - Ninguna versión del juego escrita en la web (así no hay que actualizarla). Lista de sitios con versión: «Versión» en `game/README.md`.
 - El formulario es una sola caja (idea **o** fallo), con el nombre del peque primero; lo envía una persona adulta.
 - Las imágenes salen del arte del juego y de la ficha de Play. El botón de Google Play es el oficial, sin modificar.

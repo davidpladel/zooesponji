@@ -1,6 +1,6 @@
 # Comunidad: tablón, votaciones e ideas
 
-Fecha: 2026-10-12 · Estado: plan 1 (servidor y web) implementado en `feat/comunidad`; falta instalarlo en el VPS (`api.zooesponji.com`, usuario de Hestia propio) y el plan 2 (juego).
+Fecha: 2026-10-12 · Estado (2026-10-15): plan 1 hecho y fusionado en `main`: servidor en `api.zooesponji.com` y web en `www.zooesponji.com` (portada, ideas, condiciones, privacidad y cookies con Matomo sitio 4 bajo consentimiento), ambos instalados en el VPS. El QR ya lleva a `www.zooesponji.com/ideas`. Falta el plan 2 (tablón y QR dentro del juego).
 
 Segunda pieza tras la publicidad (`2026-10-12-publicidad-design.md`). Reúne lo que eran «buzón» y «votaciones».
 
