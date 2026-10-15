@@ -63,7 +63,7 @@ Fuentes: [Familias](https://support.google.com/googleplay/android-developer/answ
 - Abierta entre `abre` y `cierra`, los dos días incluidos, en hora de España. Duración normal: 15 días.
 - `ganadora`: la pone David al cerrar (id de la opción). En caso de empate decide él.
 - `muro`: de la más nueva a la más vieja. `estado`: `elegida` o `hecha`. `recinto` (opcional): id de un recinto del juego, para el cartel del mapa.
-- `ideaDe` es opcional y se recorta a 15 caracteres al mostrarlo.
+- `ideaDe` es opcional y se recorta a 20 caracteres al mostrarlo.
 - Los dibujos son PNG cuadrados de 256 px en la carpeta `dibujos/`.
 - Un archivo mal escrito no rompe nada: el servidor responde «sin votación» y mantiene el muro anterior válido si lo hay.
 

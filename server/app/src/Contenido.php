@@ -15,7 +15,7 @@ final class Contenido
     private const MAX_BYTES = 65536;
     private const MAX_MURO = 30;
     private const MAX_TITULO = 30;
-    private const MAX_NOMBRE = 15;
+    private const MAX_NOMBRE = 20;
 
     /** Devuelve solo las claves conocidas, ya limpias. */
     public static function validar(mixed $datos): array

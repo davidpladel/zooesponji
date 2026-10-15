@@ -21,7 +21,7 @@ function ficha(f, donde, errores) {
   if (typeof f.dibujo !== 'string' || !DIBUJO.test(f.dibujo)) errores.push(`${donde}.dibujo: solo minúsculas, números y guiones, acabado en .png.`);
   if (f.ideaDe !== undefined) {
     if (typeof f.ideaDe !== 'string') errores.push(`${donde}.ideaDe: tiene que ser texto.`);
-    else if ([...f.ideaDe.trim()].length > 15) errores.push(`${donde}.ideaDe: pasa de 15 letras; el juego lo recortaría.`);
+    else if ([...f.ideaDe.trim()].length > 20) errores.push(`${donde}.ideaDe: pasa de 20 letras; el juego lo recortaría.`);
   }
 }
 

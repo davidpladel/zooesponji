@@ -42,7 +42,7 @@ export interface CommunityStatus {
 }
 
 export const MAX_TITLE = 30;
-export const MAX_NAME = 15;
+export const MAX_NAME = 20;
 const MAX_WALL = 30;
 const ID = /^[a-z0-9-]{1,40}$/;
 const DAY = /^\d{4}-\d{2}-\d{2}$/;

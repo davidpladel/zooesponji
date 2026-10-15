@@ -45,13 +45,13 @@ describe('parseStatus', () => {
     expect(s.muro).toHaveLength(1);
   });
 
-  it('recorta títulos a 30 y nombres a 15, y descarta dibujos con rutas', () => {
+  it('recorta títulos a 30 y nombres a 20, y descarta dibujos con rutas', () => {
     const s = status((r) => ({
       ...r,
-      muro: [{ ...r.muro[0], titulo: { es: 'A'.repeat(50), en: 'B' }, ideaDe: 'Maximiliano Alejandro', dibujo: '../x.png' }],
+      muro: [{ ...r.muro[0], titulo: { es: 'A'.repeat(50), en: 'B' }, ideaDe: 'Maximiliano Alejandro Luis', dibujo: '../x.png' }],
     }));
     expect(s.muro[0]?.titulo.es).toHaveLength(30);
-    expect(s.muro[0]?.ideaDe).toBe('Maximiliano Ale');
+    expect(s.muro[0]?.ideaDe).toBe('Maximiliano Alejandr');
     expect(s.muro[0]?.dibujo).toBeNull();
   });
 

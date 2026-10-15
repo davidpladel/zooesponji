@@ -35,7 +35,7 @@ test('cada error se nombra con su sitio', () => {
 });
 
 test('avisa de un nombre que el juego recortará', () => {
-  assert.match(con((d) => { d.votacion.opciones[0].ideaDe = 'Maximiliano Alejandro'; })[0], /15/);
+  assert.match(con((d) => { d.votacion.opciones[0].ideaDe = 'Maximiliano Alejandro Luis'; })[0], /20/);
 });
 
 test('junta varios errores', () => {
