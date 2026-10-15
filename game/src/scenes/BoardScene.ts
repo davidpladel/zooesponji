@@ -22,6 +22,8 @@ export interface BoardSceneData {
   changing?: boolean;
   /** Mensaje que se enseña dentro del tablón al volver a montarse (gracias, o no se pudo votar). */
   note?: string | null;
+  /** Página del muro que se está viendo (empieza en 0). */
+  wallPage?: number;
 }
 
 const JAR_BULBS = [0, 1, 3, 6, 10] as const;
@@ -33,6 +35,7 @@ export class BoardScene extends Phaser.Scene {
   private pickedId: string | null = null;
   private changing = false;
   private note: string | null = null;
+  private wallPage = 0;
   private busy = false;
   private view: PollView = 'none';
   private tabs = new Map<BoardZone, Phaser.GameObjects.Container>();
@@ -40,6 +43,7 @@ export class BoardScene extends Phaser.Scene {
   private confirm: Phaser.GameObjects.Container | null = null;
   private change: Phaser.GameObjects.Container | null = null;
   private jar: Phaser.GameObjects.Text | null = null;
+  private wallArrows: Phaser.GameObjects.Container[] = [];
   private body!: Phaser.Geom.Rectangle;
   private opened = false;
 
@@ -53,12 +57,14 @@ export class BoardScene extends Phaser.Scene {
     this.pickedId = data.picked ?? null;
     this.changing = data.changing ?? false;
     this.note = data.note ?? null;
+    this.wallPage = data.wallPage ?? 0;
     this.busy = false;
     this.tabs = new Map();
     this.cards = new Map();
     this.confirm = null;
     this.change = null;
     this.jar = null;
+    this.wallArrows = [];
   }
 
   create(): void {
@@ -216,8 +222,27 @@ export class BoardScene extends Phaser.Scene {
     const wx = b.x + b.width * 0.4;
     fitText(addUiText(this, wx, b.y + 4, t('board.wallTitle'), textStyle(22, UI.brown, UI.cream)).setOrigin(0, 0), b.right - wx);
     const lang = getLanguage();
-    const rowH = Math.min((b.height - 40) / MAX_WALL_SHOWN, 72);
-    status.muro.slice(0, MAX_WALL_SHOWN).forEach((entry, i) => {
+    // De MAX_WALL_SHOWN en MAX_WALL_SHOWN, con flechas abajo si hay más de una página.
+    const pages = Math.max(1, Math.ceil(status.muro.length / MAX_WALL_SHOWN));
+    const page = Phaser.Math.Clamp(this.wallPage, 0, pages - 1);
+    const arrow = pages > 1 ? Phaser.Math.Clamp(b.height * 0.14, 36, 52) : 0;
+    const rowH = Math.min((b.height - 40 - arrow - (arrow ? 8 : 0)) / MAX_WALL_SHOWN, 72);
+    if (pages > 1) {
+      const ay = b.bottom - arrow / 2;
+      const mid = (wx + b.right) / 2;
+      const turn = (step: number): void => {
+        if (this.busy) return;
+        sfx.play('tap');
+        this.wallPage = (page + step + pages) % pages;
+        this.restart();
+      };
+      this.wallArrows = [
+        addPillButton(this, mid - arrow * 1.8, ay, arrow * 1.3, arrow, { color: 'blue', icon: 'left', onTap: () => turn(-1) }),
+        addPillButton(this, mid + arrow * 1.8, ay, arrow * 1.3, arrow, { color: 'blue', icon: 'right', onTap: () => turn(1) }),
+      ];
+      addUiText(this, mid, ay, `${page + 1} / ${pages}`, textStyle(Math.round(arrow * 0.45), UI.brown, UI.cream)).setOrigin(0.5);
+    }
+    status.muro.slice(page * MAX_WALL_SHOWN, (page + 1) * MAX_WALL_SHOWN).forEach((entry, i) => {
       const y = b.y + 40 + rowH * (i + 0.5);
       this.drawing(entry.dibujo, wx + rowH * 0.45, y, rowH * 0.85);
       const name = entry.ideaDe ? ` · ${t('board.ideaOf', { name: entry.ideaDe })}` : '';
@@ -361,7 +386,7 @@ export class BoardScene extends Phaser.Scene {
   }
 
   private sceneData(): BoardSceneData {
-    return { zone: this.zoneKey, picked: this.pickedId, changing: this.changing };
+    return { zone: this.zoneKey, picked: this.pickedId, changing: this.changing, wallPage: this.wallPage };
   }
 
   private restart(): void {
@@ -410,6 +435,16 @@ export class BoardScene extends Phaser.Scene {
 
   picked(): string | null {
     return this.pickedId;
+  }
+
+  /** Página del muro y dónde están sus flechas (null si no hay más de una página). */
+  wallPageNow(): number {
+    return this.wallPage;
+  }
+
+  wallArrowPos(dir: 'prev' | 'next'): Vec | null {
+    const arrow = this.wallArrows[dir === 'prev' ? 0 : 1];
+    return arrow ? { x: arrow.x, y: arrow.y } : null;
   }
 
   jarText(): string | null {
