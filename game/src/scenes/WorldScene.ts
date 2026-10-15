@@ -426,6 +426,7 @@ export class WorldScene extends Phaser.Scene {
 
   /** Una vez por votación, al llegar al mapa, si no hay otro panel abierto. Si lo hay, espera a otra vuelta. */
   private maybeNotice(): void {
+    // Las demás ventanas (tienda, comer, libro, tablón, ajustes, salir) pausan World, así que aquí isActive() es falso.
     if (!this.scene.isActive() || this.scene.isActive('AdOffer') || this.scene.isActive('PollNotice')) return;
     if (getAds()?.panelOpen) return;
     if (!getCommunity()?.notify()) return;

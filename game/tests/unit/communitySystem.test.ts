@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { COMMUNITY_KEY } from '../../src/core/community';
 import { Community, type FetchLike } from '../../src/systems/community';
 import { EventBus, type GameEvents } from '../../src/systems/events';
@@ -180,5 +180,25 @@ describe('Community', () => {
     expect(community.drawingUrl('delfines.png')).toBe('https://api.test/dibujo.php?f=delfines.png');
     expect(community.drawingUrl('../x.png')).toBeNull();
     expect(community.drawingUrl(null)).toBeNull();
+  });
+
+  describe('cuerpo colgado', () => {
+    afterEach(() => vi.useRealTimers());
+
+    it('si el 200 llega y el cuerpo no, acaba tras el límite y el voto cuenta como hecho (el servidor ya lo sumó)', async () => {
+      vi.useFakeTimers();
+      const fetch: FetchLike = async (url) => {
+        if (url.endsWith('/estado.php')) return { ok: true, status: 200, json: async () => STATUS };
+        return { ok: true, status: 200, json: () => new Promise<unknown>(() => undefined) };
+      };
+      const store = createMemoryStore();
+      const community = new Community({ baseUrl: 'https://api.test', fetch, store, events: new EventBus<GameEvents>() });
+      await community.start();
+      const result = community.vote('delfines');
+      await vi.advanceTimersByTimeAsync(10_000);
+      expect(await result).toBe('ok');
+      expect(community.memory.voted['2026-11-a']).toBe('delfines');
+      expect(await store.get(COMMUNITY_KEY)).toContain('delfines');
+    });
   });
 });

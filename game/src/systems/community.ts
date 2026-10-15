@@ -126,13 +126,20 @@ export class Community {
     if (previous === optionId) return 'ok';
     const body: Record<string, string> = { votacion: poll.id, opcion: optionId };
     if (previous) body.anterior = previous;
-    let answer: { ok: boolean; status: number; json(): Promise<unknown> };
+    let answer: { ok: boolean; status: number; body: unknown };
     try {
-      answer = await this.fetchWithTimeout('/voto.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
-      });
+      answer = await this.fetchWithTimeout(
+        '/voto.php',
+        { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) },
+        (head) => {
+          // En cuanto el servidor dice que sí, el voto ya está sumado: se anota antes de leer el reparto,
+          // así un cuerpo que se cuelga no lo deja sin guardar.
+          if (!head.ok) return;
+          this.ok = true;
+          this.mem.voted[poll.id] = optionId;
+          this.persist();
+        },
+      );
     } catch {
       this.ok = false;
       return 'offline';
@@ -145,17 +152,11 @@ export class Community {
       }
       return 'offline';
     }
-    this.ok = true;
-    this.mem.voted[poll.id] = optionId;
-    try {
-      const data = (await answer.json()) as { reparto?: unknown };
-      const share = data && typeof data.reparto === 'object' && data.reparto !== null ? (data.reparto as Record<string, unknown>) : {};
-      for (const option of poll.opciones) {
-        const n = share[option.id];
-        if (typeof n === 'number' && Number.isFinite(n)) poll.reparto[option.id] = Math.min(100, Math.max(0, Math.round(n)));
-      }
-    } catch {
-      // El voto ya cuenta; el reparto se pondrá al día en la siguiente petición.
+    const data = answer.body as { reparto?: unknown } | null;
+    const share = data && typeof data.reparto === 'object' && data.reparto !== null ? (data.reparto as Record<string, unknown>) : {};
+    for (const option of poll.opciones) {
+      const n = share[option.id];
+      if (typeof n === 'number' && Number.isFinite(n)) poll.reparto[option.id] = Math.min(100, Math.max(0, Math.round(n)));
     }
     this.mem.last = this.last;
     this.persist();
@@ -166,16 +167,26 @@ export class Community {
   private async request(path: string): Promise<unknown> {
     const answer = await this.fetchWithTimeout(path, { method: 'GET', cache: 'no-store' });
     if (!answer.ok) throw new Error(`HTTP ${answer.status}`);
-    return answer.json();
+    return answer.body;
   }
 
-  private async fetchWithTimeout(path: string, init: { method: string; headers?: Record<string, string>; body?: string; cache?: 'no-store' }) {
+  /** El límite de tiempo cubre también la lectura del cuerpo; un cuerpo que no es JSON (o se cuelga) cuenta como `null`. */
+  private async fetchWithTimeout(
+    path: string,
+    init: { method: string; headers?: Record<string, string>; body?: string; cache?: 'no-store' },
+    onHeaders?: (head: { ok: boolean; status: number }) => void,
+  ): Promise<{ ok: boolean; status: number; body: unknown }> {
     const controller = typeof AbortController === 'undefined' ? null : new AbortController();
-    const timer = controller ? setTimeout(() => controller.abort(), TIMEOUT_MS) : null;
+    let expire: () => void = () => undefined;
+    const expired = new Promise<null>((resolve) => { expire = () => resolve(null); });
+    const timer = setTimeout(() => { controller?.abort(); expire(); }, TIMEOUT_MS);
     try {
-      return await this.deps.fetch(`${this.deps.baseUrl}${path}`, { ...init, credentials: 'omit', signal: controller?.signal });
+      const answer = await this.deps.fetch(`${this.deps.baseUrl}${path}`, { ...init, credentials: 'omit', signal: controller?.signal });
+      try { onHeaders?.({ ok: answer.ok, status: answer.status }); } catch { /* anotar no debe romper la respuesta */ }
+      const body = await Promise.race([answer.json().catch(() => null), expired]);
+      return { ok: answer.ok, status: answer.status, body };
     } finally {
-      if (timer) clearTimeout(timer);
+      clearTimeout(timer);
     }
   }
 
