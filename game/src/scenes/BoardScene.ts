@@ -1,5 +1,5 @@
 import * as Phaser from 'phaser';
-import { daysLeft, jarTier, localized, type PollOption } from '../core/community';
+import { daysLeft, localized, type PollOption } from '../core/community';
 import type { Vec } from '../core/movement';
 import { APP_VERSION } from '../core/version';
 import { t } from '../data/strings';
@@ -26,7 +26,6 @@ export interface BoardSceneData {
   wallPage?: number;
 }
 
-const JAR_BULBS = [0, 1, 3, 6, 10] as const;
 const MAX_WALL_SHOWN = 4;
 
 /** El tablón: votación con dibujos, tarro de ideas, muro y tarjeta del QR. No depende de leer. */
@@ -42,7 +41,6 @@ export class BoardScene extends Phaser.Scene {
   private cards = new Map<string, Phaser.GameObjects.Container>();
   private confirm: Phaser.GameObjects.Container | null = null;
   private change: Phaser.GameObjects.Container | null = null;
-  private jar: Phaser.GameObjects.Text | null = null;
   private wallArrows: Phaser.GameObjects.Container[] = [];
   private body!: Phaser.Geom.Rectangle;
   private opened = false;
@@ -63,7 +61,6 @@ export class BoardScene extends Phaser.Scene {
     this.cards = new Map();
     this.confirm = null;
     this.change = null;
-    this.jar = null;
     this.wallArrows = [];
   }
 
@@ -85,17 +82,24 @@ export class BoardScene extends Phaser.Scene {
     const badge = Phaser.Math.Clamp(height * 0.13, 44, 64);
     addCloseBadge(this, panel.right - badge * 0.35, panel.y + badge * 0.35, () => this.close(), badge);
 
-    // Pestañas con dibujo, sin texto.
-    const tabH = Phaser.Math.Clamp(height * 0.12, 44, 72);
-    const tabY = panel.y + tabH * 1.05;
-    const zones: [BoardZone, string][] = [['poll', '🗳️'], ['wall', '🫙'], ['idea', '💡']];
+    // Pestañas con dibujo, sin texto, en columna a la izquierda: el contenido gana todo el ancho.
+    // 🙋 votar (levantar la mano), ⭐ ideas de los jugadores, 💡 enviar una idea (QR).
+    const ribbonH = Phaser.Math.Clamp(height * 0.13, 40, 76);
+    const top = panel.y + ribbonH * 0.7;
+    const bottom = panel.bottom - panelH * 0.05;
+    const tabH = Math.min(Phaser.Math.Clamp(height * 0.15, 48, 84), (bottom - top) / 3.4);
+    const tabW = tabH * 1.25;
+    const tabX = panel.x + panelW * 0.03 + tabW / 2;
+    const gap = ((bottom - top) - tabH * 3) / 2;
+    const zones: [BoardZone, string][] = [['poll', '🙋'], ['wall', '⭐'], ['idea', '💡']];
     zones.forEach(([zone, emoji], i) => {
-      const x = width / 2 + (i - 1) * tabH * 1.6;
-      const tab = addPillButton(this, x, tabY, tabH * 1.4, tabH, { color: zone === this.zoneKey ? 'yellow' : 'sand', onTap: () => this.goZone(zone) });
-      tab.add(addEmoji(this, 0, -tabH * 0.05, emoji, tabH * 0.5));
+      const y = top + tabH / 2 + i * (tabH + Math.min(gap, tabH * 0.4));
+      const tab = addPillButton(this, tabX, y, tabW, tabH, { color: zone === this.zoneKey ? 'yellow' : 'sand', onTap: () => this.goZone(zone) });
+      tab.add(addEmoji(this, 0, -tabH * 0.04, emoji, tabH * 0.52));
       this.tabs.set(zone, tab);
     });
-    this.body = new Phaser.Geom.Rectangle(panel.x + panelW * 0.05, tabY + tabH * 0.75, panelW * 0.9, panel.bottom - (tabY + tabH * 0.75) - panelH * 0.05);
+    const left = tabX + tabW / 2 + panelW * 0.03;
+    this.body = new Phaser.Geom.Rectangle(left, top, panel.right - panelW * 0.03 - left, bottom - top);
 
     if (this.zoneKey === 'poll') this.drawPoll();
     else if (this.zoneKey === 'wall') this.drawWall();
@@ -205,31 +209,21 @@ export class BoardScene extends Phaser.Scene {
       return;
     }
     community.markBoardSeen();
-    // Tarro con bombillas, el número de verdad debajo.
-    const jarSize = Math.min(b.width * 0.3, b.height * 0.6);
-    const jx = b.x + b.width * 0.18;
-    const jy = b.y + jarSize / 2 + 6;
-    addEmoji(this, jx, jy, '🫙', jarSize * 0.8);
-    const bulbs = JAR_BULBS[jarTier(status.ideas)];
-    for (let i = 0; i < bulbs; i++) {
-      const bx = jx + ((i % 3) - 1) * jarSize * 0.2;
-      const by = jy + jarSize * 0.22 - Math.floor(i / 3) * jarSize * 0.15;
-      addEmoji(this, bx, by, '💡', jarSize * 0.13);
+    const titleH = Math.min(b.height * 0.13, 40);
+    fitText(addUiText(this, b.x, b.y + titleH / 2, t('board.wallTitle'), textStyle(Math.round(titleH * 0.7), UI.brown, UI.cream)).setOrigin(0, 0.5), b.width);
+    if (status.muro.length === 0) {
+      fitText(addUiText(this, b.centerX, b.centerY, t('board.wallEmpty'), textStyle(24, UI.brown, UI.cream)).setOrigin(0.5), b.width);
+      return;
     }
-    const jarLine = status.ideas === 0 ? t('board.jarEmpty') : status.ideas === 1 ? t('board.jarOne') : t('board.jar', { n: status.ideas });
-    this.jar = addUiText(this, jx, jy + jarSize / 2 + 18, jarLine, { ...textStyle(18, UI.brown, UI.cream), wordWrap: { width: b.width * 0.34 }, align: 'center' }).setOrigin(0.5, 0);
-    // Muro.
-    const wx = b.x + b.width * 0.4;
-    fitText(addUiText(this, wx, b.y + 4, t('board.wallTitle'), textStyle(22, UI.brown, UI.cream)).setOrigin(0, 0), b.right - wx);
     const lang = getLanguage();
     // De MAX_WALL_SHOWN en MAX_WALL_SHOWN, con flechas abajo si hay más de una página.
     const pages = Math.max(1, Math.ceil(status.muro.length / MAX_WALL_SHOWN));
     const page = Phaser.Math.Clamp(this.wallPage, 0, pages - 1);
-    const arrow = pages > 1 ? Phaser.Math.Clamp(b.height * 0.14, 36, 52) : 0;
-    const rowH = Math.min((b.height - 40 - arrow - (arrow ? 8 : 0)) / MAX_WALL_SHOWN, 72);
+    const arrow = pages > 1 ? Phaser.Math.Clamp(b.height * 0.15, 40, 60) : 0;
+    const listTop = b.y + titleH + 4;
+    const rowH = (b.bottom - listTop - (arrow ? arrow + 8 : 0)) / MAX_WALL_SHOWN;
     if (pages > 1) {
       const ay = b.bottom - arrow / 2;
-      const mid = (wx + b.right) / 2;
       const turn = (step: number): void => {
         if (this.busy) return;
         sfx.play('tap');
@@ -237,19 +231,34 @@ export class BoardScene extends Phaser.Scene {
         this.restart();
       };
       this.wallArrows = [
-        addPillButton(this, mid - arrow * 1.8, ay, arrow * 1.3, arrow, { color: 'blue', icon: 'left', onTap: () => turn(-1) }),
-        addPillButton(this, mid + arrow * 1.8, ay, arrow * 1.3, arrow, { color: 'blue', icon: 'right', onTap: () => turn(1) }),
+        addPillButton(this, b.centerX - arrow * 2, ay, arrow * 1.4, arrow, { color: 'blue', icon: 'left', onTap: () => turn(-1) }),
+        addPillButton(this, b.centerX + arrow * 2, ay, arrow * 1.4, arrow, { color: 'blue', icon: 'right', onTap: () => turn(1) }),
       ];
-      addUiText(this, mid, ay, `${page + 1} / ${pages}`, textStyle(Math.round(arrow * 0.45), UI.brown, UI.cream)).setOrigin(0.5);
+      addUiText(this, b.centerX, ay, `${page + 1} / ${pages}`, textStyle(Math.round(arrow * 0.45), UI.brown, UI.cream)).setOrigin(0.5);
     }
     status.muro.slice(page * MAX_WALL_SHOWN, (page + 1) * MAX_WALL_SHOWN).forEach((entry, i) => {
-      const y = b.y + 40 + rowH * (i + 0.5);
-      this.drawing(entry.dibujo, wx + rowH * 0.45, y, rowH * 0.85);
-      const name = entry.ideaDe ? ` · ${t('board.ideaOf', { name: entry.ideaDe })}` : '';
-      const stamp = entry.estado === 'hecha' ? t('board.done') : t('board.chosen');
-      const mark = fitText(addUiText(this, b.right - 4, y, stamp, textStyle(Math.round(rowH * 0.24), entry.estado === 'hecha' ? '#2e7d32' : '#1565c0', '#ffffff')).setOrigin(1, 0.5), b.width * 0.18);
-      const textX = wx + rowH;
-      fitText(addUiText(this, textX, y, `${localized(entry.titulo, lang)}${name}`, textStyle(Math.round(rowH * 0.26), UI.brown, UI.cream)).setOrigin(0, 0.5), b.right - 16 - mark.width - textX);
+      const y = listTop + rowH * (i + 0.5);
+      const pic = rowH * 0.86;
+      this.drawing(entry.dibujo, b.x + pic / 2, y, pic);
+      // Sello a la derecha, en una píldora de color: se lee de lejos.
+      const done = entry.estado === 'hecha';
+      const stampText = addUiText(this, 0, 0, done ? t('board.done') : t('board.chosen'), textStyle(Math.round(rowH * 0.3), '#ffffff', done ? '#1b5e20' : '#0d47a1'));
+      fitText(stampText, b.width * 0.26);
+      const stampW = stampText.width + rowH * 0.4;
+      const stampX = b.right - stampW / 2;
+      const pill = this.add.graphics();
+      pill.fillStyle(done ? 0x43a047 : 0x1e88e5, 1).fillRoundedRect(stampX - stampW / 2, y - rowH * 0.26, stampW, rowH * 0.52, rowH * 0.26);
+      stampText.setPosition(stampX, y).setOrigin(0.5).setDepth(1);
+      // Título grande y, debajo, de quién fue la idea.
+      const textX = b.x + pic + rowH * 0.25;
+      const room = stampX - stampW / 2 - 12 - textX;
+      const title = localized(entry.titulo, lang);
+      if (entry.ideaDe) {
+        fitText(addUiText(this, textX, y - rowH * 0.15, title, textStyle(Math.round(rowH * 0.34), UI.brown, UI.cream)).setOrigin(0, 0.5), room);
+        fitText(addUiText(this, textX, y + rowH * 0.22, t('board.ideaOf', { name: entry.ideaDe }), textStyle(Math.round(rowH * 0.24), UI.brown, UI.cream)).setOrigin(0, 0.5), room);
+      } else {
+        fitText(addUiText(this, textX, y, title, textStyle(Math.round(rowH * 0.36), UI.brown, UI.cream)).setOrigin(0, 0.5), room);
+      }
     });
   }
 
@@ -447,7 +456,4 @@ export class BoardScene extends Phaser.Scene {
     return arrow ? { x: arrow.x, y: arrow.y } : null;
   }
 
-  jarText(): string | null {
-    return this.jar?.text ?? null;
-  }
 }

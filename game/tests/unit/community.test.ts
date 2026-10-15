@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
-  communityUrl, daysLeft, drawingName, emptyMemory, hasUnseen, ideaSigns, jarTier, localized, parseMemory, parseStatus, pollPhase,
+  communityUrl, daysLeft, drawingName, emptyMemory, hasUnseen, localized, parseMemory, parseStatus, pollPhase,
   shouldNotify, wallKey, type CommunityStatus,
 } from '../../src/core/community';
 
@@ -91,12 +91,6 @@ describe('fase de la votación', () => {
   });
 });
 
-describe('tarro de ideas', () => {
-  it('tramos 0, 1-9, 10-49, 50-199, 200+', () => {
-    expect([0, 1, 9, 10, 49, 50, 199, 200, 5000].map(jarTier)).toEqual([0, 1, 1, 2, 2, 3, 3, 4, 4]);
-  });
-});
-
 describe('qué hay sin ver', () => {
   it('votación abierta sin votar', () => {
     expect(hasUnseen(status(), { ...emptyMemory(), wallSeen: wallKey(status().muro[0]!) })).toBe(true);
@@ -121,30 +115,18 @@ describe('qué hay sin ver', () => {
 
   it('el aviso salta una vez por votación abierta y no si ya se votó', () => {
     const s = status();
-    expect(shouldNotify(s, emptyMemory())).toBe(true);
-    expect(shouldNotify(s, { ...emptyMemory(), noticed: '2026-11-a' })).toBe(false);
-    expect(shouldNotify(s, { ...emptyMemory(), voted: { '2026-11-a': 'koalas' } })).toBe(false);
-    expect(shouldNotify(status((r) => ({ ...r, votacion: { ...r.votacion, abierta: false } })), emptyMemory())).toBe(false);
-  });
-});
-
-describe('carteles de idea hecha', () => {
-  it('solo las hechas, con nombre y con un recinto que existe', () => {
-    const s = status((r) => ({
-      ...r,
-      muro: [
-        r.muro[0],
-        { ...r.muro[0], recinto: 'pinguino' },
-        { ...r.muro[0], estado: 'elegida', recinto: 'leon' },
-        { ...r.muro[0], ideaDe: undefined, recinto: 'leon' },
-      ],
-    }));
-    expect(ideaSigns(s)).toEqual([{ penId: 'pinguinos', name: 'Adrián' }]);
+    const veteran = { ...emptyMemory(), firstDay: '2026-11-01' };
+    expect(shouldNotify(s, veteran, '2026-11-03')).toBe(true);
+    expect(shouldNotify(s, { ...veteran, noticed: '2026-11-a' }, '2026-11-03')).toBe(false);
+    expect(shouldNotify(s, { ...veteran, voted: { '2026-11-a': 'koalas' } }, '2026-11-03')).toBe(false);
+    expect(shouldNotify(status((r) => ({ ...r, votacion: { ...r.votacion, abierta: false } })), veteran, '2026-11-03')).toBe(false);
   });
 
-  it('un cartel por recinto: el más nuevo', () => {
-    const s = status((r) => ({ ...r, muro: [{ ...r.muro[0], ideaDe: 'Nuevo' }, r.muro[0]] }));
-    expect(ideaSigns(s)).toEqual([{ penId: 'pinguinos', name: 'Nuevo' }]);
+  it('el primer día de juego no hay aviso', () => {
+    const s = status();
+    expect(shouldNotify(s, emptyMemory(), '2026-11-03')).toBe(false);
+    expect(shouldNotify(s, { ...emptyMemory(), firstDay: '2026-11-03' }, '2026-11-03')).toBe(false);
+    expect(shouldNotify(s, { ...emptyMemory(), firstDay: '2026-11-02' }, '2026-11-03')).toBe(true);
   });
 });
 

@@ -1,6 +1,7 @@
 import type * as Phaser from 'phaser';
 import { getArt } from '../art/art';
 import { AD_SLOTS } from '../core/adPacing';
+import { COMMUNITY_KEY } from '../core/community';
 import { openPens } from '../core/economy';
 import type { Vec } from '../core/movement';
 import type { Settings, ToggleKey } from '../core/save';
@@ -112,7 +113,6 @@ export interface ZooTestApi {
   boardTile(): { x: number; y: number } | null;
   boardScreenPos(): Vec | null;
   boardSparkling(): boolean;
-  ideaSignCount(): number;
   openBoard(): void;
   boardView(): PollView | null;
   boardZone(): BoardZone | null;
@@ -121,7 +121,6 @@ export interface ZooTestApi {
   boardConfirmPos(): Vec | null;
   boardChangePos(): Vec | null;
   boardPicked(): string | null;
-  boardJarText(): string | null;
   pollNoticePos(key: 'yes' | 'no'): Vec | null;
   /** Con el tablón abierto, la pantalla cambia de tamaño (girar el móvil). */
   boardResize(): void;
@@ -258,13 +257,18 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
     busLog: () => [...busLog],
     communityStart: async (baseUrl) => {
       PollNoticeScene.shownFor = null;
+      // Como un jugador que ya jugó otro día: el aviso no sale el primer día de juego.
+      try {
+        if (!window.localStorage.getItem(COMMUNITY_KEY)) window.localStorage.setItem(COMMUNITY_KEY, JSON.stringify({ firstDay: '2000-01-01' }));
+      } catch {
+        // Sin almacén, la prueba que lo necesite lo dirá.
+      }
       await startCommunity(baseUrl);
     },
     communityPhase: () => getCommunity()?.phase() ?? null,
     boardTile: () => game.scene.getScene<WorldScene>('World').boardTile(),
     boardScreenPos: () => activeScene<WorldScene>('World')?.boardScreenPos() ?? null,
     boardSparkling: () => game.scene.getScene<WorldScene>('World').boardSparkling(),
-    ideaSignCount: () => game.scene.getScene<WorldScene>('World').ideaSignCount(),
     openBoard: () => activeScene<WorldScene>('World')?.openBoard(),
     boardView: () => activeScene<BoardScene>('Board')?.pollView() ?? null,
     boardZone: () => activeScene<BoardScene>('Board')?.zone() ?? null,
@@ -273,7 +277,6 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
     boardConfirmPos: () => activeScene<BoardScene>('Board')?.confirmPos() ?? null,
     boardChangePos: () => activeScene<BoardScene>('Board')?.changePos() ?? null,
     boardPicked: () => activeScene<BoardScene>('Board')?.picked() ?? null,
-    boardJarText: () => activeScene<BoardScene>('Board')?.jarText() ?? null,
     pollNoticePos: (key) => {
       const scene = activeScene<PollNoticeScene>('PollNotice');
       return (key === 'yes' ? scene?.yesPos() : scene?.noPos()) ?? null;

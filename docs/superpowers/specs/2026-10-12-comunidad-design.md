@@ -147,19 +147,19 @@ Hay que rellenar al menos la idea o el fallo.
 - Un tablón de anuncios junto a la fuente de la plaza.
 - Se usa como el libro: la cuidadora se acerca y se abre.
 - **Señales:** una estrellita que brilla encima cuando hay algo sin ver (votación abierta sin votar, ganadora nueva, entrada nueva en el muro). El tendero lo menciona una vez, como con el libro secreto.
-- **Cartel de idea hecha:** junto al recinto indicado en `recinto`, un cartelito «Idea de Lucía» / «Lucía's idea».
+- ~~Cartel de idea hecha junto al recinto~~ (quitado el 2026-10-15 por decisión de David: los nombres solo se ven en el listado del tablón; `recinto` queda en el archivo pero el juego no lo usa).
 
 ### 5. Pantalla del tablón (`src/scenes/BoardScene.ts`, nuevo)
 
-Hecha con las piezas de `src/ui/`. Tres zonas:
+Hecha con las piezas de `src/ui/`. Tres zonas, con pestañas de dibujo en columna a la izquierda (🙋 votar, ⭐ ideas, 💡 QR) para que el contenido use todo el ancho:
 
 - **Votación.**
   - Abierta y sin votar: de 2 a 4 tarjetas grandes con dibujo, título y «idea de Lucía». Tocar una la marca; un botón verde con ✓ confirma.
   - Votada: barras con el reparto, sin números, la suya marcada, un botón «Cambiar» y «quedan 6 días» con un reloj de arena.
   - Cerrada con ganadora: la ganadora en grande con confeti.
   - Sin votación: cartel «Pronto habrá votación».
-- **El tarro de ideas.** Un tarro con bombillas y el número real: «¡Ya han llegado 127 ideas!». El dibujo se llena por tramos (0, 1–9, 10–49, 50–199, 200 o más).
-- **El muro.** Las últimas entradas con dibujo, nombre y sello: «Elegida» o «¡Ya en el zoo!».
+- ~~El tarro de ideas~~ (quitado el 2026-10-15 por decisión de David: no aportaba y su número, que cuenta los envíos, no cuadraba con el listado).
+- **El muro.** Todas las entradas, de 4 en 4 con flechas, con dibujo, título grande, «idea de …» y sello de color: «Elegida» o «¡Ya en el zoo!».
 - **Tarjeta «¿Tienes una idea?»:** la imagen del QR, «Enséñaselo a un mayor», la versión del juego y la dirección de las condiciones escrita (no es un enlace).
 
 **Sin conexión:** aviso con dibujo, «Sin internet no se puede votar», y se enseña lo último guardado.
@@ -168,7 +168,7 @@ Hecha con las piezas de `src/ui/`. Tres zonas:
 
 ### 6. Aviso de votación nueva (`src/scenes/PollNoticeScene.ts`, nuevo)
 
-Panel grande que salta una vez por votación, al llegar al mapa: dibujo de una urna, botón verde que lleva al tablón y X. No depende de leer. Si hay otro panel abierto (el de anuncios), espera a la siguiente vuelta al mapa.
+Panel grande que salta una vez por votación, al llegar al mapa, **nunca el primer día que se juega** (el aparato guarda ese día): dibujo de una mano levantada (🙋), botón verde «▶ ¡A votar!» que lleva al tablón y X. No depende de leer. Si hay otro panel abierto (el de anuncios), espera a la siguiente vuelta al mapa.
 
 ### 7. Lógica y sistema
 

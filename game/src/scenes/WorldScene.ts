@@ -89,7 +89,7 @@ export class WorldScene extends Phaser.Scene {
     const shopInfo = readShop(mapData);
     this.shop = shopInfo ? new ShopBuilding(this, shopInfo, state) : null;
     const boardInfo = readBoard(mapData);
-    this.board = boardInfo ? new Board(this, boardInfo, readEnclosures(mapData), readGates(mapData)) : null;
+    this.board = boardInfo ? new Board(this, boardInfo) : null;
     this.visitors = new VisitorCrowd(this, this.pathGrid);
     this.syncVisitors(state);
 
@@ -395,9 +395,6 @@ export class WorldScene extends Phaser.Scene {
     return this.board?.sparkling() ?? false;
   }
 
-  ideaSignCount(): number {
-    return this.board?.signCount() ?? 0;
-  }
 
   private stopWalking(): void {
     this.route = [];

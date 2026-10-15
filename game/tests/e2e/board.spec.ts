@@ -163,18 +163,17 @@ test('con lo guardado y sin conexión: se ve el tablón pero no deja votar', asy
   expect(fake.votes).toEqual([]);
 });
 
-test('la respuesta tarda y el tablón aparece después, con estrellita y cartel', async ({ page }) => {
+test('la respuesta tarda y el tablón aparece después, con estrellita', async ({ page }) => {
   await fakeServer(page, { delayMs: 2500 });
   await startGame(page);
   void page.evaluate((b) => window.__ZOO__!.communityStart(b), BASE);
   expect(await page.evaluate(() => window.__ZOO__!.boardTile())).toBeNull();
   await page.waitForFunction(() => window.__ZOO__!.boardTile() !== null, undefined, { timeout: 15_000 });
   expect(await page.evaluate(() => window.__ZOO__!.boardSparkling())).toBe(true);
-  expect(await page.evaluate(() => window.__ZOO__!.ideaSignCount())).toBe(1);
   await page.waitForFunction(() => window.__ZOO__!.pollNoticePos('yes') !== null, undefined, { timeout: 10_000 });
 });
 
-test('el tarro enseña el número de verdad y el QR se cuenta', async ({ page }) => {
+test('se pasa al muro de ideas y el QR se cuenta', async ({ page }) => {
   await fakeServer(page);
   await startGame(page);
   await page.evaluate((b) => window.__ZOO__!.communityStart(b), BASE);
@@ -183,7 +182,6 @@ test('el tarro enseña el número de verdad y el QR se cuenta', async ({ page })
   await page.waitForFunction(() => window.__ZOO__!.boardView() !== null);
   await click(page, await page.evaluate(() => window.__ZOO__!.boardZonePos('wall')));
   await page.waitForFunction(() => window.__ZOO__!.boardZone() === 'wall');
-  expect(await page.evaluate(() => window.__ZOO__!.boardJarText())).toBe('¡Ya han llegado 127 ideas!');
   await click(page, await page.evaluate(() => window.__ZOO__!.boardZonePos('idea')));
   await expect.poll(() => log(page)).toContain('board-qr');
 });

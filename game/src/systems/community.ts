@@ -2,6 +2,7 @@ import {
   COMMUNITY_KEY, drawingName, emptyMemory, hasUnseen, parseMemory, parseStatus, pollPhase, shouldNotify, wallKey,
   type CommunityMemory, type CommunityStatus, type PollPhase,
 } from '../core/community';
+import { dayKey } from '../core/activity';
 import type { KeyValueStore } from '../core/save';
 import type { EventBus, GameEvents } from './events';
 
@@ -16,6 +17,8 @@ export interface CommunityDeps {
   fetch: FetchLike;
   store: KeyValueStore;
   events: EventBus<GameEvents>;
+  /** Día de hoy en el móvil (`AAAA-MM-DD`). Por defecto, el reloj del aparato. */
+  today?: () => string;
 }
 
 /** Más que esto esperando al servidor es «sin conexión». */
@@ -38,6 +41,10 @@ export class Community {
       this.mem = parseMemory(await this.deps.store.get(COMMUNITY_KEY));
     } catch {
       this.mem = emptyMemory();
+    }
+    if (this.mem.firstDay === null) {
+      this.mem.firstDay = this.today();
+      this.persist();
     }
     this.last = this.mem.last;
     await this.refresh();
@@ -64,7 +71,7 @@ export class Community {
   }
 
   notify(): boolean {
-    return this.last !== null && shouldNotify(this.last, this.mem);
+    return this.last !== null && shouldNotify(this.last, this.mem, this.today());
   }
 
   async refresh(): Promise<boolean> {
@@ -110,6 +117,10 @@ export class Community {
   markHinted(): void {
     this.mem.hinted = true;
     this.persist();
+  }
+
+  private today(): string {
+    return this.deps.today?.() ?? dayKey(new Date());
   }
 
   drawingUrl(name: string | null): string | null {

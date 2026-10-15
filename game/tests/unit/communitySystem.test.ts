@@ -153,8 +153,20 @@ describe('Community', () => {
     expect(net.calls).toHaveLength(1);
   });
 
+  it('el primer día de juego no hay aviso; otro día, sí', async () => {
+    let day = '2026-11-03';
+    const net = fakeNet({ '/estado.php': ok() });
+    const store = createMemoryStore();
+    const community = new Community({ baseUrl: 'https://api.test', fetch: net.fetch, store, events: new EventBus<GameEvents>(), today: () => day });
+    await community.start();
+    expect(community.notify()).toBe(false);
+    expect(JSON.parse((await store.get(COMMUNITY_KEY))!).firstDay).toBe('2026-11-03');
+    day = '2026-11-04';
+    expect(community.notify()).toBe(true);
+  });
+
   it('marcas de visto: aviso, ganadora, muro y tendero', async () => {
-    const { community, store } = make({ '/estado.php': ok() });
+    const { community, store } = make({ '/estado.php': ok() }, { [COMMUNITY_KEY]: JSON.stringify({ firstDay: '2000-01-01' }) });
     await community.start();
     expect(community.notify()).toBe(true);
     community.markNoticed();

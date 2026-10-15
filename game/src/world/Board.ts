@@ -1,10 +1,9 @@
 import * as Phaser from 'phaser';
 import { TILE_SIZE } from '../config';
-import { ideaSigns } from '../core/community';
 import { depthForY } from '../core/depth';
 import type { Vec } from '../core/movement';
 import type { Point } from '../core/pathfinding';
-import { isBoardTile, type BoardInfo, type EnclosureInfo, type GateInfo } from '../core/tiledmap';
+import { isBoardTile, type BoardInfo } from '../core/tiledmap';
 import { t } from '../data/strings';
 import { getCommunity } from '../systems/community';
 
@@ -14,22 +13,19 @@ const HIT = 14;
 
 /**
  * El tablón de anuncios de la plaza: se abre al pisar la casilla de delante, como la puerta de la tienda.
- * Brilla una estrellita cuando hay algo sin ver. También pone los carteles «Idea de …» junto a los recintos.
+ * Brilla una estrellita cuando hay algo sin ver. Los nombres de quién tuvo cada idea solo se ven en el tablón.
  * Sin tablón configurado no se ve nada.
  */
 export class Board {
   private readonly group: Phaser.GameObjects.Container;
   private readonly star: Phaser.GameObjects.Text;
   private readonly starTween: Phaser.Tweens.Tween;
-  private signs: Phaser.GameObjects.Text[] = [];
   private atBoard = false;
   private readonly center: Vec;
 
   constructor(
     private readonly scene: Phaser.Scene,
     readonly info: BoardInfo,
-    private readonly enclosures: readonly EnclosureInfo[],
-    private readonly gates: readonly GateInfo[],
   ) {
     const x = info.standTile.x * TILE_SIZE + TILE_SIZE / 2;
     const base = (info.standTile.y + 1) * TILE_SIZE;
@@ -53,7 +49,7 @@ export class Board {
     return this.group.visible;
   }
 
-  /** Pone al día el tablón, la estrellita y los carteles con lo último del servidor. */
+  /** Pone al día el tablón y la estrellita con lo último del servidor. */
   sync(): void {
     const community = getCommunity();
     const status = community?.status ?? null;
@@ -62,23 +58,6 @@ export class Board {
     this.star.setVisible(sparkle);
     if (sparkle) this.starTween.resume();
     else this.starTween.pause();
-    for (const sign of this.signs) sign.destroy();
-    this.signs = [];
-    if (!status) return;
-    for (const { penId, name } of ideaSigns(status)) {
-      const gate = this.gates.find((g) => g.penId === penId);
-      const pen = this.enclosures.find((e) => e.penId === penId);
-      if (!gate || !pen) continue;
-      // A la derecha de la puerta, por fuera de la valla.
-      const gx = (gate.tile.x + 2) * TILE_SIZE + 4;
-      const gy = gate.tile.y * TILE_SIZE + TILE_SIZE / 2;
-      const sign = this.scene.add
-        .text(gx, gy, t('board.sign', { name }), { ...LABEL_STYLE, fontSize: '8px', backgroundColor: '#5a3210cc', padding: { x: 3, y: 1 } })
-        .setOrigin(0, 0.5)
-        .setResolution(4)
-        .setDepth(10000);
-      this.signs.push(sign);
-    }
   }
 
   /** `true` solo al llegar a la casilla de delante; no se repite hasta salir de ella. */
@@ -101,7 +80,4 @@ export class Board {
     return this.visible && this.star.visible;
   }
 
-  signCount(): number {
-    return this.signs.length;
-  }
 }

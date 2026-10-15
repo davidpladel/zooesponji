@@ -41,7 +41,7 @@ export class PollNoticeScene extends Phaser.Scene {
     const cx = width / 2;
     const cy = height / 2;
     addPanel(this, cx, cy, panelW, panelH);
-    addEmoji(this, cx, cy - panelH * 0.14, '🗳️', panelH * 0.32);
+    addEmoji(this, cx, cy - panelH * 0.14, '🙋', panelH * 0.32);
     const button = Phaser.Math.Clamp(panelH * 0.24, 60, 110);
     // Botón con texto («¡A votar!»): el ▶ solo no decía qué hacía.
     this.yes = addPillButton(this, cx, cy + panelH * 0.3, Math.min(panelW * 0.8, button * 3), button, { color: 'green', icon: 'play', label: t('board.goVote'), onTap: () => this.finish(true) });

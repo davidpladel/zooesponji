@@ -1,4 +1,3 @@
-import { PEN_IDS, type PenId } from '../data/pens';
 import type { Language } from '../systems/language';
 
 /**
@@ -134,12 +133,14 @@ export interface CommunityMemory {
   wallSeen: string | null;
   /** El tendero ya habló del tablón. */
   hinted: boolean;
+  /** Día (del móvil) en que este aparato abrió el juego con tablón por primera vez. */
+  firstDay: string | null;
   /** Última respuesta válida del servidor, para enseñarla sin conexión. */
   last: CommunityStatus | null;
 }
 
 export function emptyMemory(): CommunityMemory {
-  return { voted: {}, noticed: null, winnerSeen: null, wallSeen: null, hinted: false, last: null };
+  return { voted: {}, noticed: null, winnerSeen: null, wallSeen: null, hinted: false, firstDay: null, last: null };
 }
 
 export function parseMemory(raw: string | null): CommunityMemory {
@@ -159,6 +160,7 @@ export function parseMemory(raw: string | null): CommunityMemory {
   memory.winnerSeen = isId(value.winnerSeen) ? value.winnerSeen : null;
   memory.wallSeen = typeof value.wallSeen === 'string' ? value.wallSeen.slice(0, 200) : null;
   memory.hinted = value.hinted === true;
+  memory.firstDay = typeof value.firstDay === 'string' && DAY.test(value.firstDay) ? value.firstDay : null;
   memory.last = parseStatus(value.last);
   return memory;
 }
@@ -183,14 +185,6 @@ export function daysLeft(status: CommunityStatus): number {
   return Math.max(0, dayNumber(poll.cierra) - dayNumber(status.hoy) + 1);
 }
 
-export function jarTier(ideas: number): 0 | 1 | 2 | 3 | 4 {
-  if (ideas <= 0) return 0;
-  if (ideas < 10) return 1;
-  if (ideas < 50) return 2;
-  if (ideas < 200) return 3;
-  return 4;
-}
-
 /** Huella de una entrada del muro: cambia si cambia el título o el estado (elegida → hecha). */
 export function wallKey(entry: WallEntry): string {
   return `${entry.titulo.es}|${entry.estado}`;
@@ -205,23 +199,12 @@ export function hasUnseen(status: CommunityStatus, memory: CommunityMemory): boo
   return newest !== undefined && memory.wallSeen !== wallKey(newest);
 }
 
-/** El aviso salta una vez por votación, si está abierta y no se ha votado. */
-export function shouldNotify(status: CommunityStatus, memory: CommunityMemory): boolean {
+/** El aviso salta una vez por votación, si está abierta y no se ha votado, y nunca el primer día de juego. */
+export function shouldNotify(status: CommunityStatus, memory: CommunityMemory, today: string): boolean {
+  // El primer día que se juega no: el niño aún está descubriendo el juego.
+  if (memory.firstDay === null || memory.firstDay === today) return false;
   const poll = status.votacion;
   return poll !== null && pollPhase(status, memory) === 'open' && memory.noticed !== poll.id;
-}
-
-const PENS: ReadonlySet<string> = new Set(PEN_IDS);
-
-/** Carteles «Idea de …»: ideas hechas, con nombre y con un recinto del juego. Uno por recinto, el más nuevo. */
-export function ideaSigns(status: CommunityStatus): { penId: PenId; name: string }[] {
-  const signs: { penId: PenId; name: string }[] = [];
-  for (const entry of status.muro) {
-    if (entry.estado !== 'hecha' || !entry.ideaDe || !entry.recinto || !PENS.has(entry.recinto)) continue;
-    if (signs.some((s) => s.penId === entry.recinto)) continue;
-    signs.push({ penId: entry.recinto as PenId, name: entry.ideaDe });
-  }
-  return signs;
 }
 
 export function localized(text: Localized, lang: Language): string {
