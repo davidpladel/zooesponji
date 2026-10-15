@@ -3,7 +3,8 @@ import type { Vec } from '../core/movement';
 import { sfx } from '../systems/audio';
 import { getCommunity } from '../systems/community';
 import { bus } from '../systems/events';
-import { addUiText } from '../ui/text';
+import { addEmoji } from '../ui/text';
+import { t } from '../data/strings';
 import { addCloseBadge, addPanel, addPillButton, addVeil } from '../ui/widgets';
 import type { WorldScene } from './WorldScene';
 
@@ -40,9 +41,10 @@ export class PollNoticeScene extends Phaser.Scene {
     const cx = width / 2;
     const cy = height / 2;
     addPanel(this, cx, cy, panelW, panelH);
-    addUiText(this, cx, cy - panelH * 0.14, '🗳️', { fontSize: `${Math.round(panelH * 0.38)}px` }).setOrigin(0.5);
+    addEmoji(this, cx, cy - panelH * 0.14, '🗳️', panelH * 0.32);
     const button = Phaser.Math.Clamp(panelH * 0.24, 60, 110);
-    this.yes = addPillButton(this, cx, cy + panelH * 0.3, button * 1.5, button, { color: 'green', icon: 'play', onTap: () => this.finish(true) });
+    // Botón con texto («¡A votar!»): el ▶ solo no decía qué hacía.
+    this.yes = addPillButton(this, cx, cy + panelH * 0.3, Math.min(panelW * 0.8, button * 3), button, { color: 'green', icon: 'play', label: t('board.goVote'), onTap: () => this.finish(true) });
     this.no = addCloseBadge(this, cx + panelW / 2 - 18, cy - panelH / 2 + 18, () => this.decline(), 52);
     community.markNoticed();
     if (PollNoticeScene.shownFor !== poll.id) {

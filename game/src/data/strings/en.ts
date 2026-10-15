@@ -103,6 +103,8 @@ export const STRINGS_EN: Record<StringKey, string> = {
   'board.ideaOf': "{name}'s idea",
   'board.daysLeft': '{n} days left',
   'board.lastDay': 'last day!',
+  'board.vote': 'Vote',
+  'board.goVote': "Let's vote!",
   'board.change': 'Change',
   'board.winner': 'The winner!',
   'board.closed': 'Voting is closed! The winner is coming soon',

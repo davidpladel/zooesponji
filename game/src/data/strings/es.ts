@@ -112,6 +112,8 @@ export const STRINGS_ES = {
   'board.ideaOf': 'idea de {name}',
   'board.daysLeft': 'quedan {n} días',
   'board.lastDay': '¡último día!',
+  'board.vote': 'Votar',
+  'board.goVote': '¡A votar!',
   'board.change': 'Cambiar',
   'board.winner': '¡Ha ganado!',
   'board.closed': '¡Votación cerrada! Pronto sabremos cuál gana',

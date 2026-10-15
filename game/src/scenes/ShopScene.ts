@@ -135,9 +135,18 @@ export class ShopScene extends Phaser.Scene {
     this.adRequested = false;
     const resumed = (): void => {
       this.adRequested = false;
+      this.syncCloseBadge();
+    };
+    // Con la tienda en pausa debajo de otra ventana (el libro, el anuncio), su X no se ve: una sola X, la de arriba.
+    const paused = (): void => {
+      this.closeBadge?.setVisible(false);
     };
     this.events.on(Phaser.Scenes.Events.RESUME, resumed);
-    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.events.off(Phaser.Scenes.Events.RESUME, resumed));
+    this.events.on(Phaser.Scenes.Events.PAUSE, paused);
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+      this.events.off(Phaser.Scenes.Events.RESUME, resumed);
+      this.events.off(Phaser.Scenes.Events.PAUSE, paused);
+    });
     this.syncCloseBadge();
 
     const keyboard = this.input.keyboard;
@@ -305,7 +314,7 @@ export class ShopScene extends Phaser.Scene {
   /** Si toca y hay anuncio listo, se ofrece: la tienda queda en pausa debajo del panel. */
   /** La X de la tienda solo se ve sin panel de anuncio: en pausa debajo de él, o recién montada por un giro. */
   private syncCloseBadge(): void {
-    this.closeBadge?.setVisible(!this.adRequested && !(getAds()?.panelOpen ?? false));
+    this.closeBadge?.setVisible(!this.adRequested && !(getAds()?.panelOpen ?? false) && !this.scene.isPaused());
   }
 
   /** Para pruebas: si se ve la X de la tienda. */

@@ -7,7 +7,7 @@ import { sfx } from '../systems/audio';
 import { getCommunity } from '../systems/community';
 import { bus } from '../systems/events';
 import { getLanguage } from '../systems/language';
-import { addUiText } from '../ui/text';
+import { addEmoji, addUiText, fitText } from '../ui/text';
 import { UI, textStyle } from '../ui/theme';
 import { addCloseBadge, addPanel, addPillButton, addRibbonTitle, addTile, addVeil, restartOnResize } from '../ui/widgets';
 
@@ -20,6 +20,8 @@ export interface BoardSceneData {
   zone?: BoardZone;
   /** Se tocó «Cambiar»: se vuelven a ver las tarjetas. */
   changing?: boolean;
+  /** Mensaje que se enseña dentro del tablón al volver a montarse (gracias, o no se pudo votar). */
+  note?: string | null;
 }
 
 const JAR_BULBS = [0, 1, 3, 6, 10] as const;
@@ -30,6 +32,7 @@ export class BoardScene extends Phaser.Scene {
   private zoneKey: BoardZone = 'poll';
   private pickedId: string | null = null;
   private changing = false;
+  private note: string | null = null;
   private busy = false;
   private view: PollView = 'none';
   private tabs = new Map<BoardZone, Phaser.GameObjects.Container>();
@@ -49,6 +52,7 @@ export class BoardScene extends Phaser.Scene {
     this.zoneKey = data.zone ?? 'poll';
     this.pickedId = data.picked ?? null;
     this.changing = data.changing ?? false;
+    this.note = data.note ?? null;
     this.busy = false;
     this.tabs = new Map();
     this.cards = new Map();
@@ -81,7 +85,8 @@ export class BoardScene extends Phaser.Scene {
     const zones: [BoardZone, string][] = [['poll', '🗳️'], ['wall', '🫙'], ['idea', '💡']];
     zones.forEach(([zone, emoji], i) => {
       const x = width / 2 + (i - 1) * tabH * 1.6;
-      const tab = addPillButton(this, x, tabY, tabH * 1.4, tabH, { color: zone === this.zoneKey ? 'yellow' : 'sand', label: emoji, onTap: () => this.goZone(zone) });
+      const tab = addPillButton(this, x, tabY, tabH * 1.4, tabH, { color: zone === this.zoneKey ? 'yellow' : 'sand', onTap: () => this.goZone(zone) });
+      tab.add(addEmoji(this, 0, -tabH * 0.05, emoji, tabH * 0.5));
       this.tabs.set(zone, tab);
     });
     this.body = new Phaser.Geom.Rectangle(panel.x + panelW * 0.05, tabY + tabH * 0.75, panelW * 0.9, panel.bottom - (tabY + tabH * 0.75) - panelH * 0.05);
@@ -89,6 +94,7 @@ export class BoardScene extends Phaser.Scene {
     if (this.zoneKey === 'poll') this.drawPoll();
     else if (this.zoneKey === 'wall') this.drawWall();
     else this.drawIdea();
+    this.showNote();
 
     if (this.opened) {
       bus.emit('board-opened', { phase: community.phase() });
@@ -132,7 +138,7 @@ export class BoardScene extends Phaser.Scene {
       const win = poll.opciones.find((o) => o.id === poll.ganadora)!;
       const size = Math.min(b.width * 0.4, b.height * 0.62);
       this.option(win, b.centerX, b.y + size / 2 + 8, size, false);
-      addUiText(this, b.centerX, b.y + size + 30, t('board.winner'), textStyle(Math.round(size * 0.14), '#ffffff', UI.outline)).setOrigin(0.5);
+      fitText(addUiText(this, b.centerX, b.y + size + 30, t('board.winner'), textStyle(Math.round(size * 0.14), '#ffffff', UI.outline)).setOrigin(0.5), b.width);
       this.confetti();
       community.markBoardSeen();
       return;
@@ -141,16 +147,17 @@ export class BoardScene extends Phaser.Scene {
       this.view = 'cards';
       const n = poll.opciones.length;
       const gap = b.width * 0.03;
-      const size = Math.min((b.width - gap * (n - 1)) / n, b.height * 0.72);
+      const button = Phaser.Math.Clamp(b.height * 0.18, 52, 84);
+      const size = Math.min((b.width - gap * (n - 1)) / n, b.height - button - 16);
       const startX = b.centerX - ((size + gap) * n - gap) / 2 + size / 2;
       poll.opciones.forEach((option, i) => {
         const card = this.option(option, startX + i * (size + gap), b.y + size / 2, size, true);
         this.cards.set(option.id, card);
       });
       this.markPicked();
-      const button = Phaser.Math.Clamp(b.height * 0.18, 52, 84);
       if (community.online) {
-        this.confirm = addPillButton(this, b.centerX, b.bottom - button / 2, button * 1.6, button, { color: 'green', label: '✓', onTap: () => void this.confirmVote() });
+        // El botón dice lo que hace («✓ Votar»): con el dibujo solo no se entendía.
+        this.confirm = addPillButton(this, b.centerX, b.bottom - button / 2, button * 3, button, { color: 'green', label: `✓ ${t('board.vote')}`, onTap: () => void this.confirmVote() });
         this.confirm.setVisible(this.pickedId !== null);
       }
       return;
@@ -164,7 +171,7 @@ export class BoardScene extends Phaser.Scene {
     poll.opciones.forEach((option, i) => {
       const y = b.y + rowH * (i + 0.5);
       this.drawing(option.dibujo, b.x + rowH * 0.6, y, rowH * 0.9);
-      addUiText(this, b.x + rowH * 1.2, y, localized(option.titulo, lang), textStyle(Math.round(rowH * 0.3), UI.brown, UI.cream)).setOrigin(0, 0.5);
+      fitText(addUiText(this, b.x + rowH * 1.2, y, localized(option.titulo, lang), textStyle(Math.round(rowH * 0.3), UI.brown, UI.cream)).setOrigin(0, 0.5), barX - b.x - rowH * 1.2 - 8);
       const share = poll.reparto[option.id] ?? 0;
       const bar = this.add.graphics();
       bar.fillStyle(0xffffff, 0.35).fillRoundedRect(barX, y - rowH * 0.25, barW, rowH * 0.5, 8);
@@ -174,12 +181,12 @@ export class BoardScene extends Phaser.Scene {
     const footY = b.bottom - Math.min(b.height * 0.12, 40);
     if (phase === 'voted') {
       const left = daysLeft(status);
-      addUiText(this, b.x + b.width * 0.25, footY, `⏳ ${left <= 1 ? t('board.lastDay') : t('board.daysLeft', { n: left })}`, textStyle(22, UI.brown, UI.cream)).setOrigin(0.5);
+      fitText(addUiText(this, b.x + b.width * 0.25, footY, `⏳ ${left <= 1 ? t('board.lastDay') : t('board.daysLeft', { n: left })}`, textStyle(22, UI.brown, UI.cream)).setOrigin(0.5), b.width * 0.46);
       if (community.online) {
         this.change = addPillButton(this, b.x + b.width * 0.75, footY, 180, 56, { color: 'blue', label: t('board.change'), onTap: () => this.startChange() });
       }
     } else {
-      addUiText(this, b.centerX, footY, t('board.closed'), textStyle(20, UI.brown, UI.cream)).setOrigin(0.5);
+      fitText(addUiText(this, b.centerX, footY, t('board.closed'), textStyle(20, UI.brown, UI.cream)).setOrigin(0.5), b.width);
     }
   }
 
@@ -196,27 +203,28 @@ export class BoardScene extends Phaser.Scene {
     const jarSize = Math.min(b.width * 0.3, b.height * 0.6);
     const jx = b.x + b.width * 0.18;
     const jy = b.y + jarSize / 2 + 6;
-    addUiText(this, jx, jy, '🫙', { fontSize: `${Math.round(jarSize)}px` }).setOrigin(0.5);
+    addEmoji(this, jx, jy, '🫙', jarSize * 0.8);
     const bulbs = JAR_BULBS[jarTier(status.ideas)];
     for (let i = 0; i < bulbs; i++) {
       const bx = jx + ((i % 3) - 1) * jarSize * 0.2;
-      const by = jy + jarSize * 0.28 - Math.floor(i / 3) * jarSize * 0.16;
-      addUiText(this, bx, by, '💡', { fontSize: `${Math.round(jarSize * 0.16)}px` }).setOrigin(0.5);
+      const by = jy + jarSize * 0.22 - Math.floor(i / 3) * jarSize * 0.15;
+      addEmoji(this, bx, by, '💡', jarSize * 0.13);
     }
     const jarLine = status.ideas === 0 ? t('board.jarEmpty') : status.ideas === 1 ? t('board.jarOne') : t('board.jar', { n: status.ideas });
     this.jar = addUiText(this, jx, jy + jarSize / 2 + 18, jarLine, { ...textStyle(18, UI.brown, UI.cream), wordWrap: { width: b.width * 0.34 }, align: 'center' }).setOrigin(0.5, 0);
     // Muro.
     const wx = b.x + b.width * 0.4;
-    addUiText(this, wx, b.y + 4, t('board.wallTitle'), textStyle(22, UI.brown, UI.cream)).setOrigin(0, 0);
+    fitText(addUiText(this, wx, b.y + 4, t('board.wallTitle'), textStyle(22, UI.brown, UI.cream)).setOrigin(0, 0), b.right - wx);
     const lang = getLanguage();
     const rowH = Math.min((b.height - 40) / MAX_WALL_SHOWN, 72);
     status.muro.slice(0, MAX_WALL_SHOWN).forEach((entry, i) => {
       const y = b.y + 40 + rowH * (i + 0.5);
       this.drawing(entry.dibujo, wx + rowH * 0.45, y, rowH * 0.85);
       const name = entry.ideaDe ? ` · ${t('board.ideaOf', { name: entry.ideaDe })}` : '';
-      addUiText(this, wx + rowH, y, `${localized(entry.titulo, lang)}${name}`, textStyle(Math.round(rowH * 0.26), UI.brown, UI.cream)).setOrigin(0, 0.5);
       const stamp = entry.estado === 'hecha' ? t('board.done') : t('board.chosen');
-      addUiText(this, b.right - 4, y, stamp, textStyle(Math.round(rowH * 0.24), entry.estado === 'hecha' ? '#2e7d32' : '#1565c0', '#ffffff')).setOrigin(1, 0.5);
+      const mark = fitText(addUiText(this, b.right - 4, y, stamp, textStyle(Math.round(rowH * 0.24), entry.estado === 'hecha' ? '#2e7d32' : '#1565c0', '#ffffff')).setOrigin(1, 0.5), b.width * 0.18);
+      const textX = wx + rowH;
+      fitText(addUiText(this, textX, y, `${localized(entry.titulo, lang)}${name}`, textStyle(Math.round(rowH * 0.26), UI.brown, UI.cream)).setOrigin(0, 0.5), b.right - 16 - mark.width - textX);
     });
   }
 
@@ -227,10 +235,11 @@ export class BoardScene extends Phaser.Scene {
     const qr = this.add.image(b.x + b.width * 0.28, b.centerY, getLanguage() === 'en' ? 'qr-ideas-en' : 'qr-ideas');
     qr.setDisplaySize(size, size);
     const tx = b.x + b.width * 0.56;
-    addUiText(this, tx, b.y + b.height * 0.18, t('board.ideaCard'), textStyle(30, UI.brown, UI.cream)).setOrigin(0, 0.5);
-    addUiText(this, tx, b.y + b.height * 0.38, `👉 ${t('board.showAdult')}`, textStyle(24, UI.brown, UI.cream)).setOrigin(0, 0.5);
-    addUiText(this, tx, b.y + b.height * 0.7, t('board.version', { v: APP_VERSION || '—' }), textStyle(16, UI.brown, UI.cream)).setOrigin(0, 0.5);
-    addUiText(this, tx, b.y + b.height * 0.82, t('board.terms'), textStyle(14, UI.brown, UI.cream)).setOrigin(0, 0.5);
+    const room = b.right - tx;
+    fitText(addUiText(this, tx, b.y + b.height * 0.18, t('board.ideaCard'), textStyle(30, UI.brown, UI.cream)).setOrigin(0, 0.5), room);
+    fitText(addUiText(this, tx, b.y + b.height * 0.38, `👉 ${t('board.showAdult')}`, textStyle(24, UI.brown, UI.cream)).setOrigin(0, 0.5), room);
+    fitText(addUiText(this, tx, b.y + b.height * 0.7, t('board.version', { v: APP_VERSION || '—' }), textStyle(16, UI.brown, UI.cream)).setOrigin(0, 0.5), room);
+    fitText(addUiText(this, tx, b.y + b.height * 0.82, t('board.terms'), textStyle(14, UI.brown, UI.cream)).setOrigin(0, 0.5), room);
   }
 
   // --- Piezas ---
@@ -238,16 +247,17 @@ export class BoardScene extends Phaser.Scene {
   private option(option: PollOption, x: number, y: number, size: number, tappable: boolean): Phaser.GameObjects.Container {
     const card = addTile(this, x, y, size, size, tappable ? () => this.pick(option.id) : undefined);
     const lang = getLanguage();
-    card.add(this.drawing(option.dibujo, 0, -size * 0.1, size * 0.62));
-    card.add(addUiText(this, 0, size * 0.3, localized(option.titulo, lang), textStyle(Math.round(size * 0.11), UI.brown, UI.cream)).setOrigin(0.5));
-    if (option.ideaDe) card.add(addUiText(this, 0, size * 0.42, t('board.ideaOf', { name: option.ideaDe }), textStyle(Math.round(size * 0.075), UI.brown, UI.cream)).setOrigin(0.5));
+    // Dibujo arriba y los textos por encima del canto de abajo de la tarjeta, sin salirse de ella.
+    card.add(this.drawing(option.dibujo, 0, -size * 0.13, size * 0.5));
+    card.add(fitText(addUiText(this, 0, size * 0.2, localized(option.titulo, lang), textStyle(Math.round(size * 0.1), UI.brown, UI.cream)).setOrigin(0.5), size * 0.86));
+    if (option.ideaDe) card.add(fitText(addUiText(this, 0, size * 0.31, t('board.ideaOf', { name: option.ideaDe }), textStyle(Math.round(size * 0.07), UI.brown, UI.cream)).setOrigin(0.5), size * 0.86));
     return card;
   }
 
   /** Dibujo del servidor; mientras carga, o si falla, el de reserva. */
   private drawing(name: string | null, x: number, y: number, size: number): Phaser.GameObjects.Container {
     const holder = this.add.container(x, y);
-    const fallback = addUiText(this, 0, 0, '🖼️', { fontSize: `${Math.round(size * 0.7)}px` }).setOrigin(0.5);
+    const fallback = addEmoji(this, 0, 0, '🖼️', size * 0.6);
     holder.add(fallback);
     const url = getCommunity()?.drawingUrl(name) ?? null;
     if (!url) return holder;
@@ -271,13 +281,13 @@ export class BoardScene extends Phaser.Scene {
 
   private bigMessage(emoji: string, text: string): void {
     const b = this.body;
-    addUiText(this, b.centerX, b.centerY - b.height * 0.12, emoji, { fontSize: `${Math.round(b.height * 0.4)}px` }).setOrigin(0.5);
-    addUiText(this, b.centerX, b.centerY + b.height * 0.25, text, textStyle(26, UI.brown, UI.cream)).setOrigin(0.5);
+    addEmoji(this, b.centerX, b.centerY - b.height * 0.12, emoji, b.height * 0.32);
+    fitText(addUiText(this, b.centerX, b.centerY + b.height * 0.25, text, textStyle(26, UI.brown, UI.cream)).setOrigin(0.5), b.width);
   }
 
   private strip(text: string): void {
     const b = this.body;
-    addUiText(this, b.centerX, b.y - 6, text, textStyle(16, '#ffffff', UI.outline)).setOrigin(0.5, 1).setDepth(5);
+    fitText(addUiText(this, b.centerX, b.y - 6, text, textStyle(16, '#ffffff', UI.outline)).setOrigin(0.5, 1).setDepth(5), b.width);
   }
 
   private confetti(): void {
@@ -313,14 +323,16 @@ export class BoardScene extends Phaser.Scene {
     if (!this.scene.isActive()) return;
     if (result === 'ok') {
       sfx.play('coin');
-      bus.emit('toast', { text: t('board.thanks') });
       this.pickedId = null;
       this.changing = false;
+      this.note = t('board.thanks');
     } else if (result === 'offline') {
-      bus.emit('toast', { text: t('board.voteFailed') });
+      this.note = t('board.voteFailed');
+      this.showNote();
       return;
     }
-    this.restart();
+    // El aviso va dentro del tablón: el de la barra de arriba quedaba encima de las pestañas.
+    this.scene.restart({ ...this.sceneData(), note: this.note });
   }
 
   private startChange(): void {
@@ -336,6 +348,16 @@ export class BoardScene extends Phaser.Scene {
     sfx.play('tap');
     this.zoneKey = zone;
     this.restart();
+  }
+
+  /** Mensaje corto dentro del tablón, encima del pie, que se va solo. */
+  private showNote(): void {
+    const note = this.note;
+    this.note = null;
+    if (!note) return;
+    const b = this.body;
+    const text = fitText(addUiText(this, b.centerX, b.bottom - b.height * 0.24, note, textStyle(26, '#ffffff', UI.outline)).setOrigin(0.5).setDepth(30), b.width);
+    this.tweens.add({ targets: text, alpha: 0, delay: 2200, duration: 400, onComplete: () => text.destroy() });
   }
 
   private sceneData(): BoardSceneData {

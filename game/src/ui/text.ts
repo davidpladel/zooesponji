@@ -24,3 +24,24 @@ export class UiText extends Phaser.GameObjects.Text {
 export function addUiText(scene: Phaser.Scene, x: number, y: number, text: string, style: Phaser.Types.GameObjects.Text.TextStyle): UiText {
   return scene.add.existing(new UiText(scene, x, y, text, style));
 }
+
+/**
+ * Un emoji dibujado como texto. Las fuentes de emoji se salen de la línea por arriba y por abajo: sin
+ * margen, Phaser los recorta. Va centrado en (x, y).
+ */
+export function addEmoji(scene: Phaser.Scene, x: number, y: number, emoji: string, size: number): Phaser.GameObjects.Text {
+  const pad = Math.round(size * 0.3);
+  return scene.add
+    .text(x, y, emoji, { fontFamily: 'sans-serif', fontSize: `${Math.round(size)}px`, padding: { top: pad, bottom: pad, left: pad, right: pad } })
+    .setOrigin(0.5);
+}
+
+/** Encoge el texto hasta que quepa en `maxWidth`. Ningún texto se sale de su sitio, en ningún idioma. */
+export function fitText<T extends Phaser.GameObjects.Text>(text: T, maxWidth: number, minSize = 9): T {
+  let size = Number.parseInt(String(text.style.fontSize), 10);
+  while (text.width > maxWidth && size > minSize) {
+    size -= 1;
+    text.setFontSize(size);
+  }
+  return text;
+}
