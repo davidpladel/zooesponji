@@ -122,3 +122,15 @@ Anuncios con premio de AdMob, en modo infantil. Sin configuración no hay public
 ## Versión
 
 `version` en `package.json` y `versionName` en `android/app/build.gradle`: **2.6.0**. `versionCode` sube en 1 con cada subida a Play: el **7** es la 2.6.0 (primera con anuncios), subida a la prueba cerrada el 2026-10-12. La siguiente será el 8.
+
+Al sacar una versión nueva, la versión se cambia a mano en estos sitios (el resto la leen solos):
+
+| Dónde | Qué poner |
+|---|---|
+| `game/package.json` (`version`) y `game/package-lock.json` (con `npm install`) | 2.x.y. De aquí la saca el juego para el pie del menú ⚙️ y para las estadísticas de Matomo |
+| `game/android/app/build.gradle` | `versionName` (2.x.y) y `versionCode` (+1 por cada subida a Play) |
+| Este apartado | versión y `versionCode` |
+| `README.md` (raíz) | «Versión actual» de arriba, fila nueva en la tabla de versiones y la «Hoja de ruta» |
+| Etiqueta de git | `v2.x.y` |
+
+La web www.zooesponji.com no muestra la versión en ningún sitio. El formulario de ideas la pide en el campo opcional de fallos («Abre el menú ⚙️ del juego: está escrita abajo del todo»): si cambia dónde se ve la versión en el juego, hay que cambiar ese texto en `web/paginas/ideas-es.html` e `ideas-en.html` (rama `feat/comunidad`).
