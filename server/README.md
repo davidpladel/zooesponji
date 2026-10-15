@@ -28,6 +28,8 @@ PHP 8.1 o superior y MySQL. Sin Composer ni librerías. Diseño: `docs/superpowe
 7. **Comprobar que lo privado no se ve.** `https://api.zooesponji.com/ruta.php` debe dar «prohibido», y no
    debe existir ninguna dirección que enseñe `config.php`.
 
+Los dibujos del tablón (`public/dibujos/`) los sirve `dibujo.php?f=<nombre>.png`, que añade el permiso de lectura (CORS) que nginx no manda en los archivos estáticos y que el juego necesita para pintarlos.
+
 Si algo responde `{"error":"no-disponible"}`, el motivo está en el registro de errores del dominio en Hestia.
 
 ## Aviso por n8n

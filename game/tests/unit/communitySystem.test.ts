@@ -177,7 +177,7 @@ describe('Community', () => {
 
   it('dirección de los dibujos: solo nombres válidos', () => {
     const { community } = make({});
-    expect(community.drawingUrl('delfines.png')).toBe('https://api.test/dibujos/delfines.png');
+    expect(community.drawingUrl('delfines.png')).toBe('https://api.test/dibujo.php?f=delfines.png');
     expect(community.drawingUrl('../x.png')).toBeNull();
     expect(community.drawingUrl(null)).toBeNull();
   });

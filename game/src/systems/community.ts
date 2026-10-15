@@ -114,7 +114,7 @@ export class Community {
 
   drawingUrl(name: string | null): string | null {
     const file = drawingName(name);
-    return file ? `${this.deps.baseUrl}/dibujos/${file}` : null;
+    return file ? `${this.deps.baseUrl}/dibujo.php?f=${file}` : null;
   }
 
   // --- Por dentro ---
