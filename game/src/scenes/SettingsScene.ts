@@ -24,7 +24,7 @@ const TOGGLES: readonly { key: ToggleKey; icon: IconName; label: StringKey }[] =
 ];
 
 /** Ventanas que pueden estar abiertas debajo del menú; sus textos ya están pintados en el idioma anterior. */
-const OVERLAYS = ['Book', 'Shop', 'Feed'] as const;
+const OVERLAYS = ['Book', 'Board', 'Shop', 'Feed'] as const;
 
 type ButtonKey = 'privacy' | 'quit';
 

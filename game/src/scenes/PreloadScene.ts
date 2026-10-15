@@ -47,6 +47,8 @@ export class PreloadScene extends Phaser.Scene {
     this.load.tilemapTiledJSON(MAPS.zoo, withVersion('assets/maps/zoo.tmj'));
     this.load.tilemapTiledJSON(MAPS.shop, withVersion('assets/maps/tienda.tmj'));
     this.load.image('logo', withVersion('logo.png'));
+    this.load.image('qr-ideas', withVersion('assets/ui/qr-ideas.png'));
+    this.load.image('qr-ideas-en', withVersion('assets/ui/qr-ideas-en.png'));
     queueIcons(this);
     queueAudio(this);
   }
