@@ -239,6 +239,7 @@ export class BoardScene extends Phaser.Scene {
         if (this.busy) return;
         sfx.play('tap');
         this.wallPage = (page + step + pages) % pages;
+        bus.emit('board-page', { page: this.wallPage + 1 });
         this.restart();
       };
       this.wallArrows = [
@@ -422,6 +423,7 @@ export class BoardScene extends Phaser.Scene {
     if (zone === this.zoneKey || this.busy) return;
     sfx.play('tap');
     this.zoneKey = zone;
+    bus.emit('board-zone', { zone });
     this.restart();
   }
 

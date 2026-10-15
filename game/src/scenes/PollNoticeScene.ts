@@ -52,6 +52,7 @@ export class PollNoticeScene extends Phaser.Scene {
       fitText(addUiText(this, cx, cy + panelH * 0.04, `${t('board.winner')} ${localized(win.titulo, getLanguage())}`, textStyle(Math.round(panelH * 0.09), UI.brown, UI.cream)).setOrigin(0.5), panelW * 0.86);
       this.yes = addPillButton(this, cx, cy + panelH * 0.3, Math.min(panelW * 0.8, button * 3), button, { color: 'green', icon: 'play', label: t('board.see'), onTap: () => this.finish(true) });
       community.markWinnerNoticed();
+      bus.emit('poll-winner-notice', { poll: poll.id });
     } else {
       addEmoji(this, cx, cy - panelH * 0.14, '🙋', panelH * 0.32);
       // Botón con texto («¡A votar!»): el ▶ solo no decía qué hacía.

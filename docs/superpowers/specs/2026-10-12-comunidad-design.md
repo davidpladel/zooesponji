@@ -182,7 +182,7 @@ Panel grande que salta una vez por votación, al llegar al mapa, **nunca el prim
 
 ### 8. Estadísticas (Matomo)
 
-Categoría `tablon` en `eventCatalog.ts`: `tablon-abre`, `tablon-aviso` (salta el panel), `tablon-vota` (nombre: votación y opción), `tablon-qr` (se ve la tarjeta), `tablon-sin-red`. `Board` entra en la lista de pantallas como `tablon`.
+Categoría `tablon` en `eventCatalog.ts`: `tablon-abre`, `tablon-aviso` (salta el panel), `tablon-vota` (nombre: votación y opción), `tablon-qr` (se ve la tarjeta), `tablon-sin-red`, `tablon-aviso-ganadora` (salta el panel de la ganadora; nombre: votación), `tablon-pestana` (nombre: poll, wall o idea) y `tablon-pagina` (valor: página del muro). `Board` entra en la lista de pantallas como `tablon`.
 
 ### 9. Textos legales
 

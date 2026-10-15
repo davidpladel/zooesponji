@@ -102,6 +102,12 @@ export interface GameEvents {
   'board-offline': Record<string, never>;
   /** Ha saltado el aviso de votación nueva. */
   'poll-notice': { poll: string };
+  /** Ha saltado el aviso de la ganadora. */
+  'poll-winner-notice': { poll: string };
+  /** Se cambia de pestaña en el tablón (votar, muro, idea). */
+  'board-zone': { zone: string };
+  /** Se pasa de página en el muro. `page`: la nueva, desde 1. */
+  'board-page': { page: number };
 }
 
 export const bus = new EventBus<GameEvents>();

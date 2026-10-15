@@ -182,6 +182,9 @@ export class GameTracker implements AnalyticsHooks {
     on('board-voted', ({ poll, option }) => this.send('tablon', 'tablon-vota', part(poll, option)));
     on('board-qr', () => this.send('tablon', 'tablon-qr'));
     on('board-offline', () => this.send('tablon', 'tablon-sin-red'));
+    on('poll-winner-notice', ({ poll }) => this.send('tablon', 'tablon-aviso-ganadora', poll));
+    on('board-zone', ({ zone }) => this.send('tablon', 'tablon-pestana', zone));
+    on('board-page', ({ page }) => this.send('tablon', 'tablon-pagina', undefined, page));
 
     try {
       const saved = parseReach(await store.get(REACH_KEY));
