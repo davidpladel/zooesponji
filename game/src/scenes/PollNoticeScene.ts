@@ -10,7 +10,7 @@ import type { WorldScene } from './WorldScene';
 /** Panel grande de «¡hay votación!»: una urna, un botón verde que lleva al tablón y una X. Sin leer. */
 export class PollNoticeScene extends Phaser.Scene {
   /** Votación ya anunciada: al reiniciar por cambio de tamaño no se cuenta dos veces. */
-  private static shownFor: string | null = null;
+  static shownFor: string | null = null;
 
   private yes: Phaser.GameObjects.Container | null = null;
   private no: Phaser.GameObjects.Container | null = null;
