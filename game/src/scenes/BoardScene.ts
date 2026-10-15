@@ -221,7 +221,7 @@ export class BoardScene extends Phaser.Scene {
     }
     community.markBoardSeen();
     const titleH = Math.min(b.height * 0.13, 40);
-    fitText(addUiText(this, b.x, b.y + titleH / 2, t('board.wallTitle'), textStyle(Math.round(titleH * 0.7), UI.brown, UI.cream)).setOrigin(0, 0.5), b.width);
+    fitText(addUiText(this, b.x, b.y + titleH / 2, t('board.wallTitle'), textStyle(Math.round(titleH * 0.95), UI.brown, UI.cream)).setOrigin(0, 0.5), b.width);
     if (status.muro.length === 0) {
       fitText(addUiText(this, b.centerX, b.centerY, t('board.wallEmpty'), textStyle(24, UI.brown, UI.cream)).setOrigin(0.5), b.width);
       return;
@@ -253,21 +253,29 @@ export class BoardScene extends Phaser.Scene {
       this.drawing(entry.dibujo, b.x + pic / 2, y, pic);
       // Sello a la derecha, en una píldora de color: se lee de lejos.
       const done = entry.estado === 'hecha';
-      // Misma píldora que los botones (sin toque): la dibujada a mano salía con escalones por el pixelArt.
-      const stampW = Math.min(b.width * 0.3, rowH * 3.2);
+      // Etiqueta plana (no es un botón): letra grande sobre una píldora lisa, suave aunque el juego sea pixelArt.
+      const stampLabel = done ? t('board.done') : t('board.chosen');
+      const stampText = addUiText(this, 0, y, stampLabel, { ...textStyle(Math.round(rowH * 0.52), '#ffffff'), strokeThickness: 0 }).setOrigin(0.5).setDepth(1);
+      fitText(stampText, b.width * 0.3);
+      const stampW = stampText.width + rowH * 0.6;
+      const stampH = stampText.height + rowH * 0.08;
       const stampX = b.right - stampW / 2;
-      const stampH = rowH * 0.62;
-      addPillButton(this, stampX, y + stampH * 0.045, stampW, stampH, { color: done ? 'green' : 'blue', label: done ? t('board.done') : t('board.chosen') });
-      // Título grande y, debajo, de quién fue la idea.
+      this.add.image(stampX, y, this.flatPill(stampW, stampH, done ? '#43a047' : '#1e88e5'));
+      stampText.setX(stampX);
+      // En una línea: «Acuario.» grande y gordo, y detrás «Idea de Lola.» algo más pequeño.
       const textX = b.x + pic + rowH * 0.25;
-      const room = stampX - stampW / 2 - 12 - textX;
-      const title = localized(entry.titulo, lang);
-      if (entry.ideaDe) {
-        fitText(addUiText(this, textX, y - rowH * 0.17, title, textStyle(Math.round(rowH * 0.4), UI.brown, UI.cream)).setOrigin(0, 0.5), room);
-        fitText(addUiText(this, textX, y + rowH * 0.24, t('board.ideaOf', { name: entry.ideaDe }), textStyle(Math.round(rowH * 0.3), UI.brown, UI.cream)).setOrigin(0, 0.5), room);
-      } else {
-        fitText(addUiText(this, textX, y, title, textStyle(Math.round(rowH * 0.42), UI.brown, UI.cream)).setOrigin(0, 0.5), room);
+      const room = stampX - stampW / 2 - 16 - textX;
+      const title = addUiText(this, textX, y, `${localized(entry.titulo, lang)}.`, textStyle(Math.round(rowH * 0.62), UI.brown, UI.cream)).setOrigin(0, 0.5);
+      const who = entry.ideaDe ? addUiText(this, 0, y, t('board.ideaLine', { name: entry.ideaDe }), { ...textStyle(Math.round(rowH * 0.48), UI.brown, UI.cream), fontStyle: '600' }).setOrigin(0, 0.5) : null;
+      const gap = rowH * 0.18;
+      const width = (): number => title.width + (who ? gap + who.width : 0);
+      let scale = 1;
+      while (width() > room && scale > 0.5) {
+        scale -= 0.05;
+        title.setFontSize(Math.round(rowH * 0.62 * scale));
+        who?.setFontSize(Math.round(rowH * 0.48 * scale));
       }
+      who?.setX(textX + title.width + gap);
     });
   }
 
@@ -320,6 +328,21 @@ export class BoardScene extends Phaser.Scene {
     this.load.once(Phaser.Loader.Events.FILE_LOAD_ERROR, () => undefined);
     if (!this.load.isLoading()) this.load.start();
     return holder;
+  }
+
+  /** Píldora lisa pintada en un lienzo (con bordes suaves) y guardada como textura. */
+  private flatPill(w: number, h: number, color: string): string {
+    const key = `flat-pill:${Math.round(w)}x${Math.round(h)}:${color}`;
+    if (this.textures.exists(key)) return key;
+    const canvas = this.textures.createCanvas(key, Math.ceil(w), Math.ceil(h))!;
+    const ctx = canvas.getContext();
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.roundRect(0, 0, w, h, h / 2);
+    ctx.fill();
+    canvas.refresh();
+    canvas.setFilter(Phaser.Textures.FilterMode.LINEAR);
+    return key;
   }
 
   private bigMessage(emoji: string, text: string): void {
