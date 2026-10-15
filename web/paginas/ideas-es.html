@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ideas y fallos · Zoo Esponji</title>
+  <meta name="description" content="Cuéntanos tu idea para el zoo o avísanos de un fallo. Las mejores ideas llegarán al juego.">
+  <link rel="canonical" href="https://www.zooesponji.com/ideas">
+  <link rel="alternate" hreflang="es" href="https://www.zooesponji.com/ideas">
+  <link rel="alternate" hreflang="en" href="https://www.zooesponji.com/ideas/en">
+  <link rel="alternate" hreflang="x-default" href="https://www.zooesponji.com/ideas">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Zoo Esponji">
+  <meta property="og:locale" content="es_ES">
+  <meta property="og:locale:alternate" content="en_GB">
+  <meta property="og:url" content="https://www.zooesponji.com/ideas">
+  <meta property="og:title" content="¿Qué animal falta en Zoo Esponji?">
+  <meta property="og:description" content="Cuéntanos tu idea para el zoo o avísanos de un fallo. Las mejores ideas llegarán al juego.">
+  <meta property="og:image" content="https://www.zooesponji.com/assets/img/compartir-1200.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:alt" content="El león de Zoo Esponji junto al título del juego">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="¿Qué animal falta en Zoo Esponji?">
+  <meta name="twitter:description" content="Cuéntanos tu idea para el zoo o avísanos de un fallo. Las mejores ideas llegarán al juego.">
+  <meta name="twitter:image" content="https://www.zooesponji.com/assets/img/compartir-1200.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/assets/img/icono-192.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/apple-touch-icon.png">
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#6d4c41">
+  <link rel="stylesheet" href="/assets/sitio.css?v=20261015">
+  <link rel="stylesheet" href="/assets/ideas.css?v=20261015">
+</head>
+<body class="pagina-texto">
+<header class="cabecera-texto">
+  <div class="envoltura">
+    <a class="marca" href="/"><img src="/assets/img/icono-192.png" alt="" width="40" height="40">Zoo Esponji</a>
+    <nav class="idiomas" aria-label="Idioma"><a href="/ideas" aria-current="page" lang="es">ES</a><a href="/ideas/en" lang="en">EN</a></nav>
+  </div>
+</header>
+<main class="contenido">
+<h1>Cuéntanos tu idea o un fallo</h1>
+  <p>Cuéntanos qué animal o qué cosa te gustaría ver en el zoo, o avísanos si algo no funciona. <strong>Si eres peque, rellénalo con tu padre, tu madre o la persona que te cuida:</strong> las casillas del final tiene que marcarlas una persona adulta.</p>
+
+  <form id="form" novalidate data-idioma="es" data-condiciones="2026-10"
+        data-vacio="Elige si es una idea o un fallo y escríbelo."
+        data-aceptacion="Una persona adulta tiene que marcar las casillas para poder enviar."
+        data-peticion="Revisa los textos: alguno es demasiado largo o tiene caracteres que no se admiten."
+        data-error="No se ha podido enviar. Prueba otra vez dentro de un rato."
+        data-bien="¡Gracias! Lo hemos recibido.">
+    <label for="nombre">Nombre de pila o apodo del niño o la niña (opcional)
+      <span class="nota">Saldrá en el juego como «idea de…» si la idea llega a votarse. <strong>Solo el nombre o un apodo:</strong> no escribas apellidos, edad, colegio, ciudad ni nada que ayude a un desconocido a saber quién eres.</span></label>
+    <input type="text" id="nombre" name="nombre" maxlength="15" autocomplete="off">
+
+    <fieldset class="tipo">
+      <legend>¿Qué nos quieres contar? (Obligatorio)</legend>
+      <label><input type="radio" name="tipo" value="idea" checked> 💡 Una idea</label>
+      <label><input type="radio" name="tipo" value="fallo"> 🐞 Un fallo</label>
+    </fieldset>
+
+    <label for="texto"><span data-para="idea">Tu idea (Obligatorio)</span><span data-para="fallo" hidden>Qué estabas haciendo y qué pasó (Obligatorio)</span>
+      <span class="nota" data-para="idea">Un animal nuevo, un sitio, algo que hacer… Hasta 300 letras.</span><span class="nota" data-para="fallo" hidden>Hasta 500 letras.</span></label>
+    <textarea id="texto" maxlength="300"></textarea>
+
+    <div data-para="fallo" hidden>
+      <label for="version">Versión del juego (opcional)
+        <span class="nota">Abre el menú ⚙️ del juego: está escrita abajo del todo.</span></label>
+      <input type="text" id="version" name="version" maxlength="20" autocomplete="off">
+
+      <label for="modelo">Modelo del móvil o la tableta (opcional)</label>
+      <input type="text" id="modelo" name="modelo" maxlength="60" autocomplete="off">
+    </div>
+
+    <div class="trampa" aria-hidden="true">
+      <label for="web">No rellenes este campo</label>
+      <input type="text" id="web" name="web" tabindex="-1" autocomplete="off">
+    </div>
+
+    <label class="casilla"><input type="checkbox" id="mayor">
+      <span>Tengo 18 años o más y acepto las <a href="/condiciones" target="_blank" rel="noopener">condiciones de las ideas</a>. (Obligatorio)</span></label>
+    <label class="casilla"><input type="checkbox" id="privacidad">
+      <span>He leído y acepto la <a href="/privacidad" target="_blank" rel="noopener">política de privacidad</a>. (Obligatorio)</span></label>
+    <label class="casilla" id="fila-tutor" hidden><input type="checkbox" id="tutor">
+      <span>Soy su padre, madre o tutor, o tengo su permiso para enviar su nombre. (Obligatorio si pones un nombre)</span></label>
+
+    <button type="submit" id="enviar">Enviar</button>
+    <p class="aviso" id="aviso" role="status" hidden></p>
+  </form>
+
+  <details class="legal">
+    <summary>Antes de enviar, échale un vistazo a la información básica sobre protección de datos</summary>
+    <p><strong>Responsable:</strong> David Salvador Plaza Delmarés (davidpladel), creador de Zoo Esponji.</p>
+    <p><strong>Finalidad:</strong> leer tu idea o tu aviso de fallo para mejorar el juego y, si diste un nombre de pila o apodo, ponerlo junto a la idea dentro del juego.</p>
+    <p><strong>Legitimación:</strong> tu consentimiento, que das al marcar las casillas. Puedes retirarlo cuando quieras.</p>
+    <p><strong>Destinatarios:</strong> no cedemos tus datos a nadie. El envío se guarda en nuestro servidor y nos llega como aviso por correo electrónico y por Telegram, que solo usamos para enterarnos.</p>
+    <p><strong>Conservación:</strong> borramos los envíos a los 90 días. No pedimos correo ni apellidos y no guardamos tu dirección IP con el mensaje.</p>
+    <p><strong>Derechos:</strong> puedes pedir acceder a tu envío, corregirlo, limitarlo o borrarlo, o que quitemos un nombre del juego, escribiendo a <a href="mailto:android@davidpladel.com">android@davidpladel.com</a>. También puedes reclamar ante la Agencia Española de Protección de Datos (<a href="https://www.aepd.es" rel="noopener">aepd.es</a>).</p>
+    <p><strong>Información adicional:</strong> la tienes en la <a href="/privacidad">política de privacidad</a>.</p>
+  </details>
+</main>
+<footer class="pie">
+  <div class="envoltura">
+    <nav aria-label="Legal">
+      <a href="/privacidad">Privacidad</a>
+      <a href="/condiciones">Condiciones de las ideas</a>
+      <a href="https://www.davidpladel.com/aviso-legal" rel="noopener">Aviso legal</a>
+      <a href="/cookies">Cookies</a>
+      <button type="button" class="enlace" data-cookies>Configurar cookies</button>
+      <a href="mailto:android@davidpladel.com">Contacto</a>
+    </nav>
+    <p>© 2026 Zoo Esponji · Google Play y el logotipo de Google Play son marcas de Google LLC.</p>
+  </div>
+</footer>
+<script src="/assets/ideas.js?v=20261015"></script>
+<script src="/assets/cookies.js?v=20261015"></script>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ideas and bugs · Zoo Esponji</title>
+  <meta name="description" content="Tell us your idea for the zoo or report a bug. The best ideas will come to the game.">
+  <link rel="canonical" href="https://www.zooesponji.com/ideas/en">
+  <link rel="alternate" hreflang="es" href="https://www.zooesponji.com/ideas">
+  <link rel="alternate" hreflang="en" href="https://www.zooesponji.com/ideas/en">
+  <link rel="alternate" hreflang="x-default" href="https://www.zooesponji.com/ideas">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Zoo Esponji">
+  <meta property="og:locale" content="en_GB">
+  <meta property="og:locale:alternate" content="es_ES">
+  <meta property="og:url" content="https://www.zooesponji.com/ideas/en">
+  <meta property="og:title" content="Which animal is missing from Zoo Esponji?">
+  <meta property="og:description" content="Tell us your idea for the zoo or report a bug. The best ideas will come to the game.">
+  <meta property="og:image" content="https://www.zooesponji.com/assets/img/compartir-1200-en.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:alt" content="The Zoo Esponji lion next to the game title">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Which animal is missing from Zoo Esponji?">
+  <meta name="twitter:description" content="Tell us your idea for the zoo or report a bug. The best ideas will come to the game.">
+  <meta name="twitter:image" content="https://www.zooesponji.com/assets/img/compartir-1200-en.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/assets/img/icono-192.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/apple-touch-icon.png">
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#6d4c41">
+  <link rel="stylesheet" href="/assets/sitio.css?v=20261015">
+  <link rel="stylesheet" href="/assets/ideas.css?v=20261015">
+</head>
+<body class="pagina-texto">
+<header class="cabecera-texto">
+  <div class="envoltura">
+    <a class="marca" href="/en"><img src="/assets/img/icono-192.png" alt="" width="40" height="40">Zoo Esponji</a>
+    <nav class="idiomas" aria-label="Language"><a href="/ideas" lang="es">ES</a><a href="/ideas/en" aria-current="page" lang="en">EN</a></nav>
+  </div>
+</header>
+<main class="contenido">
+<h1>Tell us your idea or a bug</h1>
+  <p>Tell us which animal or thing you would like to see in the zoo, or let us know if something is not working. <strong>If you are a kid, fill it in with your mum, dad or the person who looks after you:</strong> an adult has to tick the boxes at the end.</p>
+
+  <form id="form" novalidate data-idioma="en" data-condiciones="2026-10"
+        data-vacio="Choose idea or bug and write it."
+        data-aceptacion="An adult has to tick the boxes to send."
+        data-peticion="Check the texts: one is too long or has characters we cannot accept."
+        data-error="We could not send it. Please try again in a while."
+        data-bien="Thank you! We got it.">
+    <label for="nombre">Child's first name or nickname (optional)
+      <span class="nota">It will appear in the game as "idea by…" if the idea goes to a vote. <strong>Just a first name or nickname:</strong> do not write a surname, age, school, town or anything that would help a stranger find out who you are.</span></label>
+    <input type="text" id="nombre" name="nombre" maxlength="15" autocomplete="off">
+
+    <fieldset class="tipo">
+      <legend>What do you want to tell us? (Required)</legend>
+      <label><input type="radio" name="tipo" value="idea" checked> 💡 An idea</label>
+      <label><input type="radio" name="tipo" value="fallo"> 🐞 A bug</label>
+    </fieldset>
+
+    <label for="texto"><span data-para="idea">Your idea (Required)</span><span data-para="fallo" hidden>What you were doing and what happened (Required)</span>
+      <span class="nota" data-para="idea">A new animal, a place, something to do… Up to 300 characters.</span><span class="nota" data-para="fallo" hidden>Up to 500 characters.</span></label>
+    <textarea id="texto" maxlength="300"></textarea>
+
+    <div data-para="fallo" hidden>
+      <label for="version">Game version (optional)
+        <span class="nota">Open the game's ⚙️ menu: it is written at the very bottom.</span></label>
+      <input type="text" id="version" name="version" maxlength="20" autocomplete="off">
+
+      <label for="modelo">Phone or tablet model (optional)</label>
+      <input type="text" id="modelo" name="modelo" maxlength="60" autocomplete="off">
+    </div>
+
+    <div class="trampa" aria-hidden="true">
+      <label for="web">Leave this field empty</label>
+      <input type="text" id="web" name="web" tabindex="-1" autocomplete="off">
+    </div>
+
+    <label class="casilla"><input type="checkbox" id="mayor">
+      <span>I am 18 or older and I accept the <a href="/terms" target="_blank" rel="noopener">idea terms</a>. (Required)</span></label>
+    <label class="casilla"><input type="checkbox" id="privacidad">
+      <span>I have read and accept the <a href="/privacy" target="_blank" rel="noopener">privacy policy</a>. (Required)</span></label>
+    <label class="casilla" id="fila-tutor" hidden><input type="checkbox" id="tutor">
+      <span>I am their parent or guardian, or I have their permission to send their name. (Required if you give a name)</span></label>
+
+    <button type="submit" id="enviar">Send</button>
+    <p class="aviso" id="aviso" role="status" hidden></p>
+  </form>
+
+  <details class="legal">
+    <summary>Before sending, take a look at the basic data protection information</summary>
+    <p><strong>Controller:</strong> David Salvador Plaza Delmarés (davidpladel), creator of Zoo Esponji.</p>
+    <p><strong>Purpose:</strong> to read your idea or bug report to improve the game and, if you gave a first name or nickname, to show it next to the idea inside the game.</p>
+    <p><strong>Legal basis:</strong> your consent, given by ticking the boxes. You can withdraw it at any time.</p>
+    <p><strong>Recipients:</strong> we do not share your data with anyone. The message is stored on our server and reaches us as a notice by email and Telegram, used only to let us know.</p>
+    <p><strong>Retention:</strong> messages are deleted after 90 days. We do not ask for email or surname and we do not store your IP address with the message.</p>
+    <p><strong>Rights:</strong> you can ask to access, correct, restrict or delete your message, or to remove a name from the game, by writing to <a href="mailto:android@davidpladel.com">android@davidpladel.com</a>. You can also complain to the Spanish Data Protection Agency (<a href="https://www.aepd.es" rel="noopener">aepd.es</a>).</p>
+    <p><strong>More information:</strong> in the <a href="/privacy">privacy policy</a>.</p>
+  </details>
+</main>
+<footer class="pie">
+  <div class="envoltura">
+    <nav aria-label="Legal">
+      <a href="/privacy">Privacy</a>
+      <a href="/terms">Idea terms</a>
+      <a href="https://www.davidpladel.com/aviso-legal" rel="noopener">Legal notice</a>
+      <a href="/cookies/en">Cookies</a>
+      <button type="button" class="enlace" data-cookies>Cookie settings</button>
+      <a href="mailto:android@davidpladel.com">Contact</a>
+    </nav>
+    <p>© 2026 Zoo Esponji · Google Play and the Google Play logo are trademarks of Google LLC.</p>
+  </div>
+</footer>
+<script src="/assets/ideas.js?v=20261015"></script>
+<script src="/assets/cookies.js?v=20261015"></script>
+</body>
+</html>

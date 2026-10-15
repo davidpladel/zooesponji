@@ -1,0 +1,22 @@
+/* Formulario de ideas y fallos (encima de sitio.css). */
+#form label { display: block; font-weight: 700; margin-top: 18px; }
+#form .nota { display: block; font-weight: 400; font-size: 15px; color: var(--madera); }
+#form textarea, #form input[type="text"] { width: 100%; margin-top: 6px; padding: 10px 12px; border: 2px solid #c9a98f; border-radius: 12px; background: #fff; font: inherit; color: inherit; }
+#form textarea:focus, #form input[type="text"]:focus { border-color: var(--cinta); outline: none; box-shadow: 0 0 0 3px #ffd9a8; }
+#form textarea { min-height: 120px; resize: vertical; }
+#form .casilla { display: flex; gap: 10px; align-items: flex-start; font-weight: 400; }
+#form .casilla input { width: 24px; height: 24px; margin-top: 2px; flex: none; accent-color: var(--verde); }
+#form button { margin-top: 26px; min-height: 54px; padding: 0 34px; border-radius: 999px; border: 3px solid var(--verde-osc); background: var(--verde); color: #fff; font-family: var(--titulo); font-weight: 800; font-size: 20px; box-shadow: 0 4px 0 var(--verde-osc); cursor: pointer; }
+#form button:disabled { opacity: .5; cursor: wait; }
+.aviso { margin-top: 18px; padding: 12px 14px; border-radius: 12px; background: #ffe0b2; }
+.aviso.bien { background: #c8e6c9; }
+.legal { margin-top: 30px; padding: 14px 16px; border-radius: 14px; background: #fff3d6; font-size: 15px; color: #5d4037; }
+.legal summary { cursor: pointer; font-weight: 700; color: var(--cinta-osc); }
+.legal p { margin: 10px 0 0; }
+#form .tipo { margin: 18px 0 0; padding: 0; border: 0; }
+#form .tipo legend { font-weight: 700; padding: 0; }
+#form .tipo label { display: inline-flex; align-items: center; gap: 8px; margin: 8px 10px 0 0; padding: 8px 16px; border: 2px solid #c9a98f; border-radius: 999px; background: #fff; font-weight: 700; cursor: pointer; }
+#form .tipo label:has(input:checked) { border-color: var(--cinta); background: #ffe8cc; }
+#form .tipo input { width: 20px; height: 20px; margin: 0; accent-color: var(--cinta); }
+.trampa { position: absolute; left: -9999px; }
+[hidden] { display: none !important; }
