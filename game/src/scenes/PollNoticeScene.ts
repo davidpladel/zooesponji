@@ -50,7 +50,12 @@ export class PollNoticeScene extends Phaser.Scene {
       bus.emit('poll-notice', { poll: poll.id });
     }
     sfx.play('coin');
-    this.scale.once(Phaser.Scale.Events.RESIZE, () => this.scene.isActive() && this.scene.restart());
+    this.scale.once(Phaser.Scale.Events.RESIZE, this.onResize, this);
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.scale.off(Phaser.Scale.Events.RESIZE, this.onResize, this));
+  }
+
+  private onResize(): void {
+    if (this.scene.isActive()) this.scene.restart();
   }
 
   decline(): void {
