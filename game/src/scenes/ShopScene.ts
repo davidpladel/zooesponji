@@ -204,11 +204,11 @@ export class ShopScene extends Phaser.Scene {
     this.shopkeeper.hop();
     this.shopkeeper.wave();
     this.shopkeeper.say(t('shop.hello'), 2640);
-    // La primera vez, el tendero cuenta el secreto del libro (después del saludo). Otra visita, el tablón.
+    // La primera vez, el tendero cuenta el secreto del libro (después del saludo). Otra visita, el tablón (solo si aún no ha votado).
     const community = getCommunity();
     const hint = !getSession().book.hinted
       ? { text: t('shop.bookHint'), mark: () => void getSession().markBookHinted() }
-      : community?.status && !community.memory.hinted
+      : community?.status && !community.memory.hinted && community.phase() === 'open'
         ? { text: t('shop.boardHint'), mark: () => community.markHinted() }
         : null;
     if (hint) {

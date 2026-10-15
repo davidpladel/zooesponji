@@ -40,6 +40,8 @@ export class BoardScene extends Phaser.Scene {
   private tabs = new Map<BoardZone, Phaser.GameObjects.Container>();
   private cards = new Map<string, Phaser.GameObjects.Container>();
   private confirm: Phaser.GameObjects.Container | null = null;
+  private confirmAt: { x: number; y: number; h: number } | null = null;
+  private marks = new Map<string, Phaser.GameObjects.Graphics>();
   private change: Phaser.GameObjects.Container | null = null;
   private wallArrows: Phaser.GameObjects.Container[] = [];
   private body!: Phaser.Geom.Rectangle;
@@ -59,6 +61,8 @@ export class BoardScene extends Phaser.Scene {
     this.busy = false;
     this.tabs = new Map();
     this.cards = new Map();
+    this.marks = new Map();
+    this.confirmAt = null;
     this.confirm = null;
     this.change = null;
     this.wallArrows = [];
@@ -161,14 +165,19 @@ export class BoardScene extends Phaser.Scene {
       const size = Math.min((b.width - gap * (n - 1)) / n, b.height - button - 16);
       const startX = b.centerX - ((size + gap) * n - gap) / 2 + size / 2;
       poll.opciones.forEach((option, i) => {
-        const card = this.option(option, startX + i * (size + gap), b.y + size / 2, size, true);
+        const cx = startX + i * (size + gap);
+        // Marco verde gordo detrás de la elegida (sin agrandarla: tapaba la X de cerrar).
+        const mark = this.add.graphics();
+        mark.fillStyle(0x43a047, 1).fillRoundedRect(cx - size / 2 - 7, b.y - 7, size + 14, size + 14, 22);
+        this.marks.set(option.id, mark);
+        const card = this.option(option, cx, b.y + size / 2, size, true);
         this.cards.set(option.id, card);
       });
       this.markPicked();
       if (community.online) {
         // El botón dice lo que hace («✓ Votar»): con el dibujo solo no se entendía.
-        this.confirm = addPillButton(this, b.centerX, b.bottom - button / 2, button * 3, button, { color: 'green', label: `✓ ${t('board.vote')}`, onTap: () => void this.confirmVote() });
-        this.confirm.setVisible(this.pickedId !== null);
+        this.confirmAt = { x: b.centerX, y: b.bottom - button / 2, h: button };
+        this.drawConfirm();
       }
       return;
     }
@@ -242,22 +251,23 @@ export class BoardScene extends Phaser.Scene {
       this.drawing(entry.dibujo, b.x + pic / 2, y, pic);
       // Sello a la derecha, en una píldora de color: se lee de lejos.
       const done = entry.estado === 'hecha';
-      const stampText = addUiText(this, 0, 0, done ? t('board.done') : t('board.chosen'), textStyle(Math.round(rowH * 0.3), '#ffffff', done ? '#1b5e20' : '#0d47a1'));
-      fitText(stampText, b.width * 0.26);
-      const stampW = stampText.width + rowH * 0.4;
+      // Sin contorno: a este tamaño el contorno oscuro se comía los bordes de las letras.
+      const stampText = addUiText(this, 0, 0, done ? t('board.done') : t('board.chosen'), { ...textStyle(Math.round(rowH * 0.34), '#ffffff'), strokeThickness: 0 });
+      fitText(stampText, b.width * 0.3);
+      const stampW = stampText.width + rowH * 0.5;
       const stampX = b.right - stampW / 2;
       const pill = this.add.graphics();
-      pill.fillStyle(done ? 0x43a047 : 0x1e88e5, 1).fillRoundedRect(stampX - stampW / 2, y - rowH * 0.26, stampW, rowH * 0.52, rowH * 0.26);
+      pill.fillStyle(done ? 0x43a047 : 0x1e88e5, 1).fillRoundedRect(stampX - stampW / 2, y - rowH * 0.3, stampW, rowH * 0.6, rowH * 0.3);
       stampText.setPosition(stampX, y).setOrigin(0.5).setDepth(1);
       // Título grande y, debajo, de quién fue la idea.
       const textX = b.x + pic + rowH * 0.25;
       const room = stampX - stampW / 2 - 12 - textX;
       const title = localized(entry.titulo, lang);
       if (entry.ideaDe) {
-        fitText(addUiText(this, textX, y - rowH * 0.15, title, textStyle(Math.round(rowH * 0.34), UI.brown, UI.cream)).setOrigin(0, 0.5), room);
-        fitText(addUiText(this, textX, y + rowH * 0.22, t('board.ideaOf', { name: entry.ideaDe }), textStyle(Math.round(rowH * 0.24), UI.brown, UI.cream)).setOrigin(0, 0.5), room);
+        fitText(addUiText(this, textX, y - rowH * 0.17, title, textStyle(Math.round(rowH * 0.4), UI.brown, UI.cream)).setOrigin(0, 0.5), room);
+        fitText(addUiText(this, textX, y + rowH * 0.24, t('board.ideaOf', { name: entry.ideaDe }), textStyle(Math.round(rowH * 0.3), UI.brown, UI.cream)).setOrigin(0, 0.5), room);
       } else {
-        fitText(addUiText(this, textX, y, title, textStyle(Math.round(rowH * 0.36), UI.brown, UI.cream)).setOrigin(0, 0.5), room);
+        fitText(addUiText(this, textX, y, title, textStyle(Math.round(rowH * 0.42), UI.brown, UI.cream)).setOrigin(0, 0.5), room);
       }
     });
   }
@@ -340,11 +350,20 @@ export class BoardScene extends Phaser.Scene {
     sfx.play('tap');
     this.pickedId = id;
     this.markPicked();
-    this.confirm?.setVisible(true);
+    this.drawConfirm();
   }
 
   private markPicked(): void {
-    for (const [id, card] of this.cards) card.setScale(id === this.pickedId ? 1.06 : 1).setAlpha(this.pickedId && id !== this.pickedId ? 0.75 : 1);
+    for (const [id, mark] of this.marks) mark.setVisible(id === this.pickedId);
+  }
+
+  /** «✓ Votar»: gris y sin hacer nada hasta que se elige una; verde después. */
+  private drawConfirm(): void {
+    const at = this.confirmAt;
+    if (!at) return;
+    this.confirm?.destroy();
+    const ready = this.pickedId !== null;
+    this.confirm = addPillButton(this, at.x, at.y, at.h * 3, at.h, { color: ready ? 'green' : 'gray', label: `✓ ${t('board.vote')}`, onTap: () => void (ready ? this.confirmVote() : undefined) });
   }
 
   private async confirmVote(): Promise<void> {
@@ -371,9 +390,9 @@ export class BoardScene extends Phaser.Scene {
 
   private startChange(): void {
     sfx.play('tap');
-    const poll = getCommunity()?.status?.votacion;
     this.changing = true;
-    this.pickedId = poll ? (getCommunity()?.memory.voted[poll.id] ?? null) : null;
+    // Ninguna marcada de entrada, tampoco la que ya votó: elige otra vez.
+    this.pickedId = null;
     this.restart();
   }
 
@@ -431,7 +450,7 @@ export class BoardScene extends Phaser.Scene {
   }
 
   confirmPos(): Vec | null {
-    return this.confirm?.visible ? { x: this.confirm.x, y: this.confirm.y } : null;
+    return this.confirm && this.pickedId !== null ? { x: this.confirm.x, y: this.confirm.y } : null;
   }
 
   changePos(): Vec | null {
