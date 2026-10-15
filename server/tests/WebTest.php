@@ -16,7 +16,7 @@ final class WebTest extends TestCase
         foreach (['/public', '/paginas'] as $carpeta) {
             $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(self::WEB . $carpeta, FilesystemIterator::SKIP_DOTS));
             foreach ($it as $f) {
-            if (preg_match('/\.(html|php|css|js|txt|md)$/', $f->getFilename()) === 1 && $f->getFilename() !== 'Baloo2-LICENSE.txt') {
+            if (preg_match('/\.(html|php|css|js|txt|md)$/', $f->getFilename()) === 1 && !str_ends_with($f->getFilename(), '-LICENSE.txt')) {
                     $todos[] = $f->getPathname();
                 }
             }

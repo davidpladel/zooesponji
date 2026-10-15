@@ -12,7 +12,7 @@ if (!is_string($clave) || !isset($rutas[$clave]) || $clave === '404') {
 }
 header_remove('X-Powered-By');
 header('Content-Type: text/html; charset=utf-8');
-header("Content-Security-Policy: default-src 'self'; connect-src 'self' https://api.zooesponji.com; img-src 'self' data:; frame-ancestors 'none'; base-uri 'none'; form-action 'self'");
+header("Content-Security-Policy: default-src 'self'; script-src 'self' https://statscrog.davidpladel.com; connect-src 'self' https://api.zooesponji.com https://statscrog.davidpladel.com; img-src 'self' data: https://statscrog.davidpladel.com; frame-ancestors 'none'; base-uri 'none'; form-action 'self'");
 header('X-Frame-Options: DENY');
 header('X-Content-Type-Options: nosniff');
 header('Referrer-Policy: strict-origin-when-cross-origin');

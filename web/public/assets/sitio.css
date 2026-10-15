@@ -1,6 +1,9 @@
-/* Web de Zoo Esponji: colores y letra del juego (madera, crema, cinta naranja, Baloo 2). Sin librerías. */
+/* Web de Zoo Esponji: colores y letra del juego (madera, crema, cinta naranja). Dos letras y ninguna más:
+   Baloo 2 para títulos y botones, Nunito para el texto. Sin librerías. */
 @font-face { font-family: 'Baloo 2'; font-weight: 600; font-display: swap; src: url('/assets/fonts/baloo-2-latin-600-normal.woff2') format('woff2'); }
 @font-face { font-family: 'Baloo 2'; font-weight: 800; font-display: swap; src: url('/assets/fonts/baloo-2-latin-800-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Nunito'; font-weight: 400; font-display: swap; src: url('/assets/fonts/nunito-latin-400-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Nunito'; font-weight: 700; font-display: swap; src: url('/assets/fonts/nunito-latin-700-normal.woff2') format('woff2'); }
 
 :root {
   color-scheme: light;
@@ -14,11 +17,12 @@
   --verde-osc: #1b5e20;
   --cielo: #4fb3ea;
   --sombra: 0 6px 0 rgba(62, 39, 35, .18), 0 12px 28px rgba(62, 39, 35, .12);
-  --titulo: 'Baloo 2', 'Trebuchet MS', system-ui, sans-serif;
+  --titulo: 'Baloo 2', sans-serif;
+  --texto: 'Nunito', sans-serif;
 }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
-body { margin: 0; background: var(--crema); color: var(--madera-osc); font: 17px/1.6 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
+body { margin: 0; background: var(--crema); color: var(--madera-osc); font: 17px/1.6 var(--texto); }
 img { max-width: 100%; height: auto; display: block; }
 a { color: var(--cinta-osc); }
 a:focus-visible, button:focus-visible { outline: 3px solid var(--cielo); outline-offset: 3px; }
@@ -35,13 +39,13 @@ h1, h2, h3 { font-family: var(--titulo); font-weight: 800; line-height: 1.15; ma
 .idiomas a[aria-current] { background: var(--cinta); color: #fff; }
 
 /* Portada */
-.portada { position: relative; min-height: 92vh; display: flex; align-items: center; background: #8fd0f2 url('/assets/img/portada.webp') center 35% / cover no-repeat; overflow: hidden; }
-.portada::after { content: ''; position: absolute; inset: auto 0 0; height: 90px; background: linear-gradient(to bottom, rgba(255, 248, 225, 0), var(--crema)); }
-.portada .envoltura { position: relative; z-index: 1; width: 100%; padding-top: 90px; padding-bottom: 110px; text-align: center; }
-.tarjeta-portada { display: inline-block; max-width: 640px; padding: 28px 28px 30px; border-radius: 28px; background: rgba(255, 253, 246, .93); border: 4px solid #fff; box-shadow: var(--sombra); }
+.portada { position: relative; display: flex; align-items: center; background: #8fd0f2 url('/assets/img/portada.webp') center 35% / cover no-repeat; overflow: hidden; }
+.portada::after { content: ''; position: absolute; inset: auto 0 0; height: 60px; background: linear-gradient(to bottom, rgba(255, 248, 225, 0), var(--crema)); }
+.portada .envoltura { position: relative; z-index: 1; width: 100%; padding-top: 70px; padding-bottom: 44px; text-align: center; }
+.tarjeta-portada { display: inline-block; max-width: 640px; padding: 22px 28px 22px; border-radius: 28px; background: rgba(255, 253, 246, .93); border: 4px solid #fff; box-shadow: var(--sombra); }
 .tarjeta-portada .icono { width: 112px; height: 112px; margin: -86px auto 10px; border-radius: 26px; border: 5px solid #fff; box-shadow: var(--sombra); }
 .tarjeta-portada h1 { font-size: clamp(42px, 8vw, 68px); color: var(--cinta-osc); text-shadow: 0 3px 0 #ffd9a8; margin-bottom: 0; }
-.lema { font-family: var(--titulo); font-weight: 600; font-size: clamp(20px, 3.4vw, 26px); color: var(--madera); margin: 0 0 6px; }
+.lema { display: block; text-shadow: none; line-height: 1.25; font-family: var(--titulo); font-weight: 600; font-size: clamp(20px, 3.4vw, 26px); color: var(--madera); margin: 6px 0 10px; }
 .subtitulo { margin: 0 auto 18px; max-width: 46ch; }
 .descargar { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 18px; }
 .boton-play img { width: 230px; margin: -12px; }
@@ -50,12 +54,23 @@ h1, h2, h3 { font-family: var(--titulo); font-weight: 800; line-height: 1.15; ma
 @media (hover: hover) and (pointer: fine) and (min-width: 760px) { .qr-play { display: flex; } }
 .notas { margin: 12px 0 0; font-size: 14px; color: var(--madera); }
 
+/* Flecha que invita a bajar */
+.bajar { position: absolute; left: 50%; bottom: 14px; z-index: 2; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; color: var(--madera-osc); font-weight: 700; font-size: 15px; text-decoration: none; animation: bote 1.8s ease-in-out infinite; }
+.bajar span:last-child { font-size: 26px; line-height: 1; }
+@keyframes bote { 50% { transform: translate(-50%, 6px); } }
+@media (prefers-reduced-motion: reduce) { .bajar { animation: none; } }
+
 /* Secciones */
 section { padding: 56px 0; }
+.portada + section { padding-top: 8px; }
+@media (max-height: 900px) {
+  .tarjeta-portada .icono { width: 84px; height: 84px; margin-top: -62px; border-radius: 20px; }
+  .tarjeta-portada h1 { font-size: clamp(38px, 7vw, 54px); }
+  .subtitulo { margin-bottom: 10px; }
+}
 .titulo-seccion { text-align: center; margin-bottom: 30px; }
 .titulo-seccion h2 { font-size: clamp(30px, 5vw, 42px); color: var(--madera-osc); }
 .titulo-seccion p { margin: 0 auto; max-width: 56ch; color: var(--madera); }
-.cinta { display: inline-block; margin-bottom: 10px; padding: 4px 18px; border-radius: 999px; background: var(--cinta); color: #fff; font-family: var(--titulo); font-weight: 800; font-size: 15px; letter-spacing: .04em; box-shadow: 0 3px 0 var(--cinta-osc); }
 
 .funciones { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 22px; }
 .funcion { margin: 0; overflow: hidden; border-radius: 22px; background: var(--papel); border: 4px solid #fff; box-shadow: var(--sombra); }
@@ -80,7 +95,7 @@ section { padding: 56px 0; }
 
 .cariño { text-align: center; padding-top: 30px; }
 .cariño p { font-family: var(--titulo); font-weight: 800; font-size: clamp(24px, 4vw, 32px); color: var(--madera); margin: 0; }
-.cariño small { display: block; margin-top: 6px; font-size: 16px; color: var(--madera); font-family: system-ui, sans-serif; font-weight: 400; }
+.cariño small { display: block; margin-top: 6px; font-size: 16px; color: var(--madera); font-family: var(--texto); font-weight: 400; }
 .corazon { color: #e5484d; }
 
 /* Pie */
@@ -99,3 +114,13 @@ section { padding: 56px 0; }
 .contenido h1 { font-size: clamp(30px, 5vw, 40px); color: var(--madera-osc); }
 .contenido h2 { font-size: 23px; margin-top: 1.6em; color: var(--madera); }
 .contenido .fecha { color: var(--madera); font-weight: 600; }
+
+/* Aviso de cookies */
+.cookies { position: fixed; z-index: 10; left: 12px; right: 12px; bottom: 12px; max-width: 620px; margin: 0 auto; padding: 16px 18px; border-radius: 18px; background: var(--papel); border: 3px solid #fff; box-shadow: var(--sombra); font-size: 15px; }
+.cookies p { margin: 0 0 12px; }
+.cookies .botones { display: flex; flex-wrap: wrap; gap: 10px; }
+.cookies button { flex: 1 1 140px; min-height: 44px; border-radius: 999px; border: 3px solid var(--madera); background: #fff; color: var(--madera-osc); font: 800 17px var(--titulo); cursor: pointer; }
+.pie button.enlace { padding: 0; border: 0; background: none; color: #ffe0b2; font: inherit; text-decoration: underline; cursor: pointer; }
+.tabla { width: 100%; border-collapse: collapse; font-size: 15px; background: #fff; border-radius: 12px; overflow: hidden; }
+.tabla th, .tabla td { padding: 8px 10px; border-bottom: 1px solid #f0dcc4; text-align: left; vertical-align: top; }
+.tabla th { background: #fff3d6; }

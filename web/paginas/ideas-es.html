@@ -19,33 +19,37 @@
   </div>
 </header>
 <main class="contenido">
-<h1>Ideas y fallos</h1>
-  <p>Esta página es para personas adultas. Aquí puedes proponer una idea para Zoo Esponji, avisar de un fallo, o las dos cosas.</p>
+<h1>Cuéntanos tu idea o un fallo</h1>
+  <p>Cuéntanos qué animal o qué cosa te gustaría ver en el zoo, o avísanos si algo no funciona. <strong>Si eres peque, rellénalo con tu padre, tu madre o la persona que te cuida:</strong> las casillas del final tiene que marcarlas una persona adulta.</p>
 
   <form id="form" novalidate data-idioma="es" data-condiciones="2026-10"
-        data-vacio="Escribe una idea o un fallo."
-        data-aceptacion="Marca las casillas para poder enviar."
+        data-vacio="Elige si es una idea o un fallo y escríbelo."
+        data-aceptacion="Una persona adulta tiene que marcar las casillas para poder enviar."
         data-peticion="Revisa los textos: alguno es demasiado largo o tiene caracteres que no se admiten."
         data-error="No se ha podido enviar. Prueba otra vez dentro de un rato."
         data-bien="¡Gracias! Lo hemos recibido.">
-    <label for="idea">Una idea para el zoo
-      <span class="nota">Un animal nuevo, un sitio, algo que hacer… Hasta 300 letras.</span></label>
-    <textarea id="idea" name="idea" maxlength="300"></textarea>
-
     <label for="nombre">Nombre de pila o apodo del niño o la niña (opcional)
-      <span class="nota">Solo el nombre, sin apellidos. Saldrá en el juego como «idea de…» si la idea llega a votarse.</span></label>
+      <span class="nota">Saldrá en el juego como «idea de…» si la idea llega a votarse. <strong>Solo el nombre o un apodo:</strong> no escribas apellidos, edad, colegio, ciudad ni nada que ayude a un desconocido a saber quién eres.</span></label>
     <input type="text" id="nombre" name="nombre" maxlength="15" autocomplete="off">
 
-    <label for="fallo">Un fallo del juego
-      <span class="nota">Qué estabas haciendo y qué pasó. Hasta 500 letras.</span></label>
-    <textarea id="fallo" name="fallo" maxlength="500"></textarea>
+    <fieldset class="tipo">
+      <legend>¿Qué nos quieres contar? (Obligatorio)</legend>
+      <label><input type="radio" name="tipo" value="idea" checked> 💡 Una idea</label>
+      <label><input type="radio" name="tipo" value="fallo"> 🐞 Un fallo</label>
+    </fieldset>
 
-    <label for="version">Versión del juego (opcional)
-      <span class="nota">Está escrita en el tablón del zoo y en Ajustes.</span></label>
-    <input type="text" id="version" name="version" maxlength="20" autocomplete="off">
+    <label for="texto"><span data-para="idea">Tu idea (Obligatorio)</span><span data-para="fallo" hidden>Qué estabas haciendo y qué pasó (Obligatorio)</span>
+      <span class="nota" data-para="idea">Un animal nuevo, un sitio, algo que hacer… Hasta 300 letras.</span><span class="nota" data-para="fallo" hidden>Hasta 500 letras.</span></label>
+    <textarea id="texto" maxlength="300"></textarea>
 
-    <label for="modelo">Modelo del móvil o la tableta (opcional)</label>
-    <input type="text" id="modelo" name="modelo" maxlength="60" autocomplete="off">
+    <div data-para="fallo" hidden>
+      <label for="version">Versión del juego (opcional)
+        <span class="nota">Abre el menú ⚙️ del juego: está escrita abajo del todo.</span></label>
+      <input type="text" id="version" name="version" maxlength="20" autocomplete="off">
+
+      <label for="modelo">Modelo del móvil o la tableta (opcional)</label>
+      <input type="text" id="modelo" name="modelo" maxlength="60" autocomplete="off">
+    </div>
 
     <div class="trampa" aria-hidden="true">
       <label for="web">No rellenes este campo</label>
@@ -53,23 +57,26 @@
     </div>
 
     <label class="casilla"><input type="checkbox" id="mayor">
-      <span>Tengo 18 años o más y acepto las <a href="/condiciones" target="_blank" rel="noopener">condiciones</a>.</span></label>
+      <span>Tengo 18 años o más y acepto las <a href="/condiciones" target="_blank" rel="noopener">condiciones de las ideas</a>. (Obligatorio)</span></label>
+    <label class="casilla"><input type="checkbox" id="privacidad">
+      <span>He leído y acepto la <a href="/privacidad" target="_blank" rel="noopener">política de privacidad</a>. (Obligatorio)</span></label>
     <label class="casilla" id="fila-tutor" hidden><input type="checkbox" id="tutor">
-      <span>Soy su padre, madre o tutor, o tengo su permiso para enviar su nombre.</span></label>
+      <span>Soy su padre, madre o tutor, o tengo su permiso para enviar su nombre. (Obligatorio si pones un nombre)</span></label>
 
     <button type="submit" id="enviar">Enviar</button>
     <p class="aviso" id="aviso" role="status" hidden></p>
   </form>
 
-  <p class="legal">
-    <strong>Qué hacemos con lo que envías.</strong> Responsable: David Salvador Plaza Delmarés (davidpladel),
-    android@davidpladel.com. Usamos tu mensaje solo para mejorar el juego y, si diste un nombre, para ponerlo
-    junto a la idea dentro del juego. Lo hacemos porque tú lo envías y lo aceptas. No pedimos correo ni
-    apellidos, no guardamos tu dirección IP con tu mensaje y no cedemos estos datos a nadie. Los mensajes se borran a los
-    90 días. Puedes pedir antes que borremos el tuyo, o que quitemos un nombre del juego, escribiendo a ese
-    correo. Como en cualquier web, el servidor anota las visitas durante unos días en registros técnicos, que solo se usan para que funcione y para su seguridad. También puedes reclamar ante la Agencia Española de Protección de Datos (aepd.es).
-    Más detalle en la <a href="/privacidad">política de privacidad</a>.
-  </p>
+  <details class="legal">
+    <summary>Antes de enviar, échale un vistazo a la información básica sobre protección de datos</summary>
+    <p><strong>Responsable:</strong> David Salvador Plaza Delmarés (davidpladel), creador de Zoo Esponji.</p>
+    <p><strong>Finalidad:</strong> leer tu idea o tu aviso de fallo para mejorar el juego y, si diste un nombre de pila o apodo, ponerlo junto a la idea dentro del juego.</p>
+    <p><strong>Legitimación:</strong> tu consentimiento, que das al marcar las casillas. Puedes retirarlo cuando quieras.</p>
+    <p><strong>Destinatarios:</strong> no cedemos tus datos a nadie. El envío se guarda en nuestro servidor y nos llega como aviso por correo electrónico y por Telegram, que solo usamos para enterarnos.</p>
+    <p><strong>Conservación:</strong> borramos los envíos a los 90 días. No pedimos correo ni apellidos y no guardamos tu dirección IP con el mensaje.</p>
+    <p><strong>Derechos:</strong> puedes pedir acceder a tu envío, corregirlo, limitarlo o borrarlo, o que quitemos un nombre del juego, escribiendo a <a href="mailto:android@davidpladel.com">android@davidpladel.com</a>. También puedes reclamar ante la Agencia Española de Protección de Datos (<a href="https://www.aepd.es" rel="noopener">aepd.es</a>).</p>
+    <p><strong>Información adicional:</strong> la tienes en la <a href="/privacidad">política de privacidad</a>.</p>
+  </details>
 </main>
 <footer class="pie">
   <div class="envoltura">
@@ -77,11 +84,14 @@
       <a href="/privacidad">Privacidad</a>
       <a href="/condiciones">Condiciones de las ideas</a>
       <a href="https://www.davidpladel.com/aviso-legal" rel="noopener">Aviso legal</a>
+      <a href="/cookies">Cookies</a>
+      <button type="button" class="enlace" data-cookies>Configurar cookies</button>
       <a href="mailto:android@davidpladel.com">Contacto</a>
     </nav>
-    <p>© 2026 Zoo Esponji · Arte de VectoRaith · Google Play y el logotipo de Google Play son marcas de Google LLC.</p>
+    <p>© 2026 Zoo Esponji · Google Play y el logotipo de Google Play son marcas de Google LLC.</p>
   </div>
 </footer>
 <script src="/assets/ideas.js"></script>
+<script src="/assets/cookies.js"></script>
 </body>
 </html>

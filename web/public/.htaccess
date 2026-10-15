@@ -11,4 +11,6 @@ ErrorDocument 404 /pagina.php?p=404
   RewriteRule ^ideas/?$ pagina.php?p=ideas [QSA,L]
   RewriteRule ^ideas/en/?$ pagina.php?p=ideas-en [QSA,L]
   RewriteRule ^(condiciones|terms|privacidad|privacy)/?$ pagina.php?p=$1 [QSA,L]
+  RewriteRule ^cookies/?$ pagina.php?p=cookies [QSA,L]
+  RewriteRule ^cookies/en/?$ pagina.php?p=cookies-en [QSA,L]
 </IfModule>
