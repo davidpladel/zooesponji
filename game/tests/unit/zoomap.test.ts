@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { PEN_IDS } from '../../src/data/pens';
 import { approachTile } from '../../src/core/interaction';
 import { findPath, isWalkable } from '../../src/core/pathfinding';
-import { buildWalkGrid, isShopDoor, readEnclosures, readGates, readProps, readShop, readSpawn, type TiledMap } from '../../src/core/tiledmap';
+import { buildWalkGrid, isShopDoor, readEnclosures, readBoard, readGates, readProps, readShop, readSpawn, type TiledMap } from '../../src/core/tiledmap';
 
 const url = new URL('../../public/assets/maps/zoo.tmj', import.meta.url);
 const map = JSON.parse(readFileSync(fileURLToPath(url), 'utf8')) as TiledMap;
@@ -162,5 +162,12 @@ describe('mapa del zoo', () => {
   it('toda pieza del mapa y todo suelo de bioma están en art.config.json', () => {
     for (const p of readProps(map)) expect(config.props[p.prop], p.prop).toBeDefined();
     for (const e of readEnclosures(map)) expect(config.props[`ground-${e.biome}`], `suelo de ${e.penId}`).toBeDefined();
+  });
+
+  it('el tablón está junto a la plaza y su casilla se pisa', () => {
+    const board = readBoard(map);
+    expect(board).not.toBeNull();
+    expect(isWalkable(grid, board!.tile.x, board!.tile.y)).toBe(true);
+    expect(isWalkable(grid, board!.standTile.x, board!.standTile.y)).toBe(false);
   });
 });
