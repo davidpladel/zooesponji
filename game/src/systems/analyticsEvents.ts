@@ -31,7 +31,7 @@ export interface TrackerDeps {
 
 /** Menos de esto en una página es pasar la hoja, no leerla. */
 const READ_MS = 1000;
-const REACH_SCREENS: readonly string[] = ['tienda', 'libro', 'ajustes'];
+const REACH_SCREENS: readonly string[] = ['tienda', 'libro', 'ajustes', 'tablon'];
 const SETTING_LABELS = [['music', 'musica'], ['sfx', 'sonidos'], ['joystick', 'joystick']] as const;
 
 function zooComplete(state: GameState): boolean {
@@ -175,6 +175,13 @@ export class GameTracker implements AnalyticsHooks {
     on('ad-closed', ({ slot, result, seconds }) => this.send('anuncio', 'anuncio-segundos', part(slot, result), seconds));
     on('ad-failed', ({ slot }) => this.send('anuncio', 'anuncio-fallo', slot));
     on('ad-empty', ({ slot }) => this.send('anuncio', 'anuncio-vacio', slot));
+
+    // Tablón: el voto viaja como «votación/opción»; nunca nombres ni textos del servidor.
+    on('board-opened', ({ phase }) => this.send('tablon', 'tablon-abre', phase));
+    on('poll-notice', ({ poll }) => this.send('tablon', 'tablon-aviso', poll));
+    on('board-voted', ({ poll, option }) => this.send('tablon', 'tablon-vota', part(poll, option)));
+    on('board-qr', () => this.send('tablon', 'tablon-qr'));
+    on('board-offline', () => this.send('tablon', 'tablon-sin-red'));
 
     try {
       const saved = parseReach(await store.get(REACH_KEY));

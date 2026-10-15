@@ -3,8 +3,10 @@ import { Capacitor } from '@capacitor/core';
 import type * as Phaser from 'phaser';
 import { decideBack, type BackAction } from '../core/back';
 import type { AdOfferScene } from '../scenes/AdOfferScene';
+import type { PollNoticeScene } from '../scenes/PollNoticeScene';
 import type { FeedScene } from '../scenes/FeedScene';
 import type { QuitScene, QuitSceneData } from '../scenes/QuitScene';
+import type { BoardScene } from '../scenes/BoardScene';
 import type { BookScene } from '../scenes/BookScene';
 import type { SettingsScene } from '../scenes/SettingsScene';
 import type { ShopScene } from '../scenes/ShopScene';
@@ -82,8 +84,8 @@ export class Platform {
     return decideBack({
       quitDialogOpen: this.active('Quit'),
       settingsOpen: this.active('Settings') || this.active('Book'),
-      overlayOpen: this.active('Feed') || this.active('Shop'),
-      adOfferOpen: this.active('AdOffer'),
+      overlayOpen: this.active('Feed') || this.active('Shop') || this.active('Board'),
+      adOfferOpen: this.active('AdOffer') || this.active('PollNotice'),
       screen,
     });
   }
@@ -102,11 +104,13 @@ export class Platform {
         else scene<SettingsScene>('Settings').close();
         break;
       case 'close-ad':
-        scene<AdOfferScene>('AdOffer').decline();
+        if (this.active('PollNotice')) scene<PollNoticeScene>('PollNotice').decline();
+        else scene<AdOfferScene>('AdOffer').decline();
         break;
       case 'close-overlay':
         if (this.active('Feed')) scene<FeedScene>('Feed').close();
         if (this.active('Shop')) scene<ShopScene>('Shop').close();
+        if (this.active('Board')) scene<BoardScene>('Board').close();
         break;
       case 'ask-quit':
         askQuit(this.game);

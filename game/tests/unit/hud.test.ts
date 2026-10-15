@@ -6,7 +6,7 @@ describe('engranaje de ajustes', () => {
     expect(gearVisible(['World', 'Hud'])).toBe(true);
   });
 
-  it.each(['Shop', 'Book', 'Feed', 'Settings', 'Quit'])('no se ve con %s abierta', (overlay) => {
+  it.each(['Shop', 'Book', 'Board', 'Feed', 'Settings', 'Quit'])('no se ve con %s abierta', (overlay) => {
     expect(gearVisible(['World', 'Hud', overlay])).toBe(false);
   });
 

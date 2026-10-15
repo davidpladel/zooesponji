@@ -6,6 +6,7 @@ import { MAPS } from '../config';
 import { phaserBackend, queueAudio, sfx } from '../systems/audio';
 import { createStore } from '../systems/createStore';
 import { installAds } from '../systems/adsInstall';
+import { installCommunity } from '../systems/communityInstall';
 import { installAnalytics } from '../systems/analyticsInstall';
 import { bus } from '../systems/events';
 import { deviceLanguages, resolveLanguage, setLanguage } from '../systems/language';
@@ -46,6 +47,8 @@ export class PreloadScene extends Phaser.Scene {
     this.load.tilemapTiledJSON(MAPS.zoo, withVersion('assets/maps/zoo.tmj'));
     this.load.tilemapTiledJSON(MAPS.shop, withVersion('assets/maps/tienda.tmj'));
     this.load.image('logo', withVersion('logo.png'));
+    this.load.image('qr-ideas', withVersion('assets/ui/qr-ideas.png'));
+    this.load.image('qr-ideas-en', withVersion('assets/ui/qr-ideas-en.png'));
     queueIcons(this);
     queueAudio(this);
   }
@@ -92,6 +95,8 @@ export class PreloadScene extends Phaser.Scene {
     await installAnalytics(this.game);
     // Después de las estadísticas: los avisos de la publicidad ya tienen quien los escuche.
     await installAds(this.game);
+    // Después de las estadísticas: los avisos del tablón ya tienen quien los escuche. No espera a la red.
+    await installCommunity();
     this.scene.start('Title');
   }
 }

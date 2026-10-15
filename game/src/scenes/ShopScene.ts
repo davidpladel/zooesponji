@@ -13,6 +13,7 @@ import { MAPS } from '../config';
 import { t, type StringKey } from '../data/strings';
 import { getAds } from '../systems/ads';
 import { sfx } from '../systems/audio';
+import { getCommunity } from '../systems/community';
 import { bus } from '../systems/events';
 import { joystickState } from '../systems/joystickState';
 import { getSession } from '../systems/session';
@@ -194,13 +195,19 @@ export class ShopScene extends Phaser.Scene {
     this.shopkeeper.hop();
     this.shopkeeper.wave();
     this.shopkeeper.say(t('shop.hello'), 2640);
-    // La primera vez, el tendero cuenta el secreto del libro (después del saludo).
-    if (!getSession().book.hinted) {
+    // La primera vez, el tendero cuenta el secreto del libro (después del saludo). Otra visita, el tablón.
+    const community = getCommunity();
+    const hint = !getSession().book.hinted
+      ? { text: t('shop.bookHint'), mark: () => void getSession().markBookHinted() }
+      : community?.status && !community.memory.hinted
+        ? { text: t('shop.boardHint'), mark: () => community.markHinted() }
+        : null;
+    if (hint) {
       this.time.delayedCall(2900, () => {
         // Si ya está hablando de un animal, no le pisa: lo contará otra vez que entre.
         if (this.closing || this.activeId || this.busy) return;
-        this.shopkeeper.say(t('shop.bookHint'), 3200);
-        void getSession().markBookHinted();
+        this.shopkeeper.say(hint.text, 3200);
+        hint.mark();
       });
     }
   }

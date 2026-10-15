@@ -119,9 +119,16 @@ Anuncios con premio de AdMob, en modo infantil. Sin configuración no hay public
 - **Nunca tocar anuncios reales en el propio móvil:** AdMob lo cuenta como tráfico no válido. Para probar, `VITE_ADMOB_TESTING=1`.
 - En el navegador se prueba con un proveedor falso: `window.__ZOO__.adsFake('visto')` y `window.__ZOO__.adsAdvance(300)`.
 
+## Comunidad (tablón)
+
+El tablón de la plaza habla con el servidor de comunidad. Sin configuración no hay tablón: el juego es el de siempre.
+
+- `game/.env.production.local` (no se sube): `VITE_COMMUNITY_URL`, la dirección del servidor (`https://api.zooesponji.com`).
+- `src/core/community.ts`: tipos y validación de lo que llega del servidor. `src/systems/community.ts`: consulta el estado, guarda el voto y construye la dirección de los dibujos (`dibujo.php?f=...`). `BoardScene` es el tablón y `PollNoticeScene`, el aviso de votación nueva.
+
 ## Versión
 
-`version` en `package.json` y `versionName` en `android/app/build.gradle`: **2.6.0**. `versionCode` sube en 1 con cada subida a Play: el **7** es la 2.6.0 (primera con anuncios), subida a la prueba cerrada el 2026-10-12. La siguiente será el 8.
+`version` en `package.json` y `versionName` en `android/app/build.gradle`: **2.7.0**. `versionCode` sube en 1 con cada subida a Play: el **7** es la 2.6.0 (primera con anuncios), subida a la prueba cerrada el 2026-10-12; el **8** es la 2.7.0 (tablón de la comunidad), aún sin subir. La siguiente será el 9.
 
 Al sacar una versión nueva, la versión se cambia a mano en estos sitios (el resto la leen solos):
 

@@ -90,6 +90,18 @@ export interface GameEvents {
   /** Las reglas dejaban ofrecerlo y no había anuncio listo. */
   'ad-empty': { slot: AdSlot };
   toast: { text: string };
+  /** Comunidad: llegó (o falló) la respuesta del servidor; el tablón y los carteles se ponen al día. */
+  'community-updated': Record<string, never>;
+  /** Se abre el tablón. `phase`: la de la votación al abrir. */
+  'board-opened': { phase: string };
+  /** Voto aceptado por el servidor. `changed`: era un cambio de voto. */
+  'board-voted': { poll: string; option: string; changed: boolean };
+  /** Se ha visto la tarjeta con el QR. */
+  'board-qr': Record<string, never>;
+  /** El tablón se abrió sin conexión. */
+  'board-offline': Record<string, never>;
+  /** Ha saltado el aviso de votación nueva. */
+  'poll-notice': { poll: string };
 }
 
 export const bus = new EventBus<GameEvents>();

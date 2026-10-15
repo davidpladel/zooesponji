@@ -184,6 +184,24 @@ export function readShop(map: TiledMap): ShopInfo | null {
   };
 }
 
+export interface BoardInfo {
+  /** Casilla del camino que se pisa para abrir el tablón. */
+  tile: Point;
+  /** Casilla donde se dibuja el tablón, justo encima. */
+  standTile: Point;
+}
+
+export function isBoardTile(board: BoardInfo, tile: Point): boolean {
+  return tile.x === board.tile.x && tile.y === board.tile.y;
+}
+
+export function readBoard(map: TiledMap): BoardInfo | null {
+  const object = objectsOf(map).find((o) => objectKind(o) === 'tablon');
+  if (!object) return null;
+  const tile = { x: Math.floor(object.x / map.tilewidth), y: Math.floor(object.y / map.tileheight) };
+  return { tile, standTile: { x: tile.x, y: tile.y - 1 } };
+}
+
 export interface DecorInfo {
   kind: string;
   x: number;

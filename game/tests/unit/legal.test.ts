@@ -19,7 +19,7 @@ describe('página de privacidad', () => {
     const en = read(legalPage('en'));
     expect(en).toContain('<html lang="en">');
     for (const tag of ['h1', 'h2', 'p', 'strong']) expect(count(en, tag), tag).toBe(count(es, tag));
-    expect(count(en, 'h2')).toBe(10);
+    expect(count(en, 'h2')).toBe(11);
   });
 
   it('explica las estadísticas anónimas y cómo apagarlas, en los dos idiomas', () => {
@@ -38,7 +38,18 @@ describe('página de privacidad', () => {
     expect(en).not.toContain('<a');
     expect(en).toContain('Zoo Esponji');
     expect(en).toContain('android@davidpladel.com');
-    expect(en).toContain('davidpladel.com/aviso-legal');
+    expect(en).toContain('zooesponji.com/legal-notice');
     expect(en).toContain('aepd.es');
+  });
+
+  it('explica las votaciones y las ideas, con las condiciones reales, en los dos idiomas', () => {
+    const es = main(read(legalPage('es')));
+    const en = main(read(legalPage('en')));
+    expect(es).toContain('Votaciones e ideas');
+    expect(es).toContain('zooesponji.com/condiciones');
+    expect(es).toContain('zooesponji.com/aviso-legal');
+    expect(en).toContain('Votes and ideas');
+    expect(en).toContain('zooesponji.com/terms');
+    expect(en).toContain('zooesponji.com/legal-notice');
   });
 });

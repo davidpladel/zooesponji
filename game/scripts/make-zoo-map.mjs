@@ -100,6 +100,10 @@ pfill(27, 10, 28, 13, PATH);
 objects.push({ id: nextId++, name: 'tienda', type: 'tienda', x: (25 + OX) * T, y: (4 + OY) * T, width: 5 * T, height: 5 * T, rotation: 0, visible: true });
 objects.push({ id: nextId++, name: 'puerta-tienda', type: 'puertaTienda', x: (27 + OX) * T, y: (9 + OY) * T, width: 2 * T, height: T, rotation: 0, visible: true });
 
+// Tablón de la comunidad: en la esquina de arriba a la izquierda de la plaza, junto a la fuente. El objeto marca
+// la casilla del camino que se pisa para abrirlo; el tablón se dibuja en el césped de encima.
+objects.push({ id: nextId++, name: 'tablon', type: 'tablon', x: (20 + OX) * T, y: (13 + OY) * T, width: T, height: T, rotation: 0, visible: true });
+
 // Props de decoración: x,y = punto de apoyo (centro de la base) en px.
 // blockW/blockH: rectángulo que el animal no puede pisar (centrado en la base); flat: pieza plana
 // (agua, meseta) que se dibuja pegada al suelo, por debajo de animales y personas; zone: zona que

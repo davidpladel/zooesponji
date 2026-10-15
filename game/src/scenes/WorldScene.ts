@@ -8,17 +8,19 @@ import { stepAlongPath, tileCenter, tryMove, worldToTile, type Vec } from '../co
 import { findPathOrNearest, isWalkable, type Point, type WalkGrid } from '../core/pathfinding';
 import { withPenInteriors } from '../core/penGrid';
 import { noPen, stepNear, type NearState } from '../core/penNear';
-import { buildWalkGrid, readEnclosures, readGates, readProps, readShop, readSpawn, type TiledMap } from '../core/tiledmap';
+import { buildWalkGrid, readBoard, readEnclosures, readGates, readProps, readShop, readSpawn, type TiledMap } from '../core/tiledmap';
 import type { PenId } from '../data/pens';
 import { SHOP_UNLOCK_COINS } from '../data/shop';
 import { t } from '../data/strings';
 import { getAds } from '../systems/ads';
 import { sfx } from '../systems/audio';
+import { getCommunity } from '../systems/community';
 import { bus, type ControlMode } from '../systems/events';
 import { joystickState } from '../systems/joystickState';
 import { getSession } from '../systems/session';
 import { computeZoom } from '../systems/viewport';
 import { createKeeper, type Walker } from '../world/Actors';
+import { Board } from '../world/Board';
 import { Pens } from '../world/Pens';
 import { ShopBuilding } from '../world/ShopBuilding';
 import { Decor } from '../world/Decor';
@@ -35,6 +37,8 @@ const TAP_REACH = 14;
 const FEED_REACH = 18;
 /** El panel de la pausa salta un momento después de volver al mapa: deja acabar el fundido de la tienda. */
 const AD_OFFER_MS = 300;
+/** El aviso de votación se mira un poco después del anuncio, para no pisarse. */
+const NOTICE_MS = AD_OFFER_MS + 250;
 
 type WasdKeys = Record<'W' | 'A' | 'S' | 'D', Phaser.Input.Keyboard.Key>;
 
@@ -56,6 +60,7 @@ export class WorldScene extends Phaser.Scene {
   private wasd?: WasdKeys;
   private pens!: Pens;
   private shop: ShopBuilding | null = null;
+  private board: Board | null = null;
   private visitors!: VisitorCrowd;
 
   constructor() {
@@ -83,6 +88,8 @@ export class WorldScene extends Phaser.Scene {
     this.grid = withPenInteriors(this.pathGrid, this.pens.openSpaces(state), TILE_SIZE);
     const shopInfo = readShop(mapData);
     this.shop = shopInfo ? new ShopBuilding(this, shopInfo, state) : null;
+    const boardInfo = readBoard(mapData);
+    this.board = boardInfo ? new Board(this, boardInfo, readEnclosures(mapData), readGates(mapData)) : null;
     this.visitors = new VisitorCrowd(this, this.pathGrid);
     this.syncVisitors(state);
 
@@ -108,6 +115,10 @@ export class WorldScene extends Phaser.Scene {
     }
 
     const offShopUnlocked = bus.on('shop-unlocked', () => this.shop?.sync(getSession().state));
+    const offCommunity = bus.on('community-updated', () => {
+      this.board?.sync();
+      this.time.delayedCall(NOTICE_MS, () => this.maybeNotice());
+    });
     const offFed = bus.on('animal-fed', ({ residentId, reaction }) => this.pens.celebrate(residentId, reaction));
     this.events.on(Phaser.Scenes.Events.RESUME, this.onResume, this);
 
@@ -117,7 +128,9 @@ export class WorldScene extends Phaser.Scene {
       this.events.off(Phaser.Scenes.Events.RESUME, this.onResume, this);
       offShopUnlocked();
       offFed();
+      offCommunity();
     });
+    this.time.delayedCall(NOTICE_MS, () => this.maybeNotice());
   }
 
   update(time: number, delta: number): void {
@@ -138,6 +151,7 @@ export class WorldScene extends Phaser.Scene {
       bus.emit('shop-locked', { missing: Math.max(0, SHOP_UNLOCK_COINS - state.coins) });
       bus.emit('toast', { text: t('toast.shopLocked', { n: SHOP_UNLOCK_COINS }) });
     }
+    if (this.board?.onKeeperTile(tile)) this.openBoard();
   }
 
   /** Avisa cuando la cuidadora lleva un rato junto a un recinto: es una visita, no un ir de paso. */
@@ -327,6 +341,12 @@ export class WorldScene extends Phaser.Scene {
       this.feedResident(hit.residentId);
       return;
     }
+    if (this.board?.hit(world)) {
+      this.cancelFeedTarget();
+      const at = this.board.info.tile;
+      this.goToTile(at.x, at.y);
+      return;
+    }
     this.cancelFeedTarget();
     const locked = this.pens.lockedPenAt(world, state);
     if (locked) {
@@ -354,6 +374,31 @@ export class WorldScene extends Phaser.Scene {
     this.scene.launch('Shop');
   }
 
+  /** Abre el tablón: el mundo queda en pausa debajo. */
+  openBoard(): void {
+    if (!getCommunity() || this.scene.isActive('Board')) return;
+    this.stopWalking();
+    sfx.play('tap');
+    this.scene.pause();
+    this.scene.launch('Board');
+  }
+
+  boardTile(): Point | null {
+    return this.board?.visible ? this.board.info.tile : null;
+  }
+
+  boardScreenPos(): Vec | null {
+    return this.board?.visible ? this.tileToScreen(this.board.info.standTile) : null;
+  }
+
+  boardSparkling(): boolean {
+    return this.board?.sparkling() ?? false;
+  }
+
+  ideaSignCount(): number {
+    return this.board?.signCount() ?? 0;
+  }
+
   private stopWalking(): void {
     this.route = [];
     this.marker.setVisible(false);
@@ -372,8 +417,22 @@ export class WorldScene extends Phaser.Scene {
   private onResume(_sys: Phaser.Scenes.Systems, data?: { from?: string }): void {
     if (data?.from === 'shop') this.leaveShop();
     this.refresh();
+    // Lo visto en el tablón apaga la estrellita.
+    this.board?.sync();
     // Una pausa natural: se vuelve de dar de comer o de la tienda. De Ajustes, del libro o de «¿Salir?», no.
     if (data?.from === 'shop' || data?.from === 'feed') this.time.delayedCall(AD_OFFER_MS, () => this.offerAd());
+    if (data?.from !== 'notice' && data?.from !== 'board') this.time.delayedCall(NOTICE_MS, () => this.maybeNotice());
+  }
+
+  /** Una vez por votación, al llegar al mapa, si no hay otro panel abierto. Si lo hay, espera a otra vuelta. */
+  private maybeNotice(): void {
+    // Las demás ventanas (tienda, comer, libro, tablón, ajustes, salir) pausan World, así que aquí isActive() es falso.
+    if (!this.scene.isActive() || this.scene.isActive('AdOffer') || this.scene.isActive('PollNotice')) return;
+    if (getAds()?.panelOpen) return;
+    if (!getCommunity()?.notify()) return;
+    this.stopWalking();
+    this.scene.pause();
+    this.scene.launch('PollNotice');
   }
 
   /** Si toca y hay anuncio listo, se ofrece: el mundo queda en pausa debajo del panel. */

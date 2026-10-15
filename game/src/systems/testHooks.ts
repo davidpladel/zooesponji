@@ -8,7 +8,9 @@ import { BOOK_CHAPTERS } from '../data/book';
 import type { FoodId } from '../data/foods';
 import type { PenId } from '../data/pens';
 import type { AdOfferScene } from '../scenes/AdOfferScene';
+import type { BoardScene, BoardZone, PollView } from '../scenes/BoardScene';
 import type { FeedScene } from '../scenes/FeedScene';
+import { PollNoticeScene } from '../scenes/PollNoticeScene';
 import type { HudScene } from '../scenes/HudScene';
 import type { BookScene } from '../scenes/BookScene';
 import type { QuitScene } from '../scenes/QuitScene';
@@ -18,6 +20,8 @@ import type { TitleScene } from '../scenes/TitleScene';
 import type { WorldScene } from '../scenes/WorldScene';
 import { getAds } from './ads';
 import { startAds } from './adsInstall';
+import { getCommunity } from './community';
+import { startCommunity } from './communityInstall';
 import { bus, type GameEvents } from './events';
 import { getLanguage } from './language';
 import type { Platform } from './platform';
@@ -102,6 +106,25 @@ export interface ZooTestApi {
   adOfferCountdown(): number | null;
   /** Nombres de los eventos de estadísticas que ha emitido el juego, en orden. */
   busLog(): string[];
+  /** Monta el tablón contra un servidor (en las pruebas, uno falso con `page.route`). */
+  communityStart(baseUrl: string): Promise<void>;
+  communityPhase(): string | null;
+  boardTile(): { x: number; y: number } | null;
+  boardScreenPos(): Vec | null;
+  boardSparkling(): boolean;
+  ideaSignCount(): number;
+  openBoard(): void;
+  boardView(): PollView | null;
+  boardZone(): BoardZone | null;
+  boardZonePos(zone: BoardZone): Vec | null;
+  boardOptionPos(id: string): Vec | null;
+  boardConfirmPos(): Vec | null;
+  boardChangePos(): Vec | null;
+  boardPicked(): string | null;
+  boardJarText(): string | null;
+  pollNoticePos(key: 'yes' | 'no'): Vec | null;
+  /** Con el tablón abierto, la pantalla cambia de tamaño (girar el móvil). */
+  boardResize(): void;
 }
 
 declare global {
@@ -124,6 +147,7 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
     'control-used', 'shop-opened', 'shop-look', 'shop-denied', 'purchase', 'shop-closed', 'book-opened', 'book-page-shown',
     'book-index', 'book-closed', 'legal-opened', 'quit-asked', 'quit-answered',
     'ad-offered', 'ad-accepted', 'ad-declined', 'ad-watched', 'ad-cut', 'ad-failed', 'ad-empty', 'ad-closed',
+    'board-opened', 'board-voted', 'board-qr', 'board-offline', 'poll-notice',
   ];
   const busLog: string[] = [];
   for (const name of logged) bus.on(name, () => busLog.push(name));
@@ -232,5 +256,31 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
     adOfferAmount: () => activeScene<AdOfferScene>('AdOffer')?.offeredAmount() ?? null,
     adOfferCountdown: () => activeScene<AdOfferScene>('AdOffer')?.countdownLeft() ?? null,
     busLog: () => [...busLog],
+    communityStart: async (baseUrl) => {
+      PollNoticeScene.shownFor = null;
+      await startCommunity(baseUrl);
+    },
+    communityPhase: () => getCommunity()?.phase() ?? null,
+    boardTile: () => game.scene.getScene<WorldScene>('World').boardTile(),
+    boardScreenPos: () => activeScene<WorldScene>('World')?.boardScreenPos() ?? null,
+    boardSparkling: () => game.scene.getScene<WorldScene>('World').boardSparkling(),
+    ideaSignCount: () => game.scene.getScene<WorldScene>('World').ideaSignCount(),
+    openBoard: () => activeScene<WorldScene>('World')?.openBoard(),
+    boardView: () => activeScene<BoardScene>('Board')?.pollView() ?? null,
+    boardZone: () => activeScene<BoardScene>('Board')?.zone() ?? null,
+    boardZonePos: (zone) => activeScene<BoardScene>('Board')?.zonePos(zone) ?? null,
+    boardOptionPos: (id) => activeScene<BoardScene>('Board')?.optionPos(id) ?? null,
+    boardConfirmPos: () => activeScene<BoardScene>('Board')?.confirmPos() ?? null,
+    boardChangePos: () => activeScene<BoardScene>('Board')?.changePos() ?? null,
+    boardPicked: () => activeScene<BoardScene>('Board')?.picked() ?? null,
+    boardJarText: () => activeScene<BoardScene>('Board')?.jarText() ?? null,
+    pollNoticePos: (key) => {
+      const scene = activeScene<PollNoticeScene>('PollNotice');
+      return (key === 'yes' ? scene?.yesPos() : scene?.noPos()) ?? null;
+    },
+    boardResize: () => {
+      const { gameSize, baseSize, displaySize } = game.scale;
+      game.scale.emit('resize', gameSize, baseSize, displaySize, 0, 0);
+    },
   };
 }

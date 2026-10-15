@@ -20,3 +20,7 @@ tools/matomo/data/
 
 # Envíos descargados del servidor de comunidad: llevan nombres de menores
 tools/comunidad/data/
+
+# Aviso legal: lleva NIF y dirección postal; solo vive en el servidor
+web/paginas/aviso-legal.html
+web/paginas/legal-notice.html

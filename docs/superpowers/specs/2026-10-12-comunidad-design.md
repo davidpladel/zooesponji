@@ -1,6 +1,6 @@
 # Comunidad: tablón, votaciones e ideas
 
-Fecha: 2026-10-12 · Estado (2026-10-15): plan 1 hecho y fusionado en `main`: servidor en `api.zooesponji.com` y web en `www.zooesponji.com` (portada, ideas, condiciones, privacidad y cookies con Matomo sitio 4 bajo consentimiento), ambos instalados en el VPS. El QR ya lleva a `www.zooesponji.com/ideas`. Falta el plan 2 (tablón y QR dentro del juego).
+Fecha: 2026-10-12 · Estado (2026-10-15): plan 1 hecho y fusionado en `main`: servidor en `api.zooesponji.com` y web en `www.zooesponji.com` (portada, ideas, condiciones, privacidad y cookies con Matomo sitio 4 bajo consentimiento), ambos instalados en el VPS. El QR ya lleva a `www.zooesponji.com/ideas`. Plan 2 (tablón y QR dentro del juego) hecho en `feat/tablon` (2.7.0); falta probarlo en el móvil con el servidor real. Los dibujos se sirven por `dibujo.php?f=<nombre>.png` (nginx no manda CORS en los estáticos y Phaser lo necesita).
 
 Segunda pieza tras la publicidad (`2026-10-12-publicidad-design.md`). Reúne lo que eran «buzón» y «votaciones».
 
@@ -54,7 +54,7 @@ Fuentes: [Familias](https://support.google.com/googleplay/android-developer/answ
     "ganadora": null
   },
   "muro": [
-    { "titulo": { "es": "Pingüinos", "en": "Penguins" }, "dibujo": "pinguinos.png", "ideaDe": "Adrián", "estado": "hecha", "recinto": "pinguino" }
+    { "titulo": { "es": "Pingüinos", "en": "Penguins" }, "dibujo": "pinguinos.png", "ideaDe": "Adrián", "estado": "hecha", "recinto": "pinguinos" }
   ]
 }
 ```
@@ -197,6 +197,7 @@ Categoría `tablon` en `eventCatalog.ts`: `tablon-abre`, `tablon-aviso` (salta e
 - ~~Crear el QR~~ hecho el 2026-10-14 (ver Decisiones).
 - Dibujos de cada votación (los genera él, como la portada).
 - Revisar las condiciones.
+- `recinto` en `comunidad.json` usa los ids del juego: leon, cabra, pantera, panda, estanque, ovejas, establo, pinguinos, sabana, elefantes-africanos, elefantes-asiaticos (el ejemplo decía `pinguino`).
 
 ### 11. Entrega
 
