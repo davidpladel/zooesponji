@@ -116,6 +116,8 @@ export const STRINGS_ES = {
   'board.goVote': '¡A votar!',
   'board.change': 'Cambiar',
   'board.winner': '¡Ha ganado!',
+  'board.see': '¡A verla!',
+  'board.nextSoon': 'Pronto habrá ideas nuevas para votar',
   'board.closed': '¡Votación cerrada! Pronto sabremos cuál gana',
   'board.noPoll': 'Pronto habrá votación',
   'board.wallTitle': 'Ideas de los jugadores',

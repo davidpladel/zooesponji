@@ -129,6 +129,8 @@ export interface CommunityMemory {
   noticed: string | null;
   /** Última votación cuya ganadora se ha visto en el tablón. */
   winnerSeen: string | null;
+  /** Última votación cuya ganadora se ha anunciado con el aviso grande. */
+  winnerNoticed: string | null;
   /** Entrada más nueva del muro ya vista (`wallKey`). */
   wallSeen: string | null;
   /** El tendero ya habló del tablón. */
@@ -140,7 +142,7 @@ export interface CommunityMemory {
 }
 
 export function emptyMemory(): CommunityMemory {
-  return { voted: {}, noticed: null, winnerSeen: null, wallSeen: null, hinted: false, firstDay: null, last: null };
+  return { voted: {}, noticed: null, winnerSeen: null, winnerNoticed: null, wallSeen: null, hinted: false, firstDay: null, last: null };
 }
 
 export function parseMemory(raw: string | null): CommunityMemory {
@@ -158,6 +160,7 @@ export function parseMemory(raw: string | null): CommunityMemory {
   }
   memory.noticed = isId(value.noticed) ? value.noticed : null;
   memory.winnerSeen = isId(value.winnerSeen) ? value.winnerSeen : null;
+  memory.winnerNoticed = isId(value.winnerNoticed) ? value.winnerNoticed : null;
   memory.wallSeen = typeof value.wallSeen === 'string' ? value.wallSeen.slice(0, 200) : null;
   memory.hinted = value.hinted === true;
   memory.firstDay = typeof value.firstDay === 'string' && DAY.test(value.firstDay) ? value.firstDay : null;
@@ -205,6 +208,13 @@ export function shouldNotify(status: CommunityStatus, memory: CommunityMemory, t
   if (memory.firstDay === null || memory.firstDay === today) return false;
   const poll = status.votacion;
   return poll !== null && pollPhase(status, memory) === 'open' && memory.noticed !== poll.id;
+}
+
+/** El aviso de la ganadora salta una vez por votación, si aún no la ha visto en el tablón, y nunca el primer día. */
+export function shouldNotifyWinner(status: CommunityStatus, memory: CommunityMemory, today: string): boolean {
+  if (memory.firstDay === null || memory.firstDay === today) return false;
+  const poll = status.votacion;
+  return poll !== null && poll.ganadora !== null && memory.winnerSeen !== poll.id && memory.winnerNoticed !== poll.id;
 }
 
 export function localized(text: Localized, lang: Language): string {

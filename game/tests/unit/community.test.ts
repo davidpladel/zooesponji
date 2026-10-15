@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   communityUrl, daysLeft, drawingName, emptyMemory, hasUnseen, localized, parseMemory, parseStatus, pollPhase,
-  shouldNotify, wallKey, type CommunityStatus,
+  shouldNotify, shouldNotifyWinner, wallKey, type CommunityStatus,
 } from '../../src/core/community';
 
 const raw = () => ({
@@ -120,6 +120,16 @@ describe('qué hay sin ver', () => {
     expect(shouldNotify(s, { ...veteran, noticed: '2026-11-a' }, '2026-11-03')).toBe(false);
     expect(shouldNotify(s, { ...veteran, voted: { '2026-11-a': 'koalas' } }, '2026-11-03')).toBe(false);
     expect(shouldNotify(status((r) => ({ ...r, votacion: { ...r.votacion, abierta: false } })), veteran, '2026-11-03')).toBe(false);
+  });
+
+  it('el aviso de la ganadora salta una vez, si no la ha visto, y nunca el primer día', () => {
+    const s = status((r) => ({ ...r, votacion: { ...r.votacion, abierta: false, ganadora: 'koalas' } }));
+    const veteran = { ...emptyMemory(), firstDay: '2026-11-01' };
+    expect(shouldNotifyWinner(s, veteran, '2026-11-20')).toBe(true);
+    expect(shouldNotifyWinner(s, { ...veteran, winnerNoticed: '2026-11-a' }, '2026-11-20')).toBe(false);
+    expect(shouldNotifyWinner(s, { ...veteran, winnerSeen: '2026-11-a' }, '2026-11-20')).toBe(false);
+    expect(shouldNotifyWinner(s, { ...veteran, firstDay: '2026-11-20' }, '2026-11-20')).toBe(false);
+    expect(shouldNotifyWinner(status(), veteran, '2026-11-03')).toBe(false);
   });
 
   it('el primer día de juego no hay aviso', () => {

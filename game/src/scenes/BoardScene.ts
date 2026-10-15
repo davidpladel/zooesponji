@@ -153,6 +153,8 @@ export class BoardScene extends Phaser.Scene {
       const size = Math.min(b.width * 0.4, b.height * 0.62);
       this.option(win, b.centerX, b.y + size / 2 + 8, size, false);
       fitText(addUiText(this, b.centerX, b.y + size + 30, t('board.winner'), textStyle(Math.round(size * 0.14), '#ffffff', UI.outline)).setOrigin(0.5), b.width);
+      // Hasta la siguiente votación no hay nada que votar: que se sepa que vendrán ideas nuevas.
+      fitText(addUiText(this, b.centerX, b.bottom - 14, t('board.nextSoon'), textStyle(20, UI.brown, UI.cream)).setOrigin(0.5), b.width);
       this.confetti();
       community.markBoardSeen();
       return;
