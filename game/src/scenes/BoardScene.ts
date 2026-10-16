@@ -248,35 +248,44 @@ export class BoardScene extends Phaser.Scene {
       ];
       addUiText(this, b.centerX, ay, `${page + 1} / ${pages}`, textStyle(Math.round(arrow * 0.45), UI.brown, UI.cream)).setOrigin(0.5);
     }
+    // Filas de dos líneas como las listas de Android: título arriba y «Idea de…» debajo, cada uno con un
+    // tamaño fijo para todo el muro: el que deja caber el título más largo del muro (de todas las páginas)
+    // junto a la etiqueta más ancha. Así no cambia entre filas ni al pasar de página.
+    const pic = rowH * 0.86;
+    const textX = b.x + pic + rowH * 0.25;
+    const stampStyle = { ...textStyle(Math.round(rowH * 0.3), '#ffffff'), strokeThickness: 0 };
+    const stampSize = Math.min(...[t('board.done'), t('board.chosen')].map((label) => {
+      const probe = fitText(addUiText(this, 0, 0, label, stampStyle), b.width * 0.28);
+      const size = Number.parseInt(String(probe.style.fontSize), 10);
+      probe.destroy();
+      return size;
+    }));
+    const stampW = Math.max(...[t('board.done'), t('board.chosen')].map((label) => {
+      const probe = addUiText(this, 0, 0, label, { ...stampStyle, fontSize: `${stampSize}px` });
+      const w = probe.width;
+      probe.destroy();
+      return w;
+    })) + rowH * 0.5;
+    const stampX = b.right - stampW / 2;
+    const room = stampX - stampW / 2 - 16 - textX;
+    const titleSize = Math.min(...status.muro.map((entry) => {
+      const probe = fitText(addUiText(this, 0, 0, localized(entry.titulo, lang), textStyle(Math.round(rowH * 0.3), UI.brown, UI.cream)), room);
+      const size = Number.parseInt(String(probe.style.fontSize), 10);
+      probe.destroy();
+      return size;
+    }));
+    const whoSize = Math.round(titleSize * 0.8);
     status.muro.slice(page * MAX_WALL_SHOWN, (page + 1) * MAX_WALL_SHOWN).forEach((entry, i) => {
       const y = listTop + rowH * (i + 0.5);
-      const pic = rowH * 0.86;
       this.drawing(entry.dibujo, b.x + pic / 2, y, pic);
-      // Sello a la derecha, en una píldora de color: se lee de lejos.
+      // Etiqueta plana (no es un botón), igual de ancha en todas las filas.
       const done = entry.estado === 'hecha';
-      // Etiqueta plana (no es un botón): letra grande sobre una píldora lisa, suave aunque el juego sea pixelArt.
-      const stampLabel = done ? t('board.done') : t('board.chosen');
-      const stampText = addUiText(this, 0, y, stampLabel, { ...textStyle(Math.round(rowH * 0.52), '#ffffff'), strokeThickness: 0 }).setOrigin(0.5).setDepth(1);
-      fitText(stampText, b.width * 0.3);
-      const stampW = stampText.width + rowH * 0.6;
-      const stampH = stampText.height + rowH * 0.08;
-      const stampX = b.right - stampW / 2;
-      this.add.image(stampX, y, this.flatPill(stampW, stampH, done ? '#43a047' : '#1e88e5'));
-      stampText.setX(stampX);
-      // En una línea: «Acuario.» grande y gordo, y detrás «Idea de Lola.» algo más pequeño.
-      const textX = b.x + pic + rowH * 0.25;
-      const room = stampX - stampW / 2 - 16 - textX;
-      const title = addUiText(this, textX, y, `${localized(entry.titulo, lang)}.`, textStyle(Math.round(rowH * 0.62), UI.brown, UI.cream)).setOrigin(0, 0.5);
-      const who = entry.ideaDe ? addUiText(this, 0, y, t('board.ideaLine', { name: entry.ideaDe }), { ...textStyle(Math.round(rowH * 0.48), UI.brown, UI.cream), fontStyle: '600' }).setOrigin(0, 0.5) : null;
-      const gap = rowH * 0.18;
-      const width = (): number => title.width + (who ? gap + who.width : 0);
-      let scale = 1;
-      while (width() > room && scale > 0.5) {
-        scale -= 0.05;
-        title.setFontSize(Math.round(rowH * 0.62 * scale));
-        who?.setFontSize(Math.round(rowH * 0.48 * scale));
+      const stampText = addUiText(this, stampX, y, done ? t('board.done') : t('board.chosen'), { ...stampStyle, fontSize: `${stampSize}px` }).setOrigin(0.5).setDepth(1);
+      this.add.image(stampX, y, this.flatPill(stampW, stampText.height + rowH * 0.08, done ? '#43a047' : '#1e88e5'));
+      const title = addUiText(this, textX, entry.ideaDe ? y - rowH * 0.03 : y, localized(entry.titulo, lang), textStyle(titleSize, UI.brown, UI.cream)).setOrigin(0, entry.ideaDe ? 1 : 0.5);
+      if (entry.ideaDe) {
+        addUiText(this, textX, y + rowH * 0.03, t('board.ideaLine', { name: entry.ideaDe }), { ...textStyle(whoSize, UI.brown, UI.cream), fontStyle: '600' }).setOrigin(0, 0);
       }
-      who?.setX(textX + title.width + gap);
     });
   }
 
