@@ -42,9 +42,10 @@ for (const [name, source] of Object.entries(ICONS)) {
 }
 
 mkdirSync(`${root}public/fonts`, { recursive: true });
-const font = 'baloo-2-latin-800-normal.woff2';
-copyFileSync(`${root}node_modules/@fontsource/baloo-2/files/${font}`, `${root}public/fonts/${font}`);
-console.log(font);
+for (const font of ['baloo-2-latin-800-normal.woff2', 'baloo-2-latin-500-normal.woff2']) {
+  copyFileSync(`${root}node_modules/@fontsource/baloo-2/files/${font}`, `${root}public/fonts/${font}`);
+  console.log(font);
+}
 
 // Las licencias viajan con lo que copiamos (SIL OFL de la letra, MIT de los iconos).
 const licences = [

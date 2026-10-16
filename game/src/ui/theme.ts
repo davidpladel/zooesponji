@@ -3,6 +3,8 @@ import type * as Phaser from 'phaser';
 export const FONT = 'Baloo 2';
 export const FONT_STACK = `"${FONT}", "Arial Rounded MT Bold", sans-serif`;
 export const FONT_FILE = 'fonts/baloo-2-latin-800-normal.woff2';
+/** Grosor normal, para textos que van al lado de otro en negrita (p. ej. «Idea de Lola.» en el muro). */
+export const FONT_FILE_REGULAR = 'fonts/baloo-2-latin-500-normal.woff2';
 
 export const UI = {
   cream: '#fff6e0',
