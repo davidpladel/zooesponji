@@ -248,9 +248,9 @@ export class BoardScene extends Phaser.Scene {
       ];
       addUiText(this, b.centerX, ay, `${page + 1} / ${pages}`, textStyle(Math.round(arrow * 0.45), UI.brown, UI.cream)).setOrigin(0.5);
     }
-    // Filas de dos líneas como las listas de Android: título arriba y «Idea de…» debajo, cada uno con un
-    // tamaño fijo para todo el muro: el que deja caber el título más largo del muro (de todas las páginas)
-    // junto a la etiqueta más ancha. Así no cambia entre filas ni al pasar de página.
+    // Cada fila en una línea: «Acuario.» en negrita y detrás «Idea de Lola.» con letra normal, los dos
+    // del mismo tamaño y ese tamaño igual en todo el muro (el que deja caber la línea más larga de todas
+    // las páginas junto a la etiqueta más ancha). Así no cambia entre filas, páginas ni idiomas.
     const pic = rowH * 0.86;
     const textX = b.x + pic + rowH * 0.25;
     const stampStyle = { ...textStyle(Math.round(rowH * 0.3), '#ffffff'), strokeThickness: 0 };
@@ -268,13 +268,22 @@ export class BoardScene extends Phaser.Scene {
     })) + rowH * 0.5;
     const stampX = b.right - stampW / 2;
     const room = stampX - stampW / 2 - 16 - textX;
-    const titleSize = Math.min(...status.muro.map((entry) => {
-      const probe = fitText(addUiText(this, 0, 0, localized(entry.titulo, lang), textStyle(Math.round(rowH * 0.3), UI.brown, UI.cream)), room);
-      const size = Number.parseInt(String(probe.style.fontSize), 10);
-      probe.destroy();
+    const gap = rowH * 0.15;
+    const titleStyle = (size: number) => textStyle(size, UI.brown, UI.cream);
+    const whoStyle = (size: number) => ({ ...textStyle(size, UI.brown, UI.cream), fontStyle: '500' });
+    const lineSize = Math.min(...status.muro.map((entry) => {
+      let size = Math.round(rowH * 0.36);
+      const title = addUiText(this, 0, 0, `${localized(entry.titulo, lang)}.`, titleStyle(size));
+      const who = entry.ideaDe ? addUiText(this, 0, 0, t('board.ideaLine', { name: entry.ideaDe }), whoStyle(size)) : null;
+      while (title.width + (who ? gap + who.width : 0) > room && size > 9) {
+        size -= 1;
+        title.setFontSize(size);
+        who?.setFontSize(size);
+      }
+      title.destroy();
+      who?.destroy();
       return size;
     }));
-    const whoSize = Math.round(titleSize * 0.8);
     status.muro.slice(page * MAX_WALL_SHOWN, (page + 1) * MAX_WALL_SHOWN).forEach((entry, i) => {
       const y = listTop + rowH * (i + 0.5);
       this.drawing(entry.dibujo, b.x + pic / 2, y, pic);
@@ -282,10 +291,8 @@ export class BoardScene extends Phaser.Scene {
       const done = entry.estado === 'hecha';
       const stampText = addUiText(this, stampX, y, done ? t('board.done') : t('board.chosen'), { ...stampStyle, fontSize: `${stampSize}px` }).setOrigin(0.5).setDepth(1);
       this.add.image(stampX, y, this.flatPill(stampW, stampText.height + rowH * 0.08, done ? '#43a047' : '#1e88e5'));
-      const title = addUiText(this, textX, entry.ideaDe ? y - rowH * 0.03 : y, localized(entry.titulo, lang), textStyle(titleSize, UI.brown, UI.cream)).setOrigin(0, entry.ideaDe ? 1 : 0.5);
-      if (entry.ideaDe) {
-        addUiText(this, textX, y + rowH * 0.03, t('board.ideaLine', { name: entry.ideaDe }), { ...textStyle(whoSize, UI.brown, UI.cream), fontStyle: '600' }).setOrigin(0, 0);
-      }
+      const title = addUiText(this, textX, y, `${localized(entry.titulo, lang)}.`, titleStyle(lineSize)).setOrigin(0, 0.5);
+      if (entry.ideaDe) addUiText(this, textX + title.width + gap, y, t('board.ideaLine', { name: entry.ideaDe }), whoStyle(lineSize)).setOrigin(0, 0.5);
     });
   }
 
