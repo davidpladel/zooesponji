@@ -115,7 +115,9 @@ test('se vota con dos toques, salen las barras y se puede cambiar', async ({ pag
 
   await click(page, await page.evaluate(() => window.__ZOO__!.boardChangePos()));
   await page.waitForFunction(() => window.__ZOO__!.boardView() === 'cards');
-  expect(await page.evaluate(() => window.__ZOO__!.boardPicked())).toBe('delfines');
+  // Al cambiar no queda marcada la ya votada: se elige otra vez y «Votar» sigue gris.
+  expect(await page.evaluate(() => window.__ZOO__!.boardPicked())).toBeNull();
+  expect(await page.evaluate(() => window.__ZOO__!.boardConfirmPos())).toBeNull();
   await click(page, await page.evaluate(() => window.__ZOO__!.boardOptionPos('koalas')));
   await click(page, await page.evaluate(() => window.__ZOO__!.boardConfirmPos()));
   await page.waitForFunction(() => window.__ZOO__!.boardView() === 'bars');
