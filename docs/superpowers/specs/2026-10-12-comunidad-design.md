@@ -1,6 +1,6 @@
 # Comunidad: tablón, votaciones e ideas
 
-Fecha: 2026-10-12 · Estado (2026-10-15): plan 1 hecho y fusionado en `main`: servidor en `api.zooesponji.com` y web en `www.zooesponji.com` (portada, ideas, condiciones, privacidad y cookies con Matomo sitio 4 bajo consentimiento), ambos instalados en el VPS. El QR ya lleva a `www.zooesponji.com/ideas`. Plan 2 (tablón y QR dentro del juego) hecho en `feat/tablon` (2.7.0); falta probarlo en el móvil con el servidor real. Los dibujos se sirven por `dibujo.php?f=<nombre>.png` (nginx no manda CORS en los estáticos y Phaser lo necesita).
+Fecha: 2026-10-12 · Estado (2026-10-15): plan 1 hecho y fusionado en `main`: servidor en `api.zooesponji.com` y web en `www.zooesponji.com` (portada, ideas, condiciones, privacidad y cookies con Matomo sitio 4 bajo consentimiento), ambos instalados en el VPS. El QR ya lleva a `www.zooesponji.com/ideas`. Plan 2 (tablón y QR dentro del juego) hecho y en `main` (2.7.0, versionCode 8, subida a Play); arreglos del muro en la 2.7.1 (versionCode 9). Los dibujos se sirven por `dibujo.php?f=<nombre>.png` (nginx no manda CORS en los estáticos y Phaser lo necesita).
 
 Segunda pieza tras la publicidad (`2026-10-12-publicidad-design.md`). Reúne lo que eran «buzón» y «votaciones».
 

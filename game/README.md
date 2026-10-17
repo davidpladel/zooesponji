@@ -130,7 +130,7 @@ El tablón de la plaza habla con el servidor de comunidad. Sin configuración no
 
 ## Versión
 
-`version` en `package.json` y `versionName` en `android/app/build.gradle`: **2.7.0**. `versionCode` sube en 1 con cada subida a Play: el **7** es la 2.6.0 (primera con anuncios), subida a la prueba cerrada el 2026-10-12; el **8** es la 2.7.0 (tablón de la comunidad), aún sin subir. La siguiente será el 9.
+`version` en `package.json` y `versionName` en `android/app/build.gradle`: **2.7.1**. `versionCode` sube en 1 con cada subida a Play: el **7** es la 2.6.0 (primera con anuncios), subida a la prueba cerrada el 2026-10-12; el **8** es la 2.7.0 (tablón de la comunidad), subida; el **9** es la 2.7.1 (arreglos del muro del tablón), la que se sube ahora. La siguiente será el 10.
 
 Al sacar una versión nueva, la versión se cambia a mano en estos sitios (el resto la leen solos):
 
