@@ -2,6 +2,7 @@
 Fixes on the zoo board: the wall of ideas is easier to read, and names can now be up to 20 letters long.
 </en-US>
 <ar>
+ملاحظة: اللعبة متوفرة حاليًا باللغتين الإنجليزية والإسبانية فقط، وليست باللغة العربية بعد.
 إصلاحات في لوحة حديقة الحيوان: أصبح جدار الأفكار أسهل في القراءة، ويمكن أن تصل الأسماء الآن إلى 20 حرفًا.
 </ar>
 <en-GB>
@@ -14,26 +15,34 @@ Arreglos en el tablero del zoológico: el muro de ideas se lee mejor y los nombr
 Arreglos en el tablón del zoo: el muro de ideas se lee mejor y los nombres ya pueden tener hasta 20 letras.
 </es-ES>
 <fr-FR>
+Remarque : pour l'instant, le jeu est disponible uniquement en anglais et en espagnol, pas encore en français.
 Corrections du tableau du zoo : le mur des idées est plus facile à lire et les prénoms peuvent maintenant avoir jusqu'à 20 lettres.
 </fr-FR>
 <hi-IN>
+ध्यान दें: अभी यह गेम केवल अंग्रेज़ी और स्पेनिश में उपलब्ध है, हिंदी में अभी नहीं।
 चिड़ियाघर के बोर्ड में सुधार: विचारों की दीवार अब पढ़ने में आसान है, और नाम अब 20 अक्षरों तक के हो सकते हैं।
 </hi-IN>
 <it-IT>
+Nota: per ora il gioco è disponibile solo in inglese e spagnolo, non ancora in italiano.
 Correzioni alla bacheca dello zoo: il muro delle idee si legge meglio e i nomi ora possono avere fino a 20 lettere.
 </it-IT>
 <ja-JP>
+ご注意：現在、このゲームは英語とスペイン語のみに対応しています。日本語にはまだ対応していません。
 動物園の掲示板を修正：アイデアの壁が読みやすくなり、名前は20文字まで使えるようになりました。
 </ja-JP>
 <pt-BR>
+Atenção: por enquanto o jogo está disponível apenas em inglês e espanhol, ainda não em português.
 Correções no quadro do zoológico: o mural de ideias ficou mais fácil de ler e os nomes agora podem ter até 20 letras.
 </pt-BR>
 <pt-PT>
+Atenção: por agora o jogo está disponível apenas em inglês e espanhol, ainda não em português.
 Correções no quadro do jardim zoológico: o mural de ideias lê-se melhor e os nomes já podem ter até 20 letras.
 </pt-PT>
 <ru-RU>
+Обратите внимание: пока игра доступна только на английском и испанском языках, русского языка ещё нет.
 Исправления на доске зоопарка: стену идей стало легче читать, а имена теперь могут быть длиной до 20 букв.
 </ru-RU>
 <zh-CN>
+请注意：目前游戏仅支持英语和西班牙语，暂不支持中文。
 动物园公告板修复：创意墙更易阅读，名字现在最多可以有 20 个字母。
 </zh-CN>
