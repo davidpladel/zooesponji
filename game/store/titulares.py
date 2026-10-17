@@ -20,6 +20,7 @@ TITULARES = {
         ('captura-4-tienda', 'VISITA LA TIENDA', 'Y TRAE ANIMALES NUEVOS'),
         ('captura-5-libro', 'LIBRO SECRETO', 'LLENO DE CURIOSIDADES'),
         ('captura-6-panteras', 'HECHO CON CARIÑO', 'POR DANIELA (9) Y ADRIÁN (5)'),
+        ('captura-7-tablon', 'TUS IDEAS', '¡LLEGAN AL ZOO!'),
     ],
     'en': [
         ('captura-1-leones', 'CARE', 'FOR YOUR OWN ZOO'),
@@ -28,6 +29,7 @@ TITULARES = {
         ('captura-4-tienda', 'VISIT THE SHOP', 'AND BRING NEW ANIMALS'),
         ('captura-5-libro', 'SECRET BOOK', 'FULL OF FUN FACTS'),
         ('captura-6-panteras', 'MADE WITH LOVE', 'BY DANIELA (9) & ADRIÁN (5)'),
+        ('captura-7-tablon', 'YOUR IDEAS', 'COME TO THE ZOO!'),
     ],
 }
 GRAFICO = {
