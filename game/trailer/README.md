@@ -67,7 +67,7 @@ Los planos no usan segundos fijos del vídeo fuente sino las marcas (`M.leon_car
 | 29–31,5 | tienda, compra del panda (`panda_bought`); redoble | ¡WOW! | WOW! |
 | 31,5–35 | gente paseando por la plaza (`panda_walk`) | ¡TODOS TE ESPERAN! | THEY'RE ALL WAITING! |
 | 35–43 | portón desenfocado, confeti | ZOO / ESPONJI | ZOO / ESPONJI |
-| 38,5–43 | | ¡MUY PRONTO EN GOOGLE PLAY! | COMING SOON TO GOOGLE PLAY! |
+| 38,5–43 | | ¡YA EN GOOGLE PLAY! | NOW ON GOOGLE PLAY! |
 
 Destellos blancos en 3, 10, 24, 31,5, 35 y 41 s. Letra Lilita One (Google Fonts), mayúsculas amarillas con borde marrón.
 
@@ -76,6 +76,6 @@ Para cambiar algo:
 - **Textos**: la tabla `WORDS` (un array por idioma, en el mismo orden que `TEXTS`). Tamaño, altura y color, en `TEXTS`. Si un texto en inglés es más largo, baja su tamaño para que quepa en 1920 px.
 - **Planos**: `SHOTS` = `[inicio, fin, segundo fuente, zoom inicial, zoom final, centroX, centroY]`. El centro 960,470 encuadra la ventana de comer.
 - **Música y efectos**: `synth.mjs`. Si se mueven los textos, mueve también `POPS` para que el «pop» coincida.
-- **Cuando el juego ya esté publicado**: cambia «¡MUY PRONTO EN GOOGLE PLAY!» por «¡YA EN GOOGLE PLAY!» / «NOW ON GOOGLE PLAY!».
+- **Cambiar solo textos** no obliga a regrabar: basta con `render.mjs` de cada idioma, que reutiliza `gameplay-<idioma>.mp4` y `marks-<idioma>.json`. Así se pasó de «¡MUY PRONTO EN GOOGLE PLAY!» a «¡YA EN GOOGLE PLAY!» el 2026-10-17, cuando el juego salió en Play.
 
 Para revisar sin esperar al render entero, `--preview` saca los fotogramas de los segundos 1,5, 5, 8, 12, 15, 19, 22, 25, 28, 30, 33 y 40.
