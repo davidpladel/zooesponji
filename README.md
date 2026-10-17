@@ -2,7 +2,7 @@
 
 Creado por y para Daniela y Adrián, con la ayuda de su padre y de Claude + OpenCode + DeepSeek + ChatGPT.
 
-**Versión actual: 2.7.1** (2026-10-17, en `main`) · Juega en la web: https://davidpladel.com/zoo/ (aún con una versión anterior) · Android: publicada en Google Play con la 2.7.1 (versionCode 9)
+**Versión actual: 2.7.1** (2026-10-17, en `main`) · Juega en la web: https://davidpladel.com/zoo/ (aún con una versión anterior) · Android: **publicado en Google Play** (producción) con la 2.7.1 (versionCode 9)
 
 ## La idea
 
