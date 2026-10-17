@@ -1,0 +1,36 @@
+<en-US>
+Fixes on the zoo board: the wall of ideas is easier to read, and names can now be up to 20 letters long.
+</en-US>
+<es-ES>
+Arreglos en el tablón del zoo: el muro de ideas se lee mejor y los nombres ya pueden tener hasta 20 letras.
+</es-ES>
+<es-419>
+Arreglos en el tablero del zoológico: el muro de ideas se lee mejor y los nombres ya pueden tener hasta 20 letras.
+</es-419>
+<fr-FR>
+Corrections du tableau du zoo : le mur des idées est plus facile à lire et les prénoms peuvent maintenant avoir jusqu'à 20 lettres.
+</fr-FR>
+<pt-BR>
+Correções no quadro do zoológico: o mural de ideias ficou mais fácil de ler e os nomes agora podem ter até 20 letras.
+</pt-BR>
+<pt-PT>
+Correções no quadro do jardim zoológico: o mural de ideias lê-se melhor e os nomes já podem ter até 20 letras.
+</pt-PT>
+<it-IT>
+Correzioni alla bacheca dello zoo: il muro delle idee si legge meglio e i nomi ora possono avere fino a 20 lettere.
+</it-IT>
+<ru-RU>
+Исправления на доске зоопарка: стену идей стало легче читать, а имена теперь могут быть длиной до 20 букв.
+</ru-RU>
+<ar>
+إصلاحات في لوحة حديقة الحيوان: أصبح جدار الأفكار أسهل في القراءة، ويمكن أن تصل الأسماء الآن إلى 20 حرفًا.
+</ar>
+<hi-IN>
+चिड़ियाघर के बोर्ड में सुधार: विचारों की दीवार अब पढ़ने में आसान है, और नाम अब 20 अक्षरों तक के हो सकते हैं।
+</hi-IN>
+<zh-CN>
+动物园公告板修复：创意墙更易阅读，名字现在最多可以有 20 个字母。
+</zh-CN>
+<ja-JP>
+動物園の掲示板を修正：アイデアの壁が読みやすくなり、名前は20文字まで使えるようになりました。
+</ja-JP>
