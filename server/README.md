@@ -80,6 +80,15 @@ La de nginx frena a una sola dirección que manda muchos votos. Necesita un admi
 
 nginx lleva la cuenta solo en memoria; la dirección no se escribe en ningún sitio.
 
+**Después de actualizar Hestia o Linux**, comprueba que el freno sigue puesto (desde tu ordenador):
+
+    node tools/comunidad/freno.mjs
+
+Los dos archivos están donde ni Hestia ni los paquetes de Linux escriben: `conf.d/zoo-voto.conf` no es de
+ningún paquete y Hestia conserva los `nginx.ssl.conf_*` del dominio al reconstruirlo. Se pierden si se borra
+y se vuelve a crear el dominio, si se cambia su plantilla de nginx por una que no los incluya o si se pasa a
+otro servidor: entonces hay que repetir los pasos 1 a 3.
+
 ## Actualizar
 
 Vuelve a subir `public/` y `app/src/` (y los scripts sueltos de `app/`, como `votos-hora.php`). No pises `config.php` ni `datos/`.
