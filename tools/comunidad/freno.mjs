@@ -1,10 +1,10 @@
 // node tools/comunidad/freno.mjs
-// Comprueba que el freno de nginx sigue puesto: manda 25 votos a una votación que no existe (no suman nada)
-// y espera que los últimos reciban 429. Lanzarlo después de actualizar Hestia o Linux.
+// Comprueba que el freno de nginx sigue puesto: manda votos a una votación que no existe (no suman nada)
+// hasta que uno recibe 429, como mucho 60. Lanzarlo después de actualizar Hestia o Linux.
 const URL_VOTO = 'https://api.zooesponji.com/voto.php';
 
 const codigos = [];
-for (let i = 0; i < 25; i++) {
+for (let i = 0; i < 60 && !codigos.includes(429); i++) {
   const respuesta = await fetch(URL_VOTO, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -12,7 +12,6 @@ for (let i = 0; i < 25; i++) {
   });
   codigos.push(respuesta.status);
 }
-console.log(codigos.join(' '));
 if (!codigos.includes(429)) {
   console.error('✗ El freno de nginx NO está puesto. Mira «Freno de votos» en server/README.md y vuelve a ponerlo.');
   process.exit(1);

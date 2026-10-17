@@ -50,6 +50,12 @@ Tras rotar, actualiza el valor en todos los sitios que lo usan (entorno, servici
 **Mínimo privilegio:** al crear un token/usuario, concede solo los permisos que necesita. Es
 preferible empezar con menos y ampliar.
 
+## Datos del servidor
+
+El repositorio es público: nada de IPs, usuarios, rutas de carpetas, puertos internos ni cifras reales de los
+frenos (votos por minuto, topes). En la documentación van como `<ip>`, `<usuario>`, `<votos>`… Antes de subir,
+`git grep` de la IP y del usuario del servidor, además de Gitleaks.
+
 ## 4. Si expones un secreto por error
 
 1. **Revócalo/rótalo ya** (no basta con borrar el commit; ya pudo quedar cacheado/indexado).

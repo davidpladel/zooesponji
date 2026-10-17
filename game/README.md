@@ -102,9 +102,9 @@ En `public/audio/` (CC0, créditos en `CREDITS.md`): un `.ogg` por efecto (`tap`
 Se publica en https://davidpladel.com/zoo/ (la v1.1 sigue en `/zooesponji/`). Hay que compilar en local: el arte de VectoRaith no está en git, así que el servidor no puede hacer `git pull` y compilar.
 
 1. En `game/`: `npm run build; tar -czf zoo-web.tgz -C dist .` (`zoo-web.tgz` está en `.gitignore`).
-2. Subir `zoo-web.tgz` con WinSCP a `<carpeta pública del dominio>/`.
-3. En el servidor (PuTTY):
-   `cd <carpeta pública del dominio> && rm -rf zoo/* && tar -xzf zoo-web.tgz -C zoo && rm zoo-web.tgz && chown -R <usuario>:<usuario> zoo`
+2. Subir `zoo-web.tgz` con WinSCP a la carpeta pública del dominio en el servidor.
+3. En el servidor (PuTTY), dentro de esa carpeta: vaciar `zoo/`, descomprimir `zoo-web.tgz` en `zoo/`, borrar el
+   `.tgz` y devolver los archivos al usuario del dominio. La ruta y el usuario no van en el repositorio.
 
 Caché: el JS lleva huella en el nombre (Vite); el arte, el audio y el mapa se piden con `?v=<id de compilación>` (`src/core/cacheBust.ts`), y `public/.htaccess` hace que `index.html` y el manifiesto no se guarden en caché. Así nadie se queda con una versión vieja.
 

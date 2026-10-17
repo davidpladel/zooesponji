@@ -53,19 +53,22 @@ Si n8n está caído, los envíos se guardan igual; se ven con `tools/comunidad/e
 ## Freno de votos
 
 Dos capas. La de PHP ya viene en el código: cada votación cuenta como mucho `votos_hora` votos por hora
-(300 por defecto; cámbialo en `config.php`). Los que pasan no suman, pero se responde igual. Antes de cerrar
+(cámbialo en `config.php`; en el servidor puede ser otro que el de la plantilla). Los que pasan no suman, pero se responde igual. Antes de cerrar
 una votación, mira si ha habido avalanchas:
 
     php ~/web/api.zooesponji.com/private/app/votos-hora.php <votación>
 
 La de nginx frena a una sola dirección que manda muchos votos. Necesita un administrador del VPS, una vez:
 
+Las cifras reales (votos por minuto y margen) no van en el repositorio; elige unas razonables para un colegio
+detrás de una sola conexión.
+
 1. Crear `/etc/nginx/conf.d/zoo-voto.conf` con:
 
        limit_req_zone $binary_remote_addr zone=zoo_voto:1m rate=<votos>r/m;
 
-2. Crear `/home/<usuario>/conf/web/api.zooesponji.com/nginx.ssl.conf_zoo-voto` (Hestia lo incluye dentro del
-   `server` del dominio y no lo borra al reconstruir). `<ip>` y el puerto son los de `proxy_pass` en el
+2. Crear `nginx.ssl.conf_zoo-voto` en la carpeta de configuración del dominio en Hestia (Hestia lo incluye dentro del
+   `server` del dominio y no lo borra al reconstruir). `<ip>` y `<puerto>` son los de `proxy_pass` en el
    `nginx.ssl.conf` de al lado:
 
        location = /voto.php {
