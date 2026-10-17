@@ -2,7 +2,7 @@
 
 Creado por y para Daniela y Adrián, con la ayuda de su padre y de Claude + OpenCode + DeepSeek + ChatGPT.
 
-**Versión actual: 2.7.1** (2026-10-17, en `main`) · Juega en la web: https://davidpladel.com/zoo/ (aún con una versión anterior) · Android: publicada en Google Play; la 2.7.0 (versionCode 8) fue la última subida y la 2.7.1 (versionCode 9) es la que se sube ahora
+**Versión actual: 2.7.1** (2026-10-17, en `main`) · Juega en la web: https://davidpladel.com/zoo/ (aún con una versión anterior) · Android: publicada en Google Play con la 2.7.1 (versionCode 9)
 
 ## La idea
 
@@ -102,7 +102,7 @@ Google Play: la 2.3.0 (versionCode 5) está en la prueba cerrada; a 2026-10-06 v
 
 ✅ **2.5.1** (2026-10-08, fusionada en `main`, etiqueta `v2.5.1`): a Sasha, la leona, se le da de comer igual que a Bills (en las estadísticas sale como `leon/sasha`), y al salir con «Salir» o con atrás en la portada el juego desaparece de las aplicaciones recientes de Android (`autoRemoveFromRecents` en el manifiesto). Pruebas pasadas por David. David la probó en el móvil con el paquete de Play el 2026-10-08: todo bien, también lo de las aplicaciones recientes.
 
-✅ **2.7.1** (2026-10-17, en `main`, versionCode 9; la que se sube ahora a Play): arreglos del muro del tablón (un solo tamaño de letra, título en negrita, «Idea de…» normal, nombres de hasta 20 letras).
+✅ **2.7.1** (2026-10-17, en `main`, versionCode 9, etiqueta `v2.7.1`; publicada en Google Play): arreglos del muro del tablón (un solo tamaño de letra, título en negrita, «Idea de…» normal, nombres de hasta 20 letras).
 
 ✅ **2.7.0** (2026-10-15, en `main`, versionCode 8, subida a Play; probada por David en el móvil con el servidor real y lista para producción en Play): el tablón de la comunidad dentro del juego (votación con dibujos, tarro de ideas, ideas hechas con el nombre de quien las propuso y QR a www.zooesponji.com/ideas). Los dibujos se sirven desde el servidor por `dibujo.php`. Sin internet no aparece nada nuevo.
 
