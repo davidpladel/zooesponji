@@ -7,6 +7,12 @@ set -u
 RED=$'\033[31m'; YEL=$'\033[33m'; GRN=$'\033[32m'; NC=$'\033[0m'
 REPO_ROOT="$(git rev-parse --show-toplevel)"
 
+# 0) Datos del servidor (IP, usuarios, rutas, cifras): siempre, con o sin Gitleaks.
+DIFF="$(mktemp)"
+git diff --cached --no-color -U0 > "$DIFF"
+if ! bash "$REPO_ROOT/.githooks/datos-servidor.sh" "$DIFF"; then rm -f "$DIFF"; exit 1; fi
+rm -f "$DIFF"
+
 if command -v gitleaks >/dev/null 2>&1; then
   echo "${GRN}[pre-commit]${NC} Gitleaks: escaneando staged..."
   if ! gitleaks protect --staged --redact -c "$REPO_ROOT/.gitleaks.toml"; then

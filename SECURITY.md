@@ -56,6 +56,10 @@ El repositorio es público: nada de IPs, usuarios, rutas de carpetas, puertos in
 frenos (votos por minuto, topes). En la documentación van como `<ip>`, `<usuario>`, `<votos>`… Antes de subir,
 `git grep` de la IP y del usuario del servidor, además de Gitleaks.
 
+Lo comprueban dos hooks con la lista `.githooks/prohibido.local` (ignorada por git; uno por línea, texto
+literal: IP, usuarios, rutas `/home/...`, cifras de los frenos). `pre-commit` mira lo que vas a guardar y
+`pre-push` todos los commits que vas a subir. Sin esa lista, los dos se niegan a seguir.
+
 ## 4. Si expones un secreto por error
 
 1. **Revócalo/rótalo ya** (no basta con borrar el commit; ya pudo quedar cacheado/indexado).

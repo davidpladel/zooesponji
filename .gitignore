@@ -5,6 +5,7 @@
 .env.*
 !.env.example
 *.log
+.githooks/prohibido.local
 
 # Packs de arte comprados: la licencia prohíbe redistribuir los originales
 art-packs/

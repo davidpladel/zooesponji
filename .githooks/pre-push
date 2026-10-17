@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# Antes de subir a GitHub: busca datos del servidor en TODOS los commits que se van a subir, no solo en el último.
+set -u
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+RAW="$(mktemp)"; trap 'rm -f "$RAW"' EXIT
+CERO=0000000000000000000000000000000000000000
+while read -r _ local_sha _ remote_sha; do
+  [ "$local_sha" = "$CERO" ] && continue
+  if [ "$remote_sha" = "$CERO" ]; then rango="$local_sha"; else rango="$remote_sha..$local_sha"; fi
+  git log -p --no-color --format= "$rango" >> "$RAW"
+done
+bash "$REPO_ROOT/.githooks/datos-servidor.sh" "$RAW" || { echo "[pre-push] No se sube nada."; exit 1; }
+echo "[pre-push] OK: sin datos del servidor."

@@ -56,6 +56,8 @@ test('sin anuncio listo no salta el panel y se avisa una vez', async ({ page }) 
   await page.evaluate(() => window.__ZOO__!.adsFake('visto', false));
   await page.evaluate(() => window.__ZOO__!.adsAdvance(300));
   await enterShop(page);
+  // El aviso llega cuando la tienda intenta ofrecer: se espera a él, no un tiempo fijo (CI va más lento).
+  await expect.poll(async () => (await log(page)).filter((name) => name === 'ad-empty'), { timeout: 10_000 }).toHaveLength(1);
   await page.waitForTimeout(1500);
   expect(await scenes(page)).not.toContain('AdOffer');
   expect((await log(page)).filter((name) => name === 'ad-empty')).toHaveLength(1);
