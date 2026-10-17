@@ -159,7 +159,7 @@ Hecha con las piezas de `src/ui/`. Tres zonas, con pestañas de dibujo en column
   - Cerrada con ganadora: la ganadora en grande con confeti.
   - Sin votación: cartel «Pronto habrá votación».
 - ~~El tarro de ideas~~ (quitado el 2026-10-15 por decisión de David: no aportaba y su número, que cuenta los envíos, no cuadraba con el listado).
-- **El muro.** Todas las entradas, de 4 en 4 con flechas, con dibujo, título grande, «idea de …» y sello de color: «Elegida» o «¡Ya en el zoo!».
+- **El muro.** Todas las entradas, de 4 en 4 con flechas, con dibujo, una línea con el título en negrita y «Idea de …» en letra normal (Baloo 2 en 800 y 500), y sello de color: «Elegida» o «¡Ya en el zoo!». Un solo tamaño de letra para todo el muro (el que deja caber la línea más larga junto a la etiqueta más ancha), igual en todas las filas, páginas e idiomas; las etiquetas, del mismo ancho. Nombres de hasta 20 letras.
 - **Tarjeta «¿Tienes una idea?»:** la imagen del QR, «Enséñaselo a un mayor», la versión del juego y la dirección de las condiciones escrita (no es un enlace).
 
 **Sin conexión:** aviso con dibujo, «Sin internet no se puede votar», y se enseña lo último guardado.
