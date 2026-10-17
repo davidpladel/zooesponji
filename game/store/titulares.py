@@ -142,6 +142,7 @@ if __name__ == '__main__':
         carpeta = f'play/titulares/{idioma}'
         os.makedirs(carpeta, exist_ok=True)
         for base, grande, pequeno in lista:
-            captura_con_titular(f'play/{base}.png', grande, pequeno).save(f'{carpeta}/{base}.png')
+            propia = f'play/{base}-{idioma}.png'  # captura con el juego en ese idioma, si la hay
+            captura_con_titular(propia if os.path.exists(propia) else f'play/{base}.png', grande, pequeno).save(f'{carpeta}/{base}.png')
         grafico(idioma).save(f'{carpeta}/grafico-funciones-1024x500.png')
         print(idioma, sorted(os.listdir(carpeta)))
