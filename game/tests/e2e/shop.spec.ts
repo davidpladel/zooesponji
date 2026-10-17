@@ -81,7 +81,8 @@ test('fase B: si el peque no se mueve, salen huellas que señalan qué comprar',
   await page.evaluate(() => window.__ZOO__!.openShop());
   await page.waitForFunction(() => window.__ZOO__!.shopCardScreenPos('pantera') !== null);
   expect(await page.evaluate(() => window.__ZOO__!.shopHintVisible())).toBe(false);
-  await page.waitForFunction(() => window.__ZOO__!.shopHintVisible(), undefined, { timeout: 12_000 });
+  // 6 s de juego quieto tras el paseo de entrada; en CI el reloj del juego va más lento que el de verdad.
+  await page.waitForFunction(() => window.__ZOO__!.shopHintVisible(), undefined, { timeout: 30_000 });
 
   // En cuanto se mueve, desaparecen.
   await page.keyboard.down('ArrowLeft');
