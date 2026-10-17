@@ -23,44 +23,54 @@
 </head>
 <body>
 <div id="stage">
-  <div id="cam"><video id="v" src="out/gameplay.mp4" muted preload="auto"></video></div>
+  <div id="cam"><video id="v" muted preload="auto"></video></div>
   <div id="tint"></div>
   <div id="conf"></div>
   <div id="texts"></div>
   <div id="flash"></div>
 </div>
 <script>
+// render.mjs inyecta window.LANG ('es' | 'en') y window.MARKS (marks-<idioma>.json de capture.mjs).
+const LANG = window.LANG ?? 'es', M = window.MARKS;
+document.documentElement.lang = LANG;
+document.getElementById('v').src = `out/gameplay-${LANG}.mp4`;
 // Cada plano: [inicio, fin, segundo del vídeo fuente, zoom inicial, zoom final, centroX, centroY]
 const SHOTS = [
-  [3.0, 6.5, 29.9, 1.25, 1.1, 960, 700],    // portón de entrada
-  [6.5, 10.0, 51.2, 1.3, 1.4, 1250, 480],   // paseo por el zoo y la fuente
-  [10.0, 13.5, 40.7, 1.3, 1.45, 960, 470],  // león: ¡Ñam!
-  [13.5, 17.0, 59.5, 1.3, 1.45, 960, 470],  // cabra
-  [17.0, 20.5, 92.7, 1.3, 1.45, 960, 470],  // panda
-  [20.5, 24.0, 67.6, 1.35, 1.2, 960, 470],  // cabra con conejo
-  [24.0, 26.5, 47.4, 1.4, 1.55, 960, 470],  // león con conejo
-  [26.5, 29.0, 97.6, 1.4, 1.55, 960, 470],  // panda: ¡Guau!
-  [29.0, 31.5, 41.0, 1.45, 1.65, 960, 470], // león: ¡Ñam!
-  [31.5, 35.0, 86.0, 1.05, 1.25, 960, 560], // gente paseando
-  [35.0, 43.0, 30.6, 1.3, 1.45, 960, 650],  // fondo del logo
+  [3.0, 6.5, M.world + 0.2, 1.25, 1.1, 960, 700],          // portón de entrada
+  [6.5, 10.0, M.cabra_walk + 0.6, 1.3, 1.4, 1250, 480],    // paseo por el zoo y la fuente
+  [10.0, 13.5, M.leon_carne - 0.35, 1.3, 1.45, 960, 470],  // león: ¡Ñam!
+  [13.5, 17.0, M.cabra_zanahoria - 0.3, 1.3, 1.45, 960, 470], // cabra
+  [17.0, 20.5, M.panda_zanahoria - 0.25, 1.3, 1.45, 960, 470], // panda
+  [20.5, 24.0, M.cabra_conejo - 0.7, 1.35, 1.2, 960, 470], // cabra con conejo
+  [24.0, 26.5, M.leon_conejo - 0.3, 1.4, 1.55, 960, 470],  // león con conejo
+  [26.5, 29.0, M.panda_conejo - 0.4, 1.4, 1.55, 960, 470], // panda: ¡Guau!
+  [29.0, 31.5, M.panda_bought - 0.8, 1.2, 1.35, 960, 540], // tienda: compra del panda
+  [31.5, 35.0, M.panda_walk + 0.86, 1.05, 1.25, 960, 560], // gente paseando
+  [35.0, 43.0, M.world + 0.9, 1.3, 1.45, 960, 650],        // fondo del logo
 ];
+const WORDS = {
+  es: ['¡¿QUÉ ES ESO?!', '¡BIENVENIDO!', 'TU PROPIO ZOO', '¡LEONES!', '¡CABRAS!', '¡PANDAS!', '¡DALES DE COMER!',
+    '¡CUIDA!', '¡RÍE!', '¡WOW!', '¡TODOS TE ESPERAN!', 'ZOO', 'ESPONJI', '¡MUY PRONTO EN GOOGLE PLAY!'],
+  en: ['WHAT IS THAT?!', 'WELCOME!', 'YOUR OWN ZOO', 'LIONS!', 'GOATS!', 'PANDAS!', 'FEED THEM!',
+    'CARE!', 'LAUGH!', 'WOW!', "THEY'RE ALL WAITING!", 'ZOO', 'ESPONJI', 'COMING SOON TO GOOGLE PLAY!'],
+}[LANG];
 // [inicio, fin, texto, tamaño px, y, color]
 const TEXTS = [
-  [0.4, 3.0, '¡¿QUÉ ES ESO?!', 150, 450, '#ffffff'],
-  [3.1, 6.5, '¡BIENVENIDO!', 190, 90, '#ffd23f'],
-  [6.6, 10.0, 'TU PROPIO ZOO', 170, 800, '#7dff5a'],
-  [10.1, 13.5, '¡LEONES!', 200, 820, '#ffb13b'],
-  [13.6, 17.0, '¡CABRAS!', 200, 820, '#ffffff'],
-  [17.1, 20.5, '¡PANDAS!', 200, 820, '#8ee6ff'],
-  [20.6, 24.0, '¡DALES DE COMER!', 170, 820, '#ff7ab8'],
-  [24.1, 26.5, '¡CUIDA!', 230, 780, '#ffd23f'],
-  [26.6, 29.0, '¡RÍE!', 230, 780, '#8ee6ff'],
-  [29.1, 31.5, '¡WOW!', 260, 760, '#ff7ab8'],
-  [31.6, 35.0, '¡TODOS TE ESPERAN!', 165, 800, '#ffd23f'],
-  [35.3, 43.0, 'ZOO', 330, 170, '#ffd23f'],
-  [35.6, 43.0, 'ESPONJI', 270, 480, '#ff9a2e'],
-  [38.5, 43.0, '¡MUY PRONTO EN GOOGLE PLAY!', 100, 850, '#ffffff'],
-];
+  [0.4, 3.0, 150, 450, '#ffffff'],
+  [3.1, 6.5, 190, 90, '#ffd23f'],
+  [6.6, 10.0, 170, 800, '#7dff5a'],
+  [10.1, 13.5, 200, 820, '#ffb13b'],
+  [13.6, 17.0, 200, 820, '#ffffff'],
+  [17.1, 20.5, 200, 820, '#8ee6ff'],
+  [20.6, 24.0, 170, 820, '#ff7ab8'],
+  [24.1, 26.5, 230, 780, '#ffd23f'],
+  [26.6, 29.0, 230, 780, '#8ee6ff'],
+  [29.1, 31.5, 260, 760, '#ff7ab8'],
+  [31.6, 35.0, 165, 800, '#ffd23f'],
+  [35.3, 43.0, 330, 170, '#ffd23f'],
+  [35.6, 43.0, 270, 480, '#ff9a2e'],
+  [38.5, 43.0, 100, 850, '#ffffff'],
+].map(([a, b, ...rest], i) => [a, b, WORDS[i], ...rest]);
 const FLASHES = [3.0, 10.0, 24.0, 31.5, 35.0, 41.0];
 const SHAKES = [[0.2, 0.9, 16], [1.2, 1.9, 16], [2.2, 2.9, 16], [41.0, 42.0, 12]];
 

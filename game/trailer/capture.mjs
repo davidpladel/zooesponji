@@ -1,11 +1,14 @@
-// Graba una partida guionizada a 1920x1080 y apunta en marks.json cuándo pasa cada cosa.
+// Graba una partida guionizada a 1920x1080 y apunta en marks-<idioma>.json cuándo pasa cada cosa.
+// Uso (con `npm run dev` en marcha): node trailer/capture.mjs [es|en]
 import { chromium } from '@playwright/test';
 import fs from 'node:fs';
 
+const LANG = process.argv[2] === 'en' ? 'en' : 'es';
 const OUT = new URL('./out/', import.meta.url).pathname.replace(/^\/(\w:)/, '$1');
 fs.mkdirSync(OUT, { recursive: true });
 const browser = await chromium.launch({ channel: 'chrome' });
 const ctx = await browser.newContext({
+  locale: LANG === 'es' ? 'es-ES' : 'en-US',
   viewport: { width: 1920, height: 1080 },
   recordVideo: { dir: OUT, size: { width: 1920, height: 1080 } },
 });
@@ -27,10 +30,9 @@ async function walk(x, y) {
     return !p || (p.x === x * 16 + 8 && p.y === y * 16 + 8);
   }, [x, y], { timeout: 40000 }).catch(() => {});
 }
-async function feedAt(animal, foods) {
-  const t = await zoo((a) => window.__ZOO__.gateApproachTile(a), animal);
+async function feedAt(animal, resident, foods) {
   mark(animal + '_walk');
-  await zoo(([x, y]) => window.__ZOO__.goToTile(x, y), [t.x, t.y]);
+  await zoo((r) => window.__ZOO__.feedResident(r), resident);
   await scene('Feed', 40000);
   mark(animal + '_feed');
   await wait(900);
@@ -52,7 +54,7 @@ async function feedAt(animal, foods) {
 await page.goto('http://localhost:5173/');
 await page.evaluate(() => localStorage.clear());
 await page.reload();
-await scene('Title');
+await scene('Title', 120000);
 mark('title');
 await wait(4000);
 let b = await box();
@@ -60,8 +62,8 @@ await page.mouse.click(b.x + b.width / 2, b.y + b.height * 0.62);
 await scene('World');
 mark('world');
 await wait(2500);
-await feedAt('leon', ['carne', 'piedra', 'conejo']);
-await feedAt('cabra', ['zanahoria', 'conejo']);
+await feedAt('leon', 'bills', ['carne', 'piedra', 'conejo']);
+await feedAt('cabra', 'gordi', ['zanahoria', 'conejo']);
 await zoo(() => window.__ZOO__.addCoins(130));
 const door = await zoo(() => window.__ZOO__.shopDoorTile());
 mark('shop_walk');
@@ -80,10 +82,10 @@ mark('panda_bought');
 await wait(3000);
 await page.keyboard.press('Escape');
 await wait(800);
-await feedAt('panda', ['zanahoria', 'conejo']);
+await feedAt('panda', 'mochi', ['zanahoria', 'conejo']);
 mark('end');
 await wait(1500);
 await ctx.close();
-fs.renameSync(await page.video().path(), OUT + 'gameplay.webm');
-fs.writeFileSync(OUT + 'marks.json', JSON.stringify(marks, null, 2));
+fs.renameSync(await page.video().path(), OUT + `gameplay-${LANG}.webm`);
+fs.writeFileSync(OUT + `marks-${LANG}.json`, JSON.stringify(marks, null, 2));
 await browser.close();
