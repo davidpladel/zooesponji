@@ -25,4 +25,10 @@ final class RelojTest extends TestCase
         self::assertSame('2026-11-01', Reloj::hoy($ahora));
         self::assertSame('2026-11-01 13:00:00', Reloj::utc($ahora));
     }
+
+    public function testLaHoraEsLaDeEspana(): void
+    {
+        $ahora = new DateTimeImmutable('2026-10-31 23:30:00', new DateTimeZone('UTC'));
+        self::assertSame('2026-11-01 00', Reloj::hora($ahora));
+    }
 }

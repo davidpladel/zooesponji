@@ -16,6 +16,13 @@ if (!Http::metodo('POST')) {
 $entrada = Http::cuerpoJson();
 Http::responder(...Servicio::atender(static function () use ($app, $entrada): array {
     $config = Servicio::config($app);
-    $hoy = Reloj::hoy(new DateTimeImmutable('now'));
-    return Voto::procesar($entrada, Contenido::leer($config['contenido']), Servicio::almacen($config), $hoy);
+    $ahora = new DateTimeImmutable('now');
+    return Voto::procesar(
+        $entrada,
+        Contenido::leer($config['contenido']),
+        Servicio::almacen($config),
+        Reloj::hoy($ahora),
+        Reloj::hora($ahora),
+        $config['votos_hora'],
+    );
 }));

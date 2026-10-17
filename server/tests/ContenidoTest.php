@@ -41,11 +41,11 @@ final class ContenidoTest extends TestCase
         self::assertSame(Contenido::VACIO, Contenido::validar([]));
     }
 
-    public function testRecortaElNombreAQuince(): void
+    public function testRecortaElNombreAVeinte(): void
     {
         $d = self::ejemplo();
         $d['votacion']['opciones'][0]['ideaDe'] = 'Maximiliano Alejandro';
-        self::assertSame('Maximiliano Ale', Contenido::validar($d)['votacion']['opciones'][0]['ideaDe']);
+        self::assertSame('Maximiliano Alejandr', Contenido::validar($d)['votacion']['opciones'][0]['ideaDe']);
     }
 
     public function testDescartaLasClavesDesconocidas(): void

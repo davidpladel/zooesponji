@@ -50,9 +50,40 @@ El flujo no guarda las ejecuciones que van bien, para no dejar copias de los env
 
 Si n8n está caído, los envíos se guardan igual; se ven con `tools/comunidad/envios.mjs`.
 
+## Freno de votos
+
+Dos capas. La de PHP ya viene en el código: cada votación cuenta como mucho `votos_hora` votos por hora
+(300 por defecto; cámbialo en `config.php`). Los que pasan no suman, pero se responde igual. Antes de cerrar
+una votación, mira si ha habido avalanchas:
+
+    php ~/web/api.zooesponji.com/private/app/votos-hora.php <votación>
+
+La de nginx frena a una sola dirección que manda muchos votos. Necesita un administrador del VPS, una vez:
+
+1. Crear `/etc/nginx/conf.d/zoo-voto.conf` con:
+
+       limit_req_zone $binary_remote_addr zone=zoo_voto:1m rate=<votos>r/m;
+
+2. Crear `/home/<usuario>/conf/web/api.zooesponji.com/nginx.ssl.conf_zoo-voto` (Hestia lo incluye dentro del
+   `server` del dominio y no lo borra al reconstruir). `<ip>` y el puerto son los de `proxy_pass` en el
+   `nginx.ssl.conf` de al lado:
+
+       location = /voto.php {
+           limit_req zone=zoo_voto burst=<margen> nodelay;
+           limit_req_status 429;
+           proxy_ssl_server_name on;
+           proxy_ssl_name $host;
+           proxy_pass https://<ip>:<puerto>;
+       }
+
+3. `nginx -t` y, si dice «ok», `systemctl reload nginx`.
+
+nginx lleva la cuenta solo en memoria; la dirección no se escribe en ningún sitio.
+
 ## Actualizar
 
-Vuelve a subir `public/` y `app/src/`. No pises `config.php` ni `datos/`.
+Vuelve a subir `public/` y `app/src/` (y los scripts sueltos de `app/`, como `votos-hora.php`). No pises `config.php` ni `datos/`.
+Si `app/esquema.sql` trae una tabla nueva, ejecútala en phpMyAdmin antes de subir el código.
 
 ## Cambiar las condiciones
 

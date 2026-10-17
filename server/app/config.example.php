@@ -12,4 +12,6 @@ return [
     'condiciones' => '2026-10',
     // Ruta de comunidad.json. Vacía: app/datos/comunidad.json.
     'contenido' => '',
+    // Votos que cuenta cada votación en una hora. Los que pasan se responden igual pero no suman.
+    'votos_hora' => 300,
 ];

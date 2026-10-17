@@ -12,6 +12,7 @@ try {
         match ($modo) {
             'primeros' => $almacen->votar('v', 'o' . $i),
             'cruces' => ((int) $indice % 2 === 0) ? $almacen->votar('v', 'b', 'a') : $almacen->votar('v', 'a', 'b'),
+            'tope' => $almacen->votarConTope('v', '2026-11-03 10', 50, 'a'),
             'ideas' => $almacen->sumarIdea(),
         };
     }

@@ -109,7 +109,8 @@
         If the game is online, the notice board in the square asks our server (api.zooesponji.com) for the current vote
         and the ideas already chosen. When you vote, the vote, the option chosen and, if you change your vote, the
         previous option (so it can be subtracted) are sent. <strong>The vote is anonymous:</strong> our server does not
-        store the IP address or anything that says who voted; it only adds up votes. The device remembers what has been
+        store the IP address or anything that says who voted; it only adds up votes. To stop abuse, the server checks at that moment how
+        many votes arrive from the same address, without writing it down anywhere. The device remembers what has been
         voted so as not to vote twice. Ideas are not written in the game: they are sent from a separate web page
         (zooesponji.com/ideas), meant only for people over 18, which is reached with the code on the notice board. The
         names shown in the game (for example, “Lucía's idea”) were written by an adult on that website and we review

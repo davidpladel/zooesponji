@@ -18,9 +18,9 @@ final class VotoTest extends TestCase
         $this->contenido = Contenido::validar(ContenidoTest::ejemplo());
     }
 
-    private function votar(mixed $entrada, string $hoy = '2026-11-03'): array
+    private function votar(mixed $entrada, string $hoy = '2026-11-03', string $hora = '2026-11-03 10', int $tope = 300): array
     {
-        return Voto::procesar($entrada, $this->contenido, $this->almacen, $hoy);
+        return Voto::procesar($entrada, $this->contenido, $this->almacen, $hoy, $hora, $tope);
     }
 
     public function testVotoCorrecto(): void
@@ -76,5 +76,43 @@ final class VotoTest extends TestCase
         $this->contenido = Contenido::VACIO;
         self::assertSame([409, ['error' => 'cerrada']], $this->votar($voto));
         self::assertSame([], $this->almacen->totales('2026-11-a'));
+    }
+
+    public function testPasadoElTopeDeLaHoraNoSumaPeroRespondeIgual(): void
+    {
+        $voto = ['votacion' => '2026-11-a', 'opcion' => 'koalas'];
+        $this->votar($voto, tope: 2);
+        $this->votar($voto, tope: 2);
+        [$estado, $cuerpo] = $this->votar($voto, tope: 2);
+        self::assertSame(200, $estado);
+        self::assertSame(['ok' => true, 'reparto' => ['delfines' => 0, 'koalas' => 100]], $cuerpo);
+        self::assertSame(['koalas' => 2], $this->almacen->totales('2026-11-a'));
+        self::assertSame([['hora' => '2026-11-03 10', 'contados' => 2, 'frenados' => 1]], $this->almacen->votosPorHora('2026-11-a'));
+    }
+
+    public function testLaHoraSiguienteVuelveAContar(): void
+    {
+        $voto = ['votacion' => '2026-11-a', 'opcion' => 'koalas'];
+        $this->votar($voto, tope: 1);
+        $this->votar($voto, tope: 1);
+        $this->votar($voto, hora: '2026-11-03 11', tope: 1);
+        self::assertSame(['koalas' => 2], $this->almacen->totales('2026-11-a'));
+        self::assertSame([
+            ['hora' => '2026-11-03 10', 'contados' => 1, 'frenados' => 1],
+            ['hora' => '2026-11-03 11', 'contados' => 1, 'frenados' => 0],
+        ], $this->almacen->votosPorHora('2026-11-a'));
+    }
+
+    public function testCambiarALaMismaOpcionNoGastaTope(): void
+    {
+        $this->votar(['votacion' => '2026-11-a', 'opcion' => 'koalas', 'anterior' => 'koalas'], tope: 1);
+        self::assertSame([], $this->almacen->votosPorHora('2026-11-a'));
+    }
+
+    public function testUnCambioFrenadoNoRestaLaAnterior(): void
+    {
+        $this->votar(['votacion' => '2026-11-a', 'opcion' => 'koalas'], tope: 1);
+        $this->votar(['votacion' => '2026-11-a', 'opcion' => 'delfines', 'anterior' => 'koalas'], tope: 1);
+        self::assertSame(['koalas' => 1], $this->almacen->totales('2026-11-a'));
     }
 }

@@ -47,7 +47,7 @@ final class WebTest extends TestCase
             $html = (string) file_get_contents($pagina);
             self::assertMatchesRegularExpression('#href="/(privacidad|privacy)"#', $html, $pagina);
             self::assertMatchesRegularExpression('#href="/(condiciones|terms)"#', $html, $pagina);
-            self::assertStringContainsString('aviso-legal', $html, $pagina);
+            self::assertMatchesRegularExpression('#href="/(aviso-legal|legal-notice)"#', $html, $pagina);
         }
     }
 

@@ -85,7 +85,10 @@ Tablas:
 Reglas:
 
 - Sin cookies, sin sesiones, sin identificadores. La IP no se guarda ni se usa para nada: ni en tablas ni en registros propios.
-- **No hay freno de votos en el servidor.** Que cada aparato vote una vez lo lleva el juego (decisión de David). Quien gana lo confirma David al cerrar.
+- Que cada aparato vote una vez lo lleva el juego. Quien gana lo confirma David al cerrar.
+- **Freno de votos en el servidor (2026-10-17), en dos capas:**
+  - nginx: `voto.php` acepta unos pocos votos por minuto desde una misma dirección, con margen (un colegio detrás de una sola conexión). Lo que pasa recibe 429 y el juego lo trata como «sin conexión». nginx lleva la cuenta solo en memoria: la dirección no se guarda en ningún sitio.
+  - PHP: cada votación cuenta como mucho `votos_hora` votos por hora de España (300 por defecto, en `config.php`). Los que pasan se responden igual, para no dar pistas, y quedan apuntados como frenados en `votos_hora`. Antes de cerrar, David lo mira con `php private/app/votos-hora.php <votación>`.
 - `estado.php` se puede guardar en caché 60 segundos.
 - Respuestas con `Access-Control-Allow-Origin: *` y sin credenciales (el juego en Android se sirve desde `https://localhost`).
 - **El formulario no limita a nadie:** una persona puede enviar las ideas que quiera. Contra los robots hay dos cosas que no miran quién envía: un campo trampa oculto (si llega relleno, se responde «gracias» y no se guarda ni se cuenta) y un tope global de 300 envíos al día en todo el servidor; pasado ese tope se guarda el envío pero no se avisa a n8n hasta el día siguiente.

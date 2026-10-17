@@ -108,7 +108,8 @@
         Si el juego tiene conexión, el tablón de la plaza pide a nuestro servidor (api.zooesponji.com) la votación del
         momento y las ideas ya elegidas. Al votar se envía la votación, la opción elegida y, si se cambia el voto, la
         opción anterior, para restarla. <strong>El voto es anónimo:</strong> nuestro servidor no guarda la dirección IP ni
-        nada que diga quién ha votado; solo suma votos. El aparato recuerda qué se ha votado para no votar dos veces. Las
+        nada que diga quién ha votado; solo suma votos. Para frenar abusos, el servidor mira en el momento cuántos
+        votos llegan desde una misma dirección, sin apuntarla en ningún sitio. El aparato recuerda qué se ha votado para no votar dos veces. Las
         ideas no se escriben en el juego: se envían desde una página web aparte (zooesponji.com/ideas), pensada solo para
         mayores de 18 años, a la que se llega con el código del tablón. Los nombres que se ven en el juego (por ejemplo,
         «Idea de Lucía») los ha escrito un adulto en esa web y los revisamos antes de publicarlos: solo nombres de pila o

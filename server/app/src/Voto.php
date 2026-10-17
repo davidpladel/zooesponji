@@ -4,13 +4,14 @@ declare(strict_types=1);
 namespace Zoo;
 
 /**
- * Un voto, o un cambio de voto. El servidor no sabe quién vota ni frena repetidos: que cada aparato
- * vote una vez lo lleva el juego. La ganadora la confirma David al cerrar.
+ * Un voto, o un cambio de voto. El servidor no sabe quién vota: que cada aparato vote una vez lo lleva el
+ * juego. Contra una avalancha, cada votación cuenta como mucho `$tope` votos por hora; los que pasan se
+ * responden igual, para no dar pistas, y quedan apuntados como frenados. La ganadora la confirma David al cerrar.
  */
 final class Voto
 {
     /** @return array{0: int, 1: array} */
-    public static function procesar(mixed $entrada, array $contenido, Almacen $almacen, string $hoy): array
+    public static function procesar(mixed $entrada, array $contenido, Almacen $almacen, string $hoy, string $hora, int $tope): array
     {
         $idVotacion = is_array($entrada) ? ($entrada['votacion'] ?? null) : null;
         $opcion = is_array($entrada) ? ($entrada['opcion'] ?? null) : null;
@@ -27,7 +28,7 @@ final class Voto
             return [400, ['error' => 'peticion']];
         }
         if ($anterior !== $opcion) {
-            $almacen->votar($idVotacion, $opcion, $anterior);
+            $almacen->votarConTope($idVotacion, $hora, $tope, $opcion, $anterior);
         }
         return [200, ['ok' => true, 'reparto' => Estado::porcentajes($almacen->totales($idVotacion), $ids)]];
     }

@@ -21,6 +21,7 @@ final class Almacen
         $fin = $sqlite ? '' : ' DEFAULT CHARSET=utf8mb4';
         $this->pdo->exec("CREATE TABLE IF NOT EXISTS votos (votacion VARCHAR(40) NOT NULL, opcion VARCHAR(40) NOT NULL, total INT NOT NULL DEFAULT 0, PRIMARY KEY (votacion, opcion))$fin");
         $this->pdo->exec("CREATE TABLE IF NOT EXISTS envios (id $id, fecha VARCHAR(19) NOT NULL, idea VARCHAR(300) NOT NULL, fallo VARCHAR(500) NOT NULL, nombre VARCHAR(15) NOT NULL, version VARCHAR(20) NOT NULL, modelo VARCHAR(60) NOT NULL, idioma VARCHAR(2) NOT NULL, condiciones VARCHAR(10) NOT NULL)$fin");
+        $this->pdo->exec("CREATE TABLE IF NOT EXISTS votos_hora (votacion VARCHAR(40) NOT NULL, hora CHAR(13) NOT NULL, contados INT NOT NULL DEFAULT 0, frenados INT NOT NULL DEFAULT 0, PRIMARY KEY (votacion, hora))$fin");
         $this->pdo->exec("CREATE TABLE IF NOT EXISTS contadores (nombre VARCHAR(20) NOT NULL PRIMARY KEY, valor INT NOT NULL DEFAULT 0)$fin");
         $this->pdo->exec(($sqlite ? 'INSERT OR IGNORE' : 'INSERT IGNORE') . " INTO contadores (nombre, valor) VALUES ('ideas', 0)");
     }
@@ -32,20 +33,39 @@ final class Almacen
      */
     public function votar(string $votacion, string $opcion, ?string $anterior = null): void
     {
-        $cambios = [$opcion => 1];
-        if ($anterior !== null && $anterior !== $opcion) {
-            $cambios[$anterior] = -1;
-        }
-        ksort($cambios, SORT_STRING);
-        $this->repetirSiSeBloquea(function () use ($votacion, $cambios): void {
-            foreach ($cambios as $id => $cambio) {
-                if ($cambio > 0) {
-                    $this->pdo->prepare($this->sumar('votos', 'votacion, opcion', 'total'))->execute([$votacion, $id]);
-                } else {
-                    $this->pdo->prepare('UPDATE votos SET total = total - 1 WHERE votacion = ? AND opcion = ? AND total > 0')->execute([$votacion, $id]);
-                }
+        $this->repetirSiSeBloquea(fn () => $this->aplicar($votacion, $opcion, $anterior));
+    }
+
+    /**
+     * Como `votar`, pero solo si a `$votacion` le quedan votos en esa `$hora`; si no, se apunta como frenado.
+     * La cuenta de la hora va en la misma transacción que el voto. Devuelve si el voto se ha contado.
+     */
+    public function votarConTope(string $votacion, string $hora, int $tope, string $opcion, ?string $anterior = null): bool
+    {
+        $contado = false;
+        $this->repetirSiSeBloquea(function () use ($votacion, $hora, $tope, $opcion, $anterior, &$contado): void {
+            $insertar = $this->pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'sqlite' ? 'INSERT OR IGNORE' : 'INSERT IGNORE';
+            $this->pdo->prepare("$insertar INTO votos_hora (votacion, hora) VALUES (?, ?)")->execute([$votacion, $hora]);
+            $hueco = $this->pdo->prepare('UPDATE votos_hora SET contados = contados + 1 WHERE votacion = ? AND hora = ? AND contados < ?');
+            $hueco->execute([$votacion, $hora, $tope]);
+            $contado = $hueco->rowCount() === 1;
+            if ($contado) {
+                $this->aplicar($votacion, $opcion, $anterior);
+            } else {
+                $this->pdo->prepare('UPDATE votos_hora SET frenados = frenados + 1 WHERE votacion = ? AND hora = ?')->execute([$votacion, $hora]);
             }
         });
+        return $contado;
+    }
+
+    /** @return list<array{hora: string, contados: int, frenados: int}> */
+    public function votosPorHora(string $votacion): array
+    {
+        $consulta = $this->pdo->prepare('SELECT hora, contados, frenados FROM votos_hora WHERE votacion = ? ORDER BY hora');
+        $consulta->execute([$votacion]);
+        return array_map(static fn (array $fila): array => [
+            'hora' => (string) $fila['hora'], 'contados' => (int) $fila['contados'], 'frenados' => (int) $fila['frenados'],
+        ], $consulta->fetchAll(PDO::FETCH_ASSOC));
     }
 
     /** @return array<string, int> */
@@ -101,6 +121,23 @@ final class Almacen
         $consulta = $this->pdo->prepare('SELECT id, fecha, idea, fallo, nombre, version, modelo, idioma, condiciones FROM envios WHERE fecha >= ? ORDER BY fecha DESC, id DESC');
         $consulta->execute([$desde]);
         return $consulta->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /** Los cambios de un voto, en orden fijo para que dos votos a la vez no se bloqueen. Sin transacción propia. */
+    private function aplicar(string $votacion, string $opcion, ?string $anterior): void
+    {
+        $cambios = [$opcion => 1];
+        if ($anterior !== null && $anterior !== $opcion) {
+            $cambios[$anterior] = -1;
+        }
+        ksort($cambios, SORT_STRING);
+        foreach ($cambios as $id => $cambio) {
+            if ($cambio > 0) {
+                $this->pdo->prepare($this->sumar('votos', 'votacion, opcion', 'total'))->execute([$votacion, $id]);
+            } else {
+                $this->pdo->prepare('UPDATE votos SET total = total - 1 WHERE votacion = ? AND opcion = ? AND total > 0')->execute([$votacion, $id]);
+            }
+        }
     }
 
     /** «Insertar con 1, o sumar 1 si ya existe» en una sola sentencia. Las columnas clave van como parámetros. */

@@ -14,6 +14,12 @@ final class Reloj
         return $ahora->setTimezone(new DateTimeZone('Europe/Madrid'))->format('Y-m-d');
     }
 
+    /** La hora en España, «AAAA-MM-DD HH»: el tope de votos va por horas de aquí. */
+    public static function hora(DateTimeImmutable $ahora): string
+    {
+        return $ahora->setTimezone(new DateTimeZone('Europe/Madrid'))->format('Y-m-d H');
+    }
+
     public static function utc(DateTimeImmutable $ahora): string
     {
         return $ahora->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d H:i:s');

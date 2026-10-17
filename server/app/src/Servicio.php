@@ -26,6 +26,10 @@ final class Servicio
                 throw new RuntimeException("config.php: falta $clave");
             }
         }
+        $config['votos_hora'] ??= 300;
+        if (!is_int($config['votos_hora']) || $config['votos_hora'] < 1) {
+            throw new RuntimeException('config.php: votos_hora debe ser un número mayor que 0');
+        }
         if ($config['contenido'] === '') {
             $config['contenido'] = $dirApp . '/datos/comunidad.json';
         }

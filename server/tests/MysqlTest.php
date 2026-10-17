@@ -29,7 +29,7 @@ final class MysqlTest extends TestCase
     protected function setUp(): void
     {
         $pdo = new PDO(self::dsn(), getenv('ZOO_TEST_MYSQL_USER') ?: 'root', getenv('ZOO_TEST_MYSQL_PASS') ?: '');
-        $pdo->exec('DROP TABLE IF EXISTS votos, envios, contadores');
+        $pdo->exec('DROP TABLE IF EXISTS votos, votos_hora, envios, contadores');
         self::almacen(self::dsn())->crearTablas();
     }
 
@@ -69,6 +69,14 @@ final class MysqlTest extends TestCase
         }
         self::assertSame([], self::aLaVez('cruces'));
         self::assertSame(400, array_sum($almacen->totales('v')));
+    }
+
+    public function testElTopeAguantaVotosALaVez(): void
+    {
+        self::assertSame([], self::aLaVez('tope'));
+        $almacen = self::almacen(self::dsn());
+        self::assertSame(['a' => 50], $almacen->totales('v'));
+        self::assertSame([['hora' => '2026-11-03 10', 'contados' => 50, 'frenados' => self::PROCESOS * 15 - 50]], $almacen->votosPorHora('v'));
     }
 
     public function testContadorDeIdeasALaVez(): void
