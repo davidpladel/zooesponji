@@ -24,7 +24,7 @@ import { startAds } from './adsInstall';
 import { getCommunity } from './community';
 import { startCommunity } from './communityInstall';
 import { bus, type GameEvents } from './events';
-import { getLanguage } from './language';
+import { getLanguage, isLanguage } from './language';
 import type { Platform } from './platform';
 import { getSession } from './session';
 
@@ -72,6 +72,7 @@ export interface ZooTestApi {
   language(): string;
   titlePlayLabel(): string | null;
   settingsLanguagePos(): Vec | null;
+  settingsLanguageOptionPos(lang: string): Vec | null;
   settingsLanguageLabel(): string | null;
   settingsCredits(): string | null;
   settingsButtonPos(key: 'privacy' | 'quit'): Vec | null;
@@ -203,6 +204,7 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
     language: () => getLanguage(),
     titlePlayLabel: () => activeScene<TitleScene>('Title')?.playLabel() ?? null,
     settingsLanguagePos: () => activeScene<SettingsScene>('Settings')?.languagePos() ?? null,
+    settingsLanguageOptionPos: (lang) => (isLanguage(lang) ? activeScene<SettingsScene>('Settings')?.languageOptionPos(lang) ?? null : null),
     settingsLanguageLabel: () => activeScene<SettingsScene>('Settings')?.languageLabel() ?? null,
     quitStayPos: () => activeScene<QuitScene>('Quit')?.stayPos() ?? null,
     settingsButtonPos: (key) => activeScene<SettingsScene>('Settings')?.buttonPos(key) ?? null,

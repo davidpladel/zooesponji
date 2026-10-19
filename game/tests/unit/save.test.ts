@@ -13,6 +13,7 @@ import {
   writeSave,
 } from '../../src/core/save';
 import { createMemoryStore } from '../../src/systems/storage';
+import { LANGUAGES } from '../../src/systems/language';
 
 describe('parseSave', () => {
   it('acepta una partida válida', () => {
@@ -162,11 +163,11 @@ describe('ajustes: idioma', () => {
     expect('language' in parsed.settings).toBe(false);
   });
 
-  it.each(['es', 'en'] as const)('acepta %s', (language) => {
+  it.each(LANGUAGES)('acepta %s', (language) => {
     expect(parseSave(withLanguage(language))?.settings.language).toBe(language);
   });
 
-  it.each([['fr'], ['EN'], ['es-ES'], [3], [null], [true]])('ignora %j y queda en automático', (language) => {
+  it.each([['de'], ['pt'], ['EN'], ['es-ES'], [3], [null], [true]])('ignora %j y queda en automático', (language) => {
     const parsed = parseSave(withLanguage(language))!;
     expect(parsed.settings.language).toBeUndefined();
     expect(parsed.settings.music).toBe(true);

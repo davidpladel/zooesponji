@@ -1,4 +1,5 @@
 import type * as Phaser from 'phaser';
+import { getLanguage, isRtl } from '../systems/language';
 
 export const FONT = 'Baloo 2';
 export const FONT_STACK = `"${FONT}", "Arial Rounded MT Bold", sans-serif`;
@@ -41,5 +42,7 @@ export function textStyle(size: number, color = '#ffffff', stroke: string = UI.o
     color,
     stroke,
     strokeThickness: Math.max(3, Math.round(size / 6)),
+    // El árabe se escribe de derecha a izquierda.
+    rtl: isRtl(getLanguage()),
   };
 }

@@ -1,6 +1,6 @@
 import { PEN_IDS, isPenId, penCapacity, type PenId } from '../data/pens';
 import { SHOP_UNLOCK_COINS } from '../data/shop';
-import type { Language } from '../systems/language';
+import { isLanguage, type Language } from '../systems/language';
 import { initialCounts, type GameState } from './economy';
 
 export interface KeyValueStore {
@@ -116,7 +116,7 @@ export function parseSave(value: unknown): SaveData | null {
   const bool = (key: ToggleKey): boolean =>
     typeof rawSettings[key] === 'boolean' ? (rawSettings[key] as boolean) : defaults[key];
   // Cualquier otro valor se ignora: el idioma vuelve a ser automático.
-  const language = rawSettings.language === 'es' || rawSettings.language === 'en' ? rawSettings.language : undefined;
+  const language = isLanguage(rawSettings.language) ? rawSettings.language : undefined;
 
   return {
     version: SAVE_VERSION,

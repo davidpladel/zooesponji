@@ -300,7 +300,7 @@ export class BoardScene extends Phaser.Scene {
     const b = this.body;
     bus.emit('board-qr', {});
     const size = Math.max(160, Math.min(b.height * 0.92, b.width * 0.45));
-    const qr = this.add.image(b.x + b.width * 0.28, b.centerY, getLanguage() === 'en' ? 'qr-ideas-en' : 'qr-ideas');
+    const qr = this.add.image(b.x + b.width * 0.28, b.centerY, getLanguage() === 'es' ? 'qr-ideas' : 'qr-ideas-en');
     qr.setDisplaySize(size, size);
     const tx = b.x + b.width * 0.56;
     const room = b.right - tx;

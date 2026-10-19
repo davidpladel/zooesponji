@@ -218,7 +218,8 @@ export function shouldNotifyWinner(status: CommunityStatus, memory: CommunityMem
 }
 
 export function localized(text: Localized, lang: Language): string {
-  return text[lang];
+  // El servidor solo trae español e inglés: el resto de idiomas lo ve en inglés.
+  return lang === 'es' ? text.es : text.en;
 }
 
 /** La dirección del servidor de comunidad. Solo HTTPS (o localhost para probar). Sin barra final. */
