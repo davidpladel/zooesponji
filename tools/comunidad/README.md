@@ -17,7 +17,8 @@ Desde la raíz del repositorio:
 Descarga los envíos a `tools/comunidad/data/envios.json` (ignorado por git). **Llevan nombres de
 menores: ese archivo no se comparte ni se sube.**
 
-Con Claude: elegir las ideas, redactar las opciones en español e inglés y decidir los créditos
+Con Claude: elegir las ideas, redactar las opciones en español e inglés (obligatorios) y traducir el título a los
+otros 9 idiomas del juego (fr, pt-BR, pt-PT, it, ru, ar, hi, zh, ja; si falta uno, el juego usa el inglés), y decidir los créditos
 (solo nombre de pila o apodo). Guardar el resultado en `tools/comunidad/data/comunidad.json` y los
 dibujos (PNG cuadrados de 256 px) en `tools/comunidad/data/dibujos/`.
 
@@ -30,6 +31,9 @@ Por eso **nunca se cambia un dibujo con el mismo nombre**: cada dibujo nuevo, o 
 
 Si dice que vale, subir con el gestor de archivos de Hestia: los dibujos a `dibujos/` de la carpeta
 pública y `comunidad.json` a `app/datos/`. Los dibujos primero.
+
+Los títulos se pueden corregir o traducir en cualquier momento: basta con volver a subir `comunidad.json`, sin sacar
+versión del juego.
 
 ## Cerrar una votación
 

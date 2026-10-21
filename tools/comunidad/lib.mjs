@@ -12,9 +12,16 @@ function esDia(v) {
   return fecha.getUTCMonth() === +m[2] - 1 && fecha.getUTCDate() === +m[3];
 }
 
+/** es y en son obligatorios; el resto de idiomas del juego, opcionales (si falta, el juego usa el inglés). */
+export const IDIOMAS = ['es', 'en', 'fr', 'pt-BR', 'pt-PT', 'it', 'ru', 'ar', 'hi', 'zh', 'ja'];
+
 function ficha(f, donde, errores) {
-  for (const idioma of ['es', 'en']) {
+  for (const idioma of Object.keys(f.titulo ?? {})) {
+    if (!IDIOMAS.includes(idioma)) errores.push(`${donde}.titulo.${idioma}: el juego no tiene ese idioma.`);
+  }
+  for (const idioma of IDIOMAS) {
     const titulo = f.titulo?.[idioma];
+    if (titulo === undefined && idioma !== 'es' && idioma !== 'en') continue;
     if (typeof titulo !== 'string' || titulo.trim() === '') errores.push(`${donde}.titulo.${idioma}: falta el título.`);
     else if ([...titulo.trim()].length > 30) errores.push(`${donde}.titulo.${idioma}: pasa de 30 letras.`);
   }

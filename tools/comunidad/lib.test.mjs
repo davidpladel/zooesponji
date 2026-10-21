@@ -34,6 +34,12 @@ test('cada error se nombra con su sitio', () => {
   assert.match(con((d) => { d.muro = Array(31).fill(d.muro[0]); })[0], /30/);
 });
 
+test('los otros idiomas son opcionales, pero no vacíos ni inventados', () => {
+  assert.deepEqual(con((d) => { d.votacion.opciones[0].titulo.zh = '海豚'; }), []);
+  assert.match(con((d) => { d.votacion.opciones[0].titulo.fr = ' '; })[0], /titulo\.fr/);
+  assert.match(con((d) => { d.votacion.opciones[0].titulo.de = 'Delfine'; })[0], /titulo\.de/);
+});
+
 test('avisa de un nombre que el juego recortará', () => {
   assert.match(con((d) => { d.votacion.opciones[0].ideaDe = 'Maximiliano Alejandro Luis'; })[0], /20/);
 });

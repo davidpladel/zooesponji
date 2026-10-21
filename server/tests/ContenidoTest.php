@@ -48,6 +48,16 @@ final class ContenidoTest extends TestCase
         self::assertSame('Maximiliano Alejandr', Contenido::validar($d)['votacion']['opciones'][0]['ideaDe']);
     }
 
+    public function testGuardaLosOtrosIdiomasYDescartaLosDesconocidos(): void
+    {
+        $d = self::ejemplo();
+        $d['votacion']['opciones'][0]['titulo'] += ['zh' => '海豚', 'pt-BR' => 'Golfinhos', 'de' => 'Delfine'];
+        $titulo = Contenido::validar($d)['votacion']['opciones'][0]['titulo'];
+        self::assertSame('海豚', $titulo['zh']);
+        self::assertSame('Golfinhos', $titulo['pt-BR']);
+        self::assertArrayNotHasKey('de', $titulo);
+    }
+
     public function testDescartaLasClavesDesconocidas(): void
     {
         $d = self::ejemplo();
@@ -73,6 +83,8 @@ final class ContenidoTest extends TestCase
         yield 'dibujo que no es png' => [static function (array $d) { $d['votacion']['opciones'][0]['dibujo'] = 'a.svg'; return $d; }];
         yield 'titulo sin ingles' => [static function (array $d) { unset($d['votacion']['opciones'][0]['titulo']['en']); return $d; }];
         yield 'titulo vacio' => [static function (array $d) { $d['votacion']['opciones'][0]['titulo']['es'] = ' '; return $d; }];
+        yield 'titulo frances vacio' => [static function (array $d) { $d['votacion']['opciones'][0]['titulo']['fr'] = ' '; return $d; }];
+        yield 'titulo chino largo' => [static function (array $d) { $d['votacion']['opciones'][0]['titulo']['zh'] = str_repeat('猫', 31); return $d; }];
         yield 'titulo largo' => [static function (array $d) { $d['votacion']['opciones'][0]['titulo']['es'] = str_repeat('a', 31); return $d; }];
         yield 'ganadora que no existe' => [static function (array $d) { $d['votacion']['ganadora'] = 'leones'; return $d; }];
         yield 'estado inventado' => [static function (array $d) { $d['muro'][0]['estado'] = 'pronto'; return $d; }];

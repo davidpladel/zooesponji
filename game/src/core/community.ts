@@ -1,11 +1,12 @@
-import type { Language } from '../systems/language';
+import { LANGUAGES, type Language } from '../systems/language';
 
 /**
  * El tablón de la comunidad: lo que dice el servidor (`estado.php`) y lo que recuerda el aparato.
  * Todo lo que llega de fuera se trata como hostil: se valida, se recorta y lo raro se descarta.
  */
 
-export type Localized = { es: string; en: string };
+/** Título de una idea: español e inglés siempre; el resto de idiomas, si el servidor los trae. */
+export type Localized = { es: string; en: string } & Partial<Record<Language, string>>;
 
 export interface PollOption {
   id: string;
@@ -67,7 +68,13 @@ function readLocalized(value: unknown): Localized | null {
   if (!isObject(value)) return null;
   const es = clip(value.es, MAX_TITLE);
   const en = clip(value.en, MAX_TITLE);
-  return es && en ? { es, en } : null;
+  if (!es || !en) return null;
+  const text: Localized = { es, en };
+  for (const lang of LANGUAGES) {
+    const other = clip(value[lang], MAX_TITLE);
+    if (other) text[lang] = other;
+  }
+  return text;
 }
 
 function readOption(value: unknown): PollOption | null {
@@ -218,8 +225,8 @@ export function shouldNotifyWinner(status: CommunityStatus, memory: CommunityMem
 }
 
 export function localized(text: Localized, lang: Language): string {
-  // El servidor solo trae español e inglés: el resto de idiomas lo ve en inglés.
-  return lang === 'es' ? text.es : text.en;
+  // Las traducciones llegan del servidor y pueden cambiar sin sacar versión: si falta un idioma, inglés.
+  return text[lang] ?? text.en;
 }
 
 /** La dirección del servidor de comunidad. Solo HTTPS (o localhost para probar). Sin barra final. */

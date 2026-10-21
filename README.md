@@ -16,7 +16,7 @@ Pensado para niños de 6 a 9 años: sin textos largos y sin perder. En Android h
 - **Dar de comer:** toca un animal: la cuidadora entra en su recinto y, al llegar, se abre la bandeja de comida de ese animal. Arrastra la comida (piedra, carne, conejo o zanahoria) hasta el animal.
 - **Tienda:** se abre al tener 20 monedas; pisa la puerta del puesto para entrar. Dentro suena la campanita, la cuidadora entra andando, el tendero la saluda y los animales esperan en peanas: acércate a uno (o tócalo y va sola), toca el bocadillo "¡Comprar!" y sal pisando el felpudo. Si un peque se queda quieto, unas huellas le señalan qué puede comprar. Pantera 50 🪙, panda 100 🪙, y animales extra: hasta 5 cabras (10 🪙 cada una), 2 panteras y 2 pandas (20 🪙).
 - **Menú ⚙️:** un tablero de madera con música, efectos, joystick, estadísticas anónimas, **idioma (español o inglés)**, créditos, la versión del juego, la página de privacidad (se lee sin salir del juego) y, en Android, un botón «Salir» (cierra el juego del todo: también desaparece de las aplicaciones recientes).
-- **Idiomas:** español e inglés. Sale el del móvil (cualquier variante de español da español; el resto, inglés) y se cambia en el menú ⚙️. Los nombres de los animales y «Zoo Esponji» no se traducen.
+- **Idiomas:** 11 (español, inglés, francés, portugués de Brasil y de Portugal, italiano, ruso, árabe, hindi, chino y japonés). Sale el del móvil (si no lo tenemos, inglés) y se cambia en el menú ⚙️. Los titulares del tablón vienen del servidor en esos idiomas (si falta uno, en inglés) y se cambian sin sacar versión. Los nombres de los animales y «Zoo Esponji» no se traducen.
 
 | Alimento | 🦁 León | 🐐 Cabra | 🐆 Pantera negra | 🐼 Oso panda |
 |---|---|---|---|---|
@@ -29,7 +29,7 @@ Pensado para niños de 6 a 9 años: sin textos largos y sin perder. En Android h
 
 | Versión | Fecha | Qué trajo |
 |---|---|---|
-| **2.8.0** | 2026-10-21 | El juego en 11 idiomas (submenú de idioma en Ajustes); las reacciones y monedas al dar de comer salen por delante del título y de la X, y la lluvia de monedas de la tienda por encima de todo. |
+| **2.8.0** | 2026-10-21 | El juego en 11 idiomas (submenú de idioma en Ajustes), también los titulares del tablón; el libro ya no se desborda en chino y japonés; las reacciones y monedas al dar de comer salen por delante del título y de la X, y la lluvia de monedas de la tienda por encima de todo. |
 | **2.7.1** | 2026-10-17 | Arreglos del tablón: el muro de ideas hechas con un solo tamaño de letra, título en negrita e «Idea de…» en letra normal; nombres de hasta 20 letras. |
 | **2.7.0** | 2026-10-15 | **Tablón de la comunidad.** En la plaza hay un tablón: se vota con dibujos la próxima idea del zoo, se ve cuántas ideas han llegado y las ideas ya hechas con el nombre de quien la propuso, y hay un QR para que un adulto envíe ideas desde la web. Sin internet el juego es el de siempre. |
 | **2.6.0** | 2026-10-12 | **Monedas extra por ver un anuncio (solo Android).** Un panel con monedas, un botón verde y una X ofrece ver un anuncio a cambio de monedas: al entrar en la tienda y, una vez por partida, al volver al mapa. Como mucho uno cada 15 minutos de juego y cuatro al día, y siempre se puede decir que no. La web sigue sin anuncios. |
@@ -103,7 +103,7 @@ Google Play: la 2.3.0 (versionCode 5) está en la prueba cerrada; a 2026-10-06 v
 
 ✅ **2.5.1** (2026-10-08, fusionada en `main`, etiqueta `v2.5.1`): a Sasha, la leona, se le da de comer igual que a Bills (en las estadísticas sale como `leon/sasha`), y al salir con «Salir» o con atrás en la portada el juego desaparece de las aplicaciones recientes de Android (`autoRemoveFromRecents` en el manifiesto). Pruebas pasadas por David. David la probó en el móvil con el paquete de Play el 2026-10-08: todo bien, también lo de las aplicaciones recientes.
 
-✅ **2.8.0** (2026-10-21, en `main`, versionCode 10, etiqueta `v2.8.0`; AAB compilado y probado con tests unitarios y e2e, pendiente de subir a Play; aún sin publicar): el juego en 11 idiomas y reacciones por delante del título en la ventana de comida.
+✅ **2.8.0** (2026-10-21, en `main`, versionCode 10, etiqueta `v2.8.0`; AAB compilado y probado con tests unitarios y e2e, pendiente de subir a Play; aún sin publicar): el juego en 11 idiomas, titulares del tablón traducidos desde el servidor (instalado el 2026-10-21), libro y tendero que cortan bien las líneas en chino y japonés, y reacciones por delante del título en la ventana de comida.
 
 ✅ **2.7.1** (2026-10-17, en `main`, versionCode 9, etiqueta `v2.7.1`; publicada en Google Play): arreglos del muro del tablón (un solo tamaño de letra, título en negrita, «Idea de…» normal, nombres de hasta 20 letras).
 

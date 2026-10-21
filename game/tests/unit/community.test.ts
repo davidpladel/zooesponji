@@ -161,6 +161,8 @@ describe('memoria del aparato', () => {
 describe('ayudas', () => {
   it('texto en el idioma del juego', () => {
     expect(localized({ es: 'Delfines', en: 'Dolphins' }, 'en')).toBe('Dolphins');
+    expect(localized({ es: 'Delfines', en: 'Dolphins', zh: '海豚' }, 'zh')).toBe('海豚');
+    expect(localized({ es: 'Delfines', en: 'Dolphins' }, 'ja')).toBe('Dolphins');
   });
 
   it('nombres de dibujo', () => {

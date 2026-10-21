@@ -16,6 +16,8 @@ final class Contenido
     private const MAX_MURO = 30;
     private const MAX_TITULO = 30;
     private const MAX_NOMBRE = 20;
+    /** Idiomas del juego además de es y en (obligatorios). Opcionales: el juego usa el inglés si falta. */
+    public const OTROS_IDIOMAS = ['fr', 'pt-BR', 'pt-PT', 'it', 'ru', 'ar', 'hi', 'zh', 'ja'];
 
     /** Devuelve solo las claves conocidas, ya limpias. */
     public static function validar(mixed $datos): array
@@ -114,7 +116,7 @@ final class Contenido
         return $entrada;
     }
 
-    /** Lo común a una opción y a una entrada del muro: título en los dos idiomas, dibujo y crédito. */
+    /** Lo común a una opción y a una entrada del muro: título (es y en obligatorios, el resto opcional), dibujo y crédito. */
     private static function ficha(array $f): array
     {
         $titulo = $f['titulo'] ?? null;
@@ -124,7 +126,18 @@ final class Contenido
         if ($es === null || $es === '' || $en === null || $en === '' || !is_string($dibujo) || preg_match(self::DIBUJO, $dibujo) !== 1) {
             throw new InvalidArgumentException('ficha');
         }
-        $ficha = ['titulo' => ['es' => $es, 'en' => $en], 'dibujo' => $dibujo];
+        $titulos = ['es' => $es, 'en' => $en];
+        foreach (self::OTROS_IDIOMAS as $idioma) {
+            if (!isset($titulo[$idioma])) {
+                continue;
+            }
+            $otro = Texto::limpio($titulo[$idioma], self::MAX_TITULO);
+            if ($otro === null || $otro === '') {
+                throw new InvalidArgumentException('ficha');
+            }
+            $titulos[$idioma] = $otro;
+        }
+        $ficha = ['titulo' => $titulos, 'dibujo' => $dibujo];
         if (isset($f['ideaDe'])) {
             $nombre = Texto::limpio($f['ideaDe'], 40);
             if ($nombre === null) {
