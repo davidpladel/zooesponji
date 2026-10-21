@@ -3,6 +3,7 @@ import { ART_KEYS, getArt, idleFrame } from '../art/art';
 import type { Facing } from '../core/facing';
 import type { Point } from '../core/pathfinding';
 import type { ShopInterior } from './ShopInterior';
+import { wrapStyle } from '../ui/wrap';
 
 /** Cuánto se aparta la cuidadora (px de pantalla por unidad de escala) antes de que el tendero gire la cabeza. */
 const LOOK_MARGIN = 10;
@@ -75,7 +76,7 @@ export class Shopkeeper {
     this.hideBubble();
     const s = this.interior.layout.scale;
     const text = this.scene.add
-      .text(0, 0, message, { fontFamily: 'sans-serif', fontSize: `${Math.round(Math.max(16, 6.5 * s))}px`, color: '#4e342e', align: 'center', wordWrap: { width: 110 * s } })
+      .text(0, 0, message, { fontFamily: 'sans-serif', fontSize: `${Math.round(Math.max(16, 6.5 * s))}px`, color: '#4e342e', align: 'center', wordWrap: wrapStyle(110 * s) })
       .setOrigin(0.5);
     const w = text.width + 12 * s;
     const h = text.height + 8 * s;
