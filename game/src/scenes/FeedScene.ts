@@ -27,6 +27,8 @@ export interface FeedSceneData {
 const DROP_MARGIN = 48;
 /** Retardo elástico de la comida al seguir el dedo (0..1; 1 = sin retardo). */
 const FOLLOW = 0.35;
+/** Reacciones, monedas y corazones van por encima de todo: título (25) y botón de cerrar (30). */
+const REACTION_DEPTH = 60;
 
 type Food = Phaser.GameObjects.Text | Phaser.GameObjects.Image;
 
@@ -85,7 +87,7 @@ export class FeedScene extends Phaser.Scene {
     addRibbonTitle(this, width / 2, top, Math.min(panelW * 0.6, 440), Phaser.Math.Clamp(height * 0.14, 40, 80), title);
     this.speech = addUiText(this, width / 2 + height * 0.22, height * 0.2, '', textStyle(Math.round(height * 0.06), '#ffffff', '#4e342e'))
       .setOrigin(0.5)
-      .setDepth(15)
+      .setDepth(REACTION_DEPTH)
       .setVisible(false);
 
     this.createTray(width, height, panelW);
@@ -338,7 +340,7 @@ export class FeedScene extends Phaser.Scene {
   private pooled(text: string, fontSize: number): Phaser.GameObjects.Text {
     let item = this.pool.find((candidate) => !candidate.visible);
     if (!item) {
-      item = this.add.text(0, 0, '').setOrigin(0.5).setDepth(20);
+      item = this.add.text(0, 0, '').setOrigin(0.5).setDepth(REACTION_DEPTH);
       this.pool.push(item);
     }
     return item.setText(text).setFontSize(fontSize).setVisible(true).setAlpha(1).setScale(1).setAngle(0);

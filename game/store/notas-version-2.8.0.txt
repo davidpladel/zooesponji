@@ -1,0 +1,39 @@
+<en-US>
+ZooEsponji now speaks 11 languages! Choose yours in Settings. Also, animal reactions and coins now show in front of everything when you feed them.
+</en-US>
+<ar>
+زوو إسبونجي يتحدث الآن 11 لغة، ومنها العربية! اختر لغتك من الإعدادات. كما أصبحت ردود فعل الحيوانات والعملات تظهر أمام كل شيء عند إطعامها.
+</ar>
+<en-GB>
+ZooEsponji now speaks 11 languages! Choose yours in Settings. Also, animal reactions and coins now show in front of everything when you feed them.
+</en-GB>
+<es-419>
+¡ZooEsponji ya habla 11 idiomas! Elige el tuyo en Ajustes. Además, las reacciones de los animales y las monedas ahora se ven por delante de todo al darles de comer.
+</es-419>
+<es-ES>
+¡ZooEsponji ya habla 11 idiomas! Elige el tuyo en Ajustes. Además, las reacciones de los animales y las monedas ya se ven por delante de todo al darles de comer.
+</es-ES>
+<fr-FR>
+ZooEsponji parle maintenant 11 langues, dont le français ! Choisis la tienne dans Réglages. Et les réactions des animaux et les pièces s'affichent désormais par-dessus tout quand tu les nourris.
+</fr-FR>
+<hi-IN>
+ZooEsponji अब हिंदी समेत 11 भाषाएँ बोलता है! सेटिंग्स में अपनी भाषा चुनें। साथ ही, जानवरों को खाना खिलाते समय उनकी प्रतिक्रियाएँ और सिक्के अब सबसे ऊपर दिखते हैं।
+</hi-IN>
+<it-IT>
+ZooEsponji ora parla 11 lingue, tra cui l'italiano! Scegli la tua in Impostazioni. Inoltre, le reazioni degli animali e le monete ora appaiono davanti a tutto quando gli dai da mangiare.
+</it-IT>
+<ja-JP>
+ZooEsponjiが日本語を含む11の言語に対応しました！「せってい」から選べます。また、動物にごはんをあげたときのリアクションやコインが、いちばん手前に表示されるようになりました。
+</ja-JP>
+<pt-BR>
+O ZooEsponji agora fala 11 idiomas, incluindo português! Escolha o seu em Ajustes. Além disso, as reações dos animais e as moedas agora aparecem na frente de tudo quando você os alimenta.
+</pt-BR>
+<pt-PT>
+O ZooEsponji já fala 11 línguas, incluindo português! Escolhe a tua em Definições. Além disso, as reações dos animais e as moedas já aparecem à frente de tudo quando lhes dás de comer.
+</pt-PT>
+<ru-RU>
+ZooEsponji теперь говорит на 11 языках, включая русский! Выберите свой в Настройках. А ещё реакции животных и монетки теперь видны поверх всего, когда вы их кормите.
+</ru-RU>
+<zh-CN>
+ZooEsponji 现在支持包括中文在内的 11 种语言！可在“设置”中选择。另外，喂动物时它们的反应和金币现在会显示在最前面。
+</zh-CN>

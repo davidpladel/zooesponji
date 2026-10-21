@@ -2,7 +2,7 @@
 
 Creado por y para Daniela y Adrián, con la ayuda de su padre y de Claude + OpenCode + DeepSeek + ChatGPT.
 
-**Versión actual: 2.7.1** (2026-10-17, en `main`) · Juega en la web: https://davidpladel.com/zoo/ (aún con una versión anterior) · Android: **publicado en Google Play** (producción) con la 2.7.1 (versionCode 9)
+**Versión actual: 2.8.0** (2026-10-21, en `main`) · Juega en la web: https://davidpladel.com/zoo/ (aún con una versión anterior) · Android: **publicado en Google Play** (producción) con la 2.7.1 (versionCode 9); la 2.8.0 (versionCode 10) compilada y pendiente de subir
 
 ## La idea
 
@@ -29,6 +29,7 @@ Pensado para niños de 6 a 9 años: sin textos largos y sin perder. En Android h
 
 | Versión | Fecha | Qué trajo |
 |---|---|---|
+| **2.8.0** | 2026-10-21 | El juego en 11 idiomas (submenú de idioma en Ajustes); las reacciones y monedas al dar de comer salen por delante del título y de la X, y la lluvia de monedas de la tienda por encima de todo. |
 | **2.7.1** | 2026-10-17 | Arreglos del tablón: el muro de ideas hechas con un solo tamaño de letra, título en negrita e «Idea de…» en letra normal; nombres de hasta 20 letras. |
 | **2.7.0** | 2026-10-15 | **Tablón de la comunidad.** En la plaza hay un tablón: se vota con dibujos la próxima idea del zoo, se ve cuántas ideas han llegado y las ideas ya hechas con el nombre de quien la propuso, y hay un QR para que un adulto envíe ideas desde la web. Sin internet el juego es el de siempre. |
 | **2.6.0** | 2026-10-12 | **Monedas extra por ver un anuncio (solo Android).** Un panel con monedas, un botón verde y una X ofrece ver un anuncio a cambio de monedas: al entrar en la tienda y, una vez por partida, al volver al mapa. Como mucho uno cada 15 minutos de juego y cuatro al día, y siempre se puede decir que no. La web sigue sin anuncios. |
@@ -102,6 +103,8 @@ Google Play: la 2.3.0 (versionCode 5) está en la prueba cerrada; a 2026-10-06 v
 
 ✅ **2.5.1** (2026-10-08, fusionada en `main`, etiqueta `v2.5.1`): a Sasha, la leona, se le da de comer igual que a Bills (en las estadísticas sale como `leon/sasha`), y al salir con «Salir» o con atrás en la portada el juego desaparece de las aplicaciones recientes de Android (`autoRemoveFromRecents` en el manifiesto). Pruebas pasadas por David. David la probó en el móvil con el paquete de Play el 2026-10-08: todo bien, también lo de las aplicaciones recientes.
 
+✅ **2.8.0** (2026-10-21, en `main`, versionCode 10, etiqueta `v2.8.0`; AAB compilado y probado con tests unitarios y e2e, pendiente de subir a Play): el juego en 11 idiomas y reacciones por delante del título en la ventana de comida.
+
 ✅ **2.7.1** (2026-10-17, en `main`, versionCode 9, etiqueta `v2.7.1`; publicada en Google Play): arreglos del muro del tablón (un solo tamaño de letra, título en negrita, «Idea de…» normal, nombres de hasta 20 letras).
 
 ✅ **2.7.0** (2026-10-15, en `main`, versionCode 8, subida a Play; probada por David en el móvil con el servidor real y lista para producción en Play): el tablón de la comunidad dentro del juego (votación con dibujos, tarro de ideas, ideas hechas con el nombre de quien las propuso y QR a www.zooesponji.com/ideas). Los dibujos se sirven desde el servidor por `dibujo.php`. Sin internet no aparece nada nuevo.
@@ -113,7 +116,7 @@ Ficha de Play al día (2026-10-08): David subió las capturas nuevas de `game/st
 **Idiomas de la ficha de Play (2026-10-17).** Idioma predeterminado: **inglés (en-US)**. Fichas subidas: en-US, es-ES, es-419, fr-FR, pt-BR, pt-PT, it-IT, ru-RU, ar, hi-IN, zh-CN y ja-JP. Imágenes: en-US lleva las de `play/titulares/en/`, que sirven de reserva para todos los idiomas sin imágenes propias; es-ES y es-419 llevan las de `play/titulares/es/`. Los textos de todos los idiomas están en un solo archivo, [`game/store/ficha-play-traducciones.txt`](game/store/ficha-play-traducciones.txt).
 - **Siempre se suben todos juntos:** cualquier cambio de texto se hace en ese archivo, en todos los idiomas a la vez, y se sube entero con «Importar traducciones con IA» (Play Console → Fichas de Play Store). Nunca un idioma suelto a mano, para que no se desincronicen.
 - Cada idioma lleva nombre (máx. 30), descripción breve (máx. 80) y descripción completa, y avisa de que el juego está en inglés y español.
-- **Notas de cada versión:** en los 13 idiomas que pide Play (los 12 de la ficha más en-GB, en el orden de su plantilla), en `game/store/notas-version-<versión>.txt` (la primera, [`notas-version-2.7.1.txt`](game/store/notas-version-2.7.1.txt)); en los idiomas que el juego aún no tiene empiezan avisando de que está en inglés y español; se pegan enteras en «Notas de la versión» al crear la versión en Play.
+- **Notas de cada versión:** en los 13 idiomas que pide Play (los 12 de la ficha más en-GB, en el orden de su plantilla), en `game/store/notas-version-<versión>.txt` (la primera, [`notas-version-2.7.1.txt`](game/store/notas-version-2.7.1.txt)); desde la 2.8.0 ya sin aviso de idioma, porque el juego está en todos; se pegan enteras en «Notas de la versión» al crear la versión en Play.
 - Pendiente: subir textos e imágenes por la API de Play Console (p. ej. `fastlane supply`) para no hacerlo a mano.
 
 Pendiente, por orden: cuando haya datos de la 2.6.0, mirar `anuncio-vacio` y `anuncio-segundos` en Matomo; al pasar a producción, enlazar la app en AdMob con su ficha de Play; publicar la 2.5.1 en la web; completar los 14 días con 12 testers y pedir el acceso a producción (6b). Opcional en Matomo: conservación corta de los registros en bruto. Cabo suelto de la 2.6.0: la prueba `zoo-grande.spec.ts:46` («se compra el estanque…») falló una vez en la tanda completa del 2026-10-12 (el maíz no llegó al pato, con el equipo lento) y pasó tres veces seguidas lanzada sola. Cabos sueltos de la 2.4.0: la prueba `zoo-grande.spec.ts:104` («sin comprar las ovejas, ningún visitante entra en su recinto») falló una vez en una tanda completa y pasó las demás, sin que se llegara a ver el error; y cambiar de idioma con la ventana de comer abierta, o con el libro sobre la tienda, no tiene prueba de juego propia. Ideas para después, cada una con su spec: bañar y limpiar, día y noche, clínica veterinaria y acuario con delfines.

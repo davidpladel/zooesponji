@@ -636,7 +636,7 @@ export class ShopScene extends Phaser.Scene {
       const icon = this.add
         .text(at.x, at.y, i % 3 === 0 ? '✨' : '🪙', { fontSize: `${Math.round(7 * s)}px` })
         .setOrigin(0.5)
-        .setDepth(2500);
+        .setDepth(4100); // por encima de todo, también de la X
       const angle = -Math.PI / 2 + Phaser.Math.FloatBetween(-1.1, 1.1);
       const dist = Phaser.Math.Between(18, 34) * s;
       this.tweens.add({
