@@ -101,6 +101,7 @@ export const STRINGS_ZH: Record<StringKey, string> = {
   'board.title': '动物园公告板！',
   'board.pollTitle': '我们给动物园带来什么？',
   'board.ideaLine': '{name} 的点子。',
+  'board.titleLine': '{title}。',
   'board.ideaOf': '{name} 的点子',
   'board.daysLeft': '还剩 {n} 天',
   'board.lastDay': '最后一天！',

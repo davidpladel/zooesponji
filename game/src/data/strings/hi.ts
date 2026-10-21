@@ -101,6 +101,7 @@ export const STRINGS_HI: Record<StringKey, string> = {
   'board.title': 'चिड़ियाघर का बोर्ड!',
   'board.pollTitle': 'चिड़ियाघर में क्या लाएँ?',
   'board.ideaLine': '{name} का आइडिया।',
+  'board.titleLine': '{title}।',
   'board.ideaOf': '{name} का आइडिया',
   'board.daysLeft': '{n} दिन बाकी',
   'board.lastDay': 'आखिरी दिन!',

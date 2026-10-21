@@ -273,7 +273,7 @@ export class BoardScene extends Phaser.Scene {
     const whoStyle = (size: number) => ({ ...textStyle(size, UI.brown, UI.cream), fontStyle: '500' });
     const lineSize = Math.min(...status.muro.map((entry) => {
       let size = Math.round(rowH * 0.36);
-      const title = addUiText(this, 0, 0, `${localized(entry.titulo, lang)}.`, titleStyle(size));
+      const title = addUiText(this, 0, 0, t('board.titleLine', { title: localized(entry.titulo, lang) }), titleStyle(size));
       const who = entry.ideaDe ? addUiText(this, 0, 0, t('board.ideaLine', { name: entry.ideaDe }), whoStyle(size)) : null;
       while (title.width + (who ? gap + who.width : 0) > room && size > 9) {
         size -= 1;
@@ -291,7 +291,7 @@ export class BoardScene extends Phaser.Scene {
       const done = entry.estado === 'hecha';
       const stampText = addUiText(this, stampX, y, done ? t('board.done') : t('board.chosen'), { ...stampStyle, fontSize: `${stampSize}px` }).setOrigin(0.5).setDepth(1);
       this.add.image(stampX, y, this.flatPill(stampW, stampText.height + rowH * 0.08, done ? '#43a047' : '#1e88e5'));
-      const title = addUiText(this, textX, y, `${localized(entry.titulo, lang)}.`, titleStyle(lineSize)).setOrigin(0, 0.5);
+      const title = addUiText(this, textX, y, t('board.titleLine', { title: localized(entry.titulo, lang) }), titleStyle(lineSize)).setOrigin(0, 0.5);
       if (entry.ideaDe) addUiText(this, textX + title.width + gap, y, t('board.ideaLine', { name: entry.ideaDe }), whoStyle(lineSize)).setOrigin(0, 0.5);
     });
   }

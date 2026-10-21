@@ -101,6 +101,7 @@ export const STRINGS_RU: Record<StringKey, string> = {
   'board.title': 'Доска зоопарка!',
   'board.pollTitle': 'Кого привезём в зоопарк?',
   'board.ideaLine': 'Идея: {name}.',
+  'board.titleLine': '{title}.',
   'board.ideaOf': 'Идея: {name}',
   'board.daysLeft': 'Осталось дней: {n}',
   'board.lastDay': 'последний день!',

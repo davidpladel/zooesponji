@@ -102,6 +102,7 @@ export const STRINGS_AR: Record<StringKey, string> = {
   'board.title': 'لوحة الحديقة!',
   'board.pollTitle': 'ماذا نحضر إلى الحديقة؟',
   'board.ideaLine': 'فكرة {name}.',
+  'board.titleLine': '{title}.',
   'board.ideaOf': 'فكرة {name}',
   'board.daysLeft': 'باقي {n} أيام',
   'board.lastDay': 'آخر يوم!',
