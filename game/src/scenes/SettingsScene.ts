@@ -3,16 +3,16 @@ import * as Phaser from 'phaser';
 import type { Vec } from '../core/movement';
 import type { ToggleKey } from '../core/save';
 import { APP_VERSION } from '../core/version';
-import { t, type StringKey } from '../data/strings';
+import { STRINGS, t, type StringKey } from '../data/strings';
 import { sfx } from '../systems/audio';
 import { bus } from '../systems/events';
-import { getLanguage, otherLanguage, setLanguage } from '../systems/language';
+import { LANGUAGES, LANGUAGE_CHIP, getLanguage, setLanguage, type Language } from '../systems/language';
 import { openLegal } from '../systems/legal';
 import { askQuit } from '../systems/platform';
 import { getSession } from '../systems/session';
 import { addIcon, type IconName } from '../ui/icons';
 import { makePressable } from '../ui/press';
-import { addUiText } from '../ui/text';
+import { addUiText, fitText } from '../ui/text';
 import { PILL, UI, textStyle, type PillColor } from '../ui/theme';
 import { addCloseBadge, addHeartLine, addPanel, addPillButton, addRibbonTitle, addVeil, pillImage, restartOnResize } from '../ui/widgets';
 
@@ -49,6 +49,8 @@ export class SettingsScene extends Phaser.Scene {
   private readonly toggles = new Map<ToggleKey, Phaser.GameObjects.Container>();
   private readonly buttons = new Map<ButtonKey, Phaser.GameObjects.Container>();
   private language: Phaser.GameObjects.Container | null = null;
+  /** La lista de idiomas, si está abierta: lo que hay que borrar al cerrarla y dónde está cada botón. */
+  private picker: { parts: Phaser.GameObjects.GameObject[]; options: Map<Language, Phaser.GameObjects.Container> } | null = null;
   /** Ya se ha pulsado el idioma: se ignoran más toques hasta que el menú se monte de nuevo. */
   private switching = false;
   /** El mundo estaba en marcha al abrir: al cerrar se reanuda. */
@@ -62,6 +64,7 @@ export class SettingsScene extends Phaser.Scene {
     this.toggles.clear();
     this.buttons.clear();
     this.language = null;
+    this.picker = null;
     this.switching = false;
     if (data.pausedWorld !== undefined) this.pausedWorld = data.pausedWorld;
   }
@@ -93,8 +96,8 @@ export class SettingsScene extends Phaser.Scene {
       this.renderToggle(toggle.key);
     });
     this.language = this.add.container(slotX(TOGGLES.length), rowY).setSize(size, size);
-    makePressable(this.language, () => void this.switchLanguage());
-    this.paintChip(this.language, { color: 'blue', text: getLanguage().toUpperCase(), label: t('settings.language') });
+    makePressable(this.language, () => this.openPicker());
+    this.paintChip(this.language, { color: 'blue', text: LANGUAGE_CHIP[getLanguage()], label: t('settings.language') });
 
     this.addButtons(height * 0.7, panelW);
     const creditSize = Math.round(Math.min(height * 0.045, panelW * 0.036));
@@ -110,6 +113,11 @@ export class SettingsScene extends Phaser.Scene {
 
   close(): void {
     if (!this.scene.isActive()) return;
+    // Con la lista de idiomas abierta, Esc (o Atrás) cierra solo la lista.
+    if (this.picker) {
+      this.closePicker();
+      return;
+    }
     sfx.play('tap');
     this.scene.stop();
     sfx.setPaused('menu', false);
@@ -134,6 +142,12 @@ export class SettingsScene extends Phaser.Scene {
 
   languagePos(): Vec | null {
     return this.language ? { x: this.language.x, y: this.language.y } : null;
+  }
+
+  /** Dónde está el botón de un idioma en la lista abierta (para pruebas). */
+  languageOptionPos(lang: Language): Vec | null {
+    const option = this.picker?.options.get(lang);
+    return option ? { x: option.x, y: option.y } : null;
   }
 
   /** Nombre del idioma que enseña el botón (para pruebas). */
@@ -170,14 +184,65 @@ export class SettingsScene extends Phaser.Scene {
   }
 
   /**
+   * La lista de idiomas, por encima del menú: cada uno escrito en su propio idioma, el actual en verde.
+   * Tocar fuera la cierra sin cambiar nada.
+   */
+  private openPicker(): void {
+    if (this.picker || this.switching) return;
+    sfx.play('tap');
+    const { width, height } = this.scale;
+    const parts: Phaser.GameObjects.GameObject[] = [];
+    const options = new Map<Language, Phaser.GameObjects.Container>();
+    parts.push(addVeil(this, () => this.closePicker()).setDepth(40));
+    const cols = 3;
+    const rows = Math.ceil(LANGUAGES.length / cols);
+    const panelW = Math.min(width * 0.86, height * 1.7, 780);
+    const panelH = height * 0.8;
+    const panel = addPanel(this, width / 2, height / 2, panelW, panelH).setDepth(41);
+    // addPanel monta detrás una zona que se traga los toques: también es de la lista y se borra con ella.
+    const blocker = this.children.list.at(-1)!;
+    (blocker as Phaser.GameObjects.Zone).setDepth(41);
+    parts.push(panel, blocker);
+    const gapX = 16;
+    const btnW = (panelW - 64 - gapX * (cols - 1)) / cols;
+    const btnH = Math.min(Phaser.Math.Clamp(height * 0.11, 36, 64), (panelH - 48) / rows - 10);
+    const rowH = (panelH - 48) / rows;
+    const current = getLanguage();
+    LANGUAGES.forEach((lang, i) => {
+      const x = width / 2 + ((i % cols) - (cols - 1) / 2) * (btnW + gapX);
+      const y = height / 2 - panelH / 2 + 24 + rowH * (Math.floor(i / cols) + 0.5);
+      const button = this.add.container(x, y).setSize(btnW, btnH).setDepth(42);
+      const color: PillColor = lang === current ? 'green' : 'blue';
+      button.add(pillImage(this, btnW, btnH, color, btnH * 0.3));
+      // Cada nombre en su idioma, de derecha a izquierda solo el árabe.
+      const style = { ...textStyle(Math.round(btnH * 0.42), '#ffffff', PILL[color].stroke), rtl: lang === 'ar' };
+      button.add(fitText(addUiText(this, 0, -btnH * 0.04, STRINGS[lang]['settings.language'], style).setOrigin(0.5), btnW - 16));
+      makePressable(button, () => void this.switchLanguage(lang));
+      options.set(lang, button);
+      parts.push(button);
+    });
+    this.picker = { parts, options };
+  }
+
+  private closePicker(): void {
+    if (!this.picker) return;
+    sfx.play('tap');
+    this.picker.parts.forEach((part) => part.destroy());
+    this.picker = null;
+  }
+
+  /**
    * Cambia de idioma sin recargar. Se guarda antes de tocar nada: no se pierde partida.
    * Los rótulos del mundo se pintan una sola vez al montarlo, así que el mundo se monta de nuevo
    * (la cuidadora vuelve a la entrada) y se queda en pausa debajo del menú. El HUD no tiene textos fijos.
    */
-  private async switchLanguage(): Promise<void> {
+  private async switchLanguage(next: Language): Promise<void> {
     if (this.switching) return;
+    if (next === getLanguage()) {
+      this.closePicker();
+      return;
+    }
     this.switching = true;
-    const next = otherLanguage(getLanguage());
     await getSession().updateSettings({ language: next });
     setLanguage(next);
     sfx.play('tap');

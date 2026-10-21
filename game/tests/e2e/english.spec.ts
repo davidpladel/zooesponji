@@ -4,7 +4,7 @@ import { expect, test, type Page } from '@playwright/test';
 test.use({ locale: 'en-US' });
 
 async function canvasBox(page: Page) {
-  const box = await page.locator('canvas').boundingBox();
+  const box = await page.locator('canvas').first().boundingBox();
   if (!box) throw new Error('No hay canvas');
   return box;
 }
@@ -28,6 +28,13 @@ async function tap(page: Page, pos: { x: number; y: number } | null): Promise<vo
   await page.mouse.click(box.x + pos.x, box.y + pos.y);
 }
 
+/** Abre la lista de idiomas y toca uno. */
+async function pickLanguage(page: Page, lang: string): Promise<void> {
+  await tap(page, await page.evaluate(() => window.__ZOO__!.settingsLanguagePos()));
+  await page.waitForFunction((l) => window.__ZOO__!.settingsLanguageOptionPos(l) !== null, lang);
+  await tap(page, await page.evaluate((l) => window.__ZOO__!.settingsLanguageOptionPos(l), lang));
+}
+
 async function openSettings(page: Page): Promise<void> {
   await page.evaluate(() => window.__ZOO__!.openSettings());
   await page.waitForFunction(() => window.__ZOO__!.settingsLanguagePos() !== null);
@@ -45,7 +52,7 @@ test('con el móvil en inglés el juego sale en inglés; Ajustes lo pasa a espa�
   expect(await page.evaluate(() => window.__ZOO__!.settingsLanguageLabel())).toBe('English');
   expect(await page.evaluate(() => window.__ZOO__!.settings().language)).toBeUndefined(); // automático
 
-  await tap(page, await page.evaluate(() => window.__ZOO__!.settingsLanguagePos()));
+  await pickLanguage(page, 'es');
   await expect.poll(() => page.evaluate(() => window.__ZOO__!.language())).toBe('es');
   // El menú sigue abierto, ya en español, y el mundo se ha montado de nuevo en pausa debajo.
   await page.waitForFunction(() => {
@@ -76,7 +83,7 @@ test('cambiar de idioma con la tienda abierta la cierra y no se pierden las mone
   await page.waitForFunction(() => window.__ZOO__!.activeScenes().includes('Shop'));
 
   await openSettings(page);
-  await tap(page, await page.evaluate(() => window.__ZOO__!.settingsLanguagePos()));
+  await pickLanguage(page, 'es');
   await expect.poll(() => page.evaluate(() => window.__ZOO__!.language())).toBe('es');
   await page.waitForFunction(() => {
     const scenes = window.__ZOO__!.activeScenes();

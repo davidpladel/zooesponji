@@ -1,7 +1,8 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import { STRINGS_EN, STRINGS_ES, hasKey } from '../../src/data/strings';
+import { STRINGS, STRINGS_ES, hasKey } from '../../src/data/strings';
+import { LANGUAGES } from '../../src/systems/language';
 
 const words = (text: string): number => text.trim().split(/\s+/).length;
 
@@ -59,35 +60,38 @@ describe('hasKey', () => {
 });
 
 const ES: Record<string, string> = STRINGS_ES;
-const EN: Record<string, string> = STRINGS_EN;
 const markers = (text: string): string[] => [...text.matchAll(/\{(\w+)\}/g)].map((m) => m[1]!).sort();
-/** El nombre propio de un título: lo que va antes de la coma («Bills, el león» → «Bills»). */
-const properName = (title: string): string => title.split(',')[0]!;
+/** El nombre propio de un título: lo que va antes de la coma (latina, china, japonesa o árabe). */
+const properName = (title: string): string => title.split(/[,，、،]/)[0]!.trim();
+/** En chino y japonés los espacios no separan palabras: ahí no se cuentan. */
+const COUNTS_WORDS = (lang: string): boolean => lang !== 'zh' && lang !== 'ja';
 
-describe('inglés', () => {
+describe.each(LANGUAGES.filter((lang) => lang !== 'es'))('%s', (lang) => {
+  const T: Record<string, string> = STRINGS[lang];
+
   it('tiene exactamente las mismas claves que el español', () => {
-    expect(Object.keys(EN).sort()).toEqual(Object.keys(ES).sort());
+    expect(Object.keys(T).sort()).toEqual(Object.keys(ES).sort());
   });
 
   it.each(Object.keys(ES))('%s: no está vacío y conserva los marcadores', (key) => {
-    expect(EN[key]!.trim()).not.toBe('');
-    expect(markers(EN[key]!)).toEqual(markers(ES[key]!));
+    expect(T[key]!.trim()).not.toBe('');
+    expect(markers(T[key]!)).toEqual(markers(ES[key]!));
   });
 
   it('«Zoo Esponji» no se traduce', () => {
-    expect(EN['title.name']).toBe('Zoo Esponji');
-    expect(EN['book.page.cover.title']).toContain('Zoo Esponji');
-    expect(EN['book.page.story.text']).toContain('Zoo Esponji');
+    expect(T['title.name']).toBe('Zoo Esponji');
+    expect(T['book.page.cover.title']).toContain('Zoo Esponji');
+    expect(T['book.page.story.text']).toContain('Zoo Esponji');
   });
 
-  it.each(Object.entries(EN).filter(([key]) => /^book\.page\..+\.text$/.test(key)))('%s tiene 20 palabras como mucho', (_key, text) => {
+  it.each(Object.entries(T).filter(([key]) => COUNTS_WORDS(lang) && /^book\.page\..+\.text$/.test(key)))('%s tiene 20 palabras como mucho', (_key, text) => {
     expect(words(text)).toBeLessThanOrEqual(20);
   });
 
   it.each(Object.keys(ES).filter((key) => /^book\.page\..+\.title$/.test(key) && ES[key]!.includes(',')))(
     '%s conserva el nombre propio',
     (key) => {
-      expect(properName(EN[key]!)).toBe(properName(ES[key]!));
+      expect(properName(T[key]!)).toBe(properName(ES[key]!));
     },
   );
 });
