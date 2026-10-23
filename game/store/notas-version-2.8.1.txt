@@ -1,0 +1,39 @@
+<en-US>
+ZooEsponji now speaks 11 languages! Choose yours in Settings.
+</en-US>
+<ar>
+زوو إسبونجي يتحدث الآن 11 لغة، ومنها العربية! اختر لغتك من الإعدادات.
+</ar>
+<en-GB>
+ZooEsponji now speaks 11 languages! Choose yours in Settings.
+</en-GB>
+<es-419>
+¡ZooEsponji ya habla 11 idiomas! Elige el tuyo en Ajustes.
+</es-419>
+<es-ES>
+¡ZooEsponji ya habla 11 idiomas! Elige el tuyo en Ajustes.
+</es-ES>
+<fr-FR>
+ZooEsponji parle maintenant 11 langues, dont le français ! Choisis la tienne dans Réglages.
+</fr-FR>
+<hi-IN>
+ZooEsponji अब हिंदी समेत 11 भाषाएँ बोलता है! सेटिंग्स में अपनी भाषा चुनें।
+</hi-IN>
+<it-IT>
+ZooEsponji ora parla 11 lingue, tra cui l'italiano! Scegli la tua in Impostazioni.
+</it-IT>
+<ja-JP>
+ZooEsponjiが日本語を含む11の言語に対応しました！「せってい」から選べます。
+</ja-JP>
+<pt-BR>
+O ZooEsponji agora fala 11 idiomas, incluindo português! Escolha o seu em Ajustes.
+</pt-BR>
+<pt-PT>
+O ZooEsponji já fala 11 línguas, incluindo português! Escolhe a tua em Definições.
+</pt-PT>
+<ru-RU>
+ZooEsponji теперь говорит на 11 языках, включая русский! Выберите свой в Настройках.
+</ru-RU>
+<zh-CN>
+ZooEsponji 现在支持包括中文在内的 11 种语言！可在“设置”中选择。
+</zh-CN>
