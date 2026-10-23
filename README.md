@@ -2,7 +2,7 @@
 
 Creado por y para Daniela y Adrián, con la ayuda de su padre y de Claude + OpenCode + DeepSeek + ChatGPT.
 
-**Versión actual: 2.8.0** (2026-10-21, en `main`) · Juega en la web: https://davidpladel.com/zoo/ (aún con una versión anterior) · Android: **publicado en Google Play** (producción) con la 2.7.1 (versionCode 9); la 2.8.0 (versionCode 10) compilada y pendiente de subir
+**Versión actual: 2.8.0** (2026-10-21, en `main`) · Juega en la web: https://davidpladel.com/zoo/ (aún con una versión anterior) · Android: **publicado en Google Play** (producción) con la 2.7.1 (versionCode 9); la 2.8.0 (versionCode 10) subida a Play el 2026-10-23, pendiente de pasar a producción
 
 ## La idea
 
@@ -103,7 +103,7 @@ Google Play: la 2.3.0 (versionCode 5) está en la prueba cerrada; a 2026-10-06 v
 
 ✅ **2.5.1** (2026-10-08, fusionada en `main`, etiqueta `v2.5.1`): a Sasha, la leona, se le da de comer igual que a Bills (en las estadísticas sale como `leon/sasha`), y al salir con «Salir» o con atrás en la portada el juego desaparece de las aplicaciones recientes de Android (`autoRemoveFromRecents` en el manifiesto). Pruebas pasadas por David. David la probó en el móvil con el paquete de Play el 2026-10-08: todo bien, también lo de las aplicaciones recientes.
 
-✅ **2.8.0** (2026-10-21, en `main`, versionCode 10, etiqueta `v2.8.0`; AAB compilado y probado con tests unitarios y e2e, pendiente de subir a Play; aún sin publicar): el juego en 11 idiomas, titulares del tablón traducidos desde el servidor (instalado el 2026-10-21), libro y tendero que cortan bien las líneas en chino y japonés, y reacciones por delante del título en la ventana de comida.
+✅ **2.8.0** (2026-10-21, en `main`, versionCode 10, etiqueta `v2.8.0`; AAB compilado y probado con tests unitarios y e2e; subida a Play el 2026-10-23 y pendiente de pasar a producción): el juego en 11 idiomas, titulares del tablón traducidos desde el servidor (instalado el 2026-10-21), libro y tendero que cortan bien las líneas en chino y japonés, y reacciones por delante del título en la ventana de comida.
 
 ✅ **2.7.1** (2026-10-17, en `main`, versionCode 9, etiqueta `v2.7.1`; publicada en Google Play): arreglos del muro del tablón (un solo tamaño de letra, título en negrita, «Idea de…» normal, nombres de hasta 20 letras).
 
