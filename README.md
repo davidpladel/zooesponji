@@ -2,7 +2,7 @@
 
 Creado por y para Daniela y Adrián, con la ayuda de su padre y de Claude + OpenCode + DeepSeek + ChatGPT.
 
-**Versión actual: 2.8.0** (2026-10-21, en `main`) · Juega en la web: https://davidpladel.com/zoo/ (aún con una versión anterior) · Android: **publicado en Google Play** (producción) con la 2.8.0 (versionCode 10, desde el 2026-10-23)
+**Versión actual: 2.8.1** (2026-10-23, en `main`) · Juega en la web: https://davidpladel.com/zoo/ (aún con una versión anterior) · Android: **publicado en Google Play** (producción) con la 2.8.0 (versionCode 10, desde el 2026-10-23); la 2.8.1 (versionCode 11) compilada y pendiente de subir
 
 ## La idea
 
@@ -29,6 +29,7 @@ Pensado para niños de 6 a 9 años: sin textos largos y sin perder. En Android h
 
 | Versión | Fecha | Qué trajo |
 |---|---|---|
+| **2.8.1** | 2026-10-23 | La 2.8.0 se subió a Play con un AAB anterior a los últimos arreglos (el libro se desbordaba en chino y japonés). Esta lleva todo lo de la 2.8.0, sin cambios de código. |
 | **2.8.0** | 2026-10-21 | El juego en 11 idiomas (submenú de idioma en Ajustes), también los titulares del tablón; el libro ya no se desborda en chino y japonés; las reacciones y monedas al dar de comer salen por delante del título y de la X, y la lluvia de monedas de la tienda por encima de todo. |
 | **2.7.1** | 2026-10-17 | Arreglos del tablón: el muro de ideas hechas con un solo tamaño de letra, título en negrita e «Idea de…» en letra normal; nombres de hasta 20 letras. |
 | **2.7.0** | 2026-10-15 | **Tablón de la comunidad.** En la plaza hay un tablón: se vota con dibujos la próxima idea del zoo, se ve cuántas ideas han llegado y las ideas ya hechas con el nombre de quien la propuso, y hay un QR para que un adulto envíe ideas desde la web. Sin internet el juego es el de siempre. |
@@ -102,6 +103,8 @@ El juego se ha hecho por hitos: spec de diseño → plan → ejecución.
 Google Play: la 2.3.0 (versionCode 5) está en la prueba cerrada; a 2026-10-06 van 5 de los 14 días seguidos con 12 testers que pide Google para poder solicitar el acceso a producción. La 2.5.0 no se llegó a subir. La 2.5.1 (versionCode 6) está subida a la prueba cerrada desde el 2026-10-08 (guía en `docs/privado/play-store.md`).
 
 ✅ **2.5.1** (2026-10-08, fusionada en `main`, etiqueta `v2.5.1`): a Sasha, la leona, se le da de comer igual que a Bills (en las estadísticas sale como `leon/sasha`), y al salir con «Salir» o con atrás en la portada el juego desaparece de las aplicaciones recientes de Android (`autoRemoveFromRecents` en el manifiesto). Pruebas pasadas por David. David la probó en el móvil con el paquete de Play el 2026-10-08: todo bien, también lo de las aplicaciones recientes.
+
+✅ **2.8.1** (2026-10-23, en `main`, versionCode 11, etiqueta `v2.8.1`; AAB compilado, pendiente de subir a Play): la 2.8.0 completa; la que llegó a Play era un AAB anterior sin el arreglo del libro en chino y japonés.
 
 ✅ **2.8.0** (2026-10-21, en `main`, versionCode 10, etiqueta `v2.8.0`; AAB compilado y probado con tests unitarios y e2e; publicada en producción en Google Play el 2026-10-23): el juego en 11 idiomas, titulares del tablón traducidos desde el servidor (instalado el 2026-10-21), libro y tendero que cortan bien las líneas en chino y japonés, y reacciones por delante del título en la ventana de comida.
 
