@@ -1,4 +1,4 @@
-Zoo Esponji — textos de la ficha de Google Play (2026-10-17)
+Zoo Esponji — textos de la ficha de Google Play (2026-10-23)
 Para «Importar traducciones con IA» en Play Console. Cada idioma: nombre (máx. 30), descripción breve (máx. 80) y descripción completa.
 
 ==================================================
@@ -19,7 +19,7 @@ Con las monedas que ganas puedes visitar la tienda y comprar una cabra, una pant
 · Pensado para niños de 5 a 12 años.
 · Sin compras ni registros. De vez en cuando ofrece ver un anuncio a cambio de monedas, y siempre se puede decir que no.
 · Música y efectos de sonido.
-· En español y en inglés.
+· En 11 idiomas, entre ellos el español y el inglés.
 
 Creado por y para Daniela (9 años) y Adrián (5 años), con ayuda de su padre. Seguiremos añadiendo novedades, muchas inventadas por ellos y por ti.
 
@@ -41,7 +41,7 @@ Con las monedas que ganas puedes visitar la tienda y comprar una cabra, una pant
 · Pensado para niños de 5 a 12 años.
 · Sin compras ni registros. De vez en cuando ofrece ver un anuncio a cambio de monedas, y siempre se puede decir que no.
 · Música y efectos de sonido.
-· En español y en inglés.
+· En 11 idiomas, entre ellos el español y el inglés.
 
 Creado por y para Daniela (9 años) y Adrián (5 años), con ayuda de su padre. Seguiremos añadiendo novedades, muchas inventadas por ellos y por ti.
 
@@ -63,7 +63,7 @@ With the coins you earn, you can visit the shop and buy a goat, a black panther,
 · Designed for kids aged 5 to 12.
 · No purchases or sign-ups. Now and then it offers an ad in exchange for coins, and you can always say no.
 · Music and sound effects.
-· In English and Spanish.
+· In 11 languages, including English and Spanish.
 
 Created by and for Daniela (age 9) and Adrián (age 5), with help from their dad. We'll keep adding new features, many of them invented by them and by you.
 
@@ -85,7 +85,7 @@ Avec les pièces que tu gagnes, tu peux aller à la boutique et acheter une chè
 · Conçu pour les enfants de 5 à 12 ans.
 · Sans achats ni inscription. De temps en temps, le jeu propose une pub en échange de pièces, et on peut toujours refuser.
 · Musique et effets sonores.
-· Le jeu est en anglais et en espagnol.
+· Le jeu est disponible en 11 langues, dont le français.
 
 Créé par et pour Daniela (9 ans) et Adrián (5 ans), avec l'aide de leur papa. Nous continuerons d'ajouter des nouveautés, dont beaucoup inventées par eux et par toi.
 
@@ -107,7 +107,7 @@ Com as moedas que você ganha, pode visitar a loja e comprar uma cabra, uma pant
 · Feito para crianças de 5 a 12 anos.
 · Sem compras nem cadastro. De vez em quando, o jogo oferece um anúncio em troca de moedas, e sempre dá para dizer não.
 · Música e efeitos sonoros.
-· O jogo está em inglês e espanhol.
+· O jogo está em 11 idiomas, incluindo português.
 
 Criado por e para Daniela (9 anos) e Adrián (5 anos), com a ajuda do pai deles. Vamos continuar adicionando novidades, muitas inventadas por eles e por você.
 
@@ -129,7 +129,7 @@ Com as moedas que ganhas, podes visitar a loja e comprar uma cabra, uma pantera-
 · Pensado para crianças dos 5 aos 12 anos.
 · Sem compras nem registos. De vez em quando, o jogo oferece um anúncio em troca de moedas, e podes sempre dizer que não.
 · Música e efeitos sonoros.
-· O jogo está em inglês e espanhol.
+· O jogo está em 11 línguas, incluindo português.
 
 Criado por e para a Daniela (9 anos) e o Adrián (5 anos), com a ajuda do pai. Vamos continuar a juntar novidades, muitas inventadas por eles e por ti.
 
@@ -151,7 +151,7 @@ Con le monete che guadagni puoi andare al negozio e comprare una capra, una pant
 · Pensato per bambini dai 5 ai 12 anni.
 · Niente acquisti né registrazioni. Ogni tanto il gioco propone una pubblicità in cambio di monete, e si può sempre dire di no.
 · Musica ed effetti sonori.
-· Il gioco è in inglese e spagnolo.
+· Il gioco è in 11 lingue, tra cui l'italiano.
 
 Creato da e per Daniela (9 anni) e Adrián (5 anni), con l'aiuto del loro papà. Continueremo ad aggiungere novità, molte inventate da loro e da te.
 
@@ -173,7 +173,7 @@ Zoo Esponji — детская игра про уход за животными,
 · Для детей от 5 до 12 лет.
 · Без покупок и регистрации. Иногда игра предлагает посмотреть рекламу за монеты — от неё всегда можно отказаться.
 · Музыка и звуковые эффекты.
-· Игра на английском и испанском языках.
+· Игра на 11 языках, включая русский.
 
 Создано для Даниэлы (9 лет) и Адриана (5 лет) вместе с ними и с помощью их папы. Мы продолжим добавлять новое, и многое придумают они и ты.
 
@@ -195,7 +195,7 @@ Zoo Esponji لعبة للأطفال عن رعاية الحيوانات، وأف�
 · مصممة للأطفال من 5 إلى 12 سنة.
 · بدون مشتريات أو تسجيل. تعرض اللعبة أحيانًا إعلانًا مقابل عملات، ويمكنك دائمًا الرفض.
 · موسيقى ومؤثرات صوتية.
-· اللعبة باللغتين الإنجليزية والإسبانية.
+· اللعبة متوفرة بـ 11 لغة، منها العربية.
 
 صُنعت من أجل دانييلا (9 سنوات) وأدريان (5 سنوات) وبمشاركتهما، بمساعدة والدهما. سنواصل إضافة الجديد، والكثير منه من ابتكارهما ومن ابتكارك أنت.
 
@@ -217,7 +217,7 @@ Zoo Esponji बच्चों के लिए जानवरों की द
 · 5 से 12 साल के बच्चों के लिए।
 · कोई खरीदारी या रजिस्ट्रेशन नहीं। कभी-कभी खेल सिक्कों के बदले विज्ञापन दिखाने की पेशकश करता है, और तुम हमेशा मना कर सकते हो।
 · संगीत और साउंड इफ़ेक्ट।
-· खेल अंग्रेज़ी और स्पेनिश में है।
+· खेल हिंदी समेत 11 भाषाओं में है।
 
 डेनिएला (9 साल) और एड्रियन (5 साल) द्वारा और उनके लिए, उनके पापा की मदद से बनाया गया। हम नई चीज़ें जोड़ते रहेंगे, जिनमें से कई उनकी और तुम्हारी सोची हुई होंगी।
 
@@ -239,7 +239,7 @@ Zoo Esponji 是一款照顾动物的儿童游戏，你的点子也可能成真�
 · 适合 5 到 12 岁的孩子。
 · 无需购买，无需注册。游戏偶尔会提供观看广告换金币的选项，随时都可以拒绝。
 · 音乐和音效。
-· 游戏语言为英语和西班牙语。
+· 游戏支持包括中文在内的 11 种语言。
 
 由爸爸协助，为 Daniela（9 岁）和 Adrián（5 岁）并和他们一起制作。我们会继续加入新内容，很多都来自他们和你的点子。
 
@@ -261,6 +261,6 @@ Zoo Esponji は、どうぶつのおせわをする子ども向けゲーム。�
 · 5〜12歳の子ども向け。
 · 課金・登録なし。ときどきコインと引きかえに広告を見るか聞かれますが、いつでも断れます。
 · 音楽と効果音。
-· ゲームの言語は英語とスペイン語です。
+· 日本語をふくむ 11 の言語であそべます。
 
 パパの手を借りて、ダニエラ（9歳）とアドリアン（5歳）のために、ふたりと一緒に作りました。これからも新しい要素を追加していきます。その多くはふたりと、あなたのアイデアです。
