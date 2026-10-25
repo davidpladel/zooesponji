@@ -1,6 +1,6 @@
 # Código de Android optimizado con R8
 
-Fecha: 2026-10-25 · Estado: spec escrita, pendiente de que David la apruebe. Nada implementado.
+Fecha: 2026-10-25 · Estado: spec escrita, pendiente de que David la apruebe. Nada implementado. Revisada la mañana del 25 con las capturas de Play Console de David, las guías de Capacitor 8.0 y 8.5 leídas enteras, y las cifras de Google comprobadas contra el texto original de sus páginas (ver «Cómo se ha comprobado»).
 
 ## En pocas palabras
 
@@ -8,7 +8,8 @@ Sobre la 2.7.1, Google Play muestra «Optimización de código DEX: Baja» y rec
 
 - **Ahora (2.8.2):** encender R8 con las herramientas que ya usamos (AGP 8.13). Es lo que Google mide de verdad, y con AGP 8.13 lo mide igual que con AGP 9.
 - **Después:** pasar a AGP 9. Hoy no se puede hacer bien: Capacitor 8 no lo admite y Capacitor 9, que sí, está en alfa. Se hará cuando salga Capacitor 9 estable (condiciones en el bloque 2).
-- **Seguimiento:** leer en Play Console las demás métricas (cierres, ANR, memoria, arranque) y decidir con datos si hace falta otra spec.
+- **Las otras tres recomendaciones de Play** (tabletas y pantalla completa) y el ahorro en imágenes: bloque 3. Una línea del manifiesto entra ya en la 2.8.2; lo demás va aparte.
+- **Android vitals no tiene datos todavía** (cierres, ANR, memoria, arranque): somos pocos jugadores para que Google calcule porcentajes. La comprobación de la 2.8.2 no puede apoyarse en ellos.
 
 ## Qué pide Google (revisado el 25-oct-2026 en las páginas oficiales)
 
@@ -32,6 +33,24 @@ Sobre la 2.7.1, Google Play muestra «Optimización de código DEX: Baja» y rec
 - **Ninguna librería apaga la optimización.** Revisadas las reglas que traen las librerías en la caché de Gradle (35 archivos): ninguna lleva `-dontoptimize`, `-dontobfuscate` ni `-dontshrink`.
 - **Antecedente:** la guía privada `docs/privado/play-store.md` dice, ante el aviso «no hay archivo de desofuscación», «Ignorarlo; no activar R8». Esta spec cambia esa decisión.
 
+## Qué dice Play Console (capturas de David, 25-oct-2026)
+
+**Android vitals → Información general.** Cuatro acciones recomendadas, todas sobre la 2.7.1 (versionCode 9):
+
+1. «Es posible que la vista de extremo a extremo no funcione para todos los usuarios» (experiencia de usuario).
+2. «Tu aplicación usa APIs o parámetros obsoletos para la vista de extremo a extremo» (experiencia de usuario).
+3. «Quita las restricciones de redimensionamiento y orientación de tu juego para que sea compatible con dispositivos de pantalla grande» (experiencia de usuario).
+4. «Mejora la memoria y el rendimiento de tu aplicación con la optimización de R8» (uso de memoria). Es la de esta spec.
+
+Las métricas salen todas sin datos: cierres, ANR, cierres por falta de memoria, uso de memoria, mapas de bits, arranque, renderizado, batería y permisos. Solo hay «datos limitados» de uso: 25,11 % de usuarios diarios entre mensuales y 2,07 % de pérdida de usuarios. Con tan pocos jugadores, Google no calcula los porcentajes, así que la 2.8.2 se comprobará de otra forma (apartado 9).
+
+**Tamaño de la aplicación** (calculado por Play para un móvil XXXHDPI con ARMv8):
+
+- Descarga de unos 9,8 MB, igual en la 2.7.1 y en la 2.8.1. De ellos, unos 6,3 MB son código (DEX), unos 2,5 MB el juego y unos 0,8 MB recursos de Android. **El código es casi dos tercios de lo que se descarga.**
+- Recomendaciones: «Habilita la ofuscación y la reducción de código» (sin hacer; es esta spec) y «Usa imágenes WebP cuando sea posible», con un ahorro de 699 kB (7,05 %). Los APK por idioma, densidad y ABI ya están hechos.
+- El 5,8 % de los móviles activos tiene menos de 2 GB libres.
+- La gráfica ya enseña la 2.8.1 (versionCode 11): está subida, así que la 2.8.2 será la 12.
+
 ## Objetivo
 
 Que el paquete de Android lleve solo el código que se usa, optimizado, **sin que el juego cambie en nada** para el niño.
@@ -40,8 +59,8 @@ Que el paquete de Android lleve solo el código que se usa, optimizado, **sin qu
 
 - El AAB lleva `r8.json` y el archivo de desofuscación, y su código Android pesa bastante menos que 16,4 MB.
 - En el móvil todo funciona igual que en la 2.8.1, anuncios de prueba incluidos (lista del apartado 8).
-- En Play, la optimización de código DEX deja de salir «Baja» y desaparece el aviso de que falta el archivo de desofuscación.
-- La primera semana no hay más cierres ni ANR («la aplicación no responde») que con la 2.8.x.
+- En Play, la optimización de código DEX deja de salir «Baja», desaparecen la recomendación de R8 y el aviso de que falta el archivo de desofuscación, y el tamaño de descarga baja en «Tamaño de la aplicación».
+- No llega ningún cierre nuevo a «Fallos y errores ANR» de Play Console tras publicar (apartado 9).
 
 ## No objetivos
 
@@ -137,15 +156,15 @@ Las rutas de `r8.json`, del archivo de desofuscación y de `configuration.txt` h
 
 ### 7. Versión
 
-- **2.8.2**, `versionCode` **12** si la 2.8.1 (el 11) ya está subida a Play; si no, el siguiente libre. Cambia en `game/package.json`, `game/android/app/build.gradle` y la línea de versión de `game/README.md`.
-- Va sola, sin nada más dentro: si algo falla, se sabe que es R8. Las mejoras de juego van en la versión siguiente.
+- **2.8.2**, `versionCode` **12** (la 2.8.1, el 11, ya está subida: sale en «Tamaño de la aplicación»). Cambia en `game/package.json`, `game/android/app/build.gradle` y la línea de versión de `game/README.md`.
+- Solo lleva R8 y la línea del manifiesto del bloque 3a, que no cambia nada en móviles: si algo falla, se sabe que es R8. Las imágenes WebP y el resto van en la versión siguiente.
 - Notas de la versión: se redactan cuando haya números medidos y David valida el texto antes de traducirlo (regla de siempre). Solo se afirma lo que esté medido; por ejemplo, el tamaño de descarga que enseña el explorador de app bundles de Play Console, antes y después.
 
 ### 8. Pruebas
 
 El AAB se compila, como siempre, en la carpeta principal del repositorio (`C:\Projects\games\zooesponji\game`), que es la que tiene `node_modules`, el arte privado, `admob.properties` y la firma. La carpeta de trabajo de esta rama no los tiene.
 
-- **Unitarias:** `tests/unit/aab.test.ts` para `aabRules` (paquete correcto, sin `r8.json`, con `d8.json`, sin archivo de desofuscación, cada opción global prohibida, cálculo del tamaño). David lanza `npm run typecheck` y `npm test`, como antes de cada versión.
+- **Unitarias:** `tests/unit/aab.test.ts` para `aabRules` (paquete correcto, sin `r8.json`, con `d8.json`, sin archivo de desofuscación, cada opción global prohibida, cálculo del tamaño) y el caso nuevo de `androidManifest.test.ts` (falta `android:appCategory="game"`). David lanza `npm run typecheck` y `npm test`, como antes de cada versión.
 - **Compilación:** `gradlew.bat clean bundleRelease` termina bien con R8. Se guardan sus avisos. Los avisos de metadatos de Kotlin (el complemento de AdMob se compila con Kotlin 2.2.20) son avisos, no errores: se apuntan. Después, `npm run check:manifest -- --publicar` y `npm run check:aab`.
 - **En el móvil, con la compilación de publicación y anuncios de prueba** (`VITE_ADMOB_TESTING=1` en `.env.production.local`). Tiene que instalarse la variante `release`: la de depuración no pasa por R8. Quien implemente elige cómo (variante `release` en Android Studio o `gradlew.bat installRelease`) y le deja a David los pasos en PowerShell, uno por bloque. La lista:
   - [ ] Abre: pantalla de inicio, portada, sin la pantalla «¡Ups!».
@@ -163,10 +182,14 @@ El AAB se compila, como siempre, en la carpeta principal del repositorio (`C:\Pr
 
 ### 9. Publicación y vigilancia
 
-- **Producción con lanzamiento progresivo:** al 20 %, y al 100 % tras 2 o 3 días sin cierres nuevos en Android vitals.
-- **La primera semana**, en Android vitals: porcentaje de cierres y de ANR comparado con la 2.8.x, y en especial cierres con `com.getcapacitor`, `ClassNotFoundException`, `NoSuchMethodException` o `NullPointerException` en `Bridge` o `PluginHandle`. Con el archivo de desofuscación dentro del AAB, Play los enseña con los nombres de verdad.
-- **Optimización de código DEX:** Play la recalcula cuando la versión nueva tiene usuarios. Mirarla pasada una semana y apuntar el valor en esta spec.
-- **Si algo sale mal:** Play no deja bajar el `versionCode`. Se detiene el lanzamiento progresivo y se publica una 2.8.3 (`versionCode` 13) con `minifyEnabled false` mientras se arregla.
+Android vitals no tiene datos (somos pocos jugadores), así que no se puede comparar el porcentaje de cierres antes y después. La comprobación se apoya en esto:
+
+- **La prueba en el móvil del apartado 8.** Es la que de verdad cuenta.
+- **El informe previo al lanzamiento de Play**, en el que Google abre el juego en varios móviles reales y apunta los cierres. Si Play lo genera para la prueba interna, esperar a que salga y que no tenga cierres antes de pasar a producción; si no lo genera, basta la prueba en el móvil. Cuándo lo genera está por confirmar en la ayuda de Play (ver «Cómo se ha comprobado»).
+- **Después de publicar**, mirar «Fallos y errores ANR» en Play Console unos días. Cualquier cierre con `com.getcapacitor`, `ClassNotFoundException`, `NoSuchMethodException`, o un `NullPointerException` en `Bridge` o `PluginHandle`, apunta a R8. Con el archivo de desofuscación dentro del AAB, Play enseña los nombres de verdad.
+- **Producción directamente al 100 %.** Un lanzamiento progresivo no serviría de nada con tan pocos jugadores: no llegarían datos en unos días y solo retrasaría la versión.
+- **Optimización de código DEX y tamaño:** mirarlos unos días después de publicar y apuntar los valores en esta spec.
+- **Si algo sale mal:** Play no deja bajar el `versionCode`. Se publica enseguida una 2.8.3 (`versionCode` 13) con `minifyEnabled false` mientras se arregla.
 
 ### 10. Documentación al cerrar
 
@@ -200,17 +223,47 @@ El AAB se compila, como siempre, en la carpeta principal del repositorio (`C:\Pr
 - R8 sigue como en el bloque 1. En AGP 9 las reglas son más estrictas (`-keep class A` ya no conserva su constructor): revisar las nuestras y repasar la misma lista del móvil.
 - Tendrá su propio plan.
 
-## Seguimiento: las demás métricas de Play
+## Bloque 3: las otras recomendaciones de Play
 
-Yo no veo Play Console. Para decidir si hace falta otra spec, David me pasa una captura o los números de Android vitals:
+### 3a. Tabletas: marcar el juego como juego (entra en la 2.8.2)
 
-- **Métricas principales:** porcentaje de cierres percibidos, de ANR percibidos, de bloqueos de activación parciales excesivos, uso de memoria (P50, P90 y P99, y el desglose por proceso; un P99 3,5 veces o más por encima del P50 apunta a una fuga) y memoria de mapas de bits.
-- **Otras:** tiempo de arranque (en frío, templado y en caliente), renderizado lento y fotogramas congelados, y cierres por falta de memoria (LMK).
+Desde Android 16, con `targetSdk` 36 como el nuestro, en pantallas grandes (tabletas y plegables abiertos, a partir de 600 dp de ancho mínimo) se ignoran `screenOrientation`, incluido nuestro `sensorLandscape`, y los límites de tamaño. Es lo que señala la recomendación 3. **Los juegos quedan exentos si lo declaran con `android:appCategory`** ([cambios de Android 16](https://developer.android.com/about/versions/16/behavior-changes-16)), y nuestro manifiesto no lo declara. Hoy, en una tableta con Android 16, el juego puede abrirse en vertical y enseñar la pantalla de «gira el móvil».
 
-Cosas que he visto en el código y que pueden importar, **fuera de esta spec:**
+- En `game/android/app/src/main/AndroidManifest.xml`, en `<application>`: `android:appCategory="game"`.
+- `scripts/manifestRules.ts` lo exige, con su prueba en `tests/unit/androidManifest.test.ts`.
+- En los móviles no cambia nada: la regla de Android 16 solo afecta a pantallas grandes. En Android anterior al 8 el atributo se ignora.
+- El aviso temporal de Google para no adoptar la regla (`PROPERTY_COMPAT_ALLOW_RESTRICTED_RESIZABILITY`) no se usa: deja de valer con `targetSdk` 37. La exención de los juegos no caduca.
+- No es seguro que la recomendación desaparezca de Play Console: Google prefiere que todo se adapte a cualquier pantalla. Lo que sí cambia es lo que hace Android.
+- Prueba: si hay a mano una tableta con Android 16, o un emulador de tableta con API 36 en Android Studio, comprobar que el juego sale apaisado. Si no, no se puede probar, y se acepta porque en móviles no cambia nada.
 
-- **El SDK de anuncios arranca en el hilo principal.** El complemento llama a `MobileAds.initialize` en el hilo de la pantalla, justo antes del primer anuncio, y Google aconseja hacerlo en segundo plano para evitar ANR. Si en Android vitals salen ANR con `MobileAds.initialize`, mirarlo (aviso al complemento o cambio propio).
-- **`audio/music.mp3` (640 KB) no se usa en Android:** Phaser carga antes `music.ogg`, y el WebView de Android lo reproduce. El mp3 solo servía para la web, y ya no habrá versión web. Quitarlo ahorra alrededor de un 6 % de la descarga. Para la próxima versión normal.
+### 3b. Pantalla completa y la cámara del móvil (recomendaciones 1 y 2)
+
+Desde Android 15 (`targetSdk` 35 o más) todas las apps se dibujan de borde a borde, también debajo de la cámara o el «notch»: el modo de recorte que pida la app se trata como «siempre» ([cambios de Android 15](https://developer.android.com/about/versions/15/behavior-changes-15)). Android 16 quita la forma de evitarlo. El juego ya se dibuja a pantalla completa (modo inmersivo), así que lo único que puede salir mal es que la cámara tape algo.
+
+- **Recomendación 2 (funciones obsoletas).** Busqué en el DEX de la 2.8.1 quién llama a `Window.setStatusBarColor` y `setNavigationBarColor`: solo librerías de AndroidX (`androidx.activity` con `EdgeToEdgeApi23`, `26` y `29`, `androidx.core.splashscreen` y `androidx.core` con `WindowCompat`). El modo de recorte lo tocan el SDK de anuncios, AndroidX y Play Core, y `setSystemUiVisibility` también Cordova. Ninguna llamada es nuestra. No hay nada que cambiar en nuestro código. R8 quitará las que no se usen: tras la 2.8.2 se mira si la recomendación sigue. Si sigue, es de las librerías, y se irá cuando se actualicen.
+- **Recomendación 1 («puede no funcionar para todos»).** Los botones y números del juego no tienen en cuenta la zona de la cámara. Solo lo hace la página de privacidad (`env(safe-area-inset-*)` en `systems/legal.ts`). Capacitor 8 ya da esa zona al juego: su complemento System Bars inyecta por defecto las variables CSS `--safe-area-inset-*` ([System Bars](https://capacitorjs.com/docs/apis/system-bars)), y `index.html` ya lleva `viewport-fit=cover`.
+  - **Paso de David:** en su móvil, con el juego apaisado hacia los dos lados, mirar si la cámara tapa algún botón, número o el joystick. Si no tapa nada, no se hace nada. Si tapa algo, spec pequeña para apartar el marcador de esa zona con esas variables.
+  - Capacitor aconseja además llamar a `EdgeToEdge.enable(this)` en `MainActivity`, y Capacitor 9 lo hará solo. Se deja para el bloque 2: ya dibujamos a pantalla completa, así que hoy no cambiaría lo que se ve.
+
+### 3c. Menos peso de descarga (versión siguiente, no la 2.8.2)
+
+Medido el 25-oct-2026 pasando a WebP sin pérdida los PNG de la carpeta compilada y de `res`:
+
+| Qué | PNG | WebP sin pérdida | Ahorro |
+|---|---|---|---|
+| Imágenes del juego (`dist`, 145 archivos) | 547 kB | 111 kB | 436 kB |
+| Pantalla de inicio e iconos de Android (`res`, 31 archivos, todas las densidades) | 1.856 kB | 1.163 kB | 693 kB |
+
+Cada móvil solo descarga los recursos de su densidad, así que en `res` el ahorro real por móvil es una parte (en XXXHDPI, unos 250 kB entre las dos pantallas de inicio y el icono). Cuadra con los 699 kB que estima Play.
+
+Además, `audio/music.mp3` (637 kB) no se usa en Android: el juego carga antes `music.ogg` (`systems/audio.ts`), y el mp3 solo servía de reserva para la web, que ya no existirá. Al quitarlo, comprobar en el móvil que la música suena.
+
+Juntas, las dos cosas quitarían alrededor de 1 MB de la descarga, aparte de lo que quite R8. Convertir el arte toca su cadena de importación (repositorio privado, `art:import` y el manifiesto de arte), y los iconos y la pantalla de inicio salen de `store/make_icon.py`. Por eso van en su propia spec pequeña, en la versión siguiente.
+
+## Seguimiento
+
+- **Android vitals sin datos:** hoy no hay nada que leer. Cuando Play empiece a dar porcentajes, mirar cierres y ANR percibidos, uso de memoria (P50, P90 y P99, y el desglose por proceso: un P99 3,5 veces o más por encima del P50 apunta a una fuga), memoria de mapas de bits y arranque.
+- **El SDK de anuncios arranca en el hilo principal:** el complemento llama a `MobileAds.initialize` en el hilo de la pantalla, justo antes del primer anuncio. Puede causar ANR. Que Google aconseje hacerlo en segundo plano lo digo de memoria, sin comprobarlo en su documentación. Solo se mira si llegan ANR con `MobileAds.initialize`.
 - **Perfiles de arranque** (ordenar el código para que arranque antes): Google los propone después de R8, pero piden un módulo de pruebas de rendimiento y generarlos en un móvil. Nuestro código Android son 3 clases y el arranque lo marca el WebView, así que ganaríamos poco. No por ahora.
 
 ## Alternativas descartadas
@@ -219,10 +272,12 @@ Cosas que he visto en el código y que pueden importar, **fuera de esta spec:**
 - **Capacitor 9 alfa:** no es estable y AdMob no tiene versión para ella.
 - **Solo renombrar, sin optimizar** (`proguard-android.txt` o `-dontoptimize`): AGP 9 lo prohíbe y se pierde casi toda la ganancia.
 - **R8 sin modo completo o con reglas anchas:** la puntuación baja y Google dice expresamente que no se haga.
+- **Lanzamiento progresivo al 20 %** (estaba en la primera versión de esta spec): con Android vitals sin datos, no daría información en unos días y solo retrasaría la versión.
+- **`PROPERTY_COMPAT_ALLOW_RESTRICTED_RESIZABILITY` para las tabletas:** es temporal y deja de valer con `targetSdk` 37; la marca de juego no caduca.
 
 ## Riesgos
 
-- **Algo que se usa por reflexión desaparece y la app se cierra.** Es el fallo conocido de Capacitor (apartado 1). Lo cubren la lista del móvil, la prueba interna y el lanzamiento progresivo.
+- **Algo que se usa por reflexión desaparece y la app se cierra.** Es el fallo conocido de Capacitor (apartado 1). Lo cubren la lista del móvil y la prueba interna. Como Android vitals no tiene datos, un cierre que solo pase en otros móviles se vería tarde, por un informe suelto en «Fallos y errores ANR».
 - **El encogido de recursos quita uno que hacía falta** (pantalla de inicio, icono, textos). La lista del móvil lo vería. Si pasa, se conserva ese recurso con `tools:keep` en `res/raw/keep.xml`.
 - **Los anuncios reales no se pueden probar en el móvil de David.** Se prueban con los de prueba, que pasan por el mismo código del SDK.
 - **La métrica de Play tarda** unos días en reflejar la versión nueva.
@@ -230,7 +285,7 @@ Cosas que he visto en el código y que pueden importar, **fuera de esta spec:**
 
 ## Fuera de alcance
 
-AGP 9 y Capacitor 9 (bloque 2), perfiles de arranque, el mp3 de la música, el arranque del SDK de anuncios en segundo plano y cualquier cambio del juego.
+En la 2.8.2: AGP 9 y Capacitor 9 (bloque 2), `EdgeToEdge.enable`, apartar el marcador de la cámara (solo si hace falta, bloque 3b), WebP y el mp3 (bloque 3c), perfiles de arranque, el arranque del SDK de anuncios en segundo plano y cualquier cambio del juego.
 
 ## Estado de implementación
 
@@ -239,19 +294,41 @@ Nada hecho. Spec pendiente de aprobación.
 ## Decisiones tomadas en esta spec (de Claude, para que David las revise)
 
 - R8 ahora en AGP 8.13.2. AGP 9 cuando salga Capacitor 9 estable y AdMob lo admita.
-- La 2.8.2 va sola, sin otras mejoras dentro.
+- La 2.8.2 lleva solo R8 y `android:appCategory="game"`. WebP y el mp3, en la siguiente.
 - Si Capacitor 8.5.4 no ha salido al implementar, no se espera: se copian sus reglas, y se quitan al actualizar.
 - Se encogen también los recursos (`shrinkResources`), con el encogido nuevo de R8.
 - Se conservan los números de línea en los cierres (unos pocos KB más) para que se puedan leer en Play.
 - Comprobación nueva `npm run check:aab`, para que nadie vuelva a apagar R8 sin darse cuenta.
-- Prueba interna en Play antes de producción, y lanzamiento progresivo al 20 %.
+- Prueba interna en Play antes de producción y, después, producción al 100 % (sin lanzamiento progresivo, porque no hay datos que vigilar).
+- El marcador solo se aparta de la cámara si David ve que tapa algo en su móvil.
 
 ## Decisiones tomadas durante la implementación
 
 (Vacío hasta que se implemente.)
 
+## Cómo se ha comprobado
+
+**Leído entero, en el texto original** (descargado y leído línea a línea la mañana del 25-oct-2026, no con resúmenes):
+
+- Google: umbrales de Android vitals (25 %, 10 MB para apps, 50 MB para juegos y la nota de febrero de 2027), la página de optimización de código DEX (`r8.json`, AGP 8.10 en su último parche), cómo activar la optimización (`android.r8.optimizedResourceShrinking` para AGP 8.12 y 8.13), las notas de AGP 9.0 (`builtInKotlin`, `newDsl`, `proguard-android.txt`) y los cambios de comportamiento de Android 15 (borde a borde y cámara) y de Android 16 (tabletas y la exención de los juegos).
+- Capacitor: las guías [Updating to 8.0](https://capacitorjs.com/docs/updating/8-0) y [Updating to 8.5](https://capacitorjs.com/docs/updating/8-5), desde su fuente oficial en GitHub, y la página de [System Bars](https://capacitorjs.com/docs/apis/system-bars). **Ninguna de las dos guías habla de R8 ni de AGP 9.** La 8.5 solo trae cambios de iOS. Los pasos de Android de la 8.0 (AGP 8.13.0, Gradle 8.14.3, `variables.gradle`, `google-services` 4.4.4, sintaxis con `=` y `density` en `configChanges`) ya están todos en nuestro proyecto.
+- Capgo, [error de plugins con AGP 9](https://capgo.app/es/blog/fix-capacitor-plugin-build-errors-with-agp-9/): solo trata el cambio de `proguard-android.txt` a `proguard-android-optimize.txt`. Nuestra app usa el primero y el apartado 3 lo cambia.
+
+**Comprobado a mano:** las versiones en npm y en el Maven de Google; el AAB de la 2.8.1 abierto con `dexdump` (tamaños, clases y quién llama a las funciones obsoletas); el código de los complementos; las reglas de las librerías en la caché de Gradle; el archivo de reglas por defecto de AGP 8.13 (conserva `@JavascriptInterface`); las reglas de `@capacitor/android` 8.5.3 y de la compilación nocturna 8.5.4; la plantilla Android de Capacitor 9 alfa; y el ahorro de WebP, convirtiendo los PNG de verdad.
+
+**Leído solo en resumen automático** (la primera noche): las incidencias de GitHub (Capacitor #8589, #8587 y #8657; AdMob #459; Stripe #544), la guía de Capacitor 9 y el artículo de Capgo sobre Capacitor 9. Lo que de ahí sostiene una decisión está comprobado aparte: el arreglo de R8, leyendo las reglas de la 8.5.4 en su paquete; los requisitos de Capacitor 9, en su plantilla.
+
+**Sin comprobar todavía (lo digo de memoria o lo deduzco):**
+
+- La ruta exacta del archivo de desofuscación dentro del AAB, y que Play lo use solo. Se comprueba con el primer AAB (apartado 6) y con que desaparezca el aviso de Play.
+- Si Play genera el informe previo al lanzamiento para la prueba interna. Su página de ayuda no se pudo leer el 25 por la mañana.
+- Que Google aconseje arrancar el SDK de anuncios en segundo plano.
+- Que R8 conserva lo que nombra el manifiesto: es como funciona AGP (`aapt_rules.txt`), y la compilación lo enseñará.
+- Que `android:appCategory` se ignora antes de Android 8.
+- Si el WebView de Android usa hoy el `ogg` o el `mp3`: se comprueba al quitar el mp3.
+
 ## Fuentes
 
-[Optimización de código DEX](https://developer.android.com/google/play/vitals/code-optimization) · [umbrales de Android vitals](https://developer.android.com/google/play/vitals#dex_code_optimization) · [uso de memoria](https://developer.android.com/google/play/vitals/memory-usage) · [activar la optimización](https://developer.android.com/topic/performance/app-optimization/enable-app-optimization) · [notas de AGP 9.0](https://developer.android.com/build/releases/agp-9-0-0-release-notes) · [notas de AGP 9.4](https://developer.android.com/build/releases/gradle-plugin) · [Capacitor 9](https://capacitorjs.com/docs/next/updating/9-0) · [Capacitor #8589](https://github.com/ionic-team/capacitor/issues/8589) · [#8587](https://github.com/ionic-team/capacitor/issues/8587) · [#8646](https://github.com/ionic-team/capacitor/pull/8646) · [#8657](https://github.com/ionic-team/capacitor/pull/8657) · [AdMob #459](https://github.com/capacitor-community/admob/issues/459).
+[Optimización de código DEX](https://developer.android.com/google/play/vitals/code-optimization) · [umbrales de Android vitals](https://developer.android.com/google/play/vitals#dex_code_optimization) · [uso de memoria](https://developer.android.com/google/play/vitals/memory-usage) · [activar la optimización](https://developer.android.com/topic/performance/app-optimization/enable-app-optimization) · [notas de AGP 9.0](https://developer.android.com/build/releases/agp-9-0-0-release-notes) · [notas de AGP 9.4](https://developer.android.com/build/releases/gradle-plugin) · [cambios de Android 15](https://developer.android.com/about/versions/15/behavior-changes-15) · [cambios de Android 16](https://developer.android.com/about/versions/16/behavior-changes-16) · [Capacitor 8.0](https://capacitorjs.com/docs/updating/8-0) · [Capacitor 8.5](https://capacitorjs.com/docs/updating/8-5) · [System Bars](https://capacitorjs.com/docs/apis/system-bars) · [Capacitor 9](https://capacitorjs.com/docs/next/updating/9-0) · [Capgo, AGP 9](https://capgo.app/es/blog/fix-capacitor-plugin-build-errors-with-agp-9/) · [Capacitor #8589](https://github.com/ionic-team/capacitor/issues/8589) · [#8587](https://github.com/ionic-team/capacitor/issues/8587) · [#8646](https://github.com/ionic-team/capacitor/pull/8646) · [#8657](https://github.com/ionic-team/capacitor/pull/8657) · [AdMob #459](https://github.com/capacitor-community/admob/issues/459).
 
 Comprobado además a mano el 25-oct-2026: versiones en npm (`@capacitor/android` 8.5.3 `latest`, 9.0.0-alpha.8 `next`; `@capacitor-community/admob` 8.2.1), versiones de AGP en el Maven de Google (8.13.2 último de la 8.13; 9.4.1 último estable), las reglas de R8 de `@capacitor/android` 8.5.3 y de la compilación nocturna 8.5.4, la plantilla Android de Capacitor 9 alfa, y el contenido del AAB de la 2.8.1 con `dexdump`.
