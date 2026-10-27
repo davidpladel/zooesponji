@@ -11,7 +11,7 @@ import { bus, type BookPageKind } from '../systems/events';
 import { getSession } from '../systems/session';
 import { makePressable } from '../ui/press';
 import { textStyle } from '../ui/theme';
-import { addUiText } from '../ui/text';
+import { addUiText, fitBlock } from '../ui/text';
 import { wrapStyle } from '../ui/wrap';
 import { addCloseBadge, addPanel, addPillButton, addRibbonTitle, addVeil, pillImage, restartOnResize, setRibbonText, tileImage } from '../ui/widgets';
 
@@ -23,7 +23,6 @@ export interface BookSceneData {
 /** Un deslizamiento de más de esto (px) pasa página. */
 const SWIPE_PX = 50;
 /** El texto se encoge hasta este tamaño mínimo si no cabe (idiomas que alargan). */
-const MIN_TEXT_PX = 16;
 
 export const pageTitleKey = (id: string): StringKey => `book.page.${id}.title` as StringKey;
 export const pageTextKey = (id: string): StringKey => `book.page.${id}.text` as StringKey;
@@ -282,9 +281,7 @@ export class BookScene extends Phaser.Scene {
 
   /** Texto de la página, sin contorno (marrón sobre crema se lee mejor limpio): si no cabe (p. ej. en otro idioma), encoge la letra hasta un mínimo. */
   private fitText(text: string, x: number, y: number, width: number, maxHeight: number, size: number): Phaser.GameObjects.Text {
-    const label = addUiText(this, x, y, text, { ...textStyle(size, '#3e2723'), strokeThickness: 0, align: 'center', wordWrap: wrapStyle(width), lineSpacing: 4 }).setOrigin(0.5, 0);
-    for (let s = size; label.height > maxHeight && s > MIN_TEXT_PX; s -= 2) label.setFontSize(s - 2);
-    return label;
+    return fitBlock(addUiText(this, x, y, text, { ...textStyle(size, '#3e2723'), strokeThickness: 0, align: 'center', lineSpacing: 4 }).setOrigin(0.5, 0), width, maxHeight);
   }
 
   /** Dibujo grande de la página. Bloqueada: silueta oscura, como en las colecciones de otros juegos. */

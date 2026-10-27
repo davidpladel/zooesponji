@@ -216,3 +216,55 @@ test('el aviso no salta encima del panel del anuncio, y sale al cerrarlo', async
   await page.evaluate(() => window.__ZOO__!.back());
   await page.waitForFunction(() => window.__ZOO__!.pollNoticePos('yes') !== null, undefined, { timeout: 10_000 });
 });
+
+// Los títulos más largos que podrían llegar, en cada idioma: ningún texto del tablón baja de 16 px ni se sale.
+const LONG = {
+  es: 'Heladería para los visitantes del zoo', en: 'Ice cream shop for the zoo visitors', fr: 'Boutique de glaces pour les visiteurs du zoo',
+  it: 'Gelateria per tutti i visitatori dello zoo', 'pt-BR': 'Sorveteria para os visitantes do zoológico', 'pt-PT': 'Gelataria para os visitantes do jardim zoológico',
+  ru: 'Магазин мороженого для посетителей зоопарка', ar: 'محل بوظة لزوار حديقة الحيوانات الكبيرة', hi: 'चिड़ियाघर के मेहमानों के लिए आइसक्रीम की दुकान',
+  zh: '给动物园游客开一家冰淇淋店', ja: 'どうぶつえんに くる ひとの ための アイスクリームやさん',
+};
+const LONG_POLL = {
+  ...OPEN,
+  votacion: {
+    ...OPEN.votacion,
+    opciones: ['a', 'b', 'c', 'd'].map((id) => ({ id, titulo: LONG, dibujo: `${id}.png`, ideaDe: 'Adrián y Daniela' })),
+    reparto: { a: 40, b: 30, c: 20, d: 10 },
+  },
+};
+const CLOSED_POLL = { ...LONG_POLL, votacion: { ...LONG_POLL.votacion, abierta: false } };
+
+for (const locale of ['es-ES', 'en-US', 'fr-FR', 'it-IT', 'pt-BR', 'pt-PT', 'ru-RU', 'ar-SA', 'hi-IN', 'zh-CN', 'ja-JP']) {
+  test.describe(`tablón en ${locale}`, () => {
+    test.use({ locale, viewport: { width: 800, height: 360 } });
+
+    test('los textos se leen y no se salen, al votar y con la votación cerrada', async ({ page }) => {
+      const fake = await fakeServer(page, { status: LONG_POLL });
+      await startGame(page);
+      await page.evaluate((b) => window.__ZOO__!.communityStart(b), BASE);
+      await closeNoticeIfAny(page);
+      await page.evaluate(() => window.__ZOO__!.openBoard());
+      await page.waitForFunction(() => window.__ZOO__!.boardView() === 'cards');
+      const cards = await page.evaluate(() => window.__ZOO__!.boardTextReport());
+      expect(cards!.overflow).toEqual([]);
+      expect(cards!.minSize).toBeGreaterThanOrEqual(16);
+
+      await click(page, await page.evaluate(() => window.__ZOO__!.boardOptionPos('a')));
+      await click(page, await page.evaluate(() => window.__ZOO__!.boardConfirmPos()));
+      await page.waitForFunction(() => window.__ZOO__!.boardView() === 'bars');
+      const bars = await page.evaluate(() => window.__ZOO__!.boardTextReport());
+      expect(bars!.overflow).toEqual([]);
+      expect(bars!.minSize).toBeGreaterThanOrEqual(16);
+
+      // Se cierra la votación: al volver a abrir el tablón, el aviso de cerrada también se lee.
+      fake.status = CLOSED_POLL;
+      await page.keyboard.press('Escape');
+      await expect.poll(() => scenes(page)).not.toContain('Board');
+      await page.evaluate(() => window.__ZOO__!.openBoard());
+      await page.waitForFunction(() => window.__ZOO__!.boardView() === 'closed');
+      const closed = await page.evaluate(() => window.__ZOO__!.boardTextReport());
+      expect(closed!.overflow).toEqual([]);
+      expect(closed!.minSize).toBeGreaterThanOrEqual(16);
+    });
+  });
+}

@@ -111,7 +111,7 @@ export const STRINGS_ES = {
   'board.pollTitle': '¿Qué traemos al zoo?',
   'board.ideaLine': 'Idea de {name}.',
   'board.titleLine': '{title}.',
-  'board.ideaOf': 'idea de {name}',
+  'board.ideaOf': 'de {name}',
   'board.daysLeft': 'quedan {n} días',
   'board.lastDay': '¡último día!',
   'board.vote': 'Votar',

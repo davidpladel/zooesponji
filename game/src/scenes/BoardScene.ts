@@ -7,7 +7,7 @@ import { sfx } from '../systems/audio';
 import { getCommunity } from '../systems/community';
 import { bus } from '../systems/events';
 import { getLanguage } from '../systems/language';
-import { addEmoji, addUiText, fitText } from '../ui/text';
+import { addEmoji, addUiText, fitBlock, fitText, MIN_TEXT_PX, UiText } from '../ui/text';
 import { UI, textStyle } from '../ui/theme';
 import { addCloseBadge, addPanel, addPillButton, addRibbonTitle, addTile, addVeil, restartOnResize } from '../ui/widgets';
 
@@ -150,11 +150,12 @@ export class BoardScene extends Phaser.Scene {
     if (phase === 'closed' && poll.ganadora) {
       this.view = 'winner';
       const win = poll.opciones.find((o) => o.id === poll.ganadora)!;
-      const size = Math.min(b.width * 0.4, b.height * 0.62);
-      this.option(win, b.centerX, b.y + size / 2 + 8, size, false);
-      fitText(addUiText(this, b.centerX, b.y + size + 30, t('board.winner'), textStyle(Math.round(size * 0.14), '#ffffff', UI.outline)).setOrigin(0.5), b.width);
+      const cardH = b.height * 0.68;
+      const cardW = Math.min(b.width * 0.4, cardH * 0.8);
+      this.option(win, b.centerX, b.y + cardH / 2 + 8, cardW, cardH, false);
+      fitText(addUiText(this, b.centerX, b.y + cardH + 30, t('board.winner'), textStyle(this.textPx(1.3), '#ffffff', UI.outline)).setOrigin(0.5), b.width);
       // Hasta la siguiente votación no hay nada que votar: que se sepa que vendrán ideas nuevas.
-      fitText(addUiText(this, b.centerX, b.bottom - 14, t('board.nextSoon'), textStyle(20, UI.brown, UI.cream)).setOrigin(0.5), b.width);
+      fitText(addUiText(this, b.centerX, b.bottom - 14, t('board.nextSoon'), textStyle(this.textPx(0.9), UI.brown, UI.cream)).setOrigin(0.5), b.width);
       this.confetti();
       community.markBoardSeen();
       return;
@@ -164,15 +165,17 @@ export class BoardScene extends Phaser.Scene {
       const n = poll.opciones.length;
       const gap = b.width * 0.03;
       const button = Phaser.Math.Clamp(b.height * 0.18, 52, 84);
-      const size = Math.min((b.width - gap * (n - 1)) / n, b.height - button - 16);
-      const startX = b.centerX - ((size + gap) * n - gap) / 2 + size / 2;
+      // Tarjetas altas hasta el botón: el dibujo arriba y debajo sitio para dos líneas de título.
+      const cardH = b.height - button - 16;
+      const cardW = Math.min((b.width - gap * (n - 1)) / n, cardH * 0.8);
+      const startX = b.centerX - ((cardW + gap) * n - gap) / 2 + cardW / 2;
       poll.opciones.forEach((option, i) => {
-        const cx = startX + i * (size + gap);
+        const cx = startX + i * (cardW + gap);
         // Marco verde gordo detrás de la elegida (sin agrandarla: tapaba la X de cerrar).
         const mark = this.add.graphics();
-        mark.fillStyle(0x43a047, 1).fillRoundedRect(cx - size / 2 - 7, b.y - 7, size + 14, size + 14, 22);
+        mark.fillStyle(0x43a047, 1).fillRoundedRect(cx - cardW / 2 - 7, b.y - 7, cardW + 14, cardH + 14, 22);
         this.marks.set(option.id, mark);
-        const card = this.option(option, cx, b.y + size / 2, size, true);
+        const card = this.option(option, cx, b.y + cardH / 2, cardW, cardH, true);
         this.cards.set(option.id, card);
       });
       this.markPicked();
@@ -186,28 +189,32 @@ export class BoardScene extends Phaser.Scene {
     // Votada, o cerrada sin ganadora: barras sin números.
     this.view = phase === 'voted' ? 'bars' : 'closed';
     const mine = community.memory.voted[poll.id] ?? null;
-    const rowH = Math.min((b.height * 0.7) / poll.opciones.length, 70);
-    const barX = b.x + rowH * 1.2 + b.width * 0.22;
-    const barW = b.right - barX - b.width * 0.04;
+    // Las filas usan todo el alto hasta el pie, y el título casi la mitad del ancho (en dos líneas si hace falta).
+    const footH = Math.min(b.height * 0.2, 64);
+    const rowH = Math.min((b.height - footH) / poll.opciones.length, 110);
+    const pic = Math.min(rowH * 0.85, 72);
+    const textX = b.x + pic + 12;
+    const barX = b.x + b.width * 0.55;
+    const barW = b.right - barX - b.width * 0.06;
     poll.opciones.forEach((option, i) => {
       const y = b.y + rowH * (i + 0.5);
-      this.drawing(option.dibujo, b.x + rowH * 0.6, y, rowH * 0.9);
-      fitText(addUiText(this, b.x + rowH * 1.2, y, localized(option.titulo, lang), textStyle(Math.round(rowH * 0.3), UI.brown, UI.cream)).setOrigin(0, 0.5), barX - b.x - rowH * 1.2 - 8);
+      this.drawing(option.dibujo, b.x + pic / 2, y, pic);
+      fitBlock(addUiText(this, textX, y, localized(option.titulo, lang), textStyle(this.textPx(1), UI.brown, UI.cream)).setOrigin(0, 0.5), barX - textX - 12, rowH * 0.95);
       const share = poll.reparto[option.id] ?? 0;
       const bar = this.add.graphics();
       bar.fillStyle(0xffffff, 0.35).fillRoundedRect(barX, y - rowH * 0.25, barW, rowH * 0.5, 8);
       bar.fillStyle(option.id === mine ? 0x4caf50 : 0xffb300, 1).fillRoundedRect(barX, y - rowH * 0.25, Math.max(8, (barW * share) / 100), rowH * 0.5, 8);
       if (option.id === mine) addUiText(this, barX + barW + 6, y, '✓', textStyle(Math.round(rowH * 0.4), '#4caf50', '#ffffff')).setOrigin(0, 0.5);
     });
-    const footY = b.bottom - Math.min(b.height * 0.12, 40);
+    const footY = b.bottom - footH / 2;
     if (phase === 'voted') {
       const left = daysLeft(status);
-      fitText(addUiText(this, b.x + b.width * 0.25, footY, `⏳ ${left <= 1 ? t('board.lastDay') : t('board.daysLeft', { n: left })}`, textStyle(22, UI.brown, UI.cream)).setOrigin(0.5), b.width * 0.46);
+      fitText(addUiText(this, b.x + b.width * 0.25, footY, `⏳ ${left <= 1 ? t('board.lastDay') : t('board.daysLeft', { n: left })}`, textStyle(this.textPx(1), UI.brown, UI.cream)).setOrigin(0.5), b.width * 0.46);
       if (community.online) {
         this.change = addPillButton(this, b.x + b.width * 0.75, footY, 180, 56, { color: 'blue', label: t('board.change'), onTap: () => this.startChange() });
       }
     } else {
-      fitText(addUiText(this, b.centerX, footY, t('board.closed'), textStyle(20, UI.brown, UI.cream)).setOrigin(0.5), b.width);
+      fitBlock(addUiText(this, b.centerX, footY, `🔒 ${t('board.closed')}`, { ...textStyle(this.textPx(1.1), UI.brown, UI.cream), align: 'center' }).setOrigin(0.5), b.width, footH);
     }
   }
 
@@ -312,14 +319,28 @@ export class BoardScene extends Phaser.Scene {
 
   // --- Piezas ---
 
-  private option(option: PollOption, x: number, y: number, size: number, tappable: boolean): Phaser.GameObjects.Container {
-    const card = addTile(this, x, y, size, size, tappable ? () => this.pick(option.id) : undefined);
+  private option(option: PollOption, x: number, y: number, w: number, h: number, tappable: boolean): Phaser.GameObjects.Container {
+    const card = addTile(this, x, y, w, h, tappable ? () => this.pick(option.id) : undefined);
     const lang = getLanguage();
-    // Dibujo arriba y los textos por encima del canto de abajo de la tarjeta, sin salirse de ella.
-    card.add(this.drawing(option.dibujo, 0, -size * 0.13, size * 0.5));
-    card.add(fitText(addUiText(this, 0, size * 0.2, localized(option.titulo, lang), textStyle(Math.round(size * 0.1), UI.brown, UI.cream)).setOrigin(0.5), size * 0.86));
-    if (option.ideaDe) card.add(fitText(addUiText(this, 0, size * 0.31, t('board.ideaOf', { name: option.ideaDe }), textStyle(Math.round(size * 0.07), UI.brown, UI.cream)).setOrigin(0.5), size * 0.86));
+    // Dibujo en la mitad de arriba; debajo, el título (hasta dos líneas) y «de Lola», sin salirse de la tarjeta.
+    const pic = Math.min(w * 0.72, h * 0.44);
+    card.add(this.drawing(option.dibujo, 0, -h / 2 + h * 0.06 + pic / 2, pic));
+    const top = -h / 2 + h * 0.1 + pic;
+    const room = w * 0.88;
+    const whoH = option.ideaDe ? h * 0.14 : 0;
+    const titleH = h / 2 - h * 0.04 - whoH - top;
+    const title = fitBlock(addUiText(this, 0, top, localized(option.titulo, lang), { ...textStyle(this.textPx(1.1), UI.brown, UI.cream), align: 'center' }).setOrigin(0.5, 0), room, titleH);
+    card.add(title);
+    if (option.ideaDe) {
+      const who = fitBlock(addUiText(this, 0, top + title.height + 2, t('board.ideaOf', { name: option.ideaDe }), { ...textStyle(this.textPx(0.8), UI.brown, UI.cream), align: 'center' }).setOrigin(0.5, 0), room, whoH);
+      card.add(who);
+    }
     return card;
+  }
+
+  /** Letra de la votación según la pantalla, no según la tarjeta: con 4 opciones ya no queda diminuta. 1 ≈ 24 px. */
+  private textPx(scale: number): number {
+    return Math.max(MIN_TEXT_PX, Math.round(Phaser.Math.Clamp(this.scale.height * 0.042, 18, 28) * scale));
   }
 
   /** Dibujo del servidor; mientras carga, o si falla, el de reserva. */
@@ -495,6 +516,32 @@ export class BoardScene extends Phaser.Scene {
 
   changePos(): Vec | null {
     return this.change ? { x: this.change.x, y: this.change.y } : null;
+  }
+
+  /** Para las pruebas: la letra más pequeña del tablón y los textos que se salen de su tarjeta o del panel. */
+  textReport(): { minSize: number; overflow: string[] } {
+    const b = this.body;
+    const overflow: string[] = [];
+    let minSize = Infinity;
+    const inside = (r: Phaser.Geom.Rectangle, box: Phaser.Geom.Rectangle): boolean =>
+      r.x >= box.x - 1 && r.y >= box.y - 1 && r.right <= box.right + 1 && r.bottom <= box.bottom + 1;
+    const check = (text: UiText, box: Phaser.Geom.Rectangle): void => {
+      if (!text.visible || text.text === '') return;
+      minSize = Math.min(minSize, Number.parseInt(String(text.style.fontSize), 10));
+      const r = text.getBounds();
+      // El contorno sobresale unos píxeles: se mide la caja sin él.
+      const pad = text.style.strokeThickness / 2;
+      if (!inside(new Phaser.Geom.Rectangle(r.x + pad, r.y + pad, r.width - pad * 2, r.height - pad * 2), box)) overflow.push(text.text);
+    };
+    const panel = new Phaser.Geom.Rectangle(b.x, b.y - 30, b.width, b.height + 30);
+    for (const child of this.children.list) {
+      if (child instanceof UiText) check(child, panel);
+      if (child instanceof Phaser.GameObjects.Container && [...this.cards.values()].includes(child)) {
+        const card = new Phaser.Geom.Rectangle(child.x - child.width / 2, child.y - child.height / 2, child.width, child.height);
+        for (const inner of child.list) if (inner instanceof UiText) check(inner, card);
+      }
+    }
+    return { minSize, overflow };
   }
 
   pollView(): PollView {

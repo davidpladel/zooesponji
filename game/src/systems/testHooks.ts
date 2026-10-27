@@ -122,6 +122,8 @@ export interface ZooTestApi {
   boardConfirmPos(): Vec | null;
   boardChangePos(): Vec | null;
   boardPicked(): string | null;
+  /** Letra más pequeña del tablón y textos que se salen de su sitio. */
+  boardTextReport(): { minSize: number; overflow: string[] } | null;
   pollNoticePos(key: 'yes' | 'no'): Vec | null;
   /** Con el tablón abierto, la pantalla cambia de tamaño (girar el móvil). */
   boardResize(): void;
@@ -279,6 +281,7 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
     boardConfirmPos: () => activeScene<BoardScene>('Board')?.confirmPos() ?? null,
     boardChangePos: () => activeScene<BoardScene>('Board')?.changePos() ?? null,
     boardPicked: () => activeScene<BoardScene>('Board')?.picked() ?? null,
+    boardTextReport: () => activeScene<BoardScene>('Board')?.textReport() ?? null,
     pollNoticePos: (key) => {
       const scene = activeScene<PollNoticeScene>('PollNotice');
       return (key === 'yes' ? scene?.yesPos() : scene?.noPos()) ?? null;

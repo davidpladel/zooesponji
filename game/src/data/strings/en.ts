@@ -102,7 +102,7 @@ export const STRINGS_EN: Record<StringKey, string> = {
   'board.pollTitle': 'What should we bring to the zoo?',
   'board.ideaLine': "{name}'s idea.",
   'board.titleLine': '{title}.',
-  'board.ideaOf': "{name}'s idea",
+  'board.ideaOf': 'by {name}',
   'board.daysLeft': '{n} days left',
   'board.lastDay': 'last day!',
   'board.vote': 'Vote',

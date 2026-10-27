@@ -102,7 +102,7 @@ export const STRINGS_JA: Record<StringKey, string> = {
   'board.pollTitle': 'どうぶつえんに なにを よぶ？',
   'board.ideaLine': '{name}の アイデア。',
   'board.titleLine': '{title}。',
-  'board.ideaOf': '{name}の アイデア',
+  'board.ideaOf': '{name} より',
   'board.daysLeft': 'あと{n}にち',
   'board.lastDay': 'きょうが さいご！',
   'board.vote': 'とうひょう',

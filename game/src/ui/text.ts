@@ -1,4 +1,5 @@
 import * as Phaser from 'phaser';
+import { wrapStyle } from './wrap';
 
 /**
  * Texto de la interfaz nueva. El juego usa pixelArt, y Phaser vuelve a subir la textura del texto a la
@@ -40,6 +41,24 @@ export function addEmoji(scene: Phaser.Scene, x: number, y: number, emoji: strin
 export function fitText<T extends Phaser.GameObjects.Text>(text: T, maxWidth: number, minSize = 9): T {
   let size = Number.parseInt(String(text.style.fontSize), 10);
   while (text.width > maxWidth && size > minSize) {
+    size -= 1;
+    text.setFontSize(size);
+  }
+  return text;
+}
+
+/** Letra más pequeña que se permite al encoger un bloque: por debajo, en un móvil, ya no se lee. */
+export const MIN_TEXT_PX = 16;
+
+/**
+ * Ajusta un bloque de texto a su caja: primero lo parte en líneas (también en chino y japonés) y,
+ * solo si aun así no cabe, encoge la letra, sin bajar de `minSize`. Mejor una línea más que letra diminuta.
+ */
+export function fitBlock<T extends Phaser.GameObjects.Text>(text: T, maxWidth: number, maxHeight: number, minSize = MIN_TEXT_PX): T {
+  const wrap = wrapStyle(maxWidth);
+  text.setWordWrapWidth(maxWidth).setWordWrapCallback(wrap.callback!);
+  let size = Number.parseInt(String(text.style.fontSize), 10);
+  while ((text.height > maxHeight || text.width > maxWidth) && size > minSize) {
     size -= 1;
     text.setFontSize(size);
   }

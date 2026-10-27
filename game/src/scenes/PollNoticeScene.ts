@@ -3,7 +3,7 @@ import type { Vec } from '../core/movement';
 import { sfx } from '../systems/audio';
 import { getCommunity } from '../systems/community';
 import { bus } from '../systems/events';
-import { addEmoji, addUiText, fitText } from '../ui/text';
+import { addEmoji, addUiText, fitBlock, fitText, MIN_TEXT_PX } from '../ui/text';
 import { localized } from '../core/community';
 import { getLanguage } from '../systems/language';
 import { textStyle, UI } from '../ui/theme';
@@ -49,7 +49,10 @@ export class PollNoticeScene extends Phaser.Scene {
     if (win) {
       // Ganadora: copa, nombre de la idea y botón que lleva al tablón a verla.
       addEmoji(this, cx, cy - panelH * 0.22, '🏆', panelH * 0.26);
-      fitText(addUiText(this, cx, cy + panelH * 0.04, `${t('board.winner')} ${localized(win.titulo, getLanguage())}`, textStyle(Math.round(panelH * 0.09), UI.brown, UI.cream)).setOrigin(0.5), panelW * 0.86);
+      // «¡Ha ganado!» en una línea y el título debajo (hasta dos líneas): juntos en una se quedaban diminutos.
+      const size = Math.max(MIN_TEXT_PX, Math.round(panelH * 0.075));
+      fitText(addUiText(this, cx, cy - panelH * 0.03, t('board.winner'), textStyle(size, UI.brown, UI.cream)).setOrigin(0.5), panelW * 0.86);
+      fitBlock(addUiText(this, cx, cy + panelH * 0.02, localized(win.titulo, getLanguage()), { ...textStyle(size, UI.brown, UI.cream), align: 'center' }).setOrigin(0.5, 0), panelW * 0.86, panelH * 0.14);
       this.yes = addPillButton(this, cx, cy + panelH * 0.3, Math.min(panelW * 0.8, button * 3), button, { color: 'green', icon: 'play', label: t('board.see'), onTap: () => this.finish(true) });
       community.markWinnerNoticed();
       bus.emit('poll-winner-notice', { poll: poll.id });
