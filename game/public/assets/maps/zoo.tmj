@@ -9115,7 +9115,7 @@
       {
        "name": "blocks",
        "type": "bool",
-       "value": false
+       "value": true
       },
       {
        "name": "flat",
@@ -9126,6 +9126,21 @@
        "name": "z",
        "type": "int",
        "value": 0
+      },
+      {
+       "name": "solid",
+       "type": "bool",
+       "value": true
+      },
+      {
+       "name": "blockW",
+       "type": "int",
+       "value": 72
+      },
+      {
+       "name": "blockH",
+       "type": "int",
+       "value": 60
       }
      ]
     },

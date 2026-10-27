@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { PEN_IDS } from '../../src/data/pens';
 import { approachTile } from '../../src/core/interaction';
 import { findPath, isWalkable } from '../../src/core/pathfinding';
-import { buildWalkGrid, isShopDoor, readEnclosures, readBoard, readGates, readProps, readShop, readSpawn, type TiledMap } from '../../src/core/tiledmap';
+import { buildWalkGrid, isShopDoor, readEnclosures, readBoard, readGates, readProps, readShop, readSpawn, withSolidProps, type TiledMap } from '../../src/core/tiledmap';
 
 const url = new URL('../../public/assets/maps/zoo.tmj', import.meta.url);
 const map = JSON.parse(readFileSync(fileURLToPath(url), 'utf8')) as TiledMap;
@@ -162,6 +162,17 @@ describe('mapa del zoo', () => {
   it('toda pieza del mapa y todo suelo de bioma están en art.config.json', () => {
     for (const p of readProps(map)) expect(config.props[p.prop], p.prop).toBeDefined();
     for (const e of readEnclosures(map)) expect(config.props[`ground-${e.biome}`], `suelo de ${e.penId}`).toBeDefined();
+  });
+
+  it('la cuidadora no pisa la fuente, pero puede rodearla por la plaza', () => {
+    const fountain = readProps(map).find((p) => p.prop === 'fountain')!;
+    const solid = withSolidProps(grid, readProps(map), 16);
+    const { x, y, width, height } = fountain.block!;
+    for (let ty = Math.floor(y / 16); ty <= Math.floor((y + height - 1) / 16); ty++)
+      for (let tx = Math.floor(x / 16); tx <= Math.floor((x + width - 1) / 16); tx++) expect(isWalkable(solid, tx, ty)).toBe(false);
+    const left = { x: Math.floor(x / 16) - 1, y: Math.floor(y / 16) };
+    const right = { x: Math.floor((x + width - 1) / 16) + 1, y: left.y };
+    expect(findPath(solid, left, right)).not.toBeNull();
   });
 
   it('el tablón está junto a la plaza y su casilla se pisa', () => {

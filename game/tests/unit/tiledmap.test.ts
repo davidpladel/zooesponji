@@ -75,7 +75,7 @@ describe('readSpawn', () => {
       },
     ]);
     expect(readProps(map)).toEqual([
-      { prop: 'pond', x: 40, y: 64, flat: true, z: 1, block: { x: 24, y: 48, width: 32, height: 16 }, zone: null },
+      { prop: 'pond', x: 40, y: 64, flat: true, z: 1, block: { x: 24, y: 48, width: 32, height: 16 }, zone: null, solid: false },
     ]);
   });
 

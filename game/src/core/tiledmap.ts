@@ -116,6 +116,19 @@ export function buildWalkGrid(map: TiledMap): WalkGrid {
   });
 }
 
+/** La rejilla con las casillas que tocan las zonas `block` de los props sólidos cerradas. */
+export function withSolidProps(grid: WalkGrid, props: readonly PropInfo[], tile: number): WalkGrid {
+  const cells = new Uint8Array(grid.cells);
+  for (const p of props) {
+    if (!p.solid || !p.block) continue;
+    const { x, y, width, height } = p.block;
+    for (let ty = Math.max(0, Math.floor(y / tile)); ty <= Math.min(grid.height - 1, Math.floor((y + height - 1) / tile)); ty++)
+      for (let tx = Math.max(0, Math.floor(x / tile)); tx <= Math.min(grid.width - 1, Math.floor((x + width - 1) / tile)); tx++)
+        cells[ty * grid.width + tx] = 0;
+  }
+  return { width: grid.width, height: grid.height, cells };
+}
+
 export function readEnclosures(map: TiledMap): EnclosureInfo[] {
   const result: EnclosureInfo[] = [];
   for (const object of objectsOf(map)) {
@@ -234,6 +247,8 @@ export interface PropInfo {
   block: { x: number; y: number; width: number; height: number } | null;
   /** Zona que anuncia (solo los carteles de zona): `sabana`, `polo`, `granja`. */
   zone: string | null;
+  /** Su zona `block` tampoco la pisan la cuidadora ni los visitantes (la fuente de la plaza). */
+  solid: boolean;
 }
 
 export function readProps(map: TiledMap): PropInfo[] {
@@ -257,6 +272,7 @@ export function readProps(map: TiledMap): PropInfo[] {
       z: num('z'),
       block: blocks && w > 0 && h > 0 ? { x: object.x - w / 2, y: object.y - h, width: w, height: h } : null,
       zone: typeof zone === 'string' ? zone : null,
+      solid: getProperty(object.properties, 'solid') === true,
     });
   }
   return result;

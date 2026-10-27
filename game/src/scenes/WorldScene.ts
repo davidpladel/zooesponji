@@ -8,7 +8,7 @@ import { stepAlongPath, tileCenter, tryMove, worldToTile, type Vec } from '../co
 import { findPathOrNearest, isWalkable, type Point, type WalkGrid } from '../core/pathfinding';
 import { withPenInteriors } from '../core/penGrid';
 import { noPen, stepNear, type NearState } from '../core/penNear';
-import { buildWalkGrid, readBoard, readEnclosures, readGates, readProps, readShop, readSpawn, type TiledMap } from '../core/tiledmap';
+import { buildWalkGrid, readBoard, readEnclosures, readGates, readProps, readShop, readSpawn, withSolidProps, type TiledMap } from '../core/tiledmap';
 import type { PenId } from '../data/pens';
 import { SHOP_UNLOCK_COINS } from '../data/shop';
 import { t } from '../data/strings';
@@ -70,7 +70,7 @@ export class WorldScene extends Phaser.Scene {
   create(): void {
     const mapData = this.cache.tilemap.get(MAPS.zoo).data as TiledMap;
     this.mapData = mapData;
-    this.pathGrid = buildWalkGrid(mapData);
+    this.pathGrid = withSolidProps(buildWalkGrid(mapData), readProps(mapData), TILE_SIZE);
 
     const map = this.make.tilemap({ key: MAPS.zoo });
     const tileset = map.addTilesetImage('placeholder', TEXTURES.tiles);

@@ -105,16 +105,18 @@ objects.push({ id: nextId++, name: 'puerta-tienda', type: 'puertaTienda', x: (27
 objects.push({ id: nextId++, name: 'tablon', type: 'tablon', x: (20 + OX) * T, y: (13 + OY) * T, width: T, height: T, rotation: 0, visible: true });
 
 // Props de decoración: x,y = punto de apoyo (centro de la base) en px.
-// blockW/blockH: rectángulo que el animal no puede pisar (centrado en la base); flat: pieza plana
+// blockW/blockH: rectángulo que el animal no puede pisar (centrado en la base); solid: tampoco lo pisan la
+// cuidadora ni los visitantes (casillas que toca el rectángulo); flat: pieza plana
 // (agua, meseta) que se dibuja pegada al suelo, por debajo de animales y personas; zone: zona que
 // anuncia un cartel de zona.
-const prop = (name, px, py, { block = null, flat = false, z = 0, zone = null } = {}) => {
+const prop = (name, px, py, { block = null, flat = false, z = 0, zone = null, solid = false } = {}) => {
   const properties = [
     { name: 'prop', type: 'string', value: name },
     { name: 'blocks', type: 'bool', value: block !== null },
     { name: 'flat', type: 'bool', value: flat },
     { name: 'z', type: 'int', value: z },
   ];
+  if (solid) properties.push({ name: 'solid', type: 'bool', value: true });
   if (block) properties.push({ name: 'blockW', type: 'int', value: block[0] }, { name: 'blockH', type: 'int', value: block[1] });
   if (zone) properties.push({ name: 'zone', type: 'string', value: zone });
   objects.push({ id: nextId++, name: `${name}-${nextId}`, type: 'prop', x: px, y: py, width: 0, height: 0, rotation: 0, visible: true, properties });
@@ -224,7 +226,8 @@ for (const [cx, cy] of [[3, 3], [10, 2]]) establo('flowers', cx, cy);
 
 // Parque.
 // La fuente animada en el centro de la plaza (80x64: tapa la isla de césped de 4x4).
-pprop('fountain', 24 * T, 19 * T);
+// Sólida: el pilón tapa media casilla de camino a cada lado y sin esto la cuidadora se metía en el agua.
+pprop('fountain', 24 * T, 19 * T, { block: [72, 60], solid: true });
 for (const [x, y] of [[4, 6], [4, 13], [6, 8], [6, 11], [4, 22], [4, 26], [21, 7], [21, 11], [21, 23], [22, 27], [26, 23], [25, 27], [42, 6], [42, 11], [42, 22], [42, 27], [33, 4], [39, 4]]) {
   pat('tree', x, y);
 }
