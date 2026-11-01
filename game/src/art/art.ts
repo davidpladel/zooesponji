@@ -26,6 +26,7 @@ export const interiorKey = (piece: string): string => `art-interior-${piece}`;
 export const propAnimKey = (name: string): string => `art-prop-${name}-anim`;
 export const foodKey = (id: FoodId): string => `art-food-${id}`;
 export const companionKey = (id: AnimalId): string => `art-companion-${id}`;
+export const petKey = (id: string): string => `art-pet-${id}`;
 
 export const FACING_ROWS: Record<Facing, number> = { down: 0, left: 1, right: 2, up: 3 };
 export const walkAnimKey = (textureKey: string, facing: Facing): string => `${textureKey}-walk-${facing}`;
@@ -67,6 +68,7 @@ export function queueArt(scene: Phaser.Scene, m: ArtManifest): void {
     const companion = m.companions[id];
     if (companion) sheet(companionKey(id), companion);
   }
+  for (const [id, s] of Object.entries(m.pets)) sheet(petKey(id), s);
   for (const [piece, img] of Object.entries(m.interior)) scene.load.image(interiorKey(piece), url(img.file));
 }
 
@@ -90,6 +92,7 @@ export function registerArtAnims(scene: Phaser.Scene, m: ArtManifest): void {
   m.visitors.forEach((_v, i) => createWalkAnims(scene, visitorKey(i)));
   for (const look of Object.keys(m.animals)) createWalkAnims(scene, animalKey(look));
   for (const id of ANIMAL_IDS) if (m.companions[id]) createWalkAnims(scene, companionKey(id));
+  for (const id of Object.keys(m.pets)) createWalkAnims(scene, petKey(id));
   for (const [name, p] of Object.entries(m.props)) {
     if (!p.frames || p.frames < 2 || scene.anims.exists(propAnimKey(name))) continue;
     scene.anims.create({

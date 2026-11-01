@@ -3,9 +3,11 @@ import { initialState, type GameState } from '../../src/core/economy';
 import { SHOP_SLOTS, shopEntries, shopStock } from '../../src/core/shopEntries';
 import { PENS } from '../../src/data/pens';
 
+/** Con Luna ya comprada: así las pruebas de recintos no la tienen en medio (las suyas van al final). */
 const withCounts = (counts: Partial<GameState['counts']>): GameState => ({
   ...initialState(),
   shopUnlocked: true,
+  luna: true,
   counts: { ...initialState().counts, ...counts },
 });
 
@@ -77,5 +79,19 @@ describe('shopEntries', () => {
     const entries = shopEntries(withCounts({}));
     expect(entries.find((e) => e.id === 'pantera')?.look).toBe(PENS.pantera.residents[0]!.look);
     expect(entries.find((e) => e.id === 'extra-cabra')?.look).toBe(PENS.cabra.residents[1]!.look);
+  });
+});
+
+describe('Luna en la tienda', () => {
+  it('va en una peana con los demás, por su precio', () => {
+    const entries = shopEntries({ ...withCounts({ cabra: 5, pantera: 1 }), luna: false });
+    expect(entries.map((e) => `${e.id}:${e.cost}`)).toEqual(['extra-pantera:20', 'luna:67', 'panda:100', 'estanque:120', 'ovejas:120']);
+    expect(entries.find((e) => e.id === 'luna')).toMatchObject({ kind: 'pet', look: 'luna', status: 'buy' });
+  });
+
+  it('ya comprada no ocupa peana, ni siquiera cuando sobran', () => {
+    const done = { cabra: 5, pantera: 2, panda: 3, estanque: 5, ovejas: 5, establo: 8, pinguinos: 5, sabana: 8, 'elefantes-africanos': 2, 'elefantes-asiaticos': 1 };
+    expect(shopStock(withCounts(done))).not.toContain('luna');
+    expect(summary({ ...withCounts(done), luna: false }).slice(0, 2)).toEqual(['luna:buy', 'extra-elefantes-asiaticos:buy']);
   });
 });

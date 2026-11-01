@@ -34,6 +34,12 @@ describe('parseManifest', () => {
     expect(m?.companions.leon?.frameWidth).toBe(24);
   });
 
+  it('mascotas: opcionales (manifiestos de antes) y, si están, bien formadas', () => {
+    expect(parseManifest(valid())?.pets).toEqual({});
+    expect(parseManifest({ ...valid(), pets: { luna: sheet(16, 16) } })?.pets.luna?.frameWidth).toBe(16);
+    expect(parseManifest({ ...valid(), pets: { luna: { file: 'luna.png' } } })).toBeNull();
+  });
+
   it('sin props ni comidas sigue siendo válido', () => {
     const m = parseManifest(valid());
     expect(m?.props).toEqual({});

@@ -142,6 +142,7 @@ export const STRINGS_FR: Record<StringKey, string> = {
   'shop.about.cabra': 'Les chèvres mangent de tout… même des cailloux !',
   'shop.about.pantera': 'La panthère est super rapide !',
   'shop.about.panda': 'Les pandas adorent le bambou !',
+  'shop.about.luna': 'Lune veut se promener dans le zoo avec toi !',
   'shop.about.jirafa': 'La girafe attrape les feuilles tout en haut !',
   'shop.about.cebra': "Deux zèbres n'ont jamais les mêmes rayures !",
   'shop.about.gacela': 'La gazelle fait des bonds de géant !',

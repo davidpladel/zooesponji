@@ -185,3 +185,18 @@ describe('adReward', () => {
     expect(adReward({ ...initialState(), counts })).toBe(Math.round(PENS.panda.cost! / 10));
   });
 });
+
+describe('Luna, la perrita de la cuidadora', () => {
+  const open = (coins: number): GameState => ({ ...initialState(), coins, shopUnlocked: true });
+
+  it('cuesta 67 monedas y se queda para siempre', () => {
+    const result = purchase(open(67), 'luna');
+    expect(result).toEqual({ ok: true, state: { ...open(0), luna: true } });
+  });
+
+  it('con la tienda cerrada, con pocas monedas o si ya la tienes, no', () => {
+    expect(purchase({ ...open(100), shopUnlocked: false }, 'luna')).toEqual({ ok: false, error: 'shop-locked' });
+    expect(purchase(open(66), 'luna')).toEqual({ ok: false, error: 'not-enough-coins' });
+    expect(purchase({ ...open(200), luna: true }, 'luna')).toEqual({ ok: false, error: 'already-owned' });
+  });
+});

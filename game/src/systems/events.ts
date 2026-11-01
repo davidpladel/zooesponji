@@ -62,6 +62,8 @@ export interface GameEvents {
   'shop-look': { itemId: string };
   'shop-denied': { itemId: string; missing: number };
   'purchase': { itemId: string; penId: PenId; residentId: string; cost: number };
+  /** Compra de Luna (no es un animal de un recinto). */
+  'pet-bought': { petId: 'luna'; cost: number };
   'shop-closed': Record<string, never>;
   'book-opened': { pageId: string };
   'book-page-shown': { pageId: string; kind: BookPageKind };

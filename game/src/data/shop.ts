@@ -23,6 +23,10 @@ export function shopItemForPen(penId: PenId): ShopItemDef | undefined {
   return SHOP_ITEMS.find((item) => item.penId === penId);
 }
 
+/** La perrita de la cuidadora: un artículo suelto, sin recinto. */
+export const LUNA_ITEM_ID = 'luna';
+export const LUNA_COST = 67;
+
 const EXTRA_PREFIX = 'extra-';
 
 /** Id del artículo "otro animal" de un recinto. */

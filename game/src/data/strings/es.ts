@@ -74,6 +74,7 @@ export const STRINGS_ES = {
   'shop.about.cabra': '¡Las cabras comen de todo… hasta piedras!',
   'shop.about.pantera': '¡La pantera es rapidísima!',
   'shop.about.panda': '¡Al panda le encanta el bambú!',
+  'shop.about.luna': '¡Luna quiere pasear contigo por el zoo!',
   'shop.about.jirafa': '¡La jirafa llega a las hojas más altas!',
   'shop.about.cebra': '¡No hay dos cebras con las mismas rayas!',
   'shop.about.gacela': '¡La gacela da unos saltos enormes!',

@@ -1,6 +1,6 @@
 import { ANIMALS } from '../data/animals';
 import { PEN_IDS, PENS, nextResident, type PenId } from '../data/pens';
-import { SHOP_ITEMS, SHOP_UNLOCK_COINS, getShopItem, parseExtraItemId } from '../data/shop';
+import { LUNA_COST, LUNA_ITEM_ID, SHOP_ITEMS, SHOP_UNLOCK_COINS, getShopItem, parseExtraItemId } from '../data/shop';
 
 export interface GameState {
   readonly coins: number;
@@ -66,8 +66,17 @@ export function buyExtra(state: GameState, id: PenId): PurchaseResult {
   return { ok: true, state: withCount(state, id, count + 1, cost) };
 }
 
-/** Compra un artículo de la tienda: un recinto (`pantera`) o un animal extra (`extra-cabra`). */
+/** Luna: se compra una vez y va con la cuidadora para siempre. */
+function buyLuna(state: GameState): PurchaseResult {
+  if (!state.shopUnlocked) return { ok: false, error: 'shop-locked' };
+  if (state.luna) return { ok: false, error: 'already-owned' };
+  if (state.coins < LUNA_COST) return { ok: false, error: 'not-enough-coins' };
+  return { ok: true, state: { ...state, coins: state.coins - LUNA_COST, luna: true } };
+}
+
+/** Compra un artículo de la tienda: un recinto (`pantera`), un animal extra (`extra-cabra`) o a Luna. */
 export function purchase(state: GameState, itemId: string): PurchaseResult {
+  if (itemId === LUNA_ITEM_ID) return buyLuna(state);
   const extra = parseExtraItemId(itemId);
   if (extra) return buyExtra(state, extra);
   const item = getShopItem(itemId);

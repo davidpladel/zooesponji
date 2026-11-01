@@ -5,7 +5,7 @@ import { inJoystickZone } from '../core/joystick';
 import { tileCenter, type Vec } from '../core/movement';
 import { isWalkable, type WalkGrid } from '../core/pathfinding';
 import { newlyUnlockedPages, unreadPageIds } from '../core/book';
-import { shopEntries, shopStock, type ShopEntry } from '../core/shopEntries';
+import { shopEntries, shopStock, type ShopEntry, type StockId } from '../core/shopEntries';
 import type { PenId } from '../data/pens';
 import { ENTRY_TARGET, approachPoint, hintTarget, onDoorMat, openInteriorGrid, productInReach, shopWalkGrid } from '../core/shopWalk';
 import { buildWalkGrid, type TiledMap } from '../core/tiledmap';
@@ -17,7 +17,7 @@ import { getCommunity } from '../systems/community';
 import { bus } from '../systems/events';
 import { joystickState } from '../systems/joystickState';
 import { getSession } from '../systems/session';
-import { animalPortrait } from '../world/Actors';
+import { animalPortrait, petPortrait } from '../world/Actors';
 import { ShopHint } from '../world/ShopHint';
 import { ShopInterior } from '../world/ShopInterior';
 import { ShopKeeperWalker } from '../world/ShopKeeperWalker';
@@ -44,8 +44,8 @@ type WasdKeys = Record<'W' | 'A' | 'S' | 'D', Phaser.Input.Keyboard.Key>;
 /** Al girar el móvil la escena se vuelve a montar: la cuidadora sigue donde estaba y no se repite la entrada. */
 export interface ShopSceneData {
   keeper?: Vec;
-  /** Recintos que había en las peanas (no cambian mientras se está dentro). */
-  stock?: PenId[];
+  /** Lo que había en las peanas (no cambia mientras se está dentro). */
+  stock?: StockId[];
 }
 
 interface Product {
@@ -91,7 +91,7 @@ export class ShopScene extends Phaser.Scene {
   }
 
   /** Lo que hay en las peanas en esta visita: se decide al entrar. */
-  private stock: PenId[] = [];
+  private stock: StockId[] = [];
 
   init(data?: ShopSceneData): void {
     this.products.clear();
@@ -449,7 +449,9 @@ export class ShopScene extends Phaser.Scene {
     const done = entry.status !== 'buy';
     const affordable = getSession().state.coins >= entry.cost;
 
-    const animal = animalPortrait(this, entry.species, pos.x, pos.y, 28 * s, entry.look).setOrigin(0.5, 1).setDepth(base.y);
+    const animal = (entry.kind === 'pet' ? petPortrait(this, entry.look, pos.x, pos.y, 28 * s) : animalPortrait(this, entry.species, pos.x, pos.y, 28 * s, entry.look))
+      .setOrigin(0.5, 1)
+      .setDepth(base.y);
     if (done) {
       animal.setAlpha(0.5);
       if (animal instanceof Phaser.GameObjects.Sprite) animal.setTint(0x9e9e9e);
@@ -498,7 +500,7 @@ export class ShopScene extends Phaser.Scene {
     if (!quiet) {
       this.greet(product);
       const entry = product.entry;
-      const line: StringKey = entry.status === 'owned' ? 'shop.owned' : entry.status === 'full' ? 'shop.full' : (`shop.about.${entry.species}` as StringKey);
+      const line: StringKey = entry.status === 'owned' ? 'shop.owned' : entry.status === 'full' ? 'shop.full' : entry.kind === 'pet' ? 'shop.about.luna' : (`shop.about.${entry.species}` as StringKey);
       this.shopkeeper.say(t(line), 2400);
     }
     if (product.entry.status === 'buy') this.showBuyBubble(product);

@@ -1,5 +1,5 @@
 import * as Phaser from 'phaser';
-import { ART_KEYS, animalKey, animalSheet, companionKey, getArt, idleFrame, lookOr, visitorKey, walkAnimKey } from '../art/art';
+import { ART_KEYS, animalKey, animalSheet, companionKey, getArt, idleFrame, lookOr, petKey, visitorKey, walkAnimKey } from '../art/art';
 import { TEXTURES } from '../config';
 import { depthForY } from '../core/depth';
 import { facingFromDelta, type Facing } from '../core/facing';
@@ -152,4 +152,27 @@ export function createCompanion(scene: Phaser.Scene, id: AnimalId, x: number, y:
   const key = companionKey(id);
   const sprite = scene.add.sprite(x, y, key).setOrigin(0.5, 0.75);
   return new SpriteWalker(sprite, key);
+}
+
+/** Emoji de una mascota cuando no hay arte (modo provisional). */
+const PET_EMOJI = '🐕';
+
+/** Mascota de la cuidadora (Luna): anda como los animales; sin arte, un emoji. */
+export function createPet(scene: Phaser.Scene, id: string, x: number, y: number, depthOf: (y: number) => number = depthForY): Walker {
+  if (getArt()?.pets[id]) {
+    const key = petKey(id);
+    const sprite = scene.add.sprite(x, y, key).setOrigin(0.5, 0.75);
+    return new SpriteWalker(sprite, key, depthOf);
+  }
+  return new PlainWalker(scene.add.text(x, y, PET_EMOJI, { fontSize: '12px' }).setOrigin(0.5, 0.75).setResolution(4), depthOf);
+}
+
+/** Retrato de la mascota para la tienda: pose quieta de perfil, a escala entera. */
+export function petPortrait(scene: Phaser.Scene, id: string, x: number, y: number, targetHeight: number): Phaser.GameObjects.Sprite | Phaser.GameObjects.Text {
+  const sheet = getArt()?.pets[id];
+  if (sheet) {
+    const scale = Math.max(1, Math.floor(targetHeight / sheet.frameHeight));
+    return scene.add.sprite(x, y, petKey(id), idleFrame('right')).setScale(scale);
+  }
+  return scene.add.text(x, y, PET_EMOJI, { fontSize: `${Math.round(targetHeight * 0.7)}px` }).setOrigin(0.5);
 }

@@ -142,6 +142,7 @@ export const STRINGS_HI: Record<StringKey, string> = {
   'shop.about.cabra': 'बकरियाँ सब कुछ खाती हैं… पत्थर भी!',
   'shop.about.pantera': 'तेंदुआ बहुत तेज़ दौड़ता है!',
   'shop.about.panda': 'पांडा को बाँस बहुत पसंद है!',
+  'shop.about.luna': 'चंदा तुम्हारे साथ चिड़ियाघर में घूमना चाहती है!',
   'shop.about.jirafa': 'जिराफ़ सबसे ऊपर की पत्तियों तक पहुँच जाता है!',
   'shop.about.cebra': 'किन्हीं दो ज़ेबरा की धारियाँ एक जैसी नहीं होतीं!',
   'shop.about.gacela': 'हिरण बहुत बड़ी छलाँग लगाता है!',

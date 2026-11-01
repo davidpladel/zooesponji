@@ -143,6 +143,7 @@ export const STRINGS_AR: Record<StringKey, string> = {
   'shop.about.cabra': 'الماعز تأكل كل شيء… حتى الحجارة!',
   'shop.about.pantera': 'النمر سريع جدًا!',
   'shop.about.panda': 'الباندا تحب الخيزران كثيرًا!',
+  'shop.about.luna': 'قمر تريد أن تتنزه معك في حديقة الحيوانات!',
   'shop.about.jirafa': 'الزرافة تصل إلى أعلى الأوراق!',
   'shop.about.cebra': 'لا يوجد حماران وحشيان بالخطوط نفسها!',
   'shop.about.gacela': 'الغزال يقفز قفزات عملاقة!',

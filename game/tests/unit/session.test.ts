@@ -265,3 +265,20 @@ describe('Session: tienda, libro y tutorial', () => {
     expect(set).not.toHaveBeenCalled();
   });
 });
+
+describe('Session: Luna', () => {
+  it('comprar a Luna avisa con pet-bought y no con purchase', async () => {
+    const events = new EventBus<GameEvents>();
+    const pet = vi.fn();
+    const bought = vi.fn();
+    events.on('pet-bought', pet);
+    events.on('purchase', bought);
+    const session = await Session.load(createMemoryStore(), events);
+    await session.earnCoins(80);
+    const result = await session.buy('luna');
+    expect(result.ok).toBe(true);
+    expect(session.state.luna).toBe(true);
+    expect(pet).toHaveBeenCalledWith({ petId: 'luna', cost: 67 });
+    expect(bought).not.toHaveBeenCalled();
+  });
+});

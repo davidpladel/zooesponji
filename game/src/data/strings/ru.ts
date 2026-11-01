@@ -142,6 +142,7 @@ export const STRINGS_RU: Record<StringKey, string> = {
   'shop.about.cabra': 'Козы едят всё… даже камни!',
   'shop.about.pantera': 'Пантера очень-очень быстрая!',
   'shop.about.panda': 'Панды обожают бамбук!',
+  'shop.about.luna': 'Луна хочет гулять с тобой по зоопарку!',
   'shop.about.jirafa': 'Жираф достаёт до самых верхних листьев!',
   'shop.about.cebra': 'Не бывает двух зебр с одинаковыми полосками!',
   'shop.about.gacela': 'Газель прыгает огромными прыжками!',

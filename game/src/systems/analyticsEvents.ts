@@ -140,6 +140,11 @@ export class GameTracker implements AnalyticsHooks {
       this.step('primera-compra');
       if (zooComplete(this.deps.state())) this.step('zoo-completo');
     });
+    on('pet-bought', ({ petId, cost }) => {
+      if (this.shop) this.shop.bought += 1;
+      this.send('tienda', 'compra', part('mascota', petId), cost);
+      this.step('primera-compra');
+    });
     on('shop-closed', () => {
       const shop = this.shop;
       this.shop = null;

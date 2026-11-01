@@ -1,24 +1,40 @@
 import { ANIMALS, type AnimalId } from '../data/animals';
 import { PEN_IDS, PENS, nextResident, penCapacity, type PenId } from '../data/pens';
-import { extraItemId, shopItemForPen } from '../data/shop';
+import { LUNA_COST, LUNA_ITEM_ID, extraItemId, shopItemForPen } from '../data/shop';
 import { isPenOpen, penCount, type GameState } from './economy';
 
 export type ShopEntryStatus = 'buy' | 'owned' | 'full';
 
-/** Artículo visible en la tienda: un recinto por abrir o "otro animal" para un recinto abierto. */
-export interface ShopEntry {
+interface EntryBase {
   id: string;
-  kind: 'pen' | 'extra';
-  penId: PenId;
-  /** Especie que se dibuja en la peana: el animal que llegaría (o el último, si ya no cabe más). */
-  species: AnimalId;
-  /** Hoja de sprites que se dibuja en la peana: la del animal que llegaría. */
+  /** Hoja de sprites que se dibuja en la peana: la del animal que llegaría (o la de Luna). */
   look: string;
   cost: number;
   status: ShopEntryStatus;
-  /** Solo en extras: animales que hay y máximo del recinto. */
-  count?: number;
-  max?: number;
+}
+
+/** Artículo visible en la tienda: un recinto por abrir, "otro animal" para un recinto abierto, o Luna. */
+export type ShopEntry =
+  | (EntryBase & {
+      kind: 'pen' | 'extra';
+      penId: PenId;
+      /** Especie que se dibuja en la peana: el animal que llegaría (o el último, si ya no cabe más). */
+      species: AnimalId;
+      /** Solo en extras: animales que hay y máximo del recinto. */
+      count?: number;
+      max?: number;
+    })
+  | (EntryBase & { kind: 'pet' });
+
+/** Lo que puede ir en una peana: un recinto (su artículo) o Luna. */
+export type StockId = PenId | typeof LUNA_ITEM_ID;
+
+function lunaEntry(state: GameState): ShopEntry {
+  return { id: LUNA_ITEM_ID, kind: 'pet', look: 'luna', cost: LUNA_COST, status: state.luna ? 'owned' : 'buy' };
+}
+
+function stockEntry(state: GameState, id: StockId): ShopEntry | null {
+  return id === LUNA_ITEM_ID ? lunaEntry(state) : entryFor(state, id);
 }
 
 /** Artículos que se enseñan a la vez: uno por peana. */
@@ -49,12 +65,17 @@ function entryFor(state: GameState, penId: PenId): ShopEntry | null {
  * menor a mayor precio. Solo cuando quedan menos cosas que peanas, los recintos ya completos rellenan
  * los huecos, para que la tienda no se quede vacía.
  */
-export function shopStock(state: GameState): PenId[] {
-  const entries = PEN_IDS.flatMap((penId) => entryFor(state, penId) ?? []);
+export function shopStock(state: GameState): StockId[] {
+  const ids: StockId[] = [...PEN_IDS, LUNA_ITEM_ID];
+  const entries = ids.flatMap((id) => {
+    const entry = stockEntry(state, id);
+    return entry ? [{ id, entry }] : [];
+  });
   // `sort` es estable: a igual precio se queda el orden de los recintos.
-  const buyable = entries.filter((e) => e.status === 'buy').sort((a, b) => a.cost - b.cost).slice(0, SHOP_SLOTS);
-  const done = entries.filter((e) => e.status !== 'buy').slice(0, SHOP_SLOTS - buyable.length);
-  return [...buyable, ...done].map((e) => e.penId);
+  const buyable = entries.filter((e) => e.entry.status === 'buy').sort((a, b) => a.entry.cost - b.entry.cost).slice(0, SHOP_SLOTS);
+  // Luna comprada no rellena huecos: va con la cuidadora, no en una peana con AGOTADO.
+  const done = entries.filter((e) => e.entry.status !== 'buy' && e.entry.kind !== 'pet').slice(0, SHOP_SLOTS - buyable.length);
+  return [...buyable, ...done].map((e) => e.id);
 }
 
 /**
@@ -63,6 +84,6 @@ export function shopStock(state: GameState): PenId[] {
  * con su sello AGOTADO en vez de dejar el sitio a otro (que se compraría sin querer con el mismo toque).
  * Lo siguiente sale en la próxima visita.
  */
-export function shopEntries(state: GameState, stock: readonly PenId[] = shopStock(state)): ShopEntry[] {
-  return stock.flatMap((penId) => entryFor(state, penId) ?? []);
+export function shopEntries(state: GameState, stock: readonly StockId[] = shopStock(state)): ShopEntry[] {
+  return stock.flatMap((id) => stockEntry(state, id) ?? []);
 }

@@ -198,6 +198,14 @@ describe('GameTracker: tienda', () => {
     expect(t.values.get('tiene | tiene-recinto | pantera')).toBe(1);
   });
 
+  it('comprar a Luna se cuenta como compra de mascota', async () => {
+    const t = setup();
+    await t.tracker.start();
+    t.events.emit('pet-bought', { petId: 'luna', cost: 67 });
+    expect(t.values.get('tienda | compra | mascota/luna')).toBe(67);
+    expect(t.sent).toContain('embudo | primera-compra');
+  });
+
   it('comprar un animal extra apunta el animal, no otra vez el recinto', async () => {
     const t = setup();
     await t.tracker.start();
