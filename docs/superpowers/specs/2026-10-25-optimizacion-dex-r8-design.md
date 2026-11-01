@@ -297,8 +297,9 @@ En la 2.8.2: AGP 9 y Capacitor 9 (bloque 2), `EdgeToEdge.enable`, apartar el mar
 - [x] `android:appCategory="game"`, exigido por `check:manifest` con su prueba.
 - [x] `npm run check:aab` (`scripts/aabRules.ts`, `scripts/check-aab.ts`, `tests/unit/aab.test.ts`).
 - [x] Versión 2.8.2, `versionCode` 12.
-- [ ] `npm install` y `npx cap sync android`, `npm run typecheck` y `npm test` (David).
-- [ ] Compilar el AAB, `check:manifest -- --publicar` y `check:aab`; apuntar los tamaños y confirmar las rutas del apartado 6.
+- [x] `npm install`, `npx cap sync android`, `npm run typecheck` y `npm test` (David, 2026-11-01: 4535 pruebas en verde).
+- [x] Primer AAB con R8 y anuncios de prueba (2026-11-01): `check:manifest` y `check:aab` correctos. Código Android de **16,42 MB a 4,93 MB** (un solo `classes.dex`, un 70 % menos); AAB de 11,05 MB a 9,96 MB; APK universal de publicación, 7,49 MB.
+- [ ] AAB final sin anuncios de prueba y `check:manifest -- --publicar`.
 - [ ] Lista del móvil del apartado 8 con la variante `release` y anuncios de prueba.
 - [ ] Prueba interna, producción y vigilancia (apartado 9). Notas de la versión validadas por David.
 - [ ] `docs/privado/play-store.md` (apartado 10).
@@ -321,6 +322,8 @@ En la 2.8.2: AGP 9 y Capacitor 9 (bloque 2), `EdgeToEdge.enable`, apartar el mar
 - **AdMob se queda en la 8.2.1** aunque ya hay una 8.3.0: la 2.8.2 solo cambia R8, para que si algo falla se sepa que es R8.
 - **Sin plan aparte:** los apartados 1 a 7 de esta spec ya dicen archivo por archivo qué cambia.
 - **`check:aab` también falla si no está `configuration.txt`**, para no dar por buena una compilación cuyas reglas no se han podido revisar.
+- **Rutas del apartado 6 confirmadas** con el primer AAB: `r8.json` y `proguard.map` donde se esperaban, y `configuration.txt` en `mapping/release/` sin pedirlo.
+- **Memoria de Gradle a 4 GB** (`org.gradle.jvmargs=-Xmx4096m`): con 1,5 GB, la primera compilación con R8 tardó 25 minutos. El PC de David tiene 16 GB.
 
 ## Cómo se ha comprobado
 
