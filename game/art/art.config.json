@@ -254,6 +254,9 @@
     },
     "elefante-asiatico-mali": { "zip": "wild", "file": "16x16/Default format/$elephant_asian_brown.png", "override": "elefante-asiatico-mali.png" }
   },
+  "pets": {
+    "luna": { "file": "luna.png" }
+  },
   "companions": {
     "leon": {
       "zip": "wild",

@@ -26,7 +26,8 @@
     "art:preview": "node scripts/art/preview.ts",
     "art:compare": "node scripts/art/compare.ts",
     "art:props-sheet": "node scripts/art/propsSheet.ts",
-    "map:preview": "node scripts/map-preview.ts"
+    "map:preview": "node scripts/map-preview.ts",
+    "make:luna": "node scripts/make-luna.ts"
   },
   "dependencies": {
     "@capacitor-community/admob": "^8.2.1",

@@ -73,6 +73,13 @@ for (const [id, c] of Object.entries(config.companions ?? {})) {
   companions[id] = { file: save(png, `companion-${id}.png`), ...sheet(png) };
 }
 
+// Mascotas: dibujo propio en game/art/ (repo público).
+const pets: Record<string, { file: string; frameWidth: number; frameHeight: number }> = {};
+for (const [id, p] of Object.entries(config.pets ?? {})) {
+  const png = PNG.sync.read(readFileSync(join(root, 'art', p.file)));
+  pets[id] = { file: save(png, `pet-${id}.png`), ...sheet(png) };
+}
+
 const interior: Record<string, { file: string; width: number; height: number }> = {};
 for (const [name, p] of Object.entries(config.interior ?? {})) {
   interior[name] = image(crop(readSource(p), p.x, p.y, p.w, p.h), `interior-${name}.png`);
@@ -89,6 +96,7 @@ const manifest = {
   props,
   foods,
   companions,
+  pets,
   interior,
 };
 writeFileSync(join(outDir, 'manifest.json'), JSON.stringify(manifest, null, 2));

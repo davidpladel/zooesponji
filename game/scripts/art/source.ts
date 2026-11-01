@@ -43,6 +43,8 @@ export interface ArtConfig {
   props?: Record<string, Source & CropRect & { animate?: Animate; compose?: Compose }>;
   foods?: Record<string, (Source & CropRect) | { override: string }>;
   companions?: Record<string, Source>;
+  /** Mascotas dibujadas en este repo (`game/art/`), no en el privado. */
+  pets?: Record<string, { file: string }>;
   interior?: Record<string, Source & CropRect>;
 }
 
