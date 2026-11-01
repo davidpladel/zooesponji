@@ -67,6 +67,8 @@
 - Consumes: nada nuevo.
 - Produces: el mapa con los atajos. Ninguna API cambia (`readEnclosures`, `readGates`, `readProps` siguen igual).
 
+> **Nota (2026-11-01):** la tabla de abajo fue la primera propuesta; David la corrigió con su dibujo. Las coordenadas que valen son las de `game/scripts/make-zoo-map.mjs` (bordes que giran a las esquinas de abajo del cuadrado, tramos a las esquinas de arriba y la U con la pata derecha en x 47–48).
+
 Coordenadas en casillas del mapa entero (96×60), como `fill(x0, y0, x1, y1, PATH)`. Caminos de 2 de ancho, como las avenidas. Hoy: avenida de arriba en las filas 17–18 (x 12–79), avenida oeste/este en las filas 36–37, cuadrado central x 26–69 · y 22–51, entrada en x 47–48 desde la fila 52.
 
 | # | Atajo | `fill` |
@@ -86,7 +88,7 @@ Para que el camino 5 baje pegado al borde, el estanque deja de tocar el borde de
 
 Jardín de la U: dentro de x 40–47 · y 7–16, al menos 8 piezas de flores (`flowers`, `flowers-red`, `sunflowers`, `flowerbed`), todas con `at(...)` sin `block` ni `solid`: solo decoran.
 
-- [ ] **Step 1: Escribir las pruebas nuevas en `zoomap.test.ts`**
+- [x] **Step 1: Escribir las pruebas nuevas en `zoomap.test.ts`**
 
 ```ts
 const ATAJOS: [string, number, number][] = [
@@ -143,16 +145,16 @@ it('ningún atajo entra en un recinto: solo la puerta abre la valla', () => {
 
 Las pruebas que ya existen («no hay caminos de 1 casilla», «los props se apoyan en césped», «el estanque tiene un lago de 6×6», «cada recinto … se llega andando a la puerta», «el parque de siempre queda en el centro») siguen igual y tienen que pasar con el mapa nuevo.
 
-- [ ] **Step 2: Cambiar `make-zoo-map.mjs` con la tabla de arriba y regenerar**
+- [x] **Step 2: Cambiar `make-zoo-map.mjs` con la tabla de arriba y regenerar**
 
 Run (en `game/`): `npm run make:zoo-map`
 Expected: `Mapa generado en …/public/assets/maps/zoo.tmj`
 
-- [ ] **Step 3: Escribir `game/scripts/map-preview.ts`**
+- [x] **Step 3: Escribir `game/scripts/map-preview.ts`**
 
 `node scripts/map-preview.ts [--antes <tmj>] [--salida <png>]`. Pinta cada casilla de 8×8 px (césped verde, camino beige, valla marrón, puerta amarilla, tienda roja, flores del jardín en rosa). Con `--antes`, las casillas que son camino ahora y no lo eran antes van en **rojo**. Por defecto `--salida` es `docs/superpowers/mockups/2026-11-01-caminos-nuevos.png` (relativa a la raíz del repo). Usa `pngjs` y lee el `.tmj` con `JSON.parse`; no depende del repo privado.
 
-- [ ] **Step 4: Sacar la vista previa**
+- [x] **Step 4: Sacar la vista previa**
 
 Run (en `game/`):
 ```bash
@@ -161,14 +163,14 @@ node scripts/map-preview.ts --antes "$TMP/zoo-antes.tmj"
 ```
 (`$TMP` = la carpeta de borradores de la sesión.) Expected: escribe el PNG.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add game/scripts/make-zoo-map.mjs game/public/assets/maps/zoo.tmj game/scripts/map-preview.ts game/package.json game/tests/unit/zoomap.test.ts docs/superpowers/mockups/2026-11-01-caminos-nuevos.png
 git commit -m "feat(juego): seis atajos y jardín de flores en la U"
 ```
 
-- [ ] **Step 6: Visto bueno de David (parada)**
+- [x] **Step 6: Visto bueno de David (parada)**
 
 Enseñarle el PNG (abrirlo con la herramienta de archivos). Preguntar si los seis atajos coinciden con su plano y si alguno pisa un hueco de las tiendas de su hermano; decirle que el estanque y las ovejas se han movido para que quepa el camino 5. Si pide cambios, se ajustan las coordenadas, se regenera, se vuelve a sacar la vista previa y se le enseña otra vez. Las tareas 2, 3 y 4 no dependen de esto y pueden avanzar mientras.
 
@@ -185,7 +187,7 @@ Enseñarle el PNG (abrirlo con la herramienta de archivos). Preguntar si los sei
   - `pickQuietGoal(tiles: readonly Point[], people: readonly Point[], rng: Rng, samples = 4, radius = 6): Point | undefined` — saca `samples` casillas al azar y se queda con la que tiene menos personas a `radius` casillas o menos (distancia de Chebyshov); a igualdad, la primera sacada.
   - `planWander(grid, from, tiles, rng, attempts = 5, people: readonly Point[] = [])` — si `people` no está vacío, cada intento usa `pickQuietGoal` en vez de `pickRandom`.
 
-- [ ] **Step 1: Pruebas**
+- [x] **Step 1: Pruebas**
 
 ```ts
 describe('pickQuietGoal', () => {
@@ -206,13 +208,13 @@ describe('pickQuietGoal', () => {
 ```
 (`sequence(values)` = helper local que devuelve los valores en orden y luego repite el último.)
 
-- [ ] **Step 2: Implementar `pickQuietGoal` y el parámetro `people` de `planWander`**
+- [x] **Step 2: Implementar `pickQuietGoal` y el parámetro `people` de `planWander`**
 
-- [ ] **Step 3: `VisitorCrowd.plan` pasa la gente**
+- [x] **Step 3: `VisitorCrowd.plan` pasa la gente**
 
 En `plan(visitor)`, la llamada a `planWander` recibe como `people` las casillas (`worldToTile`) de los demás visitantes (sin él mismo). Nada más cambia: los atajos entran solos porque `walkableTiles(paths)` ya los incluye.
 
-- [ ] **Step 4: Commit** — `feat(juego): los visitantes van a donde hay menos gente`
+- [x] **Step 4: Commit** — `feat(juego): los visitantes van a donde hay menos gente`
 
 ---
 
@@ -238,7 +240,7 @@ En `plan(visitor)`, la llamada a `planWander` recibe como `people` las casillas 
 ```
 (Las cuatro manchas negras del dibujo pasan a gris; el contorno y los ojos, `26232a` y `1e1c22`, no se tocan.)
 
-- [ ] **Step 1: Pruebas que cambian**
+- [x] **Step 1: Pruebas que cambian**
   - `pens.test.ts`: costes `[undefined, undefined, 50, 100, 120, 120, 400, 600, 900, 1300, 1600]`; residentes 45 → **46**; nueva: `expect(PENS.panda.residents.map((r) => r.id)).toEqual(['mochi', 'pompon', 'jose'])` y `expect(PENS.panda.residents[2]!.look).toBe('panda-jose')`.
   - `book.test.ts`: páginas de contenido 49 → **50**.
   - `shopEntries.test.ts`: `'estanque:120', 'ovejas:120'`; donde un panda «completo» era `panda: 2`, pasa a `panda: 3`.
@@ -247,22 +249,22 @@ En `plan(visitor)`, la llamada a `planWander` recibe como `people` las casillas 
   - `zoo-grande.spec.ts`: «200 − 150 del estanque + 3 del pato» → 120, y el número esperado de monedas.
   - Buscar `150` y `250` en `game/src`, `game/tests` y el README por si algo más depende de esos precios.
 
-- [ ] **Step 2: Cambiar `pens.ts`** (costes y `residents: [...residents('panda', 'mochi', 'pompon'), one('jose', 'panda', 'jose')]`).
+- [x] **Step 2: Cambiar `pens.ts`** (costes y `residents: [...residents('panda', 'mochi', 'pompon'), one('jose', 'panda', 'jose')]`).
 
-- [ ] **Step 3: `retouchOverride` y `retouch` en `source.ts`/`looks.ts`; entrada `panda-jose` en `art.config.json`.**
+- [x] **Step 3: `retouchOverride` y `retouch` en `source.ts`/`looks.ts`; entrada `panda-jose` en `art.config.json`.**
 
-- [ ] **Step 4: Comentario de `coinsBucket`**: los tramos no cambian (cambiarlos rompería la serie de Matomo); se anota que los recintos de 120 caen en `50-149`.
+- [x] **Step 4: Comentario de `coinsBucket`**: los tramos no cambian (cambiarlos rompería la serie de Matomo); se anota que los recintos de 120 caen en `50-149`.
 
-- [ ] **Step 5: Textos de la página de Jose en los 11 idiomas**: `book.page.jose.title` y `book.page.jose.text`.
+- [x] **Step 5: Textos de la página de Jose en los 11 idiomas**: `book.page.jose.title` y `book.page.jose.text`.
   - es: `'Jose, el panda bebé'` / `'Jose es la cría de los pandas. ¡Todavía tiene las manchas grises!'`
   - en: `'Jose, the baby panda'` / `"Jose is the pandas' baby. His patches are still grey!"`
   - El resto, traducidos con el mismo sentido y «Jose» sin tocar.
 
-- [ ] **Step 6: Ver a Jose y visto bueno de David**
+- [x] **Step 6: Ver a Jose y visto bueno de David**
 
 Run (en `game/`): `npm run art:import` y `npm run art:preview -- panda-jose`. Enseñarle la vista ampliada (queda en el repo privado, `art-work/plantillas/`). Si la ve grande o pequeña, se ajusta `shrink`; si las manchas no se ven grises, los colores del `swap`.
 
-- [ ] **Step 7: Commit** — `feat(juego): Jose, la cría de panda, y estanque y ovejas a 120`
+- [x] **Step 7: Commit** — `feat(juego): Jose, la cría de panda, y estanque y ovejas a 120`
 
 ---
 
@@ -303,16 +305,16 @@ Reglas de `parseSave` para lo que falta:
 - `tutorial.offered`: `tutorial.offered === true`; si no hay objeto `tutorial` (partida de antes), `false`: **el aviso sale una vez a todos**, también a quien ya juega (decisión de David, 2026-11-01).
 - `migrateLegacy`: `luna: false`, `tutorial.offered: false`, `shop.visits: 0`, `book.opened: false`.
 
-- [ ] **Step 1: Pruebas en `save.test.ts`**
+- [x] **Step 1: Pruebas en `save.test.ts`**
   - `defaultSave()` trae `luna: false`, `tutorial: { offered: false }`, `shop: { visits: 0 }`, `book.opened: false`.
   - ida y vuelta (`parseSave(JSON.parse(JSON.stringify(data)))`) conserva `luna: true`, `offered: true`, `visits: 4`, `opened: true`.
   - partida v2 de antes, sin los campos nuevos y con `shopUnlocked: true` y `book.seen: ['cover']` → `luna: false`, `offered: false`, `visits: 0`, `opened: true`.
   - igual con `shopUnlocked: false` y `seen: []` → `offered: false`, `opened: false`.
   - partida v1 (`unlocked`) → carga con `offered: false`.
   - `shop.visits: -1`, `2.5` o `'3'` → 0.
-- [ ] **Step 2: Pruebas en `session.test.ts`**: `countShopVisit` dos veces → `shop.visits === 2` y lo guardado también; `markTutorialOffered`/`markBookOpened` dejan el valor guardado y la segunda llamada no escribe.
-- [ ] **Step 3: Implementar** `save.ts`, `economy.ts` y `session.ts`.
-- [ ] **Step 4: Commit** — `feat(juego): el guardado recuerda a Luna, el tutorial, las visitas a la tienda y el libro`
+- [x] **Step 2: Pruebas en `session.test.ts`**: `countShopVisit` dos veces → `shop.visits === 2` y lo guardado también; `markTutorialOffered`/`markBookOpened` dejan el valor guardado y la segunda llamada no escribe.
+- [x] **Step 3: Implementar** `save.ts`, `economy.ts` y `session.ts`.
+- [x] **Step 4: Commit** — `feat(juego): el guardado recuerda a Luna, el tutorial, las visitas a la tienda y el libro`
 
 ---
 
@@ -356,15 +358,15 @@ Reglas de `parseSave` para lo que falta:
 
   David revisa los nombres en el punto de control B.
 
-- [ ] **Step 1: Pruebas**
+- [x] **Step 1: Pruebas**
   - economy: tienda cerrada → `shop-locked`; 66 monedas → `not-enough-coins`; 67 → `ok`, `coins 0`, `luna true`; otra vez → `already-owned`.
   - shopEntries: estado con 70 monedas y nada comprado → `shopStock` incluye `'luna'` en su sitio por precio (entre `pantera:50` y `panda:100`); con `luna: true` no sale, ni siquiera cuando sobran peanas; `shopEntries` da la entrada `kind: 'pet'`.
   - session: `buy('luna')` emite `pet-bought` con `cost 67` y no emite `purchase`.
   - analyticsEvents: `pet-bought` → `'tienda | compra | mascota/luna'` con valor 67.
-- [ ] **Step 2: Implementar datos, economía, `shopEntries`, `Session.buy`, evento y analítica.**
-- [ ] **Step 3: `ShopScene`**: `addProduct` dibuja `petPortrait` (o el emoji) si `entry.kind === 'pet'` y `animalPortrait(this, entry.species, …)` si no; `updateReach` usa `'shop.about.luna'` para la mascota; el resto (precio, bocadillo de compra, lluvia de monedas, `hintTarget`) no cambia. `onBuy` funciona igual: tras comprar, `renderProducts()` deja la peana con lo que diga `shopEntries` (Luna ya no está porque se compró dentro de esta visita: se queda con su sello de comprada hasta salir, como los recintos).
-- [ ] **Step 4: Textos `shop.about.luna` en los 11 idiomas.**
-- [ ] **Step 5: Commit** — `feat(juego): Luna se compra en la tienda por 67 monedas`
+- [x] **Step 2: Implementar datos, economía, `shopEntries`, `Session.buy`, evento y analítica.**
+- [x] **Step 3: `ShopScene`**: `addProduct` dibuja `petPortrait` (o el emoji) si `entry.kind === 'pet'` y `animalPortrait(this, entry.species, …)` si no; `updateReach` usa `'shop.about.luna'` para la mascota; el resto (precio, bocadillo de compra, lluvia de monedas, `hintTarget`) no cambia. `onBuy` funciona igual: tras comprar, `renderProducts()` deja la peana con lo que diga `shopEntries` (Luna ya no está porque se compró dentro de esta visita: se queda con su sello de comprada hasta salir, como los recintos).
+- [x] **Step 4: Textos `shop.about.luna` en los 11 idiomas.**
+- [x] **Step 5: Commit** — `feat(juego): Luna se compra en la tienda por 67 monedas`
 
 ---
 
@@ -387,11 +389,11 @@ Cómo es Luna (de las fotos de David): perrita **negra**; orejas caídas, una al
 
 `import-art.ts` copia cada `config.pets[id].file` de `game/art/` a `public/art/pet-<id>.png` y lo apunta en `manifest.pets`.
 
-- [ ] **Step 1: Prueba `lunaArt.test.ts`**: el PNG mide 48×64; cada uno de los 12 fotogramas tiene píxeles opacos; en el fotograma quieto de frente (fila 0, columna 1) hay al menos 3 píxeles `f4f3f2` entre las filas 7 y 12 (la mancha del pecho); la mayoría de los píxeles opacos de la hoja son oscuros (luminancia < 80).
-- [ ] **Step 2: `manifest.test.ts`**: un manifiesto sin `pets` sigue siendo válido y da `pets: {}`; uno con `pets.luna` mal formado devuelve `null`.
-- [ ] **Step 3: Escribir `make-luna.ts`, generar la hoja** (`npm run make:luna`) **y verla**: `scaleUp(png, 8)` a la carpeta de borradores y enseñársela a David junto a la descripción. Ajustar hasta que dé el visto bueno.
-- [ ] **Step 4: Manifiesto, `import-art`, `art.ts` y `Actors.ts`; la peana de la tarea 5 pasa a usar `petPortrait`.**
-- [ ] **Step 5: Commit** — `feat(juego): dibujo de Luna, la perrita de la cuidadora`
+- [x] **Step 1: Prueba `lunaArt.test.ts`**: el PNG mide 48×64; cada uno de los 12 fotogramas tiene píxeles opacos; en el fotograma quieto de frente (fila 0, columna 1) hay al menos 3 píxeles `f4f3f2` entre las filas 7 y 12 (la mancha del pecho); la mayoría de los píxeles opacos de la hoja son oscuros (luminancia < 80).
+- [x] **Step 2: `manifest.test.ts`**: un manifiesto sin `pets` sigue siendo válido y da `pets: {}`; uno con `pets.luna` mal formado devuelve `null`.
+- [x] **Step 3: Escribir `make-luna.ts`, generar la hoja** (`npm run make:luna`) **y verla**: `scaleUp(png, 8)` a la carpeta de borradores y enseñársela a David junto a la descripción. Ajustar hasta que dé el visto bueno.
+- [x] **Step 4: Manifiesto, `import-art`, `art.ts` y `Actors.ts`; la peana de la tarea 5 pasa a usar `petPortrait`.**
+- [x] **Step 5: Commit** — `feat(juego): dibujo de Luna, la perrita de la cuidadora`
 
 ---
 
@@ -420,19 +422,19 @@ Cómo es Luna (de las fotos de David): perrita **negra**; orejas caídas, una al
   Algoritmo de `followTrail`: si el rastro está vacío, no se mueve. Si la recta de Luna al último punto mide más de `PET_SNAP`, salta al punto del rastro que queda a `PET_GAP` del final y el rastro se recorta desde ahí. Si no: lo que falta = distancia de Luna al primer punto + la suma de los tramos hasta el final; si es ≤ `PET_GAP`, se queda quieta; si no, avanza hacia el primer punto `min(PET_SPEED·dt, falta − PET_GAP)`, quitando del rastro los puntos que alcanza.
 - Produces (en `WorldScene`): `petPosition(): Vec | null` (para pruebas). Test API: `petPosition(): Vec | null`.
 
-- [ ] **Step 1: Pruebas `petFollow.test.ts`**
+- [x] **Step 1: Pruebas `petFollow.test.ts`**
   - rastro en L de 100 px y Luna al principio: tras muchos pasos de 16 ms queda quieta a `PET_GAP` (±1 px) del final, medido por el rastro, y nunca se sale de la L.
   - `recordTrail` con `onPath: false` devuelve el mismo rastro: con la cuidadora dentro de un recinto, Luna se para a `PET_GAP` del último punto de camino (la puerta).
   - `recordTrail` ignora movimientos de menos de 4 px y no pasa de 256 puntos.
   - Luna a 300 px del final → salta y queda a `PET_GAP` del final.
-- [ ] **Step 2: Implementar `petFollow.ts`.**
-- [ ] **Step 3: `WorldScene`**
+- [x] **Step 2: Implementar `petFollow.ts`.**
+- [x] **Step 3: `WorldScene`**
   - Campos `pet: Walker | null` y `petTrail: Vec[]`. `syncPet()`: si `state.luna` y no hay `pet`, `createPet(this, 'luna', keeper.x, keeper.y)` y rastro vacío. Se llama al final de `create()` y en `refresh()` (así aparece al salir de la tienda tras comprarla).
   - En `update`, tras `moveKeeper`: `petTrail = recordTrail(petTrail, keeperPos, isWalkable(this.pathGrid, keeperTile.x, keeperTile.y))`; `followTrail`; si se mueve, `pet.moveTo`; si no, `pet.face(facingFromDelta(keeper − pet))`.
   - Al salir de la tienda (`leaveShop`), Luna aparece junto a la cuidadora: se coloca en su posición y el rastro se vacía.
-- [ ] **Step 3b: Luna dentro de la tienda** (`ShopScene`, `game/src/world/ShopPet.ts` nuevo): si `state.luna`, entra detrás de la cuidadora y luego va a su aire: elige un sitio al azar del suelo transitable (`this.grid`), preferiblemente junto a una peana, la estantería o un mueble, va andando (A* sobre la rejilla de la tienda, a `PET_SPEED`), se queda mirando 1,5–3 s (girada hacia la cosa, a veces da un saltito) y elige otro. Se puede alejar de la cuidadora sin límite. No bloquea peanas ni el felpudo, no cuenta para el alcance de compra y no sale por la puerta. Al girar el móvil vuelve a aparecer en un sitio libre. Pura y probada: `pickShopSpot(grid, interests: Vec[], rng): Vec | null` en `core/shopWalk.ts` (devuelve una casilla transitable junto a uno de los puntos de interés, o cualquiera transitable si no hay). Test API: `shopPetPosition(): Vec | null`.
-- [ ] **Step 4: e2e `luna.spec.ts`** (con `/?sin-tutorial`): sin Luna, `petPosition()` es `null`; `addCoins(200)`, `buy('luna')` (la API ya llama a `refresh()`) → `petPosition()` existe y está a menos de 40 px de la cuidadora; se manda a la cuidadora a una casilla lejana con `goToTile` → al llegar, Luna está a menos de 40 px; `buy('pantera')`, `feedResident('noche')` y al estar la cuidadora dentro (`keeperInPen('pantera')`), Luna no está dentro del recinto.
-- [ ] **Step 5: Commit** — `feat(juego): Luna sigue a la cuidadora por el parque`
+- [x] **Step 3b: Luna dentro de la tienda** (`ShopScene`, `game/src/world/ShopPet.ts` nuevo): si `state.luna`, entra detrás de la cuidadora y luego va a su aire: elige un sitio al azar del suelo transitable (`this.grid`), preferiblemente junto a una peana, la estantería o un mueble, va andando (A* sobre la rejilla de la tienda, a `PET_SPEED`), se queda mirando 1,5–3 s (girada hacia la cosa, a veces da un saltito) y elige otro. Se puede alejar de la cuidadora sin límite. No bloquea peanas ni el felpudo, no cuenta para el alcance de compra y no sale por la puerta. Al girar el móvil vuelve a aparecer en un sitio libre. Pura y probada: `pickShopSpot(grid, interests: Vec[], rng): Vec | null` en `core/shopWalk.ts` (devuelve una casilla transitable junto a uno de los puntos de interés, o cualquiera transitable si no hay). Test API: `shopPetPosition(): Vec | null`.
+- [x] **Step 4: e2e `luna.spec.ts`** (con `/?sin-tutorial`): sin Luna, `petPosition()` es `null`; `addCoins(200)`, `buy('luna')` (la API ya llama a `refresh()`) → `petPosition()` existe y está a menos de 40 px de la cuidadora; se manda a la cuidadora a una casilla lejana con `goToTile` → al llegar, Luna está a menos de 40 px; `buy('pantera')`, `feedResident('noche')` y al estar la cuidadora dentro (`keeperInPen('pantera')`), Luna no está dentro del recinto.
+- [x] **Step 5: Commit** — `feat(juego): Luna sigue a la cuidadora por el parque`
 
 ---
 
@@ -448,14 +450,14 @@ Cómo es Luna (de las fotos de David): perrita **negra**; orejas caídas, una al
   - `BOOK_NOTICE_VISITS = 3` y `showBookNotice(visits: number, opened: boolean): boolean` (= `visits >= 3 && !opened`) en `core/book.ts`.
   - `ShopScene.bookNotice(): boolean`; Test API `shopBookNotice(): boolean`.
 
-- [ ] **Step 1: Pruebas unitarias**: `showBookNotice(2, false)` falso; `(3, false)` verdadero; `(10, true)` falso.
-- [ ] **Step 2: `ShopScene`**
+- [x] **Step 1: Pruebas unitarias**: `showBookNotice(2, false)` falso; `(3, false)` verdadero; `(10, true)` falso.
+- [x] **Step 2: `ShopScene`**
   - En `create()`, antes de `addBook()`: `if (!this.restored) void getSession().countShopVisit();` (al girar el móvil no se cuenta otra vez).
   - Campo `notice`, decidido en `addBook()` con `showBookNotice`. Con aviso: el 📕 se ve siempre en `home` (encima de `bookShelf`) y parpadea (`alpha` 1 → 0.35, `yoyo`, `repeat: -1`, 450 ms, más un leve vaivén de escala); `updateBook` no hace nada; `twinkle` no echa destellos; tocar el libro o la estantería lo abre; `bookScreenPos()` da la posición del libro.
   - Al reanudarse la tienda (evento `RESUME`), si había aviso y `book.opened` ya es verdadero: se para el parpadeo, se esconde el libro y vuelve el comportamiento de siempre.
-- [ ] **Step 3: `BookScene.create()` llama a `void getSession().markBookOpened()`** (cubre la estantería y `openBook` de las pruebas).
-- [ ] **Step 4: e2e en `shop.spec.ts`**: con la tienda abierta, entrar y salir dos veces → `shopBookNotice()` falso; tercera entrada → verdadero y `shopBookPos()` no es null aunque la cuidadora esté en la puerta; girar (cambiar el tamaño de la ventana) dentro de la tienda no suma visita; tocar el libro, cerrarlo → `shopBookNotice()` falso; cuarta entrada → falso.
-- [ ] **Step 5: Commit** — `feat(juego): el libro se ve parpadeando en la tienda hasta que se abre`
+- [x] **Step 3: `BookScene.create()` llama a `void getSession().markBookOpened()`** (cubre la estantería y `openBook` de las pruebas).
+- [x] **Step 4: e2e en `shop.spec.ts`**: con la tienda abierta, entrar y salir dos veces → `shopBookNotice()` falso; tercera entrada → verdadero y `shopBookPos()` no es null aunque la cuidadora esté en la puerta; girar (cambiar el tamaño de la ventana) dentro de la tienda no suma visita; tocar el libro, cerrarlo → `shopBookNotice()` falso; cuarta entrada → falso.
+- [x] **Step 5: Commit** — `feat(juego): el libro se ve parpadeando en la tienda hasta que se abre`
 
 ---
 
@@ -505,9 +507,9 @@ Resultado esperado: todo en verde (dar los totales). Aprovechar para que David r
   ```
   Transiciones: `move`+`moved` → `tap-animal`; `move`+`feed-opened` → `drag-food` (ya se movió y tocó); `tap-animal`+`feed-opened` → `drag-food`; `drag-food`+`fed` con `coins > 0` → `coins`; `drag-food`+`feed-closed` → `tap-animal`; `coins`+`coins-shown` → `shop`; `shop`+`shop-opened` → `'done'`; cualquier otra combinación deja el paso igual.
 
-- [ ] **Step 1: Pruebas**: una por transición de la lista; `fed` con `coins: 0` deja `drag-food`; `handVisible('shop', 19)` falso y `(…, 20)` verdadero; `handVisible('move', 0)` verdadero; `goodFood('leon')` es `carne`; para toda especie de `ANIMAL_IDS`, la reacción a `goodFood` no es `rechaza`.
-- [ ] **Step 2: Implementar.**
-- [ ] **Step 3: Commit** — `feat(juego): pasos del tutorial`
+- [x] **Step 1: Pruebas**: una por transición de la lista; `fed` con `coins: 0` deja `drag-food`; `handVisible('shop', 19)` falso y `(…, 20)` verdadero; `handVisible('move', 0)` verdadero; `goodFood('leon')` es `carne`; para toda especie de `ANIMAL_IDS`, la reacción a `goodFood` no es `rechaza`.
+- [x] **Step 2: Implementar.**
+- [x] **Step 3: Commit** — `feat(juego): pasos del tutorial`
 
 ---
 
@@ -529,10 +531,10 @@ Resultado esperado: todo en verde (dar los totales). Aprovechar para que David r
   - Test API: `tutorialOfferPos(which: 'learn' | 'skip'): Vec | null`, `openTutorial(): void`.
   - Todos los `page.goto('/')` de los e2e que ya existen pasan a `page.goto('/?sin-tutorial')` (`grep -rn "goto('/')" tests/e2e`).
 
-- [ ] **Step 1: Pruebas** — `hud.test.ts`: con `'TutorialOffer'` activa el engranaje no se ve. `tutorial.spec.ts`: partida nueva sin `?sin-tutorial` → al llegar al mapa sale `TutorialOffer`; tocar «Saltar» → se cierra, no sale el aviso de votación ni el panel de anuncio a la vez, y al recargar la página no vuelve a salir. Otra partida nueva: cambiar el tamaño de la ventana con el aviso abierto → sigue abierto y sus botones funcionan. Partida antigua con la tienda ya abierta (sin campo `tutorial`) → sí sale, una vez.
-- [ ] **Step 2: Escena, enganche en `WorldScene`, `hud`, `platform`, `Settings`, textos y API de pruebas.**
-- [ ] **Step 3: Cambiar los `goto` de los e2e existentes.**
-- [ ] **Step 4: Commit** — `feat(juego): aviso para aprender a jugar y botón Aprender en el menú`
+- [x] **Step 1: Pruebas** — `hud.test.ts`: con `'TutorialOffer'` activa el engranaje no se ve. `tutorial.spec.ts`: partida nueva sin `?sin-tutorial` → al llegar al mapa sale `TutorialOffer`; tocar «Saltar» → se cierra, no sale el aviso de votación ni el panel de anuncio a la vez, y al recargar la página no vuelve a salir. Otra partida nueva: cambiar el tamaño de la ventana con el aviso abierto → sigue abierto y sus botones funcionan. Partida antigua con la tienda ya abierta (sin campo `tutorial`) → sí sale, una vez.
+- [x] **Step 2: Escena, enganche en `WorldScene`, `hud`, `platform`, `Settings`, textos y API de pruebas.**
+- [x] **Step 3: Cambiar los `goto` de los e2e existentes.**
+- [x] **Step 4: Commit** — `feat(juego): aviso para aprender a jugar y botón Aprender en el menú`
 
 ---
 
@@ -565,7 +567,7 @@ Qué hace la mano (👆 con `addEmoji`, ~48 px, sombra) en cada paso; si el siti
 
 Con la escena que toca en pausa o sin abrir (por ejemplo, el menú abierto), la mano se esconde y el paso se mantiene. ✕ (`addCloseBadge`, arriba en el centro): para el tutorial; no vuelve a salir solo (ya está `offered`). Al terminar o cerrar, la escena se para y quita sus escuchas del bus. Abierto desde el menú con la partida avanzada, hace los mismos pasos sobre la partida real, sin dar ni quitar monedas.
 
-- [ ] **Step 1: e2e en `tutorial.spec.ts`**
+- [x] **Step 1: e2e en `tutorial.spec.ts`**
   - partida nueva → «Aprender» → `tutorialStep()` es `move` y `tutorialHand()` no es null; tocar el suelo a unas casillas → pasa a `tap-animal`.
   - `feedResident` del animal que da `tutorialAnimal` → `drag-food`; la mano está cerca de la comida buena; cerrar la comida → vuelve a `tap-animal`; volver a abrirla y arrastrar `goodFood` hasta el animal → `coins`; ~3 s después → `shop`.
   - con menos de 20 monedas, en `shop` la mano no se ve; `addCoins` hasta 20 → se ve; `openShop` → `tutorialStep()` null.
@@ -573,9 +575,9 @@ Con la escena que toca en pausa o sin abrir (por ejemplo, el menú abierto), la 
   - cambiar el tamaño de la ventana en `drag-food` → sigue en `drag-food`.
   - ✕ a medias → `tutorialStep()` null y al recargar no sale el aviso.
   - desde el menú: abrir Ajustes, tocar «Aprender» → `tutorialStep()` es `move` y las monedas no cambian.
-- [ ] **Step 2: Implementar `TutorialScene`, los métodos de `WorldScene`/`HudScene`, el bloqueo de paneles y la API de pruebas.**
-- [ ] **Step 3: Verlo funcionar** en el panel del navegador con `npm run dev` (preview), partida nueva sin `?sin-tutorial`, a tamaño de móvil (`resize_window` móvil) y de escritorio: captura de cada paso para enseñársela a David.
-- [ ] **Step 4: Commit** — `feat(juego): tutorial con una mano que enseña a jugar sin leer`
+- [x] **Step 2: Implementar `TutorialScene`, los métodos de `WorldScene`/`HudScene`, el bloqueo de paneles y la API de pruebas.**
+- [x] **Step 3: Verlo funcionar** en el panel del navegador con `npm run dev` (preview), partida nueva sin `?sin-tutorial`, a tamaño de móvil (`resize_window` móvil) y de escritorio: captura de cada paso para enseñársela a David.
+- [x] **Step 4: Commit** — `feat(juego): tutorial con una mano que enseña a jugar sin leer`
 
 ---
 
@@ -605,7 +607,7 @@ Resultado esperado: todo en verde (dar los totales: los e2e de antes más `luna.
 - Modify: `README.md` (raíz), `game/README.md`, `docs/superpowers/specs/2026-11-01-luna-jose-caminos-tutorial-design.md` (estado «implementada, pendiente de fusionar», sección «Estado de implementación» y «Decisiones tomadas durante la implementación»: estanque y ovejas movidos, `shrink` 20 de Jose, nombres de Luna, Luna entra en la tienda y curiosea, tramos de Matomo sin cambiar), este plan (casillas marcadas).
 - Create (cuando David valide el texto y se sepa la versión): `game/store/notas-version-<versión>.txt` con los 13 idiomas.
 
-- [ ] **Step 1: README, spec y plan al día.**
-- [ ] **Step 2: Borrador de las notas de Play en español, en el chat**, para que David lo valide (caminos nuevos, Luna, Jose, tutorial, libro, precios). No se traducen ni se escriben en archivo hasta su visto bueno.
-- [ ] **Step 3: Commit** — `docs: caminos, Luna, Jose, tutorial y libro en README, spec y plan`
-- [ ] **Step 4: Avisar a David** de que la rama está lista para su prueba en el móvil y de que la versión (vc 12 u otra, según R8) se decide al fusionar.
+- [x] **Step 1: README, spec y plan al día.**
+- [x] **Step 2: Borrador de las notas de Play en español, en el chat**, para que David lo valide (caminos nuevos, Luna, Jose, tutorial, libro, precios). No se traducen ni se escriben en archivo hasta su visto bueno.
+- [x] **Step 3: Commit** — `docs: caminos, Luna, Jose, tutorial y libro en README, spec y plan`
+- [x] **Step 4: Avisar a David** de que la rama está lista para su prueba en el móvil y de que la versión (vc 12 u otra, según R8) se decide al fusionar.
