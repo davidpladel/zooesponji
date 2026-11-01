@@ -16,6 +16,8 @@ const EDGE = 56;
 /** Duración de cada gesto de la mano (ms). */
 const TAP_MS = 1200;
 const DRAG_MS = 1800;
+/** Dónde va la ✕ que cierra el tutorial. */
+export const CLOSE_AT: Vec = { x: 38, y: 100 };
 
 type Gesture = { kind: 'tap'; at: Vec } | { kind: 'drag'; from: Vec; to: Vec };
 
@@ -33,6 +35,7 @@ export class TutorialScene extends Phaser.Scene {
   private arrow!: Phaser.GameObjects.Text;
   private joystick!: Phaser.GameObjects.Container;
   private coinsTimer: Phaser.Time.TimerEvent | null = null;
+  private closeBadge: Phaser.GameObjects.Container | null = null;
 
   constructor() {
     super('Tutorial');
@@ -56,7 +59,8 @@ export class TutorialScene extends Phaser.Scene {
     const toGear = addEmoji(this, -46, 0, '⬅️', 30);
     this.joystick = this.add.container(0, 0, [toGear, stick]).setVisible(false);
     this.tweens.add({ targets: toGear, x: -54, duration: 500, yoyo: true, repeat: -1, ease: 'Sine.InOut' });
-    addCloseBadge(this, this.scale.width / 2, 40, () => this.finish(), 48);
+    // Debajo de las monedas: arriba en el centro tapaba el título de la ventana de comer.
+    this.closeBadge = addCloseBadge(this, CLOSE_AT.x, CLOSE_AT.y, () => this.finish(), 44);
 
     const offs = [
       bus.on('feed-opened', () => this.on({ type: 'feed-opened' })),
@@ -186,6 +190,10 @@ export class TutorialScene extends Phaser.Scene {
 
   currentStep(): TutorialStep {
     return this.step;
+  }
+
+  closePos(): Vec | null {
+    return this.closeBadge ? { x: this.closeBadge.x, y: this.closeBadge.y } : null;
   }
 
   handPos(): Vec | null {

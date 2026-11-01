@@ -46,6 +46,8 @@ export interface ZooTestApi {
   tutorialStep(): string | null;
   /** Dónde está la mano del tutorial, si se ve. */
   tutorialHand(): Vec | null;
+  /** Dónde está la ✕ del tutorial. */
+  tutorialClosePos(): Vec | null;
   /** Dónde está Luna en el mapa (null si no se ha comprado). */
   petPosition(): Vec | null;
   /** Dónde está Luna dentro de la tienda (px del interior). */
@@ -190,6 +192,7 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
       game.scene.start('Tutorial');
     },
     tutorialStep: () => activeScene<TutorialScene>('Tutorial')?.currentStep() ?? null,
+    tutorialClosePos: () => activeScene<TutorialScene>('Tutorial')?.closePos() ?? null,
     tutorialHand: () => activeScene<TutorialScene>('Tutorial')?.handPos() ?? null,
     hudCoinsText: () => activeScene<HudScene>('Hud')?.coinsLabel() ?? null,
     hudGearVisible: () => activeScene<HudScene>('Hud')?.gearVisible() ?? false,

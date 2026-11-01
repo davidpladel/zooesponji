@@ -133,9 +133,9 @@ test('la ✕ lo cierra a medias y desde el menú se vuelve a ver sin tocar las m
   await startGame(page);
   await tapOffer(page, 'learn');
   await expect.poll(() => step(page)).toBe('move');
-  // La ✕ está arriba en el centro.
   const box = await canvasBox(page);
-  await page.mouse.click(box.x + box.width / 2, box.y + 40);
+  const close = (await page.evaluate(() => window.__ZOO__!.tutorialClosePos()))!;
+  await page.mouse.click(box.x + close.x, box.y + close.y);
   await expect.poll(() => step(page)).toBeNull();
 
   await page.evaluate(() => window.__ZOO__!.addCoins(7));
