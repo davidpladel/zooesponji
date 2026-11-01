@@ -12,7 +12,7 @@
 
 ## Global Constraints
 
-- **Las pruebas las lanza David.** Ningún `npm test`, `npm run typecheck`, `vitest` ni `playwright` lo lanza quien ejecute el plan. En cada **punto de control** se le dan los comandos en PowerShell, uno por bloque, con el resultado esperado, y se espera su respuesta. Lo que no depende de ese resultado puede seguir.
+- **Pruebas:** en esta rama las lanza quien ejecuta el plan (David lo pidió el 2026-11-01). En cada **punto de control** se pasan typecheck, Vitest y los e2e que toquen, y se le cuenta a David el resultado. Lo que David tiene que **validar a ojo** (imagen de los caminos, Jose, Luna, el tutorial) se le enseña en cuanto está listo.
 - Git lo hace quien ejecute el plan: un commit por tarea en `feat/luna-jose-caminos-tutorial`, con el estilo del repo (`feat(juego): …`, `fix: …`, `docs: …`). No se fusiona ni se sube sin que David lo pida.
 - Comentarios, nombres de prueba y textos en español, como el resto del código.
 - **El tutorial no puede necesitar saber leer:** solo mano (👆), flechas, iconos y el propio juego. Los únicos textos son las etiquetas de los dos botones del aviso y la del menú, y todo funciona igual sin leerlas.
@@ -27,7 +27,7 @@
 
 ## Review Focus
 
-1. **Partida guardada antes de esta rama** (sin `luna`, `tutorial`, `shop`, `book.opened`; también una v1 con `unlocked`): carga sin perder nada; quien ya tenía la tienda abierta no ve el aviso del tutorial al entrar; el libro cuenta como abierto si ya hay páginas leídas. → pruebas en la tarea 4.
+1. **Partida guardada antes de esta rama** (sin `luna`, `tutorial`, `shop`, `book.opened`; también una v1 con `unlocked`): carga sin perder nada; el aviso del tutorial sale una vez también a quien ya jugaba; el libro cuenta como abierto si ya hay páginas leídas. → pruebas en la tarea 4.
 2. **El aviso del tutorial, el panel del anuncio y el aviso de votación a la vez**: nunca dos paneles; mientras dura el tutorial no se ofrece anuncio ni aviso de votación. → pruebas e2e en las tareas 10 y 11.
 3. **La cuidadora entra en un recinto, en la tienda o se cambia de idioma con Luna detrás**: Luna espera en la puerta del recinto, no se queda atascada en el césped y, si el mundo se vuelve a montar, aparece junto a la cuidadora. → pruebas en la tarea 7.
 4. **Casillas de camino a las que no se llega** (visitantes atascados o cuidadora encerrada) tras añadir los atajos y mover el estanque y las ovejas. → prueba de conectividad en la tarea 1.
@@ -300,15 +300,15 @@ Reglas de `parseSave` para lo que falta:
 - `luna`: `state.luna === true`.
 - `book.opened`: `raw.opened === true || seen.length > 0` (`book.page` no sirve: se pone sola al comprar).
 - `shop.visits`: entero ≥ 0; si no, 0.
-- `tutorial.offered`: si hay objeto `tutorial`, `tutorial.offered === true`; si no lo hay (partida de antes), `state.shopUnlocked` — quien ya ha abierto la tienda sabe jugar y no ve el aviso.
-- `migrateLegacy`: `luna: false`, `tutorial.offered: shopUnlocked`, `shop.visits: 0`, `book.opened: false`.
+- `tutorial.offered`: `tutorial.offered === true`; si no hay objeto `tutorial` (partida de antes), `false`: **el aviso sale una vez a todos**, también a quien ya juega (decisión de David, 2026-11-01).
+- `migrateLegacy`: `luna: false`, `tutorial.offered: false`, `shop.visits: 0`, `book.opened: false`.
 
 - [ ] **Step 1: Pruebas en `save.test.ts`**
   - `defaultSave()` trae `luna: false`, `tutorial: { offered: false }`, `shop: { visits: 0 }`, `book.opened: false`.
   - ida y vuelta (`parseSave(JSON.parse(JSON.stringify(data)))`) conserva `luna: true`, `offered: true`, `visits: 4`, `opened: true`.
-  - partida v2 de antes, sin los campos nuevos y con `shopUnlocked: true` y `book.seen: ['cover']` → `luna: false`, `offered: true`, `visits: 0`, `opened: true`.
+  - partida v2 de antes, sin los campos nuevos y con `shopUnlocked: true` y `book.seen: ['cover']` → `luna: false`, `offered: false`, `visits: 0`, `opened: true`.
   - igual con `shopUnlocked: false` y `seen: []` → `offered: false`, `opened: false`.
-  - partida v1 (`unlocked`) → carga y `offered` sale de `shopUnlocked`.
+  - partida v1 (`unlocked`) → carga con `offered: false`.
   - `shop.visits: -1`, `2.5` o `'3'` → 0.
 - [ ] **Step 2: Pruebas en `session.test.ts`**: `countShopVisit` dos veces → `shop.visits === 2` y lo guardado también; `markTutorialOffered`/`markBookOpened` dejan el valor guardado y la segunda llamada no escribe.
 - [ ] **Step 3: Implementar** `save.ts`, `economy.ts` y `session.ts`.
@@ -429,7 +429,8 @@ Cómo es Luna (de las fotos de David): perrita **negra**; orejas caídas, una al
 - [ ] **Step 3: `WorldScene`**
   - Campos `pet: Walker | null` y `petTrail: Vec[]`. `syncPet()`: si `state.luna` y no hay `pet`, `createPet(this, 'luna', keeper.x, keeper.y)` y rastro vacío. Se llama al final de `create()` y en `refresh()` (así aparece al salir de la tienda tras comprarla).
   - En `update`, tras `moveKeeper`: `petTrail = recordTrail(petTrail, keeperPos, isWalkable(this.pathGrid, keeperTile.x, keeperTile.y))`; `followTrail`; si se mueve, `pet.moveTo`; si no, `pet.face(facingFromDelta(keeper − pet))`.
-  - Luna no entra en la tienda (es otra escena): espera fuera y, al salir, sigue.
+  - Al salir de la tienda (`leaveShop`), Luna aparece junto a la cuidadora: se coloca en su posición y el rastro se vacía.
+- [ ] **Step 3b: Luna dentro de la tienda** (`ShopScene`, `game/src/world/ShopPet.ts` nuevo): si `state.luna`, entra detrás de la cuidadora y luego va a su aire: elige un sitio al azar del suelo transitable (`this.grid`), preferiblemente junto a una peana, la estantería o un mueble, va andando (A* sobre la rejilla de la tienda, a `PET_SPEED`), se queda mirando 1,5–3 s (girada hacia la cosa, a veces da un saltito) y elige otro. Se puede alejar de la cuidadora sin límite. No bloquea peanas ni el felpudo, no cuenta para el alcance de compra y no sale por la puerta. Al girar el móvil vuelve a aparecer en un sitio libre. Pura y probada: `pickShopSpot(grid, interests: Vec[], rng): Vec | null` en `core/shopWalk.ts` (devuelve una casilla transitable junto a uno de los puntos de interés, o cualquiera transitable si no hay). Test API: `shopPetPosition(): Vec | null`.
 - [ ] **Step 4: e2e `luna.spec.ts`** (con `/?sin-tutorial`): sin Luna, `petPosition()` es `null`; `addCoins(200)`, `buy('luna')` (la API ya llama a `refresh()`) → `petPosition()` existe y está a menos de 40 px de la cuidadora; se manda a la cuidadora a una casilla lejana con `goToTile` → al llegar, Luna está a menos de 40 px; `buy('pantera')`, `feedResident('noche')` y al estar la cuidadora dentro (`keeperInPen('pantera')`), Luna no está dentro del recinto.
 - [ ] **Step 5: Commit** — `feat(juego): Luna sigue a la cuidadora por el parque`
 
@@ -528,7 +529,7 @@ Resultado esperado: todo en verde (dar los totales). Aprovechar para que David r
   - Test API: `tutorialOfferPos(which: 'learn' | 'skip'): Vec | null`, `openTutorial(): void`.
   - Todos los `page.goto('/')` de los e2e que ya existen pasan a `page.goto('/?sin-tutorial')` (`grep -rn "goto('/')" tests/e2e`).
 
-- [ ] **Step 1: Pruebas** — `hud.test.ts`: con `'TutorialOffer'` activa el engranaje no se ve. `tutorial.spec.ts`: partida nueva sin `?sin-tutorial` → al llegar al mapa sale `TutorialOffer`; tocar «Saltar» → se cierra, no sale el aviso de votación ni el panel de anuncio a la vez, y al recargar la página no vuelve a salir. Otra partida nueva: cambiar el tamaño de la ventana con el aviso abierto → sigue abierto y sus botones funcionan. Partida con la tienda ya abierta guardada → no sale.
+- [ ] **Step 1: Pruebas** — `hud.test.ts`: con `'TutorialOffer'` activa el engranaje no se ve. `tutorial.spec.ts`: partida nueva sin `?sin-tutorial` → al llegar al mapa sale `TutorialOffer`; tocar «Saltar» → se cierra, no sale el aviso de votación ni el panel de anuncio a la vez, y al recargar la página no vuelve a salir. Otra partida nueva: cambiar el tamaño de la ventana con el aviso abierto → sigue abierto y sus botones funcionan. Partida antigua con la tienda ya abierta (sin campo `tutorial`) → sí sale, una vez.
 - [ ] **Step 2: Escena, enganche en `WorldScene`, `hud`, `platform`, `Settings`, textos y API de pruebas.**
 - [ ] **Step 3: Cambiar los `goto` de los e2e existentes.**
 - [ ] **Step 4: Commit** — `feat(juego): aviso para aprender a jugar y botón Aprender en el menú`
@@ -601,7 +602,7 @@ Resultado esperado: todo en verde (dar los totales: los e2e de antes más `luna.
 ### Task 12: Documentación y notas de versión
 
 **Files:**
-- Modify: `README.md` (raíz), `game/README.md`, `docs/superpowers/specs/2026-11-01-luna-jose-caminos-tutorial-design.md` (estado «implementada, pendiente de fusionar», sección «Estado de implementación» y «Decisiones tomadas durante la implementación»: estanque y ovejas movidos, `shrink` 20 de Jose, nombres de Luna, Luna no entra en la tienda, tramos de Matomo sin cambiar), este plan (casillas marcadas).
+- Modify: `README.md` (raíz), `game/README.md`, `docs/superpowers/specs/2026-11-01-luna-jose-caminos-tutorial-design.md` (estado «implementada, pendiente de fusionar», sección «Estado de implementación» y «Decisiones tomadas durante la implementación»: estanque y ovejas movidos, `shrink` 20 de Jose, nombres de Luna, Luna entra en la tienda y curiosea, tramos de Matomo sin cambiar), este plan (casillas marcadas).
 - Create (cuando David valide el texto y se sepa la versión): `game/store/notas-version-<versión>.txt` con los 13 idiomas.
 
 - [ ] **Step 1: README, spec y plan al día.**
