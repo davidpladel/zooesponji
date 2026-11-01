@@ -52,11 +52,11 @@ test('se compra el estanque, la cuidadora entra y da de comer a un pato', async 
   await feed(page, 'cuac');
   expect(await page.evaluate(() => window.__ZOO__!.keeperInPen('estanque'))).toBe(true);
   await dragFood(page, 'maiz');
-  // 200 − 150 del estanque + 3 del pato.
-  await expect.poll(() => coins(page)).toBe('53');
+  // 200 − 120 del estanque + 3 del pato.
+  await expect.poll(() => coins(page)).toBe('83');
   // El pan les sienta mal: no da monedas.
   await dragFood(page, 'pan');
-  await expect.poll(() => coins(page)).toBe('53');
+  await expect.poll(() => coins(page)).toBe('83');
 });
 
 test('en la sabana se da de comer a una jirafa y a una cebra, cada una con su bandeja', async ({ page }) => {

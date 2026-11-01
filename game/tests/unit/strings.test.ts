@@ -9,8 +9,8 @@ const words = (text: string): number => text.trim().split(/\s+/).length;
 describe('textos del libro', () => {
   const texts = Object.entries(STRINGS_ES).filter(([key]) => /^book\.page\..+\.text$/.test(key));
 
-  it('hay un texto por cada una de las 49 páginas y la contraportada', () => {
-    expect(texts).toHaveLength(50);
+  it('hay un texto por cada una de las 50 páginas y la contraportada', () => {
+    expect(texts).toHaveLength(51);
   });
 
   // La página de Mary es de antes de esta regla (21 palabras, aprobada con el libro original).

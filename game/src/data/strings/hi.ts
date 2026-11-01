@@ -181,6 +181,8 @@ export const STRINGS_HI: Record<StringKey, string> = {
   'book.page.mochi.text': 'Mochi दिन भर बाँस चबाता है। चप, चप… और फिर एक और झपकी।',
   'book.page.pompon.title': 'Pompón, पांडा',
   'book.page.pompon.text': 'Pompón कलाबाज़ियाँ खाता है। शेर भी हँस पड़ता है!',
+  'book.page.jose.title': 'Jose, नन्हा पांडा',
+  'book.page.jose.text': 'Jose पांडा का बच्चा है। उसके धब्बे अभी भी भूरे-सलेटी हैं!',
   'book.page.back.title': 'चिड़ियाघर पूरा हुआ!',
   'book.page.back.text': 'चिड़ियाघर को बड़ा करने में मदद करो! सबका ध्यान रखने के लिए धन्यवाद, Mary।',
   'book.page.cuac.title': 'Cuac, बत्तख',

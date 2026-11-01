@@ -181,6 +181,8 @@ export const STRINGS_PT_BR: Record<StringKey, string> = {
   'book.page.mochi.text': 'Mochi mastiga bambu o dia inteiro. Nham, nham… e depois outra soneca.',
   'book.page.pompon.title': 'Pompón, o panda',
   'book.page.pompon.text': 'Pompón dá cambalhotas. Até o leão dá risada!',
+  'book.page.jose.title': 'Jose, o panda bebê',
+  'book.page.jose.text': 'Jose é o filhote dos pandas. As manchas dele ainda são cinza!',
   'book.page.back.title': 'Zoológico completo!',
   'book.page.back.text': 'Ajude o zoológico a crescer! Obrigada por cuidar de todo mundo, Mary.',
   'book.page.cuac.title': 'Cuac, o pato',

@@ -15,7 +15,7 @@ const summary2 = (state: GameState, stock: ReturnType<typeof shopStock>) => shop
 describe('shopEntries', () => {
   it('al principio: los cinco más baratos, de menor a mayor precio', () => {
     expect(shopEntries(withCounts({})).map((e) => `${e.id}:${e.cost}`)).toEqual([
-      'extra-cabra:10', 'pantera:50', 'panda:100', 'estanque:150', 'ovejas:250',
+      'extra-cabra:10', 'pantera:50', 'panda:100', 'estanque:120', 'ovejas:120',
     ]);
   });
 
@@ -30,7 +30,7 @@ describe('shopEntries', () => {
 
   it('a igual precio manda el orden de los recintos', () => {
     // Otro pato (30) y otra gallina del establo (30): primero el estanque.
-    const ids = shopEntries(withCounts({ cabra: 5, pantera: 2, panda: 2, estanque: 1, establo: 1 })).map((e) => e.id);
+    const ids = shopEntries(withCounts({ cabra: 5, pantera: 2, panda: 3, estanque: 1, establo: 1 })).map((e) => e.id);
     expect(ids.slice(0, 2)).toEqual(['extra-estanque', 'extra-establo']);
   });
 
@@ -39,7 +39,7 @@ describe('shopEntries', () => {
   });
 
   it('cuando quedan menos de 5 cosas que comprar, lo completo rellena los huecos como AGOTADO', () => {
-    const done = { cabra: 5, pantera: 2, panda: 2, estanque: 5, ovejas: 5, establo: 8, pinguinos: 5, sabana: 8, 'elefantes-africanos': 2, 'elefantes-asiaticos': 1 };
+    const done = { cabra: 5, pantera: 2, panda: 3, estanque: 5, ovejas: 5, establo: 8, pinguinos: 5, sabana: 8, 'elefantes-africanos': 2, 'elefantes-asiaticos': 1 };
     expect(summary(withCounts(done))).toEqual(['extra-elefantes-asiaticos:buy', 'extra-cabra:full', 'extra-pantera:full', 'extra-panda:full', 'extra-estanque:full']);
     const cabra = shopEntries(withCounts(done)).find((e) => e.id === 'extra-cabra');
     expect(cabra).toMatchObject({ status: 'full', count: 5, max: 5, cost: 10 });
@@ -62,7 +62,7 @@ describe('shopEntries', () => {
 
   it('el "otro animal" de un recinto mixto es el siguiente de su lista, con el precio de su especie', () => {
     const next = (count: number) =>
-      shopEntries(withCounts({ cabra: 5, pantera: 2, panda: 2, establo: count })).find((e) => e.id === 'extra-establo');
+      shopEntries(withCounts({ cabra: 5, pantera: 2, panda: 3, establo: count })).find((e) => e.id === 'extra-establo');
     expect(next(1)).toMatchObject({ species: 'gallina', look: 'gallina', cost: 30, count: 1, max: 8 });
     expect(next(2)).toMatchObject({ species: 'caballo', look: 'caballo-lucero', cost: 60 });
   });

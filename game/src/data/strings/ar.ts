@@ -182,6 +182,8 @@ export const STRINGS_AR: Record<StringKey, string> = {
   'book.page.mochi.text': 'Mochi يقضم الخيزران طوال اليوم. همم، همم… ثم قيلولة أخرى.',
   'book.page.pompon.title': 'Pompón، الباندا',
   'book.page.pompon.text': 'Pompón يتشقلب. حتى الأسد يضحك!',
+  'book.page.jose.title': 'Jose، صغير الباندا',
+  'book.page.jose.text': 'Jose هو صغير الباندا. ما زالت بقعه رمادية!',
   'book.page.back.title': 'اكتملت الحديقة!',
   'book.page.back.text': 'ساعد الحديقة على أن تكبر! شكرًا لأنك تعتنين بالجميع يا Mary.',
   'book.page.cuac.title': 'Cuac، البط',

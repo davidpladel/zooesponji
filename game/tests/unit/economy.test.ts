@@ -166,7 +166,7 @@ describe('adReward', () => {
   };
 
   it.each([
-    [50, 10], [100, 10], [150, 15], [250, 25], [400, 40], [600, 60], [900, 90], [1300, 130], [1600, 160],
+    [50, 10], [100, 10], [120, 12], [400, 40], [600, 60], [900, 90], [1300, 130], [1600, 160],
   ])('con el recinto de %i como el más barato por abrir, el premio es %i', (cost, reward) => {
     expect(adReward(withCheapestClosed(cost))).toBe(reward);
   });

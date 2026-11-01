@@ -27,6 +27,8 @@ export type LookSource = Source & {
   /** Archivo en `art-work/terminados/` que sustituye a todo lo demás. */
   override?: string;
   overrideRows?: number[];
+  /** También se aplican `edits` y `shrink` encima del dibujo terminado (Jose: el panda de los niños, pequeño y gris). */
+  retouchOverride?: boolean;
 };
 export interface ArtConfig {
   privateRepo: string;

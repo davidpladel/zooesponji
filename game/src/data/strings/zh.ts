@@ -181,6 +181,8 @@ export const STRINGS_ZH: Record<StringKey, string> = {
   'book.page.mochi.text': 'Mochi 一整天都在啃竹子。吧唧吧唧……然后再睡一觉。',
   'book.page.pompon.title': 'Pompón，熊猫',
   'book.page.pompon.text': 'Pompón 会翻跟头。连狮子都笑了！',
+  'book.page.jose.title': 'Jose，熊猫宝宝',
+  'book.page.jose.text': 'Jose 是熊猫的宝宝。它身上的斑点还是灰色的！',
   'book.page.back.title': '动物园满啦！',
   'book.page.back.text': '帮动物园长大吧！谢谢你照顾大家，Mary。',
   'book.page.cuac.title': 'Cuac，鸭子',

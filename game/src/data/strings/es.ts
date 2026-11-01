@@ -175,6 +175,8 @@ export const STRINGS_ES = {
   'book.page.mochi.text': 'Mochi come bambú todo el día. Ñam, ñam… y otra siesta.',
   'book.page.pompon.title': 'Pompón, el panda',
   'book.page.pompon.text': 'Pompón da volteretas. ¡Se ríe hasta el león!',
+  'book.page.jose.title': 'Jose, el panda bebé',
+  'book.page.jose.text': 'Jose es la cría de los pandas. ¡Todavía tiene las manchas grises!',
   'book.page.cuac.title': 'Cuac, el pato',
   'book.page.cuac.text': 'Cuac es blanco como la leche. Dice su nombre todo el día: ¡cuac, cuac!',
   'book.page.charco.title': 'Charco, el pato',

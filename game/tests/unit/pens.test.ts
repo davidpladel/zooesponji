@@ -13,17 +13,22 @@ describe('recintos', () => {
   });
 
   it('cabe en cada recinto lo que dice el diseño', () => {
-    expect(PEN_IDS.map(penCapacity)).toEqual([1, 5, 2, 2, 5, 5, 8, 5, 8, 2, 2]);
+    expect(PEN_IDS.map(penCapacity)).toEqual([1, 5, 2, 3, 5, 5, 8, 5, 8, 2, 2]);
   });
 
   it('león y cabra vienen de inicio; el resto se compra, cada vez más caro', () => {
-    expect(PEN_IDS.map((id) => PENS[id].cost)).toEqual([undefined, undefined, 50, 100, 150, 250, 400, 600, 900, 1300, 1600]);
+    expect(PEN_IDS.map((id) => PENS[id].cost)).toEqual([undefined, undefined, 50, 100, 120, 120, 400, 600, 900, 1300, 1600]);
+  });
+
+  it('Jose es la cría de panda, la tercera del recinto, con su aspecto propio', () => {
+    expect(PENS.panda.residents.map((r) => r.id)).toEqual(['mochi', 'pompon', 'jose']);
+    expect(PENS.panda.residents[2]!.look).toBe('panda-jose');
   });
 
   it('cada residente tiene id único, especie conocida y nombre', () => {
     const ids = PEN_IDS.flatMap((id) => PENS[id].residents.map((r) => r.id));
     expect(new Set(ids).size).toBe(ids.length);
-    expect(ids).toHaveLength(45);
+    expect(ids).toHaveLength(46);
     for (const penId of PEN_IDS) {
       for (const r of PENS[penId].residents) {
         expect(ANIMALS[r.species], r.id).toBeDefined();

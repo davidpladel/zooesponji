@@ -77,7 +77,10 @@ export const pagesBucket = (n: number): string => bucket(n, [[0, ZERO], [1, '1']
 /** Páginas del libro leídas en total. */
 export const bookBucket = (n: number): string => bucket(n, [[0, ZERO], [5, '1-5'], [15, '6-15'], [30, '16-30']], '31+');
 export const durationBucket = (seconds: number): string => bucket(seconds, [[59, '<1m'], [179, '1-3m'], [599, '3-10m'], [1799, '10-30m']], '30m+');
-/** Alineado con los precios de la tienda: dice qué se puede permitir el jugador. */
+/**
+ * Alineado con los precios de la tienda: dice qué se puede permitir el jugador. Los tramos no se tocan
+ * al cambiar precios (se rompería la serie de Matomo): el estanque y las ovejas, a 120, caen en 50-149.
+ */
 export const coinsBucket = (coins: number): string =>
   bucket(coins, [[19, '0-19'], [49, '20-49'], [149, '50-149'], [399, '150-399'], [899, '400-899'], [1599, '900-1599']], '1600+');
 const HOUR_MS = 3_600_000;

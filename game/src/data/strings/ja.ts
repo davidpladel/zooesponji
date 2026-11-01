@@ -181,6 +181,8 @@ export const STRINGS_JA: Record<StringKey, string> = {
   'book.page.mochi.text': 'Mochi は いちにちじゅう ササを もぐもぐ。むしゃむしゃ… そして また おひるね。',
   'book.page.pompon.title': 'Pompón、パンダ',
   'book.page.pompon.text': 'Pompón は でんぐりがえりを するよ。ライオンまで わらっちゃう！',
+  'book.page.jose.title': 'Jose、パンダの あかちゃん',
+  'book.page.jose.text': 'Jose は パンダの あかちゃん。もようは まだ はいいろだよ！',
   'book.page.back.title': 'どうぶつえん かんせい！',
   'book.page.back.text': 'どうぶつえんを おおきく しよう！みんなの おせわを ありがとう、Mary。',
   'book.page.cuac.title': 'Cuac、アヒル',
