@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { TEST_APP_ID, envProblems, manifestProblems } from '../../scripts/manifestRules.ts';
 
-const manifest = (inside: string, permissions = ''): string =>
-  `<manifest xmlns:android="http://schemas.android.com/apk/res/android"><application>${inside}</application>${permissions}</manifest>`;
+const manifest = (inside: string, permissions = '', application = '<application android:appCategory="game">'): string =>
+  `<manifest xmlns:android="http://schemas.android.com/apk/res/android">${application}${inside}</application>${permissions}</manifest>`;
 const appId = (value: string): string => `<meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="${value}" />`;
 const DELAY = '<meta-data android:name="com.google.android.gms.ads.DELAY_APP_MEASUREMENT_INIT" android:value="true" />';
 const REAL = 'ca-app-pub-1234567890123456~1234567890';
@@ -47,6 +47,12 @@ describe('manifiesto fusionado de Android', () => {
 
   it('exige retrasar la medición del SDK', () => {
     expect(manifestProblems(manifest(appId(REAL)))).toHaveLength(1);
+  });
+
+  it('exige la marca de juego en <application>', () => {
+    const problems = manifestProblems(manifest(appId(REAL) + DELAY, '', '<application android:label="Zoo">'));
+    expect(problems).toHaveLength(1);
+    expect(problems[0]).toContain('appCategory');
   });
 });
 

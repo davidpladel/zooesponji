@@ -1,6 +1,6 @@
 # Código de Android optimizado con R8
 
-Fecha: 2026-10-25 · Estado: spec escrita, pendiente de que David la apruebe. Nada implementado. Revisada la mañana del 25 con las capturas de Play Console de David, las guías de Capacitor 8.0 y 8.5 leídas enteras, y las cifras de Google comprobadas contra el texto original de sus páginas (ver «Cómo se ha comprobado»).
+Fecha: 2026-10-25 · Estado: implementada el 2026-11-01 en la rama `feat/optimizacion-r8`, sin compilar ni probar todavía (ver «Estado de implementación»). Revisada la mañana del 25 con las capturas de Play Console de David, las guías de Capacitor 8.0 y 8.5 leídas enteras, y las cifras de Google comprobadas contra el texto original de sus páginas (ver «Cómo se ha comprobado»).
 
 ## En pocas palabras
 
@@ -289,7 +289,20 @@ En la 2.8.2: AGP 9 y Capacitor 9 (bloque 2), `EdgeToEdge.enable`, apartar el mar
 
 ## Estado de implementación
 
-Nada hecho. Spec pendiente de aprobación.
+2026-11-01, rama `feat/optimizacion-r8` (David dijo «hazlo»):
+
+- [x] Capacitor 8.6.0 (`core`, `android`, `cli`) y `@capacitor/app` 8.1.2 en `package.json` y `package-lock.json`.
+- [x] AGP 8.13.2, `minifyEnabled true`, `shrinkResources true`, `proguard-android-optimize.txt`, `android.r8.optimizedResourceShrinking=true`.
+- [x] `proguard-rules.pro`: solo los números de línea.
+- [x] `android:appCategory="game"`, exigido por `check:manifest` con su prueba.
+- [x] `npm run check:aab` (`scripts/aabRules.ts`, `scripts/check-aab.ts`, `tests/unit/aab.test.ts`).
+- [x] Versión 2.8.2, `versionCode` 12.
+- [ ] `npm install` y `npx cap sync android`, `npm run typecheck` y `npm test` (David).
+- [ ] Compilar el AAB, `check:manifest -- --publicar` y `check:aab`; apuntar los tamaños y confirmar las rutas del apartado 6.
+- [ ] Lista del móvil del apartado 8 con la variante `release` y anuncios de prueba.
+- [ ] Prueba interna, producción y vigilancia (apartado 9). Notas de la versión validadas por David.
+- [ ] `docs/privado/play-store.md` (apartado 10).
+- [ ] Paso de David del bloque 3b: mirar si la cámara tapa algo.
 
 ## Decisiones tomadas en esta spec (de Claude, para que David las revise)
 
@@ -304,7 +317,10 @@ Nada hecho. Spec pendiente de aprobación.
 
 ## Decisiones tomadas durante la implementación
 
-(Vacío hasta que se implemente.)
+- **Capacitor 8.6.0 en vez de 8.5.4.** No salió ninguna 8.5.4: el arreglo de R8 llegó en la 8.6.0 (28-oct-2026; en su CHANGELOG, «keep plugin annotation types from R8 full mode» y «keep callbacks on non-public base classes from R8»). Leídas sus reglas en el paquete: son las del apartado 1, así que no van reglas propias. `@capacitor/preferences` sigue en la 8.0.1, la última.
+- **AdMob se queda en la 8.2.1** aunque ya hay una 8.3.0: la 2.8.2 solo cambia R8, para que si algo falla se sepa que es R8.
+- **Sin plan aparte:** los apartados 1 a 7 de esta spec ya dicen archivo por archivo qué cambia.
+- **`check:aab` también falla si no está `configuration.txt`**, para no dar por buena una compilación cuyas reglas no se han podido revisar.
 
 ## Cómo se ha comprobado
 

@@ -12,10 +12,9 @@
 #   public *;
 #}
 
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+# Números de línea en los cierres que enseña Play (los traduce con el archivo de desofuscación).
+-keepattributes SourceFile,LineNumberTable
+-renamesourcefileattribute SourceFile
 
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
+# Capacitor (desde la 8.6.0), AdMob, AndroidX y el SDK de anuncios traen sus propias reglas.
+# Una regla nueva aquí solo tras un fallo real: con la clase concreta y el porqué, nunca un paquete entero.
