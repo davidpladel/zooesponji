@@ -38,9 +38,10 @@ function reachable(g: typeof grid, from: { x: number; y: number }): Set<string> 
 }
 
 const ATAJOS: [string, number, number][] = [
-  ['izquierda', 3, 25], ['izquierda', 8, 17], ['pingüinos', 26, 20], ['abajo izquierda', 3, 45], ['abajo izquierda', 20, 55],
-  ['U', 38, 10], ['U', 44, 5], ['U', 49, 10], ['derecha', 85, 17], ['derecha', 92, 25], ['derecha', 92, 45], ['derecha', 70, 55],
-  ['horizontal derecha', 80, 49],
+  ['izquierda', 8, 17], ['izquierda', 3, 25], ['izquierda', 3, 45], ['izquierda', 15, 50],
+  ['arriba izquierda', 26, 20], ['arriba derecha', 68, 20],
+  ['U', 38, 10], ['U', 44, 4], ['U', 47, 10],
+  ['derecha', 85, 17], ['derecha', 92, 25], ['derecha', 92, 45], ['derecha', 80, 50],
 ];
 
 describe('mapa del zoo', () => {
@@ -205,7 +206,7 @@ describe('mapa del zoo', () => {
     expect(isWalkable(grid, board!.standTile.x, board!.standTile.y)).toBe(false);
   });
 
-  it('están los seis atajos', () => {
+  it('están los atajos del plano de David', () => {
     for (const [name, x, y] of ATAJOS) expect(isWalkable(grid, x, y), `${name} (${x},${y})`).toBe(true);
   });
 
@@ -229,7 +230,7 @@ describe('mapa del zoo', () => {
     const flowers = readProps(map).filter((p) => {
       const tx = Math.floor((p.x - 1) / 16);
       const ty = Math.floor((p.y - 1) / 16);
-      return tx >= 40 && tx <= 47 && ty >= 7 && ty <= 16;
+      return tx >= 40 && tx <= 46 && ty >= 6 && ty <= 16;
     });
     expect(flowers.length).toBeGreaterThanOrEqual(8);
     for (const p of flowers) {

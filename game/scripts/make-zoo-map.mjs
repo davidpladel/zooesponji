@@ -46,18 +46,17 @@ fill(5, 16 + OY, 1 + OX, 17 + OY, PATH); // oeste (polo): sigue el camino del me
 fill(46 + OX, 16 + OY, 93, 17 + OY, PATH); // este (granja)
 
 // Atajos (plano a mano de David, 2026-11-01): así no hay que bajar al centro para ir de una punta a otra.
-fill(3, 17, 11, 18, PATH); // 1. izquierda: de la avenida de arriba baja por el borde
-fill(3, 19, 4, 37, PATH); //    hasta la avenida de los pingüinos
-fill(26, 19, 27, 21, PATH); // 2. de la avenida de arriba a la esquina de arriba a la izquierda del cuadrado
-fill(3, 38, 4, 55, PATH); // 3. sigue por el borde izquierdo
-fill(5, 54, 46, 55, PATH); //    y por abajo hasta la entrada
-fill(38, 5, 49, 6, PATH); // 4. la «U» entre la Sabana y los elefantes (dentro, un jardín)
-fill(38, 7, 39, 16, PATH);
-fill(48, 7, 49, 16, PATH);
-fill(80, 17, 91, 18, PATH); // 5. derecha: la avenida de arriba sigue hasta el borde,
-fill(92, 17, 93, 55, PATH); //    baja pegada a él
-fill(49, 54, 91, 55, PATH); //    y por abajo hasta la entrada
-fill(70, 49, 91, 50, PATH); // 6. del lado derecho del cuadrado al camino 5
+fill(3, 17, 11, 18, PATH); // izquierda: la avenida de arriba sigue hasta el borde,
+fill(3, 19, 4, 51, PATH); //    baja pegada a él (cruza la avenida de los pingüinos)
+fill(5, 50, 25, 51, PATH); //    y gira hasta la esquina de abajo a la izquierda del cuadrado central
+fill(26, 19, 27, 21, PATH); // de la avenida de arriba a la esquina de arriba a la izquierda del cuadrado
+fill(68, 19, 69, 21, PATH); // y a la de arriba a la derecha
+fill(38, 4, 48, 5, PATH); // la «U» entre la Sabana y los elefantes (dentro, un jardín); su pata derecha
+fill(38, 6, 39, 16, PATH); //    sigue en línea con el camino central
+fill(47, 6, 48, 16, PATH);
+fill(80, 17, 93, 18, PATH); // derecha: la avenida de arriba sigue hasta el borde,
+fill(92, 19, 93, 51, PATH); //    baja pegada a él (cruza la avenida de la granja)
+fill(70, 50, 91, 51, PATH); //    y gira hasta la esquina de abajo a la derecha del cuadrado central
 
 const objects = [];
 let nextId = 1;
@@ -261,16 +260,16 @@ at('sign-zone', 24, 35, { zone: 'polo' });
 at('sign-zone', 70, 35, { zone: 'granja' });
 for (const [x, y] of [
   [10, 6], [10, 12], [36, 6], [36, 12], [50, 9], [80, 6], [80, 12], [30, 20], [64, 20], [8, 20], [86, 20],
-  [7, 21], [23, 30], [8, 40], [16, 42], [22, 46], [7, 50], [14, 52],
+  [7, 21], [23, 30], [8, 40], [16, 42], [22, 46], [7, 46], [14, 52],
   [71, 44], [90, 44], [80, 52], [90, 52], [74, 22],
 ]) {
   at('tree', x, y);
 }
 for (const [x, y] of [[12, 20], [62, 16], [6, 38], [90, 38]]) at('bush', x, y);
-// Jardín de flores dentro de la U (x 40-47, y 7-16): solo decora, se pisa.
+// Jardín de flores dentro de la U (x 40-46, y 6-16): solo decora, se pisa.
 for (const [name, x, y] of [
-  ['flowerbed', 43, 8], ['flowers', 41, 8], ['flowers-red', 46, 8], ['sunflowers', 40, 11], ['sunflowers', 47, 11],
-  ['flowers-red', 42, 11], ['flowers', 45, 11], ['flowers', 41, 14], ['flowers-red', 44, 14], ['flowers', 46, 15], ['sunflowers', 43, 16],
+  ['flowerbed', 43, 7], ['flowers', 41, 7], ['flowers-red', 45, 7], ['sunflowers', 40, 10], ['sunflowers', 46, 10],
+  ['flowers-red', 42, 10], ['flowers', 44, 10], ['flowers', 41, 13], ['flowers-red', 44, 13], ['flowers', 46, 15], ['sunflowers', 43, 16],
 ]) at(name, x, y);
 for (const [x, y] of [[30, 16], [10, 38], [72, 38]]) prop('bench', (x + 1) * T, (y + 1) * T);
 
