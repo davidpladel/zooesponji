@@ -81,9 +81,11 @@ Decisiones mías:
 
 ## Bloque 6 · Aviso del libro en la tienda
 
-- Cuando el jugador haya **entrado más de 3 veces a la tienda** (es decir, a partir de la 4.ª) y **no haya abierto nunca el libro**, la estantería donde está (`bookShelf` de `ShopInterior`) **parpadea** para que se vea que ahí hay algo.
-- El parpadeo deja de salir para siempre en cuanto se abre el libro.
-- Se cuentan las entradas a la tienda y se guardan en la partida.
+Hoy el 📕 está escondido y solo sale de la estantería cuando la cuidadora se acerca (`ShopScene.updateBook`). Mientras tanto solo hay destellos ✨ sueltos, que mucha gente toma por decoración.
+
+- A partir de la **3.ª entrada a la tienda**, si **no se ha abierto nunca el libro**, el 📕 se ve **siempre encima de la estantería (`bookShelf`) y parpadeando**, aunque la cuidadora esté lejos. Tocarlo lo abre, igual que ahora.
+- En cuanto se abre el libro una vez, se vuelve para siempre al comportamiento actual: libro escondido y destellos.
+- Se cuentan las entradas a la tienda y se guardan en la partida. «Abierto alguna vez» se deduce de lo que ya está guardado, por ejemplo con una página vista o con un indicador nuevo si hace falta.
 
 ## Fuera de esta rama
 
