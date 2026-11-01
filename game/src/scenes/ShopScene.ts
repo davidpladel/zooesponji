@@ -4,7 +4,7 @@ import { pedestalFor } from '../core/interiorLayout';
 import { inJoystickZone } from '../core/joystick';
 import { tileCenter, type Vec } from '../core/movement';
 import { isWalkable, type WalkGrid } from '../core/pathfinding';
-import { newlyUnlockedPages, unreadPageIds } from '../core/book';
+import { newlyUnlockedPages, showBookNotice, unreadPageIds } from '../core/book';
 import { shopEntries, shopStock, type ShopEntry, type StockId } from '../core/shopEntries';
 import type { PenId } from '../data/pens';
 import { ENTRY_TARGET, approachPoint, hintTarget, onDoorMat, openInteriorGrid, pickShopSpot, productInReach, shopWalkGrid } from '../core/shopWalk';
@@ -86,6 +86,8 @@ export class ShopScene extends Phaser.Scene {
   private adRequested = false;
   private book: Phaser.GameObjects.Text | null = null;
   private bookOut = false;
+  /** El libro está a la vista, parpadeando (desde la 3.ª visita hasta que se abra). */
+  private notice = false;
   /** Luna, si se ha comprado: curiosea por la tienda a su aire. */
   private pet: ShopPet | null = null;
 
@@ -110,6 +112,7 @@ export class ShopScene extends Phaser.Scene {
     this.closing = false;
     this.book = null;
     this.bookOut = false;
+    this.notice = false;
     this.pet = null;
   }
 
@@ -134,6 +137,8 @@ export class ShopScene extends Phaser.Scene {
     // De vez en cuando a algún animal se le escapa un corazón.
     this.time.addEvent({ delay: 1800, loop: true, callback: () => this.floatHeart() });
     this.interior.doorMat(() => this.onDoorTap());
+    // Al girar el móvil la escena se vuelve a montar: esa no es otra visita.
+    if (!this.restored) void getSession().countShopVisit();
     this.addBook();
     // Con el panel del anuncio encima se esconde: que el niño vea una sola X, la del panel.
     this.closeBadge = addCloseBadge(this, width - 16 - 32, 16 + 32, () => this.close(), 56).setDepth(4000);
@@ -141,6 +146,8 @@ export class ShopScene extends Phaser.Scene {
     const resumed = (): void => {
       this.adRequested = false;
       this.syncCloseBadge();
+      // Se acaba de leer el libro: vuelve a esconderse en la estantería.
+      if (this.notice && getSession().book.opened) this.endNotice();
     };
     // Con la tienda en pausa debajo de otra ventana (el libro, el anuncio), su X no se ve: una sola X, la de arriba.
     const paused = (): void => {
@@ -251,15 +258,34 @@ export class ShopScene extends Phaser.Scene {
     zone.on('pointerup', (pointer: Phaser.Input.Pointer) => {
       if (!this.isTap(pointer)) return;
       this.endEntry();
-      if (this.bookOut) this.openBook();
+      if (this.bookOut || this.notice) this.openBook();
       else this.keeper.goTo(BOOK_APPROACH(spot));
     });
     this.time.addEvent({ delay: 1100, loop: true, callback: () => this.twinkle(spot) });
+    const session = getSession();
+    if (showBookNotice(session.shop.visits, session.book.opened)) this.startNotice(shelf);
+  }
+
+  /** Mucha gente no encuentra el libro: a partir de la 3.ª visita está encima de la estantería, parpadeando. */
+  private startNotice(at: Vec): void {
+    if (!this.book) return;
+    this.notice = true;
+    this.book.setVisible(true).setPosition(at.x, at.y).setAlpha(1).setScale(1);
+    this.tweens.add({ targets: this.book, alpha: 0.35, duration: 450, yoyo: true, repeat: -1, ease: 'Sine.InOut' });
+    this.tweens.add({ targets: this.book, scale: 1.15, duration: 900, yoyo: true, repeat: -1, ease: 'Sine.InOut' });
+  }
+
+  private endNotice(): void {
+    this.notice = false;
+    this.bookOut = false;
+    if (!this.book) return;
+    this.tweens.killTweensOf(this.book);
+    this.book.setAlpha(1).setScale(1).setVisible(false);
   }
 
   /** Destello suave en la estantería; más a menudo si hay páginas sin leer. */
   private twinkle(spot: Vec): void {
-    if (this.bookOut) return;
+    if (this.bookOut || this.notice) return;
     const session = getSession();
     const unread = unreadPageIds(session.state, session.book.seen).length > 0;
     if (Math.random() > (unread ? 0.8 : 0.35)) return;
@@ -272,7 +298,7 @@ export class ShopScene extends Phaser.Scene {
   /** Con la cuidadora cerca, el libro salta fuera de la estantería; al alejarse, vuelve a su sitio. */
   private updateBook(feet: Vec): void {
     const spot = this.interior.bookShelf;
-    if (!spot || !this.book) return;
+    if (!spot || !this.book || this.notice) return;
     const near = Math.hypot(feet.x - spot.x, feet.y - (spot.y + 12)) < BOOK_REACH;
     if (near === this.bookOut) return;
     this.bookOut = near;
@@ -300,13 +326,18 @@ export class ShopScene extends Phaser.Scene {
   /** Dónde tocar para el libro: el libro si ha salido, si no la estantería. */
   bookScreenPos(): Vec | null {
     if (!this.book) return null;
-    if (this.bookOut) return { x: this.book.x, y: this.book.y };
+    if (this.bookOut || this.notice) return { x: this.book.x, y: this.book.y };
     const spot = this.interior.bookShelf!;
     return this.interior.screen({ x: spot.x, y: spot.y - 16 });
   }
 
   bookIsOut(): boolean {
     return this.bookOut;
+  }
+
+  /** Para pruebas: el libro está a la vista parpadeando. */
+  bookNotice(): boolean {
+    return this.notice;
   }
 
   /** Cualquier toque, tecla o joystick corta el paseo de entrada (y el saludo) y da el control. */

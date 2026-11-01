@@ -47,3 +47,11 @@ export function pagePosition(page: BookPage): { n: number; total: number } | nul
   const pages = contentOf(page.chapter);
   return { n: pages.findIndex((p) => p.id === page.id) + 1, total: pages.length };
 }
+
+/** Desde esta entrada a la tienda, el libro se enseña a la vista hasta que se abra. */
+export const BOOK_NOTICE_VISITS = 3;
+
+/** ¿El libro tiene que estar a la vista, parpadeando, en vez de escondido en la estantería? */
+export function showBookNotice(visits: number, opened: boolean): boolean {
+  return visits >= BOOK_NOTICE_VISITS && !opened;
+}

@@ -57,6 +57,8 @@ export interface ZooTestApi {
   shopActiveItem(): string | null;
   shopBookPos(): Vec | null;
   shopBookOut(): boolean;
+  /** El libro está a la vista parpadeando (3.ª visita sin haberlo abierto). */
+  shopBookNotice(): boolean;
   bookPage(): string | null;
   bookText(): string | null;
   bookNext(): void;
@@ -180,7 +182,7 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
     feedFoodsHome: () => activeScene<FeedScene>('Feed')?.foodsAtHome() ?? false,
     openShop: () => {
       if (game.scene.isActive('World')) game.scene.pause('World');
-      game.scene.start('Shop');
+      game.scene.start('Shop', {});
     },
     shopCardScreenPos: (itemId) => activeScene<ShopScene>('Shop')?.cardScreenPos(itemId) ?? null,
     shopCardStatus: (itemId) => activeScene<ShopScene>('Shop')?.cardStatus(itemId) ?? null,
@@ -192,6 +194,7 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
     shopActiveItem: () => activeScene<ShopScene>('Shop')?.activeItem() ?? null,
     shopBookPos: () => activeScene<ShopScene>('Shop')?.bookScreenPos() ?? null,
     shopBookOut: () => activeScene<ShopScene>('Shop')?.bookIsOut() ?? false,
+    shopBookNotice: () => activeScene<ShopScene>('Shop')?.bookNotice() ?? false,
     bookPage: () => activeScene<BookScene>('Book')?.pageId() ?? null,
     bookText: () => activeScene<BookScene>('Book')?.pageText() ?? null,
     bookNext: () => activeScene<BookScene>('Book')?.next(),

@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import {
+  BOOK_NOTICE_VISITS,
   chapterProgress,
+  showBookNotice,
   isBookComplete,
   isContentPage,
   newlyUnlockedPages,
@@ -105,5 +107,14 @@ describe('libro del zoo', () => {
   it('ids únicos', () => {
     const ids = BOOK_PAGES.map((p) => p.id);
     expect(new Set(ids).size).toBe(ids.length);
+  });
+});
+
+describe('aviso del libro en la tienda', () => {
+  it('se enseña desde la 3.ª entrada mientras no se haya abierto nunca', () => {
+    expect(BOOK_NOTICE_VISITS).toBe(3);
+    expect(showBookNotice(2, false)).toBe(false);
+    expect(showBookNotice(3, false)).toBe(true);
+    expect(showBookNotice(10, true)).toBe(false);
   });
 });

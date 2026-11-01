@@ -61,6 +61,8 @@ export class BookScene extends Phaser.Scene {
 
   create(): void {
     sfx.setPaused('menu', true);
+    // Abierto una vez, el libro deja de enseñarse a la vista en la tienda.
+    void getSession().markBookOpened();
     if (this.scene.isActive('Shop')) this.scene.pause('Shop');
     const { width, height } = this.scale;
     addVeil(this);

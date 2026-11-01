@@ -131,3 +131,44 @@ test('libro: se abre desde la estantería y al comprar la pantera aparece Noche'
   expect(await page.evaluate(() => window.__ZOO__!.bookPage())).toBe('noche');
   expect(await page.evaluate(() => window.__ZOO__!.bookText())).toContain('Noche es negra como el carbón');
 });
+
+test('libro: desde la 3.ª visita se ve parpadeando hasta que se abre', async ({ page }) => {
+  await startGame(page);
+  await page.evaluate(() => window.__ZOO__!.addCoins(30));
+  const visit = async () => {
+    await page.evaluate(() => window.__ZOO__!.openShop());
+    await page.waitForFunction(() => window.__ZOO__!.shopBookPos() !== null);
+    // Como un niño: no se sale en los primeros milisegundos (tras un giro, la tienda aún puede reiniciarse).
+    await page.waitForTimeout(500);
+  };
+  const leave = async () => {
+    await page.keyboard.press('Escape');
+    await page.waitForFunction(() => !window.__ZOO__!.activeScenes().includes('Shop'));
+  };
+  await visit();
+  expect(await page.evaluate(() => window.__ZOO__!.shopBookNotice())).toBe(false);
+  // Girar el móvil dentro de la tienda no cuenta como otra visita.
+  await page.setViewportSize({ width: 900, height: 600 });
+  await page.waitForTimeout(800);
+  await page.setViewportSize({ width: 1280, height: 720 });
+  await page.waitForTimeout(800);
+  expect(await page.evaluate(() => window.__ZOO__!.shopBookNotice())).toBe(false);
+  await leave();
+  await visit();
+  expect(await page.evaluate(() => window.__ZOO__!.shopBookNotice())).toBe(false);
+  await leave();
+  await visit();
+  expect(await page.evaluate(() => window.__ZOO__!.shopBookNotice())).toBe(true);
+
+  // A la vista aunque la cuidadora esté en la puerta: tocarlo lo abre.
+  const box = await canvasBox(page);
+  const book = (await page.evaluate(() => window.__ZOO__!.shopBookPos()))!;
+  await page.mouse.click(box.x + book.x, box.y + book.y);
+  await page.waitForFunction(() => window.__ZOO__!.activeScenes().includes('Book'));
+  await page.keyboard.press('Escape');
+  await page.waitForFunction(() => !window.__ZOO__!.activeScenes().includes('Book'));
+  expect(await page.evaluate(() => window.__ZOO__!.shopBookNotice())).toBe(false);
+  await leave();
+  await visit();
+  expect(await page.evaluate(() => window.__ZOO__!.shopBookNotice())).toBe(false);
+});

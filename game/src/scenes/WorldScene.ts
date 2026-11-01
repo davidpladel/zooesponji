@@ -380,7 +380,9 @@ export class WorldScene extends Phaser.Scene {
     this.stopWalking();
     bus.emit('shop-opened', {});
     this.scene.pause();
-    this.scene.launch('Shop');
+    // Datos vacíos a propósito: Phaser se queda con los del último reinicio (un giro dentro de la tienda)
+    // si no se le pasan otros, y la visita nueva parecería la continuación de aquella.
+    this.scene.launch('Shop', {});
   }
 
   /** Abre el tablón: el mundo queda en pausa debajo. */
