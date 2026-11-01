@@ -9,6 +9,7 @@ import {
   hintTarget,
   onDoorMat,
   openInteriorGrid,
+  pickShopSpot,
   productInReach,
   shopWalkGrid,
 } from '../../src/core/shopWalk';
@@ -128,5 +129,25 @@ describe('tienda.tmj en la fase B', () => {
         expect(productInReach(p!, bases), `${count} productos, nº ${index}`).toBe(index);
       });
     }
+  });
+});
+
+describe('pickShopSpot (a dónde va Luna a curiosear)', () => {
+  const floor = gridFromAscii(['.....', '.....', '.....']);
+
+  it('una casilla del suelo junto a algo interesante', () => {
+    const interest = { x: 4 * 16 + 8, y: 0 * 16 + 8 };
+    const spot = pickShopSpot(floor, [interest], () => 0.5);
+    expect(spot).not.toBeNull();
+    expect(Math.hypot(spot!.x - interest.x, spot!.y - interest.y)).toBeLessThanOrEqual(24);
+  });
+
+  it('sin nada interesante, cualquier casilla del suelo', () => {
+    const spot = pickShopSpot(floor, [], () => 0);
+    expect(spot).toEqual({ x: 8, y: 8 });
+  });
+
+  it('sin suelo, null', () => {
+    expect(pickShopSpot(gridFromAscii(['###']), [], () => 0)).toBeNull();
   });
 });

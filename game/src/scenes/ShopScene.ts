@@ -7,7 +7,7 @@ import { isWalkable, type WalkGrid } from '../core/pathfinding';
 import { newlyUnlockedPages, unreadPageIds } from '../core/book';
 import { shopEntries, shopStock, type ShopEntry, type StockId } from '../core/shopEntries';
 import type { PenId } from '../data/pens';
-import { ENTRY_TARGET, approachPoint, hintTarget, onDoorMat, openInteriorGrid, productInReach, shopWalkGrid } from '../core/shopWalk';
+import { ENTRY_TARGET, approachPoint, hintTarget, onDoorMat, openInteriorGrid, pickShopSpot, productInReach, shopWalkGrid } from '../core/shopWalk';
 import { buildWalkGrid, type TiledMap } from '../core/tiledmap';
 import { MAPS } from '../config';
 import { t, type StringKey } from '../data/strings';
@@ -21,6 +21,7 @@ import { animalPortrait, petPortrait } from '../world/Actors';
 import { ShopHint } from '../world/ShopHint';
 import { ShopInterior } from '../world/ShopInterior';
 import { ShopKeeperWalker } from '../world/ShopKeeperWalker';
+import { ShopPet } from '../world/ShopPet';
 import { Shopkeeper } from '../world/Shopkeeper';
 import { textStyle } from '../ui/theme';
 import { addUiText } from '../ui/text';
@@ -85,6 +86,8 @@ export class ShopScene extends Phaser.Scene {
   private adRequested = false;
   private book: Phaser.GameObjects.Text | null = null;
   private bookOut = false;
+  /** Luna, si se ha comprado: curiosea por la tienda a su aire. */
+  private pet: ShopPet | null = null;
 
   constructor() {
     super('Shop');
@@ -107,6 +110,7 @@ export class ShopScene extends Phaser.Scene {
     this.closing = false;
     this.book = null;
     this.bookOut = false;
+    this.pet = null;
   }
 
   create(): void {
@@ -125,6 +129,7 @@ export class ShopScene extends Phaser.Scene {
     const start = this.restored ? restored : tileCenter(this.interior.spots.doorTile, 16);
     this.keeper = new ShopKeeperWalker(this, this.interior, this.grid, start);
     this.armed = !onDoorMat(start, this.interior.spots.door);
+    if (getSession().state.luna) this.spawnPet(this.restored ? 'anywhere' : 'door');
 
     // De vez en cuando a algún animal se le escapa un corazón.
     this.time.addEvent({ delay: 1800, loop: true, callback: () => this.floatHeart() });
@@ -180,6 +185,7 @@ export class ShopScene extends Phaser.Scene {
       this.keeper.face('down');
     }
 
+    this.pet?.update(delta, this.petInterests());
     const feet = this.keeper.feet;
     this.shopkeeper.lookAt(this.keeper.screen.x);
     this.updateReach(feet);
@@ -344,7 +350,31 @@ export class ShopScene extends Phaser.Scene {
     });
   }
 
+  // --- Luna ---
+
+  /** `door`: entra detrás de la cuidadora; `anywhere`: en un sitio libre (al girar el móvil); o en un punto. */
+  private spawnPet(start: 'door' | 'anywhere' | Vec): void {
+    if (this.pet) return;
+    const door = tileCenter(this.interior.spots.doorTile, 16);
+    const at = start === 'door' ? { x: door.x, y: door.y + 22 } : start === 'anywhere' ? (pickShopSpot(this.grid, [], Math.random) ?? door) : start;
+    this.pet = new ShopPet(this, this.interior, this.grid, at);
+    if (start === 'door') this.pet.walkIn(at, [door, { x: ENTRY_TARGET.x - 24, y: ENTRY_TARGET.y }]);
+  }
+
+  /** Lo que le llama la atención a Luna: los animales de las peanas, la estantería y el tendero. */
+  private petInterests(): Vec[] {
+    const spots: Vec[] = [...this.products.values()].map((p) => p.base);
+    if (this.interior.bookShelf) spots.push({ x: this.interior.bookShelf.x, y: this.interior.bookShelf.y + 12 });
+    spots.push(this.interior.spots.shopkeeper);
+    return spots;
+  }
+
   // --- API para pruebas ---
+
+  /** Dónde está Luna en la tienda (px del interior), o null si no está. */
+  petPosition(): Vec | null {
+    return this.pet?.feet ?? null;
+  }
 
   cardScreenPos(itemId: string): Vec | null {
     return this.products.get(itemId)?.hit ?? null;
@@ -440,6 +470,7 @@ export class ShopScene extends Phaser.Scene {
     entries.forEach((entry, index) => this.addProduct(entry, pedestalFor(this.interior.spots, index, entries.length)));
     this.grid = shopWalkGrid(this.baseGrid, [...this.products.values()].map((p) => p.base));
     this.keeper?.setGrid(this.grid);
+    this.pet?.setGrid(this.grid);
   }
 
   private addProduct(entry: ShopEntry, base: Vec): void {
@@ -567,6 +598,8 @@ export class ShopScene extends Phaser.Scene {
         this.tweens.add({ targets: product.animal, y: product.animal.y - 12 * s, duration: 160, yoyo: true, ease: 'Quad.Out' });
         this.coinShower(product.hit);
       }
+      // Luna recién comprada sale de su peana y se pone a curiosear.
+      if (entry.kind === 'pet') this.spawnPet(this.keeper.feet);
       this.shopkeeper.hop();
       this.shopkeeper.say(t('shop.thanks'), 1980);
       // Página nueva: aviso y el libro se abrirá por ella.

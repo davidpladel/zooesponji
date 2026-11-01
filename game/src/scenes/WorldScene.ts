@@ -2,11 +2,13 @@ import * as Phaser from 'phaser';
 import { getArt } from '../art/art';
 import { KEEPER_SPEED, MAPS, TEXTURES, TILE_SIZE } from '../config';
 import { isPenOpen, type GameState } from '../core/economy';
+import { facingFromDelta } from '../core/facing';
 import { approachTile } from '../core/interaction';
 import { inJoystickZone } from '../core/joystick';
 import { stepAlongPath, tileCenter, tryMove, worldToTile, type Vec } from '../core/movement';
 import { findPathOrNearest, isWalkable, type Point, type WalkGrid } from '../core/pathfinding';
 import { withPenInteriors } from '../core/penGrid';
+import { followTrail, recordTrail } from '../core/petFollow';
 import { noPen, stepNear, type NearState } from '../core/penNear';
 import { buildWalkGrid, readBoard, readEnclosures, readGates, readProps, readShop, readSpawn, withSolidProps, type TiledMap } from '../core/tiledmap';
 import type { PenId } from '../data/pens';
@@ -19,7 +21,7 @@ import { bus, type ControlMode } from '../systems/events';
 import { joystickState } from '../systems/joystickState';
 import { getSession } from '../systems/session';
 import { computeZoom } from '../systems/viewport';
-import { createKeeper, type Walker } from '../world/Actors';
+import { createKeeper, createPet, type Walker } from '../world/Actors';
 import { Board } from '../world/Board';
 import { Pens } from '../world/Pens';
 import { ShopBuilding } from '../world/ShopBuilding';
@@ -62,6 +64,9 @@ export class WorldScene extends Phaser.Scene {
   private shop: ShopBuilding | null = null;
   private board: Board | null = null;
   private visitors!: VisitorCrowd;
+  /** Luna, si se ha comprado: sigue el rastro de la cuidadora. */
+  private pet: Walker | null = null;
+  private petTrail: Vec[] = [];
 
   constructor() {
     super('World');
@@ -100,6 +105,9 @@ export class WorldScene extends Phaser.Scene {
     this.feedTarget = null;
     this.near = noPen();
     this.controlsUsed.clear();
+    this.pet = null;
+    this.petTrail = [];
+    this.syncPet();
 
     const camera = this.cameras.main;
     camera.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
@@ -137,6 +145,7 @@ export class WorldScene extends Phaser.Scene {
     this.visitors.update(delta);
     this.pens.update(time, delta, this.cameras.main.worldView, { keeper: this.keeperPosition(), ...this.visitors.people() });
     this.moveKeeper(delta);
+    this.updatePet(delta);
     const pos = this.keeperPosition();
     this.watchPens(pos, delta);
     if (this.reachResident(pos)) return;
@@ -409,6 +418,7 @@ export class WorldScene extends Phaser.Scene {
     this.grid = withPenInteriors(this.pathGrid, this.pens.openSpaces(state), TILE_SIZE);
     this.syncVisitors(state);
     this.shop?.sync(state);
+    this.syncPet();
   }
 
   private onResume(_sys: Phaser.Scenes.Systems, data?: { from?: string }): void {
@@ -455,6 +465,36 @@ export class WorldScene extends Phaser.Scene {
     this.keeper.moveTo(x, y - 1);
     this.keeper.moveTo(x, y);
     this.keeper.stop();
+    // Luna se quedó curioseando en la tienda: sale con ella.
+    if (this.pet) {
+      this.pet.moveTo(x + 12, y);
+      this.pet.face('down');
+    }
+    this.petTrail = [];
+  }
+
+  /** Luna aparece junto a la cuidadora en cuanto se ha comprado. */
+  private syncPet(): void {
+    if (this.pet || !getSession().state.luna) return;
+    this.pet = createPet(this, 'luna', this.keeper.x + 12, this.keeper.y);
+    this.petTrail = [];
+  }
+
+  /** Luna va por el rastro de la cuidadora; si esta entra en un recinto, la espera en la puerta. */
+  private updatePet(delta: number): void {
+    if (!this.pet) return;
+    const keeper = this.keeperPosition();
+    const tile = worldToTile(keeper, TILE_SIZE);
+    this.petTrail = recordTrail(this.petTrail, keeper, isWalkable(this.pathGrid, tile.x, tile.y));
+    const step = followTrail({ x: this.pet.x, y: this.pet.y }, this.petTrail, delta);
+    this.petTrail = step.trail;
+    if (step.pos.x !== this.pet.x || step.pos.y !== this.pet.y) this.pet.moveTo(step.pos.x, step.pos.y);
+    if (!step.moving) this.pet.face(facingFromDelta(keeper.x - this.pet.x, keeper.y - this.pet.y, 'down'));
+  }
+
+  /** Para pruebas: dónde está Luna en el mapa. */
+  petPosition(): Vec | null {
+    return this.pet ? { x: this.pet.x, y: this.pet.y } : null;
   }
 
   private applyZoom(): void {

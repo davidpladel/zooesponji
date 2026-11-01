@@ -82,3 +82,20 @@ export function onDoorMat(feet: Vec, door: Point): boolean {
 export function openInteriorGrid(): WalkGrid {
   return createGrid(20, 12, (_x, y) => y >= 4);
 }
+
+/** Hasta dónde (px) se acerca Luna a lo que mira: una casilla y media. */
+const SNIFF_REACH = 24;
+
+/**
+ * A dónde va Luna a curiosear: una casilla del suelo junto a algo interesante (una peana, la
+ * estantería, un mueble) y, si no hay nada, cualquier casilla del suelo. Null si no hay suelo.
+ */
+export function pickShopSpot(grid: WalkGrid, interests: readonly Vec[], rng: () => number): Vec | null {
+  const floor: Vec[] = [];
+  for (let y = 0; y < grid.height; y++) for (let x = 0; x < grid.width; x++) if (isWalkable(grid, x, y)) floor.push(tileCenter({ x, y }, T));
+  if (floor.length === 0) return null;
+  const interest = interests[Math.floor(rng() * interests.length)];
+  const near = interest ? floor.filter((c) => Math.hypot(c.x - interest.x, c.y - interest.y) <= SNIFF_REACH) : [];
+  const pool = near.length > 0 ? near : floor;
+  return pool[Math.floor(rng() * pool.length)]!;
+}

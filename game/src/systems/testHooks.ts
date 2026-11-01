@@ -36,6 +36,10 @@ export interface ZooTestApi {
   /** Compra un artículo sin pasar por la tienda (para llegar rápido a un recinto en las pruebas). */
   buy(itemId: string): Promise<boolean>;
   hudCoinsText(): string | null;
+  /** Dónde está Luna en el mapa (null si no se ha comprado). */
+  petPosition(): Vec | null;
+  /** Dónde está Luna dentro de la tienda (px del interior). */
+  shopPetPosition(): Vec | null;
   /** El engranaje de ajustes se ve (solo andando por el zoo). */
   hudGearVisible(): boolean;
   openFeed(residentId: string): void;
@@ -163,6 +167,8 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
       game.scene.getScene<WorldScene>('World').refresh();
       return result.ok;
     },
+    petPosition: () => (game.scene.isActive('World') || game.scene.isPaused('World') ? game.scene.getScene<WorldScene>('World').petPosition() : null),
+    shopPetPosition: () => activeScene<ShopScene>('Shop')?.petPosition() ?? null,
     hudCoinsText: () => activeScene<HudScene>('Hud')?.coinsLabel() ?? null,
     hudGearVisible: () => activeScene<HudScene>('Hud')?.gearVisible() ?? false,
     openFeed: (residentId) => {
