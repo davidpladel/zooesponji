@@ -45,6 +45,20 @@ fill(23 + OX, 19, 24 + OX, OY + 1, PATH); // baja de la avenida norte a la cruz 
 fill(5, 16 + OY, 1 + OX, 17 + OY, PATH); // oeste (polo): sigue el camino del medio
 fill(46 + OX, 16 + OY, 93, 17 + OY, PATH); // este (granja)
 
+// Atajos (plano a mano de David, 2026-11-01): así no hay que bajar al centro para ir de una punta a otra.
+fill(3, 17, 11, 18, PATH); // 1. izquierda: de la avenida de arriba baja por el borde
+fill(3, 19, 4, 37, PATH); //    hasta la avenida de los pingüinos
+fill(26, 19, 27, 21, PATH); // 2. de la avenida de arriba a la esquina de arriba a la izquierda del cuadrado
+fill(3, 38, 4, 55, PATH); // 3. sigue por el borde izquierdo
+fill(5, 54, 46, 55, PATH); //    y por abajo hasta la entrada
+fill(38, 5, 49, 6, PATH); // 4. la «U» entre la Sabana y los elefantes (dentro, un jardín)
+fill(38, 7, 39, 16, PATH);
+fill(48, 7, 49, 16, PATH);
+fill(80, 17, 91, 18, PATH); // 5. derecha: la avenida de arriba sigue hasta el borde,
+fill(92, 17, 93, 55, PATH); //    baja pegada a él
+fill(49, 54, 91, 55, PATH); //    y por abajo hasta la entrada
+fill(70, 49, 91, 50, PATH); // 6. del lado derecho del cuadrado al camino 5
+
 const objects = [];
 let nextId = 1;
 // Alto por defecto; la pantera es más alta (10) para que quepa la catarata entera.
@@ -67,9 +81,10 @@ const enclosures = [
   // Oeste, polo.
   { penId: 'pinguinos', biome: 'tundra', x: 5, y: 25, ew: 16, eh: 10, gateX: 12, gateRow: 34, link: [35, 35] },
   // Este, granja: ovejas y estanque arriba de la avenida, establo debajo.
-  { penId: 'ovejas', biome: 'grassland', x: 72, y: 25, ew: 11, eh: 10, gateX: 77, gateRow: 34, link: [35, 35] },
+  // Las ovejas y el estanque dejan libre el borde derecho para el camino 5.
+  { penId: 'ovejas', biome: 'grassland', x: 72, y: 25, ew: 9, eh: 10, gateX: 77, gateRow: 34, link: [35, 35] },
   // El estanque es más alto que sus vecinos: arriba le cabe un lago de verdad.
-  { penId: 'estanque', biome: 'grassland', x: 84, y: 22, ew: 10, eh: 13, gateX: 88, gateRow: 34, link: [35, 35] },
+  { penId: 'estanque', biome: 'grassland', x: 82, y: 22, ew: 10, eh: 13, gateX: 86, gateRow: 34, link: [35, 35] },
   { penId: 'establo', biome: 'grassland', x: 74, y: 39, ew: 16, eh: 10, gateX: 81, gateRow: 39, link: [38, 38] },
 ];
 for (const e of enclosures) {
@@ -205,7 +220,7 @@ pinguinos('pine-snow-small', 0, 6);
 pinguinos('pine-snow', 13, 6, { block: [16, 16] });
 // 🐑 Ovejas (interior 9x8, puerta abajo en las columnas 4-5). Aquí entran también los visitantes.
 ovejas('sunflowers', 0, 1);
-ovejas('stump', 7, 1);
+ovejas('stump', 5, 1);
 for (const [cx, cy] of [[3, 2], [6, 5]]) ovejas('flowers', cx, cy);
 // 🦆 Estanque (interior 8x11, puerta abajo en las columnas 3-4): un lago de 6x6 casillas arriba y
 // la orilla debajo, por donde pasean los patos y entra la cuidadora.
@@ -240,18 +255,23 @@ pat('barrel', 26, 9);
 pat('crate-fruit', 29, 9);
 
 // Zonas nuevas: cartel de cada recinto junto a su puerta y cartel de zona a la entrada.
-for (const [x, y] of [[23, 15], [56, 15], [70, 15], [11, 35], [76, 35], [87, 35], [80, 38]]) at('sign', x, y);
+for (const [x, y] of [[23, 15], [56, 15], [70, 15], [11, 35], [76, 35], [85, 35], [80, 38]]) at('sign', x, y);
 at('sign-zone', 49, 20, { zone: 'sabana' });
 at('sign-zone', 24, 35, { zone: 'polo' });
 at('sign-zone', 70, 35, { zone: 'granja' });
 for (const [x, y] of [
-  [10, 6], [10, 12], [38, 6], [38, 12], [44, 9], [50, 9], [80, 6], [80, 12], [30, 20], [64, 20], [8, 20], [86, 20],
-  [3, 30], [23, 30], [8, 40], [16, 42], [22, 46], [4, 50], [14, 52],
-  [71, 44], [92, 42], [80, 52], [90, 52], [74, 22],
+  [10, 6], [10, 12], [36, 6], [36, 12], [50, 9], [80, 6], [80, 12], [30, 20], [64, 20], [8, 20], [86, 20],
+  [7, 21], [23, 30], [8, 40], [16, 42], [22, 46], [7, 50], [14, 52],
+  [71, 44], [90, 44], [80, 52], [90, 52], [74, 22],
 ]) {
   at('tree', x, y);
 }
-for (const [x, y] of [[12, 20], [40, 16], [62, 16], [6, 38], [90, 38]]) at('bush', x, y);
+for (const [x, y] of [[12, 20], [62, 16], [6, 38], [90, 38]]) at('bush', x, y);
+// Jardín de flores dentro de la U (x 40-47, y 7-16): solo decora, se pisa.
+for (const [name, x, y] of [
+  ['flowerbed', 43, 8], ['flowers', 41, 8], ['flowers-red', 46, 8], ['sunflowers', 40, 11], ['sunflowers', 47, 11],
+  ['flowers-red', 42, 11], ['flowers', 45, 11], ['flowers', 41, 14], ['flowers-red', 44, 14], ['flowers', 46, 15], ['sunflowers', 43, 16],
+]) at(name, x, y);
 for (const [x, y] of [[30, 16], [10, 38], [72, 38]]) prop('bench', (x + 1) * T, (y + 1) * T);
 
 // Muro del parque (madera sobre piedra) alrededor de todo, con el portón abajo, donde acaba el camino central.

@@ -20,6 +20,29 @@ const MAP_PENS = [
 ];
 const enclosure = (id: string) => readEnclosures(map).find((e) => e.penId === id)!;
 
+/** Casillas a las que se llega andando desde `from` (claves "x,y"). */
+function reachable(g: typeof grid, from: { x: number; y: number }): Set<string> {
+  const seen = new Set([`${from.x},${from.y}`]);
+  const queue = [from];
+  while (queue.length > 0) {
+    const p = queue.shift()!;
+    for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]] as const) {
+      const n = { x: p.x + dx, y: p.y + dy };
+      const key = `${n.x},${n.y}`;
+      if (seen.has(key) || !isWalkable(g, n.x, n.y)) continue;
+      seen.add(key);
+      queue.push(n);
+    }
+  }
+  return seen;
+}
+
+const ATAJOS: [string, number, number][] = [
+  ['izquierda', 3, 25], ['izquierda', 8, 17], ['pingüinos', 26, 20], ['abajo izquierda', 3, 45], ['abajo izquierda', 20, 55],
+  ['U', 38, 10], ['U', 44, 5], ['U', 49, 10], ['derecha', 85, 17], ['derecha', 92, 25], ['derecha', 92, 45], ['derecha', 70, 55],
+  ['horizontal derecha', 80, 49],
+];
+
 describe('mapa del zoo', () => {
   it('mide 96×60 y el inicio es transitable', () => {
     expect([grid.width, grid.height]).toEqual([96, 60]);
@@ -180,5 +203,50 @@ describe('mapa del zoo', () => {
     expect(board).not.toBeNull();
     expect(isWalkable(grid, board!.tile.x, board!.tile.y)).toBe(true);
     expect(isWalkable(grid, board!.standTile.x, board!.standTile.y)).toBe(false);
+  });
+
+  it('están los seis atajos', () => {
+    for (const [name, x, y] of ATAJOS) expect(isWalkable(grid, x, y), `${name} (${x},${y})`).toBe(true);
+  });
+
+  it('los atajos acortan de verdad', () => {
+    // Antes había que bajar al centro y volver a subir.
+    expect(findPath(grid, { x: 12, y: 17 }, { x: 5, y: 36 })!.length).toBeLessThanOrEqual(32);
+    expect(findPath(grid, { x: 79, y: 17 }, { x: 93, y: 36 })!.length).toBeLessThanOrEqual(40);
+    expect(findPath(grid, { x: 5, y: 37 }, spawn)!.length).toBeLessThanOrEqual(65);
+  });
+
+  it('se llega andando a cualquier casilla de camino desde la entrada (nadie se queda atascado)', () => {
+    const solid = withSolidProps(grid, readProps(map), 16);
+    const seen = reachable(solid, spawn);
+    const lost: string[] = [];
+    for (let y = 0; y < solid.height; y++)
+      for (let x = 0; x < solid.width; x++) if (isWalkable(solid, x, y) && !seen.has(`${x},${y}`)) lost.push(`(${x},${y})`);
+    expect(lost).toEqual([]);
+  });
+
+  it('dentro de la U hay un jardín de flores que solo decora', () => {
+    const flowers = readProps(map).filter((p) => {
+      const tx = Math.floor((p.x - 1) / 16);
+      const ty = Math.floor((p.y - 1) / 16);
+      return tx >= 40 && tx <= 47 && ty >= 7 && ty <= 16;
+    });
+    expect(flowers.length).toBeGreaterThanOrEqual(8);
+    for (const p of flowers) {
+      expect(p.prop).toMatch(/^(flowers|sunflowers|flowerbed)/);
+      expect(p.block, p.prop).toBeNull();
+      expect(p.solid, p.prop).toBe(false);
+    }
+  });
+
+  it('ningún atajo entra en un recinto: solo la puerta abre la valla', () => {
+    const gates = readGates(map);
+    for (const e of readEnclosures(map)) {
+      for (let ty = e.y / 16; ty < (e.y + e.height) / 16; ty++)
+        for (let tx = e.x / 16; tx < (e.x + e.width) / 16; tx++) {
+          const isGate = gates.some((g) => g.penId === e.penId && ty === g.tile.y && (tx === g.tile.x || tx === g.tile.x + 1));
+          if (!isGate) expect(isWalkable(grid, tx, ty), `${e.penId} (${tx},${ty})`).toBe(false);
+        }
+    }
   });
 });
