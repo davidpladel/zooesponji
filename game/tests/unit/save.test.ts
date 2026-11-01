@@ -43,7 +43,7 @@ describe('parseSave', () => {
     expect(parsed.state.coins).toBe(321);
     expect(parsed.state.counts).toEqual({ ...initialCounts(), leon: 1, cabra: 4, pantera: 2, panda: 1 });
     expect(parsed.state.counts.sabana).toBe(0);
-    expect(parsed.book).toEqual(old.book);
+    expect(parsed.book).toEqual({ ...old.book, opened: true });
   });
 
   it('migra un guardado v1 real: cada desbloqueado cuenta 1 (y descarta desconocidos)', () => {
@@ -54,19 +54,22 @@ describe('parseSave', () => {
     });
     expect(parsed).toEqual({
       version: 2,
-      state: { coins: 5, counts: { ...initialCounts(), leon: 1, cabra: 1, pantera: 0, panda: 1 }, shopUnlocked: true },
+      state: { coins: 5, counts: { ...initialCounts(), leon: 1, cabra: 1, pantera: 0, panda: 1 }, shopUnlocked: true, luna: false },
       settings: { music: true, sfx: false, joystick: false, stats: true },
-      book: { seen: [], hinted: false, page: null },
+      book: { seen: [], hinted: false, page: null, opened: false },
+      tutorial: { offered: false },
+      shop: { visits: 0 },
     });
   });
 
   it('libro: partidas sin libro empiezan vacías; se guardan solo ids sin repetir', () => {
     const base = { version: 2, state: { coins: 0, counts: {}, shopUnlocked: false }, settings: {} };
-    expect(parseSave(base)?.book).toEqual({ seen: [], hinted: false, page: null });
+    expect(parseSave(base)?.book).toEqual({ seen: [], hinted: false, page: null, opened: false });
     expect(parseSave({ ...base, book: { seen: ['mary', 'mary', 3, 'noche'], hinted: true, page: 'mary' } })?.book).toEqual({
       seen: ['mary', 'noche'],
       hinted: true,
       page: 'mary',
+      opened: true,
     });
   });
 
@@ -95,7 +98,14 @@ describe('parseSave', () => {
       settings: { music: false, sfx: true, joystick: true },
       book: { seen: ['cover', 'gordi'], hinted: true, page: 'gordi' },
     };
-    expect(parseSave(old)).toEqual({ ...old, settings: { ...old.settings, stats: true } });
+    expect(parseSave(old)).toEqual({
+      ...old,
+      state: { ...old.state, luna: false },
+      settings: { ...old.settings, stats: true },
+      book: { ...old.book, opened: true },
+      tutorial: { offered: false },
+      shop: { visits: 0 },
+    });
   });
 });
 
@@ -106,7 +116,7 @@ describe('migrateLegacy (partidas de la v1.1)', () => {
 
   it('trae monedas y compras', () => {
     const migrated = migrateLegacy('37', JSON.stringify({ shop: true, pantera: true }));
-    expect(migrated?.state).toEqual({ coins: 37, counts: { ...initialCounts(), leon: 1, cabra: 1, pantera: 1, panda: 0 }, shopUnlocked: true });
+    expect(migrated?.state).toEqual({ coins: 37, counts: { ...initialCounts(), leon: 1, cabra: 1, pantera: 1, panda: 0 }, shopUnlocked: true, luna: false });
   });
 
   it('abre la tienda si ya había 20 monedas aunque no la comprara', () => {
@@ -115,7 +125,7 @@ describe('migrateLegacy (partidas de la v1.1)', () => {
 
   it('ignora valores corruptos', () => {
     const migrated = migrateLegacy('abc', 'no-es-json');
-    expect(migrated?.state).toEqual({ coins: 0, counts: { ...initialCounts(), leon: 1, cabra: 1, pantera: 0, panda: 0 }, shopUnlocked: false });
+    expect(migrated?.state).toEqual({ coins: 0, counts: { ...initialCounts(), leon: 1, cabra: 1, pantera: 0, panda: 0 }, shopUnlocked: false, luna: false });
   });
 });
 
@@ -126,7 +136,7 @@ describe('loadSave / writeSave', () => {
 
   it('lo que se escribe se vuelve a leer igual', async () => {
     const store = createMemoryStore();
-    const data = { ...defaultSave(), state: { coins: 42, counts: { ...initialCounts(), leon: 1, cabra: 3, pantera: 0, panda: 0 }, shopUnlocked: true } };
+    const data = { ...defaultSave(), state: { coins: 42, counts: { ...initialCounts(), leon: 1, cabra: 3, pantera: 0, panda: 0 }, shopUnlocked: true, luna: false } };
     await writeSave(store, data);
     expect(await loadSave(store)).toEqual(data);
   });
@@ -202,5 +212,60 @@ describe('ajuste de estadísticas', () => {
 
   it('un valor que no es sí o no cuenta como encendido', () => {
     expect(parseSave(withStats('no'))?.settings.stats).toBe(true);
+  });
+});
+
+describe('guardado de Luna, el tutorial, las visitas a la tienda y el libro', () => {
+  const roundTrip = (data: unknown) => parseSave(JSON.parse(JSON.stringify(data)));
+
+  it('una partida nueva: sin Luna, aviso del tutorial pendiente, 0 visitas y libro sin abrir', () => {
+    const data = defaultSave();
+    expect(data.state.luna).toBe(false);
+    expect(data.tutorial).toEqual({ offered: false });
+    expect(data.shop).toEqual({ visits: 0 });
+    expect(data.book.opened).toBe(false);
+  });
+
+  it('ida y vuelta conserva todo', () => {
+    const data = defaultSave();
+    const full = { ...data, state: { ...data.state, luna: true }, tutorial: { offered: true }, shop: { visits: 4 }, book: { ...data.book, opened: true } };
+    expect(roundTrip(full)).toEqual(full);
+  });
+
+  it('una partida de antes de esta versión: el aviso sale también a quien ya jugaba y el libro cuenta como abierto si hay páginas leídas', () => {
+    const old = {
+      version: 2,
+      state: { coins: 50, counts: { leon: 1, cabra: 2 }, shopUnlocked: true },
+      settings: {},
+      book: { seen: ['cover'], hinted: true, page: 'cover' },
+    };
+    const parsed = roundTrip(old)!;
+    expect(parsed.state.luna).toBe(false);
+    expect(parsed.tutorial).toEqual({ offered: false });
+    expect(parsed.shop).toEqual({ visits: 0 });
+    expect(parsed.book.opened).toBe(true);
+  });
+
+  it('sin páginas leídas, el libro no cuenta como abierto (la página se pone sola al comprar)', () => {
+    const old = { version: 2, state: { coins: 0, counts: {}, shopUnlocked: false }, settings: {}, book: { seen: [], hinted: false, page: 'nube' } };
+    expect(roundTrip(old)!.book.opened).toBe(false);
+  });
+
+  it('una partida v1 carga con el aviso pendiente', () => {
+    const parsed = roundTrip({ version: 1, state: { coins: 30, unlocked: ['leon', 'cabra', 'pantera'], shopUnlocked: true }, settings: {} })!;
+    expect(parsed.tutorial.offered).toBe(false);
+    expect(parsed.state.luna).toBe(false);
+  });
+
+  it.each([[-1], [2.5], ['3']])('visitas a la tienda no válidas (%s) cuentan como 0', (visits) => {
+    expect(roundTrip({ ...defaultSave(), shop: { visits } })!.shop.visits).toBe(0);
+  });
+
+  it('migrateLegacy trae los campos nuevos por defecto', () => {
+    const data = migrateLegacy('25', null)!;
+    expect(data.state.luna).toBe(false);
+    expect(data.tutorial.offered).toBe(false);
+    expect(data.shop.visits).toBe(0);
+    expect(data.book.opened).toBe(false);
   });
 });

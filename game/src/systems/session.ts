@@ -1,6 +1,6 @@
 import { addCoins, purchase, type GameState, type PurchaseResult } from '../core/economy';
 import { resolveFeeding, type FeedResult } from '../core/reactions';
-import { loadSave, parseSave, writeSave, type BookProgress, type KeyValueStore, type SaveData, type Settings } from '../core/save';
+import { loadSave, parseSave, writeSave, type BookProgress, type KeyValueStore, type SaveData, type Settings, type ShopProgress, type TutorialProgress } from '../core/save';
 import type { FoodId } from '../data/foods';
 import { parseExtraItemId } from '../data/shop';
 import { PEN_IDS, PENS, findResident, type PenId } from '../data/pens';
@@ -108,6 +108,34 @@ export class Session {
   async markBookHinted(): Promise<void> {
     if (this.data.book.hinted) return;
     this.data = { ...this.data, book: { ...this.data.book, hinted: true } };
+    await writeSave(this.store, this.data);
+  }
+
+  get shop(): ShopProgress {
+    return this.data.shop;
+  }
+
+  get tutorial(): TutorialProgress {
+    return this.data.tutorial;
+  }
+
+  /** Una entrada más en la tienda. Se cuenta al momento (antes de guardar): quien llama la lee ya. */
+  async countShopVisit(): Promise<void> {
+    this.data = { ...this.data, shop: { visits: this.data.shop.visits + 1 } };
+    await writeSave(this.store, this.data);
+  }
+
+  /** El libro se ha abierto: deja de enseñarse en la tienda. */
+  async markBookOpened(): Promise<void> {
+    if (this.data.book.opened) return;
+    this.data = { ...this.data, book: { ...this.data.book, opened: true } };
+    await writeSave(this.store, this.data);
+  }
+
+  /** El aviso de aprender a jugar ya salió: no vuelve a salir solo. */
+  async markTutorialOffered(): Promise<void> {
+    if (this.data.tutorial.offered) return;
+    this.data = { ...this.data, tutorial: { offered: true } };
     await writeSave(this.store, this.data);
   }
 

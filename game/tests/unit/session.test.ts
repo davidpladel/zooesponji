@@ -240,3 +240,28 @@ describe('Session: libro', () => {
     expect(handler).toHaveBeenCalledWith({ pageId: 'bills' });
   });
 });
+
+describe('Session: tienda, libro y tutorial', () => {
+  it('countShopVisit cuenta cada entrada al momento y la guarda', async () => {
+    const store = createMemoryStore();
+    const session = await Session.load(store, new EventBus<GameEvents>());
+    void session.countShopVisit();
+    expect(session.shop.visits).toBe(1);
+    await session.countShopVisit();
+    expect((await Session.load(store, new EventBus<GameEvents>())).shop.visits).toBe(2);
+  });
+
+  it('markBookOpened y markTutorialOffered se guardan y la segunda vez no escriben', async () => {
+    const store = createMemoryStore();
+    const session = await Session.load(store, new EventBus<GameEvents>());
+    await session.markBookOpened();
+    await session.markTutorialOffered();
+    const reloaded = await Session.load(store, new EventBus<GameEvents>());
+    expect(reloaded.book.opened).toBe(true);
+    expect(reloaded.tutorial.offered).toBe(true);
+    const set = vi.spyOn(store, 'set');
+    await session.markBookOpened();
+    await session.markTutorialOffered();
+    expect(set).not.toHaveBeenCalled();
+  });
+});

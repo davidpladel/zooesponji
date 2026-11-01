@@ -30,6 +30,18 @@ export interface BookProgress {
   hinted: boolean;
   /** Página donde se quedó (se abre por ahí, como un libro de verdad). */
   page: string | null;
+  /** Se ha abierto alguna vez: deja de estar a la vista en la tienda. */
+  opened: boolean;
+}
+
+/** El aviso de aprender a jugar ya salió (se aprendiera o se saltara). */
+export interface TutorialProgress {
+  offered: boolean;
+}
+
+/** Veces que se ha entrado en la tienda (el libro se enseña desde la 3.ª). */
+export interface ShopProgress {
+  visits: number;
 }
 
 export interface SaveData {
@@ -37,6 +49,8 @@ export interface SaveData {
   state: GameState;
   settings: Settings;
   book: BookProgress;
+  tutorial: TutorialProgress;
+  shop: ShopProgress;
 }
 
 export const SAVE_KEY = 'zooesponji_v3_save';
@@ -73,22 +87,35 @@ export function defaultSettings(): Settings {
 }
 
 export function defaultBook(): BookProgress {
-  return { seen: [], hinted: false, page: null };
+  return { seen: [], hinted: false, page: null, opened: false };
 }
 
 /** Partidas sin libro (anteriores a él): libro vacío, así brilla y se descubre. */
 function parseBook(raw: unknown): BookProgress {
   if (!isObject(raw)) return defaultBook();
   const seen = Array.isArray(raw.seen) ? raw.seen.filter((id): id is string => typeof id === 'string') : [];
-  return { seen: [...new Set(seen)], hinted: raw.hinted === true, page: typeof raw.page === 'string' ? raw.page : null };
+  // Partidas de antes del indicador: abierto si ya hay páginas leídas (`page` no vale: se pone sola al comprar).
+  return { seen: [...new Set(seen)], hinted: raw.hinted === true, page: typeof raw.page === 'string' ? raw.page : null, opened: raw.opened === true || seen.length > 0 };
+}
+
+/** Sin dato (partidas de antes), el aviso está pendiente: sale una vez a todos. */
+function parseTutorial(raw: unknown): TutorialProgress {
+  return { offered: isObject(raw) && raw.offered === true };
+}
+
+function parseShop(raw: unknown): ShopProgress {
+  const visits = isObject(raw) ? raw.visits : undefined;
+  return { visits: typeof visits === 'number' && Number.isInteger(visits) && visits >= 0 ? visits : 0 };
 }
 
 export function defaultSave(): SaveData {
   return {
     version: SAVE_VERSION,
-    state: { coins: 0, counts: initialCounts(), shopUnlocked: false },
+    state: { coins: 0, counts: initialCounts(), shopUnlocked: false, luna: false },
     settings: defaultSettings(),
     book: defaultBook(),
+    tutorial: { offered: false },
+    shop: { visits: 0 },
   };
 }
 
@@ -120,7 +147,7 @@ export function parseSave(value: unknown): SaveData | null {
 
   return {
     version: SAVE_VERSION,
-    state: { coins, counts, shopUnlocked: state.shopUnlocked === true },
+    state: { coins, counts, shopUnlocked: state.shopUnlocked === true, luna: state.luna === true },
     settings: {
       music: bool('music'),
       sfx: bool('sfx'),
@@ -129,6 +156,8 @@ export function parseSave(value: unknown): SaveData | null {
       ...(language ? { language } : {}),
     },
     book: parseBook(value.book),
+    tutorial: parseTutorial(value.tutorial),
+    shop: parseShop(value.shop),
   };
 }
 
@@ -153,9 +182,12 @@ export function migrateLegacy(coinsRaw: string | null, purchasesRaw: string | nu
       coins,
       counts: countsFromUnlocked(extra),
       shopUnlocked: bought.shop === true || coins >= SHOP_UNLOCK_COINS,
+      luna: false,
     },
     settings: defaultSettings(),
     book: defaultBook(),
+    tutorial: { offered: false },
+    shop: { visits: 0 },
   };
 }
 

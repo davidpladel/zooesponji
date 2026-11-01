@@ -7,6 +7,8 @@ export interface GameState {
   /** Residentes que han llegado a cada recinto (0 = recinto cerrado). */
   readonly counts: Readonly<Record<PenId, number>>;
   readonly shopUnlocked: boolean;
+  /** La perrita de la cuidadora, comprada en la tienda. */
+  readonly luna: boolean;
 }
 
 export type PurchaseError =
@@ -25,7 +27,7 @@ export function initialCounts(): Record<PenId, number> {
 }
 
 export function initialState(): GameState {
-  return { coins: 0, counts: initialCounts(), shopUnlocked: false };
+  return { coins: 0, counts: initialCounts(), shopUnlocked: false, luna: false };
 }
 
 export function addCoins(state: GameState, amount: number): GameState {

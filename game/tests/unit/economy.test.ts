@@ -13,6 +13,7 @@ describe('initialState', () => {
       coins: 0,
       counts: { leon: 1, cabra: 1, pantera: 0, panda: 0, estanque: 0, ovejas: 0, establo: 0, pinguinos: 0, sabana: 0, 'elefantes-africanos': 0, 'elefantes-asiaticos': 0 },
       shopUnlocked: false,
+      luna: false,
     });
   });
 });
