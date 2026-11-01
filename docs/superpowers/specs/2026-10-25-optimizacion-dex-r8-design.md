@@ -1,6 +1,6 @@
 # Código de Android optimizado con R8
 
-Fecha: 2026-10-25 · Estado: implementada el 2026-11-01 en la rama `feat/optimizacion-r8`, sin compilar ni probar todavía (ver «Estado de implementación»). Revisada la mañana del 25 con las capturas de Play Console de David, las guías de Capacitor 8.0 y 8.5 leídas enteras, y las cifras de Google comprobadas contra el texto original de sus páginas (ver «Cómo se ha comprobado»).
+Fecha: 2026-10-25 · Estado: implementada y probada en el móvil el 2026-11-01, fusionada en `main` el 2026-11-02. No se sube sola: va en el siguiente paquete para Play (ver «Estado de implementación»). Revisada la mañana del 25 con las capturas de Play Console de David, las guías de Capacitor 8.0 y 8.5 leídas enteras, y las cifras de Google comprobadas contra el texto original de sus páginas (ver «Cómo se ha comprobado»).
 
 ## En pocas palabras
 
@@ -289,7 +289,7 @@ En la 2.8.2: AGP 9 y Capacitor 9 (bloque 2), `EdgeToEdge.enable`, apartar el mar
 
 ## Estado de implementación
 
-2026-11-01, rama `feat/optimizacion-r8` (David dijo «hazlo»):
+2026-11-01, rama `feat/optimizacion-r8` (David dijo «hazlo»); fusionada en `main` el 2026-11-02:
 
 - [x] Capacitor 8.6.0 (`core`, `android`, `cli`) y `@capacitor/app` 8.1.2 en `package.json` y `package-lock.json`.
 - [x] AGP 8.13.2, `minifyEnabled true`, `shrinkResources true`, `proguard-android-optimize.txt`, `android.r8.optimizedResourceShrinking=true`.
@@ -299,10 +299,11 @@ En la 2.8.2: AGP 9 y Capacitor 9 (bloque 2), `EdgeToEdge.enable`, apartar el mar
 - [x] Versión 2.8.2, `versionCode` 12.
 - [x] `npm install`, `npx cap sync android`, `npm run typecheck` y `npm test` (David, 2026-11-01: 4535 pruebas en verde).
 - [x] Primer AAB con R8 y anuncios de prueba (2026-11-01): `check:manifest` y `check:aab` correctos. Código Android de **16,42 MB a 4,93 MB** (un solo `classes.dex`, un 70 % menos); AAB de 11,05 MB a 9,96 MB; APK universal de publicación, 7,49 MB.
-- [ ] AAB final sin anuncios de prueba y `check:manifest -- --publicar`.
-- [ ] Lista del móvil del apartado 8 con la variante `release` y anuncios de prueba.
-- [ ] Prueba interna, producción y vigilancia (apartado 9). Notas de la versión validadas por David.
-- [ ] `docs/privado/play-store.md` (apartado 10).
+- [x] Lista del móvil del apartado 8 con el APK de publicación y anuncios de prueba (David, 2026-11-01: «parece que todo va bien»).
+- [x] `docs/privado/play-store.md` (apartado 10): fila del aviso de desofuscación, `check:aab` en el paso 3, tamaño del AAB, historial de `versionCode` y un apartado nuevo, «Antes de compilar para producción con R8».
+- [x] Quitado `VITE_ADMOB_TESTING=1` de `.env.production.local`.
+- [ ] **La 2.8.2 no se sube** (decisión de David, 2026-11-02): R8 va en el siguiente paquete, junto con la rama de Luna, y ese usa el `versionCode` 12. Antes de compilarlo, los pasos de R8 de la guía privada.
+- [ ] Ese paquete: AAB sin anuncios de prueba, `check:manifest -- --publicar`, `check:aab`, notas de la versión validadas por David, prueba interna, producción y vigilancia (apartado 9).
 - [ ] Paso de David del bloque 3b: mirar si la cámara tapa algo.
 
 ## Decisiones tomadas en esta spec (de Claude, para que David las revise)
