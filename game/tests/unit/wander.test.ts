@@ -74,9 +74,10 @@ describe('pickQuietGoal', () => {
   });
 
   it('planWander con gente va a la casilla más tranquila', () => {
-    const tiles = walkableTiles(grid);
-    // Gente arriba a la izquierda: de (0,0) y (2,2) sacadas, elige (2,2).
-    const path = planWander(grid, { x: 1, y: 1 }, tiles, sequence([0, 0.99]), 1, [{ x: 0, y: 0 }, { x: 1, y: 0 }]);
-    expect(path?.[path.length - 1]).toEqual({ x: 2, y: 2 });
+    const corridor = gridFromAscii(['...............']);
+    const tiles = walkableTiles(corridor);
+    // Gente en la punta izquierda: de (0,0) y (14,0) sacadas, elige la lejana.
+    const path = planWander(corridor, { x: 7, y: 0 }, tiles, sequence([0, 0.99]), 1, [{ x: 0, y: 0 }, { x: 1, y: 0 }]);
+    expect(path?.[path.length - 1]).toEqual({ x: 14, y: 0 });
   });
 });
