@@ -119,7 +119,8 @@ export class VisitorCrowd {
         if (path) return path;
       }
     }
-    return planWander(this.grid, worldToTile(visitor.walker, TILE_SIZE), this.tiles, this.rng);
+    const others = this.visitors.filter((v) => v !== visitor).map((v) => worldToTile(v.walker, TILE_SIZE));
+    return planWander(this.grid, worldToTile(visitor.walker, TILE_SIZE), this.tiles, this.rng, 5, others);
   }
 
   /** Camino hasta la casilla de uno de los animales que se dejan acariciar. */

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { pickRandom, planWander, walkableTiles } from '../../src/core/wander';
+import { pickQuietGoal, pickRandom, planWander, walkableTiles } from '../../src/core/wander';
 import { gridFromAscii } from './helpers';
 
 function sequence(values: number[]): () => number {
@@ -54,5 +54,29 @@ describe('planWander', () => {
 
   it('null si no hay a dónde ir', () => {
     expect(planWander(grid, { x: 0, y: 0 }, [{ x: 0, y: 0 }], () => 0)).toBeNull();
+  });
+});
+
+describe('pickQuietGoal', () => {
+  it('de las casillas sacadas, elige la que tiene menos gente cerca', () => {
+    const crowded = { x: 0, y: 0 };
+    const quiet = { x: 20, y: 0 };
+    const people = [{ x: 1, y: 0 }, { x: 0, y: 1 }, { x: 1, y: 1 }];
+    expect(pickQuietGoal([crowded, quiet], people, sequence([0, 0.99]), 2)).toEqual(quiet);
+  });
+
+  it('sin casillas, undefined', () => {
+    expect(pickQuietGoal([], [], Math.random)).toBeUndefined();
+  });
+
+  it('sin gente, se queda con la primera sacada', () => {
+    expect(pickQuietGoal([{ x: 3, y: 3 }, { x: 9, y: 9 }], [], sequence([0.99, 0]), 2)).toEqual({ x: 9, y: 9 });
+  });
+
+  it('planWander con gente va a la casilla más tranquila', () => {
+    const tiles = walkableTiles(grid);
+    // Gente arriba a la izquierda: de (0,0) y (2,2) sacadas, elige (2,2).
+    const path = planWander(grid, { x: 1, y: 1 }, tiles, sequence([0, 0.99]), 1, [{ x: 0, y: 0 }, { x: 1, y: 0 }]);
+    expect(path?.[path.length - 1]).toEqual({ x: 2, y: 2 });
   });
 });
