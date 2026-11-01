@@ -4,6 +4,7 @@ import type * as Phaser from 'phaser';
 import { decideBack, type BackAction } from '../core/back';
 import type { AdOfferScene } from '../scenes/AdOfferScene';
 import type { PollNoticeScene } from '../scenes/PollNoticeScene';
+import type { TutorialOfferScene } from '../scenes/TutorialOfferScene';
 import type { FeedScene } from '../scenes/FeedScene';
 import type { QuitScene, QuitSceneData } from '../scenes/QuitScene';
 import type { BoardScene } from '../scenes/BoardScene';
@@ -85,7 +86,7 @@ export class Platform {
       quitDialogOpen: this.active('Quit'),
       settingsOpen: this.active('Settings') || this.active('Book'),
       overlayOpen: this.active('Feed') || this.active('Shop') || this.active('Board'),
-      adOfferOpen: this.active('AdOffer') || this.active('PollNotice'),
+      adOfferOpen: this.active('AdOffer') || this.active('PollNotice') || this.active('TutorialOffer'),
       screen,
     });
   }
@@ -104,7 +105,8 @@ export class Platform {
         else scene<SettingsScene>('Settings').close();
         break;
       case 'close-ad':
-        if (this.active('PollNotice')) scene<PollNoticeScene>('PollNotice').decline();
+        if (this.active('TutorialOffer')) scene<TutorialOfferScene>('TutorialOffer').skip();
+        else if (this.active('PollNotice')) scene<PollNoticeScene>('PollNotice').decline();
         else scene<AdOfferScene>('AdOffer').decline();
         break;
       case 'close-overlay':

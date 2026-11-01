@@ -26,9 +26,10 @@ const TOGGLES: readonly { key: ToggleKey; icon: IconName; label: StringKey }[] =
 /** Ventanas que pueden estar abiertas debajo del menú; sus textos ya están pintados en el idioma anterior. */
 const OVERLAYS = ['Book', 'Board', 'Shop', 'Feed'] as const;
 
-type ButtonKey = 'privacy' | 'quit';
+type ButtonKey = 'learn' | 'privacy' | 'quit';
 
 const BUTTONS: Record<ButtonKey, { color: PillColor; icon: IconName }> = {
+  learn: { color: 'green', icon: 'play' },
   privacy: { color: 'blue', icon: 'shield' },
   quit: { color: 'red', icon: 'door' },
 };
@@ -258,12 +259,12 @@ export class SettingsScene extends Phaser.Scene {
     this.scene.restart({ pausedWorld: true });
   }
 
-  /** Privacidad siempre; Salir solo en la app (una web no se puede cerrar a sí misma). */
+  /** Aprender y Privacidad siempre; Salir solo en la app (una web no se puede cerrar a sí misma). */
   private addButtons(y: number, panelW: number): void {
     const { width, height } = this.scale;
-    const keys: ButtonKey[] = Capacitor.isNativePlatform() ? ['privacy', 'quit'] : ['privacy'];
+    const keys: ButtonKey[] = Capacitor.isNativePlatform() ? ['learn', 'privacy', 'quit'] : ['learn', 'privacy'];
     const h = Phaser.Math.Clamp(height * 0.13, 44, 72);
-    const w = Math.min((panelW - 96) / 2, h * 4);
+    const w = Math.min((panelW - 48 - 24 * keys.length) / keys.length, h * 4);
     keys.forEach((key, i) => {
       const x = width / 2 + (i - (keys.length - 1) / 2) * (w + 24);
       const button = addPillButton(this, x, y, w, h, { ...BUTTONS[key], label: t(`settings.${key}`), onTap: () => this.press(key) });
@@ -273,6 +274,13 @@ export class SettingsScene extends Phaser.Scene {
 
   private press(key: ButtonKey): void {
     sfx.play('tap');
+    if (key === 'learn') {
+      // Se vuelve a ver desde el principio, sobre la partida de verdad (sin dar ni quitar monedas).
+      if (this.scene.isActive('Tutorial')) this.scene.stop('Tutorial');
+      this.close();
+      this.scene.launch('Tutorial');
+      return;
+    }
     if (key === 'privacy') {
       bus.emit('legal-opened', {});
       openLegal();

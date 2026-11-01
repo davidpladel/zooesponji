@@ -10,7 +10,7 @@ async function canvasBox(page: Page) {
 }
 
 async function startGame(page: Page): Promise<void> {
-  await page.goto('/');
+  await page.goto('/?sin-tutorial');
   await page.waitForFunction(() => window.__ZOO__?.activeScenes().includes('Title'));
   const box = await canvasBox(page);
   await page.mouse.click(box.x + box.width / 2, box.y + box.height * 0.62);

@@ -17,7 +17,7 @@ async function startGame(page: Page): Promise<void> {
 }
 
 test('tocar el camino mueve a la cuidadora hasta allí', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/?sin-tutorial');
   await startGame(page);
 
   const spawn = await page.evaluate(() => window.__ZOO__!.spawnTile());
@@ -33,7 +33,7 @@ test('tocar el camino mueve a la cuidadora hasta allí', async ({ page }) => {
 });
 
 test('las monedas se muestran y sobreviven a recargar', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/?sin-tutorial');
   await startGame(page);
 
   await page.evaluate(() => window.__ZOO__!.addCoins(3));
@@ -51,7 +51,7 @@ test('sin errores en la consola al arrancar', async ({ page }) => {
     // Sin arte importado (CI), art/manifest.json da 404: es el comportamiento esperado.
     if (message.type() === 'error' && !message.location().url.includes('/art/')) errors.push(message.text());
   });
-  await page.goto('/');
+  await page.goto('/?sin-tutorial');
   await startGame(page);
   expect(errors).toEqual([]);
 });

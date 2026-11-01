@@ -18,6 +18,8 @@ import type { QuitScene } from '../scenes/QuitScene';
 import type { SettingsScene } from '../scenes/SettingsScene';
 import type { ShopScene } from '../scenes/ShopScene';
 import type { TitleScene } from '../scenes/TitleScene';
+import type { TutorialOfferScene } from '../scenes/TutorialOfferScene';
+import type { TutorialScene } from '../scenes/TutorialScene';
 import type { WorldScene } from '../scenes/WorldScene';
 import { getAds } from './ads';
 import { startAds } from './adsInstall';
@@ -36,6 +38,14 @@ export interface ZooTestApi {
   /** Compra un artículo sin pasar por la tienda (para llegar rápido a un recinto en las pruebas). */
   buy(itemId: string): Promise<boolean>;
   hudCoinsText(): string | null;
+  /** Botones del aviso de aprender a jugar. */
+  tutorialOfferPos(which: 'learn' | 'skip'): Vec | null;
+  /** Abre el tutorial como el botón Aprender del menú. */
+  openTutorial(): void;
+  /** Paso del tutorial en marcha (null si no lo está). */
+  tutorialStep(): string | null;
+  /** Dónde está la mano del tutorial, si se ve. */
+  tutorialHand(): Vec | null;
   /** Dónde está Luna en el mapa (null si no se ha comprado). */
   petPosition(): Vec | null;
   /** Dónde está Luna dentro de la tienda (px del interior). */
@@ -81,7 +91,7 @@ export interface ZooTestApi {
   settingsLanguageOptionPos(lang: string): Vec | null;
   settingsLanguageLabel(): string | null;
   settingsCredits(): string | null;
-  settingsButtonPos(key: 'privacy' | 'quit'): Vec | null;
+  settingsButtonPos(key: 'learn' | 'privacy' | 'quit'): Vec | null;
   /** Con «¿Salir?» abierto: dónde está el botón de seguir jugando. */
   quitStayPos(): Vec | null;
   counts(): Record<PenId, number>;
@@ -171,6 +181,16 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
     },
     petPosition: () => (game.scene.isActive('World') || game.scene.isPaused('World') ? game.scene.getScene<WorldScene>('World').petPosition() : null),
     shopPetPosition: () => activeScene<ShopScene>('Shop')?.petPosition() ?? null,
+    tutorialOfferPos: (which) => {
+      const offer = activeScene<TutorialOfferScene>('TutorialOffer');
+      return (which === 'learn' ? offer?.learnPos() : offer?.skipPos()) ?? null;
+    },
+    openTutorial: () => {
+      if (game.scene.isActive('Tutorial')) game.scene.stop('Tutorial');
+      game.scene.start('Tutorial');
+    },
+    tutorialStep: () => activeScene<TutorialScene>('Tutorial')?.currentStep() ?? null,
+    tutorialHand: () => activeScene<TutorialScene>('Tutorial')?.handPos() ?? null,
     hudCoinsText: () => activeScene<HudScene>('Hud')?.coinsLabel() ?? null,
     hudGearVisible: () => activeScene<HudScene>('Hud')?.gearVisible() ?? false,
     openFeed: (residentId) => {

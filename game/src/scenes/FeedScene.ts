@@ -123,6 +123,11 @@ export class FeedScene extends Phaser.Scene {
     this.scene.resume('World', { from: 'feed' });
   }
 
+  /** A quién se está dando de comer. */
+  resident(): string {
+    return this.residentId;
+  }
+
   targetsOnScreen(): { animal: Vec; foods: Partial<Record<FoodId, Vec>> } {
     const foods: Partial<Record<FoodId, Vec>> = {};
     for (const [id, home] of this.homes) foods[id] = { x: home.x, y: home.y };

@@ -11,7 +11,7 @@ import { withPenInteriors } from '../core/penGrid';
 import { followTrail, recordTrail } from '../core/petFollow';
 import { noPen, stepNear, type NearState } from '../core/penNear';
 import { buildWalkGrid, readBoard, readEnclosures, readGates, readProps, readShop, readSpawn, withSolidProps, type TiledMap } from '../core/tiledmap';
-import type { PenId } from '../data/pens';
+import { PEN_IDS, residentsIn, type PenId } from '../data/pens';
 import { SHOP_UNLOCK_COINS } from '../data/shop';
 import { t } from '../data/strings';
 import { getAds } from '../systems/ads';
@@ -138,7 +138,9 @@ export class WorldScene extends Phaser.Scene {
       offFed();
       offCommunity();
     });
-    this.time.delayedCall(NOTICE_MS, () => this.maybeNotice());
+    this.time.delayedCall(NOTICE_MS, () => {
+      if (!this.maybeTutorialOffer()) this.maybeNotice();
+    });
   }
 
   update(time: number, delta: number): void {
@@ -433,8 +435,52 @@ export class WorldScene extends Phaser.Scene {
     if (data?.from !== 'notice' && data?.from !== 'board') this.time.delayedCall(NOTICE_MS, () => this.maybeNotice());
   }
 
+  /** Mientras se aprende a jugar no salen anuncios ni avisos: un panel cada vez. */
+  private tutorialRunning(): boolean {
+    return this.scene.isActive('Tutorial') || this.scene.isActive('TutorialOffer');
+  }
+
+  /**
+   * La primera vez (también a quien ya jugaba antes de esta versión), el aviso de aprender a jugar.
+   * Las pruebas automáticas lo saltan con `?sin-tutorial` (solo en desarrollo).
+   */
+  private maybeTutorialOffer(): boolean {
+    if (getSession().tutorial.offered || !this.scene.isActive() || this.scene.isActive('AdOffer') || this.scene.isActive('PollNotice')) return false;
+    if (import.meta.env.DEV && new URLSearchParams(window.location.search).has('sin-tutorial')) return false;
+    this.stopWalking();
+    this.scene.pause();
+    this.scene.launch('TutorialOffer');
+    return true;
+  }
+
+  /** Para el tutorial: una casilla de camino a unas casillas de la cuidadora, en pantalla. */
+  tutorialMoveTarget(): Vec | null {
+    const from = worldToTile(this.keeper, TILE_SIZE);
+    for (const [dx, dy] of [[0, -4], [4, 0], [-4, 0], [0, 4], [0, -3], [3, 0], [-3, 0], [0, 3], [0, -5], [5, 0], [-5, 0], [0, 5]] as const) {
+      if (isWalkable(this.grid, from.x + dx, from.y + dy)) return this.tileToScreen({ x: from.x + dx, y: from.y + dy });
+    }
+    return null;
+  }
+
+  /** Para el tutorial: el animal del zoo más cercano a la cuidadora y dónde está en pantalla. */
+  tutorialAnimal(): { residentId: string; screen: Vec } | null {
+    const keeper = this.keeperPosition();
+    const state = getSession().state;
+    let best: { residentId: string; at: Vec; d: number } | null = null;
+    for (const penId of PEN_IDS) {
+      for (const r of residentsIn(penId, state.counts[penId])) {
+        const at = this.pens.positionOf(r.id);
+        if (!at) continue;
+        const d = Math.hypot(at.x - keeper.x, at.y - keeper.y);
+        if (!best || d < best.d) best = { residentId: r.id, at, d };
+      }
+    }
+    return best ? { residentId: best.residentId, screen: this.worldToScreen(best.at) } : null;
+  }
+
   /** Una vez por votación, al llegar al mapa, si no hay otro panel abierto. Si lo hay, espera a otra vuelta. */
   private maybeNotice(): void {
+    if (this.tutorialRunning()) return;
     // Las demás ventanas (tienda, comer, libro, tablón, ajustes, salir) pausan World, así que aquí isActive() es falso.
     if (!this.scene.isActive() || this.scene.isActive('AdOffer') || this.scene.isActive('PollNotice')) return;
     if (getAds()?.panelOpen) return;
@@ -446,7 +492,7 @@ export class WorldScene extends Phaser.Scene {
 
   /** Si toca y hay anuncio listo, se ofrece: el mundo queda en pausa debajo del panel. */
   private offerAd(): void {
-    if (!this.scene.isActive()) return;
+    if (!this.scene.isActive() || this.tutorialRunning()) return;
     if (!getAds()?.canOffer('pausa')) return;
     const data: AdOfferSceneData = { slot: 'pausa', resume: 'World' };
     this.stopWalking();

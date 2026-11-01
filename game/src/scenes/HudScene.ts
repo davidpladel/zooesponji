@@ -73,6 +73,10 @@ export class HudScene extends Phaser.Scene {
     return this.coins.label();
   }
 
+  gearScreenPos(): { x: number; y: number } {
+    return { x: this.gear.x, y: this.gear.y };
+  }
+
   gearVisible(): boolean {
     return this.gear.visible;
   }

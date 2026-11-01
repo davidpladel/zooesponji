@@ -14,4 +14,9 @@ describe('engranaje de ajustes', () => {
     expect(gearVisible(['Hud'])).toBe(false);
     expect(gearVisible(['Hud', 'Shop'])).toBe(false);
   });
+
+  it('con el aviso de aprender a jugar abierto, el engranaje no se ve; con el tutorial en marcha, sí', () => {
+    expect(gearVisible(['World', 'Hud', 'TutorialOffer'])).toBe(false);
+    expect(gearVisible(['World', 'Hud', 'Tutorial'])).toBe(true);
+  });
 });

@@ -41,7 +41,7 @@ async function openSettings(page: Page): Promise<void> {
 }
 
 test('con el móvil en inglés el juego sale en inglés; Ajustes lo pasa a español y se queda guardado', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/?sin-tutorial');
   await waitForTitle(page);
   expect(await page.evaluate(() => window.__ZOO__!.language())).toBe('en');
   expect(await page.evaluate(() => window.__ZOO__!.titlePlayLabel())).toBe('Play');
@@ -75,7 +75,7 @@ test('con el móvil en inglés el juego sale en inglés; Ajustes lo pasa a espa�
 });
 
 test('cambiar de idioma con la tienda abierta la cierra y no se pierden las monedas', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/?sin-tutorial');
   await waitForTitle(page);
   await pressPlay(page);
   await page.evaluate(() => window.__ZOO__!.addCoins(25));
@@ -96,7 +96,7 @@ test('cambiar de idioma con la tienda abierta la cierra y no se pierden las mone
 });
 
 test('en inglés la privacidad se lee en inglés, dentro del juego', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/?sin-tutorial');
   await waitForTitle(page);
   await pressPlay(page);
   await openSettings(page);
@@ -119,7 +119,7 @@ test('capturas en inglés a tamaño de móvil, para revisarlas a ojo', async ({ 
     await page.screenshot({ path: testInfo.outputPath(`en-${name}.png`) });
   };
 
-  await page.goto('/');
+  await page.goto('/?sin-tutorial');
   await waitForTitle(page);
   await shot('1-titulo');
   await pressPlay(page);
