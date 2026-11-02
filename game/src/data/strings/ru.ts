@@ -163,6 +163,8 @@ export const STRINGS_RU: Record<StringKey, string> = {
   'book.page.story.text': 'Жил-был грустный зоопарк с запертыми клетками. Однажды кто-то их открыл… и появился Zoo Esponji!',
   'book.page.mary.title': 'Mary, смотрительница',
   'book.page.mary.text': 'Я Mary. Я кормлю животных и нахожу им место. Больше всего люблю спагетти и шоколад!',
+  'book.page.luna.title': 'Луна, собачка Mary',
+  'book.page.luna.text': 'Луна ходит за Mary повсюду. В магазине она всё обнюхивает.',
   'book.page.bills.title': 'Bills, лев',
   'book.page.bills.text': 'Bills приехал первым. Он рычит очень громко… но боится бабочек.',
   'book.page.sasha.title': 'Sasha, львица',

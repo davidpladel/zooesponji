@@ -1,5 +1,5 @@
 import * as Phaser from 'phaser';
-import { ART_KEYS, animalKey, companionKey, getArt, idleFrame, lookOr, propKey } from '../art/art';
+import { ART_KEYS, animalKey, companionKey, getArt, idleFrame, lookOr, petKey, propKey } from '../art/art';
 import { chapterProgress, isBookComplete, isContentPage, isPageUnlocked, pagePosition } from '../core/book';
 import type { Vec } from '../core/movement';
 import { ANIMALS } from '../data/animals';
@@ -300,6 +300,8 @@ export class BookScene extends Phaser.Scene {
       obj = this.add.sprite(x, y, animalKey(look), idleFrame('right'));
     } else if (art && pic.kind === 'companion' && art.companions[pic.animalId]) {
       obj = this.add.sprite(x, y, companionKey(pic.animalId), idleFrame('left'));
+    } else if (art && pic.kind === 'pet' && art.pets[pic.petId]) {
+      obj = this.add.sprite(x, y, petKey(pic.petId), idleFrame('right'));
     } else if (art && pic.kind === 'keeper') {
       obj = this.add.sprite(x, y, ART_KEYS.keeper, idleFrame('down'));
     } else if (pic.kind === 'logo' && this.textures.exists('logo')) {
@@ -307,7 +309,7 @@ export class BookScene extends Phaser.Scene {
     } else if (art && pic.kind === 'gate' && art.props['park-gate']) {
       obj = this.add.image(x, y, propKey('park-gate'));
     } else {
-      const emoji = pic.kind === 'animal' || pic.kind === 'companion' ? ANIMALS[pic.animalId].emoji : pic.kind === 'keeper' ? '👩‍🌾' : pic.kind === 'logo' ? '🦁' : '🏞️';
+      const emoji = pic.kind === 'animal' || pic.kind === 'companion' ? ANIMALS[pic.animalId].emoji : pic.kind === 'pet' ? '🐕' : pic.kind === 'keeper' ? '👩‍🌾' : pic.kind === 'logo' ? '🦁' : '🏞️';
       obj = this.add.text(x, y, emoji, { fontSize: `${Math.round(Math.min(maxH, maxW) * 0.8)}px` }).setOrigin(0.5);
     }
     if (!(obj instanceof Phaser.GameObjects.Text)) {

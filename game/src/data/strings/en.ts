@@ -163,6 +163,8 @@ export const STRINGS_EN: Record<StringKey, string> = {
   'book.page.story.text': 'Once upon a time, a sad zoo had locked cages. One day someone opened them… and Zoo Esponji was born!',
   'book.page.mary.title': 'Mary, the zookeeper',
   'book.page.mary.text': 'I am Mary. I feed the animals and find them a home. My favourite foods are spaghetti and chocolate!',
+  'book.page.luna.title': "Moon, Mary's little dog",
+  'book.page.luna.text': 'Moon follows Mary everywhere. In the shop she sniffs at everything.',
   'book.page.bills.title': 'Bills, the lion',
   'book.page.bills.text': 'Bills was the first to arrive. He roars very loudly… but he is scared of butterflies.',
   'book.page.sasha.title': 'Sasha, the lioness',

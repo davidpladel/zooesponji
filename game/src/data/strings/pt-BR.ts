@@ -163,6 +163,8 @@ export const STRINGS_PT_BR: Record<StringKey, string> = {
   'book.page.story.text': 'Era uma vez um zoológico triste com jaulas trancadas. Um dia alguém abriu… e nasceu o Zoo Esponji!',
   'book.page.mary.title': 'Mary, a tratadora',
   'book.page.mary.text': 'Sou a Mary. Dou comida aos animais e arrumo um lugar para eles. Adoro espaguete e chocolate!',
+  'book.page.luna.title': 'Luna, a cachorrinha da Mary',
+  'book.page.luna.text': 'A Luna segue a Mary por todo lado. Na loja, ela fareja tudo.',
   'book.page.bills.title': 'Bills, o leão',
   'book.page.bills.text': 'Bills foi o primeiro a chegar. Ele ruge bem alto… mas tem medo de borboletas.',
   'book.page.sasha.title': 'Sasha, a leoa',

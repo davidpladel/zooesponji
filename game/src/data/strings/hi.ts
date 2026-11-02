@@ -163,6 +163,8 @@ export const STRINGS_HI: Record<StringKey, string> = {
   'book.page.story.text': 'एक उदास चिड़ियाघर था, जिसके पिंजरे बंद थे। एक दिन किसी ने उन्हें खोला… और Zoo Esponji बना!',
   'book.page.mary.title': 'Mary, देखभाल करने वाली',
   'book.page.mary.text': 'मैं Mary हूँ। जानवरों को खाना खिलाती हूँ और उन्हें घर देती हूँ। मुझे स्पैगेटी और चॉकलेट पसंद हैं!',
+  'book.page.luna.title': 'चंदा, Mary की प्यारी डॉगी',
+  'book.page.luna.text': 'चंदा हर जगह Mary के पीछे जाती है। दुकान में सब कुछ सूँघती है।',
   'book.page.bills.title': 'Bills, शेर',
   'book.page.bills.text': 'Bills सबसे पहले आया। वह बहुत ज़ोर से दहाड़ता है… पर तितलियों से डरता है।',
   'book.page.sasha.title': 'Sasha, शेरनी',

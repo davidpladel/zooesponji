@@ -163,6 +163,8 @@ export const STRINGS_JA: Record<StringKey, string> = {
   'book.page.story.text': 'むかし、おりに かぎが かかった かなしい どうぶつえんが ありました。ある日 だれかが あけて… Zoo Esponji が うまれたよ！',
   'book.page.mary.title': 'Mary、しいくいん',
   'book.page.mary.text': 'わたしは Mary。どうぶつに ごはんを あげて、ばしょを みつけるの。すきな たべものは スパゲッティと チョコレート！',
+  'book.page.luna.title': 'ツキ、Maryの こいぬ',
+  'book.page.luna.text': 'ツキは どこでも Maryに ついていくよ。おみせでは なんでも くんくん。',
   'book.page.bills.title': 'Bills、ライオン',
   'book.page.bills.text': 'Bills は いちばん さいしょに きたよ。おおきな こえで ほえるけど… チョウチョが こわいんだ。',
   'book.page.sasha.title': 'Sasha、メスライオン',

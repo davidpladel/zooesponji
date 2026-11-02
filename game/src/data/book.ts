@@ -29,10 +29,10 @@ export interface BookPage {
   chapter: ChapterId;
   /** Páginas de paso, que no cuentan: el índice y la portadilla de cada capítulo. */
   role?: 'index' | 'divider';
-  /** Sin `unlock`: página que está desde el principio. */
-  unlock?: { penId: PenId; count: number };
+  /** Sin `unlock`: página que está desde el principio. `pet`: se consigue al comprar a esa mascota. */
+  unlock?: { penId: PenId; count: number } | { pet: 'luna' };
   /** Qué dibujo sale: el animal, su compañero (la leona), la cuidadora o el portón del zoo. */
-  picture: { kind: 'animal' | 'companion'; animalId: AnimalId } | { kind: 'keeper' } | { kind: 'gate' } | { kind: 'logo' };
+  picture: { kind: 'animal' | 'companion'; animalId: AnimalId } | { kind: 'pet'; petId: 'luna' } | { kind: 'keeper' } | { kind: 'gate' } | { kind: 'logo' };
 }
 
 /** Páginas de un recinto: una por residente, por orden de llegada (y la leona detrás de Bills). */
@@ -66,6 +66,8 @@ export const BOOK_PAGES: readonly BookPage[] = [
   { id: 'index', chapter: 'inicio', role: 'index', picture: { kind: 'logo' } },
   { id: 'story', chapter: 'inicio', picture: { kind: 'gate' } },
   { id: 'mary', chapter: 'inicio', picture: { kind: 'keeper' } },
+  // La perrita de Mary, detrás de ella.
+  { id: 'luna', chapter: 'inicio', unlock: { pet: 'luna' }, picture: { kind: 'pet', petId: 'luna' } },
   ...BOOK_CHAPTERS.flatMap(chapterPages),
 ];
 

@@ -9,8 +9,8 @@ const words = (text: string): number => text.trim().split(/\s+/).length;
 describe('textos del libro', () => {
   const texts = Object.entries(STRINGS_ES).filter(([key]) => /^book\.page\..+\.text$/.test(key));
 
-  it('hay un texto por cada una de las 50 páginas y la contraportada', () => {
-    expect(texts).toHaveLength(51);
+  it('hay un texto por cada una de las 51 páginas y la contraportada', () => {
+    expect(texts).toHaveLength(52);
   });
 
   // La página de Mary es de antes de esta regla (21 palabras, aprobada con el libro original).
@@ -88,7 +88,8 @@ describe.each(LANGUAGES.filter((lang) => lang !== 'es'))('%s', (lang) => {
     expect(words(text)).toBeLessThanOrEqual(20);
   });
 
-  it.each(Object.keys(ES).filter((key) => /^book\.page\..+\.title$/.test(key) && ES[key]!.includes(',')))(
+  // Luna es el único nombre que se traduce (Moon, Lune…): su título no entra en esta regla.
+  it.each(Object.keys(ES).filter((key) => /^book\.page\..+\.title$/.test(key) && ES[key]!.includes(',') && key !== 'book.page.luna.title'))(
     '%s conserva el nombre propio',
     (key) => {
       expect(properName(T[key]!)).toBe(properName(ES[key]!));

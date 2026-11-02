@@ -7,7 +7,10 @@ export function isContentPage(page: BookPage): boolean {
 }
 
 export function isPageUnlocked(state: GameState, page: BookPage): boolean {
-  return !page.unlock || penCount(state, page.unlock.penId) >= page.unlock.count;
+  const unlock = page.unlock;
+  if (!unlock) return true;
+  if ('pet' in unlock) return state.luna;
+  return penCount(state, unlock.penId) >= unlock.count;
 }
 
 /** Ids de las páginas conseguidas, en el orden del libro. */

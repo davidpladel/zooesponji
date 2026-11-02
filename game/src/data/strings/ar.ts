@@ -164,6 +164,8 @@ export const STRINGS_AR: Record<StringKey, string> = {
   'book.page.story.text': 'كان يا ما كان، حديقة حزينة أقفاصها مقفلة. وفي يوم فتحها أحدهم… فوُلدت Zoo Esponji!',
   'book.page.mary.title': 'Mary، الحارسة',
   'book.page.mary.text': 'أنا Mary. أُطعم الحيوانات وأجد لها مكانًا. أكلاتي المفضلة السباغيتي والشوكولاتة!',
+  'book.page.luna.title': 'قمر، كلبة Mary الصغيرة',
+  'book.page.luna.text': 'قمر تتبع Mary في كل مكان. في المتجر تشمّ كل شيء.',
   'book.page.bills.title': 'Bills، الأسد',
   'book.page.bills.text': 'كان Bills أول من وصل. يزأر بصوت عالٍ جدًا… لكنه يخاف من الفراشات.',
   'book.page.sasha.title': 'Sasha، اللبؤة',

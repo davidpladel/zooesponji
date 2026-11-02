@@ -157,6 +157,8 @@ export const STRINGS_ES = {
   'book.page.story.text': 'Había una vez un zoo triste, con jaulas cerradas. Un día alguien abrió las puertas… ¡y nació el Zoo Esponji!',
   'book.page.mary.title': 'Mary, la cuidadora',
   'book.page.mary.text': 'Soy Mary. Doy de comer a los animales y les busco sitio. ¡Mis comidas favoritas son los espaguetis y el chocolate!',
+  'book.page.luna.title': 'Luna, la perrita de Mary',
+  'book.page.luna.text': 'Luna va detrás de Mary a todas partes. En la tienda lo husmea todo.',
   'book.page.bills.title': 'Bills, el león',
   'book.page.bills.text': 'Bills fue el primero en llegar. Ruge muy fuerte… pero le dan miedo las mariposas.',
   'book.page.sasha.title': 'Sasha, la leona',

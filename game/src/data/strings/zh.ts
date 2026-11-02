@@ -163,6 +163,8 @@ export const STRINGS_ZH: Record<StringKey, string> = {
   'book.page.story.text': '从前，有个伤心的动物园，笼子都锁着。有一天，有人把它们打开了……Zoo Esponji 就这样诞生了！',
   'book.page.mary.title': 'Mary，饲养员',
   'book.page.mary.text': '我是 Mary。我给动物喂食，为它们找个家。我最爱吃意大利面和巧克力！',
+  'book.page.luna.title': '月亮，Mary的小狗',
+  'book.page.luna.text': '月亮走到哪儿都跟着Mary。在商店里，它什么都要闻一闻。',
   'book.page.bills.title': 'Bills，狮子',
   'book.page.bills.text': 'Bills 是第一个来的。他吼得特别响……可是他怕蝴蝶。',
   'book.page.sasha.title': 'Sasha，母狮',

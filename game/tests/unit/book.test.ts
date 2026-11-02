@@ -21,8 +21,8 @@ const withCounts = (counts: Partial<GameState['counts']>): GameState => ({
 });
 
 describe('libro del zoo', () => {
-  it('tiene 49 páginas que cuentan: 3 de inicio, 11 de siempre y 35 nuevas', () => {
-    expect(BOOK_PAGES.filter(isContentPage)).toHaveLength(50);
+  it('tiene 51 páginas que cuentan: 4 de inicio (con Luna) y una por cada animal', () => {
+    expect(BOOK_PAGES.filter(isContentPage)).toHaveLength(51);
   });
 
   it('empieza por la portada y el índice, y cada capítulo con animales abre con su portadilla', () => {
@@ -69,18 +69,20 @@ describe('libro del zoo', () => {
     const full = Object.fromEntries(PEN_IDS.map((id) => [id, PENS[id].residents.length]));
     expect(isBookComplete(initialState())).toBe(false);
     expect(isBookComplete(withCounts({ cabra: 5, pantera: 2, panda: 3 }))).toBe(false);
-    expect(isBookComplete(withCounts(full))).toBe(true);
+    // Sin Luna no está completo: su página también cuenta.
+    expect(isBookComplete(withCounts(full))).toBe(false);
+    expect(isBookComplete({ ...withCounts(full), luna: true })).toBe(true);
   });
 
   it('progreso por capítulo', () => {
-    expect(chapterProgress(initialState(), 'inicio')).toEqual({ n: 3, total: 3 });
+    expect(chapterProgress(initialState(), 'inicio')).toEqual({ n: 3, total: 4 });
     expect(chapterProgress(initialState(), 'centro')).toEqual({ n: 2, total: 7 });
     expect(chapterProgress(withCounts({ establo: 3 }), 'granja')).toEqual({ n: 3, total: 18 });
   });
 
   it('cada página se numera dentro de su capítulo', () => {
     const page = (id: string) => BOOK_PAGES.find((p) => p.id === id)!;
-    expect(pagePosition(page('mary'))).toEqual({ n: 3, total: 3 });
+    expect(pagePosition(page('mary'))).toEqual({ n: 3, total: 4 });
     expect(pagePosition(page('gordi'))).toEqual({ n: 1, total: 5 });
     expect(pagePosition(page('raja'))).toEqual({ n: 11, total: 12 });
     expect(pagePosition(page('index'))).toBeNull();
@@ -116,5 +118,17 @@ describe('aviso del libro en la tienda', () => {
     expect(showBookNotice(2, false)).toBe(false);
     expect(showBookNotice(3, false)).toBe(true);
     expect(showBookNotice(10, true)).toBe(false);
+  });
+});
+
+describe('página de Luna', () => {
+  it('va detrás de la de Mary, con su dibujo, y se consigue al comprarla', () => {
+    const ids = BOOK_PAGES.map((p) => p.id);
+    expect(ids.indexOf('luna')).toBe(ids.indexOf('mary') + 1);
+    const luna = BOOK_PAGES.find((p) => p.id === 'luna')!;
+    expect(luna.picture).toEqual({ kind: 'pet', petId: 'luna' });
+    expect(unlockedPageIds(initialState())).not.toContain('luna');
+    expect(unlockedPageIds({ ...initialState(), luna: true })).toContain('luna');
+    expect(newlyUnlockedPages(initialState(), { ...initialState(), luna: true })).toEqual(['luna']);
   });
 });
