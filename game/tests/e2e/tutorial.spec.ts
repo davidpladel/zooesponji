@@ -33,6 +33,8 @@ async function feed(page: Page, residentId: string): Promise<void> {
   await page.waitForFunction(() => window.__ZOO__!.activeScenes().includes('World'));
   expect(await page.evaluate((id) => window.__ZOO__!.feedResident(id), residentId)).toBe(true);
   await page.waitForFunction(() => window.__ZOO__?.activeScenes().includes('Feed'), undefined, { timeout: 90_000 });
+  // Como un niño: no arrastra en el primer instante (tras un cambio de tamaño la ventana aún puede rehacerse).
+  await page.waitForTimeout(500);
 }
 
 async function dragFood(page: Page, food: string): Promise<void> {
@@ -51,6 +53,10 @@ test('la primera vez sale el aviso; «Saltar» lo cierra y no vuelve a salir', a
   expect(await page.evaluate(() => window.__ZOO__!.hudGearVisible())).toBe(false);
   await tapOffer(page, 'skip');
   await expect.poll(() => scenes(page)).not.toContain('TutorialOffer');
+  // Para Matomo: el aviso se cuenta una vez y la respuesta también.
+  const log = await page.evaluate(() => window.__ZOO__!.busLog());
+  expect(log.filter((n) => n === 'tutorial-offered')).toHaveLength(1);
+  expect(log).toContain('tutorial-answered');
   expect(await step(page)).toBeNull();
   expect(await scenes(page)).toContain('World');
 

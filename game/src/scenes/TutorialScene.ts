@@ -18,6 +18,11 @@ const DRAG_MS = 1800;
 /** Dónde va la ✕ que cierra el tutorial. */
 export const CLOSE_AT: Vec = { x: 38, y: 100 };
 
+/** Desde dónde se abre: el aviso de la primera vez o el botón Aprender del menú (para Matomo). */
+export interface TutorialSceneData {
+  from?: 'aviso' | 'menu';
+}
+
 type Gesture = { kind: 'tap'; at: Vec } | { kind: 'drag'; from: Vec; to: Vec };
 
 /**
@@ -35,12 +40,14 @@ export class TutorialScene extends Phaser.Scene {
   private joystick!: Phaser.GameObjects.Container;
   private coinsTimer: Phaser.Time.TimerEvent | null = null;
   private closeBadge: Phaser.GameObjects.Container | null = null;
+  private from: 'aviso' | 'menu' = 'menu';
 
   constructor() {
     super('Tutorial');
   }
 
-  init(): void {
+  init(data: TutorialSceneData = {}): void {
+    this.from = data.from ?? 'menu';
     this.step = 'move';
     this.moveFrom = null;
     this.clock = 0;
@@ -68,23 +75,28 @@ export class TutorialScene extends Phaser.Scene {
       bus.on('shop-opened', () => this.on({ type: 'shop-opened' })),
     ];
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => offs.forEach((off) => off()));
+    bus.emit('tutorial-started', { from: this.from });
+    bus.emit('tutorial-step', { step: this.step });
   }
 
   private on(event: TutorialEvent): void {
     const next = advance(this.step, event);
     if (next === this.step) return;
     if (next === 'done') {
-      this.finish();
+      this.finish(true);
       return;
     }
     this.step = next;
+    bus.emit('tutorial-step', { step: next });
     this.clock = 0;
     this.moveFrom = null;
     if (next === 'coins') this.coinsTimer = this.time.delayedCall(COINS_SHOW_MS, () => this.on({ type: 'coins-shown' }));
   }
 
-  /** Termina (o se cierra a medias): no vuelve a salir solo; queda el botón Aprender del menú. */
-  finish(): void {
+  /** Termina (`done`) o se deja a medias con la ✕: no vuelve a salir solo; queda el botón Aprender del menú. */
+  finish(done = false): void {
+    if (!this.scene.isActive()) return;
+    bus.emit('tutorial-ended', { done, step: this.step });
     this.coinsTimer?.remove();
     if (this.scene.isActive()) this.scene.stop();
   }

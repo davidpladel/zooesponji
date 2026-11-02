@@ -2,15 +2,19 @@ import * as Phaser from 'phaser';
 import type { Vec } from '../core/movement';
 import { t } from '../data/strings';
 import { sfx } from '../systems/audio';
+import { bus } from '../systems/events';
 import { getSession } from '../systems/session';
 import { addEmoji } from '../ui/text';
 import { addPanel, addPillButton, addVeil } from '../ui/widgets';
+import type { TutorialSceneData } from './TutorialScene';
 
 /**
  * Aviso de la primera vez: «¿aprendemos a jugar?». Como el de votar: un dibujo y dos botones grandes,
  * ▶ Aprender y ✕ Saltar, que se entienden sin leer. Sale una vez; luego queda el botón del menú.
  */
 export class TutorialOfferScene extends Phaser.Scene {
+  /** Ya se ha contado en Matomo: al volver a montarse por un giro no se cuenta otra vez. */
+  private counted = false;
   private learn: Phaser.GameObjects.Container | null = null;
   private skipButton: Phaser.GameObjects.Container | null = null;
   private done = false;
@@ -43,6 +47,8 @@ export class TutorialOfferScene extends Phaser.Scene {
     const y = cy + panelH * 0.3;
     this.learn = addPillButton(this, cx - w / 2 - 10, y, w, button, { color: 'green', icon: 'play', label: t('tutorial.learn'), onTap: () => this.start() });
     this.skipButton = addPillButton(this, cx + w / 2 + 10, y, w, button, { color: 'red', icon: 'close', label: t('tutorial.skip'), onTap: () => this.skip() });
+    if (!this.counted) bus.emit('tutorial-offered', {});
+    this.counted = true;
     sfx.play('coin');
     this.scale.once(Phaser.Scale.Events.RESIZE, this.onResize, this);
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.scale.off(Phaser.Scale.Events.RESIZE, this.onResize, this));
@@ -65,9 +71,11 @@ export class TutorialOfferScene extends Phaser.Scene {
     this.done = true;
     sfx.play('tap');
     void getSession().markTutorialOffered();
+    bus.emit('tutorial-answered', { learn });
+    this.counted = false;
     this.scene.stop();
     this.scene.resume('World', { from: 'notice' });
-    if (learn) this.scene.launch('Tutorial');
+    if (learn) this.scene.launch('Tutorial', { from: 'aviso' } satisfies TutorialSceneData);
   }
 
   // --- API para pruebas ---

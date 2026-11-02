@@ -118,3 +118,19 @@ Todo hecho en la rama, con pruebas unitarias y de juego (ver el plan, `docs/supe
 - **Tutorial:** por decisión de David el aviso sale **una vez a todos**, también a quien ya jugaba. Mientras dura no salen anuncios ni avisos de votación. La ✕ para dejarlo va debajo de las monedas (arriba en el centro tapaba el título de la ventana de comer). Si el animal está fuera de la pantalla, la mano se pone en el borde con una flecha hacia él.
 - **Libro:** la visita se cuenta al entrar y no al girar el móvil. Arreglado de paso un fallo anterior: tras girar el móvil dentro de la tienda, las visitas siguientes heredaban los datos del giro (no se contaban, no había paseo de entrada y las peanas no se renovaban).
 - **Matomo:** los tramos de monedas no cambian con los precios nuevos (se rompería la serie). La compra de Luna se cuenta como `tienda | compra | mascota/luna`.
+
+## Estadísticas del tutorial (añadido el 2026-11-02, pedido por David)
+
+Categoría `tutorial` en Matomo, para saber si la gente ve el tutorial y dónde se atasca:
+
+| Acción | Cuándo | Nombre | Valor |
+|---|---|---|---|
+| `tutorial-ofrece` | Sale el aviso de la primera vez | — | — |
+| `tutorial-aprende` | En el aviso se toca «Aprender» | — | — |
+| `tutorial-salta` | En el aviso se toca «Saltar» (o atrás) | — | — |
+| `tutorial-menu` | Se abre desde el botón «Aprender» del menú | — | — |
+| `tutorial-paso` | Se llega a un paso | `moverse`, `tocar-animal`, `arrastrar-comida`, `monedas`, `tienda` | segundos desde que empezó |
+| `tutorial-fin` | Se termina (se entra en la tienda) | — | segundos en total |
+| `tutorial-deja` | Se cierra a medias con la ✕ | el paso en el que estaba | segundos desde que empezó |
+
+Si alguien cierra el juego a medias no llega `tutorial-fin` ni `tutorial-deja`: el último `tutorial-paso` dice hasta dónde llegó. Con la tienda abierta desde el principio, el paso del embudo `tienda-abierta` ya no se envía.

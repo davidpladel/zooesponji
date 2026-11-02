@@ -166,6 +166,7 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
     'book-index', 'book-closed', 'legal-opened', 'quit-asked', 'quit-answered',
     'ad-offered', 'ad-accepted', 'ad-declined', 'ad-watched', 'ad-cut', 'ad-failed', 'ad-empty', 'ad-closed',
     'board-opened', 'board-voted', 'board-qr', 'board-offline', 'poll-notice',
+    'tutorial-offered', 'tutorial-answered', 'tutorial-started', 'tutorial-step', 'tutorial-ended',
   ];
   const busLog: string[] = [];
   for (const name of logged) bus.on(name, () => busLog.push(name));
@@ -189,7 +190,7 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
     },
     openTutorial: () => {
       if (game.scene.isActive('Tutorial')) game.scene.stop('Tutorial');
-      game.scene.start('Tutorial');
+      game.scene.start('Tutorial', { from: 'menu' });
     },
     tutorialStep: () => activeScene<TutorialScene>('Tutorial')?.currentStep() ?? null,
     tutorialClosePos: () => activeScene<TutorialScene>('Tutorial')?.closePos() ?? null,

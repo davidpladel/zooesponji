@@ -278,7 +278,7 @@ export class SettingsScene extends Phaser.Scene {
       // Se vuelve a ver desde el principio, sobre la partida de verdad (sin dar ni quitar monedas).
       if (this.scene.isActive('Tutorial')) this.scene.stop('Tutorial');
       this.close();
-      this.scene.launch('Tutorial');
+      this.scene.launch('Tutorial', { from: 'menu' });
       return;
     }
     if (key === 'privacy') {

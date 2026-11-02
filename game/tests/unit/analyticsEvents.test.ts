@@ -198,6 +198,33 @@ describe('GameTracker: tienda', () => {
     expect(t.values.get('tiene | tiene-recinto | pantera')).toBe(1);
   });
 
+  it('tutorial: aviso, cómo se abre, cada paso con sus segundos, y si se termina o se deja', async () => {
+    const t = setup();
+    await t.tracker.start();
+    t.events.emit('tutorial-offered', {});
+    t.events.emit('tutorial-answered', { learn: true });
+    t.events.emit('tutorial-started', { from: 'aviso' });
+    t.events.emit('tutorial-step', { step: 'move' });
+    t.clock.time += 12_000;
+    t.events.emit('tutorial-step', { step: 'tap-animal' });
+    t.clock.time += 30_000;
+    t.events.emit('tutorial-ended', { done: true, step: 'shop' });
+    expect(t.sent).toEqual(expect.arrayContaining([
+      'tutorial | tutorial-ofrece', 'tutorial | tutorial-aprende',
+      'tutorial | tutorial-paso | moverse', 'tutorial | tutorial-paso | tocar-animal', 'tutorial | tutorial-fin',
+    ]));
+    expect(t.values.get('tutorial | tutorial-paso | tocar-animal')).toBe(12);
+    expect(t.values.get('tutorial | tutorial-fin')).toBe(42);
+
+    t.events.emit('tutorial-answered', { learn: false });
+    t.events.emit('tutorial-started', { from: 'menu' });
+    t.events.emit('tutorial-step', { step: 'move' });
+    t.clock.time += 5_000;
+    t.events.emit('tutorial-ended', { done: false, step: 'move' });
+    expect(t.sent).toEqual(expect.arrayContaining(['tutorial | tutorial-salta', 'tutorial | tutorial-menu', 'tutorial | tutorial-deja | moverse']));
+    expect(t.values.get('tutorial | tutorial-deja | moverse')).toBe(5);
+  });
+
   it('comprar a Luna se cuenta como compra de mascota', async () => {
     const t = setup();
     await t.tracker.start();

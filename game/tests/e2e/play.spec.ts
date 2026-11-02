@@ -168,7 +168,8 @@ test('con 60 monedas se entra en la tienda y se compra la pantera', async ({ pag
 test('la tienda está abierta desde el principio, sin monedas', async ({ page }) => {
   await startGame(page);
   const door = await page.evaluate(() => window.__ZOO__!.shopDoorTile());
-  await walkTo(page, door!.x, door!.y);
+  // Andando hasta la puerta: al pisarla se entra (no se espera a que se pare, la tienda pausa el mapa).
+  await page.evaluate(([x, y]) => window.__ZOO__!.goToTile(x!, y!), [door!.x, door!.y]);
   await page.waitForFunction(() => window.__ZOO__!.activeScenes().includes('Shop'), undefined, { timeout: 30_000 });
 });
 

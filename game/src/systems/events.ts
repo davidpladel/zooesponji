@@ -64,6 +64,12 @@ export interface GameEvents {
   'purchase': { itemId: string; penId: PenId; residentId: string; cost: number };
   /** Compra de Luna (no es un animal de un recinto). */
   'pet-bought': { petId: 'luna'; cost: number };
+  /** Tutorial: sale el aviso, se contesta, empieza (desde el aviso o el menú), llega a un paso y acaba (terminado o dejado con la ✕). */
+  'tutorial-offered': Record<string, never>;
+  'tutorial-answered': { learn: boolean };
+  'tutorial-started': { from: 'aviso' | 'menu' };
+  'tutorial-step': { step: string };
+  'tutorial-ended': { done: boolean; step: string };
   'shop-closed': Record<string, never>;
   'book-opened': { pageId: string };
   'book-page-shown': { pageId: string; kind: BookPageKind };

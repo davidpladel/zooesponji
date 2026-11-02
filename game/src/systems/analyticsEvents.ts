@@ -58,6 +58,12 @@ export function knownSteps(state: GameState, book: BookProgress): Step[] {
  * hacen falta para ello: la ventana de comer abierta, la visita a la tienda, la lectura del libro,
  * el rato de juego y el alcance guardado en el dispositivo.
  */
+/** Nombre de cada paso del tutorial en Matomo (en español, como el resto de nombres). */
+const TUTORIAL_STEP_NAMES: Record<string, string> = {
+  move: 'moverse', 'tap-animal': 'tocar-animal', 'drag-food': 'arrastrar-comida', coins: 'monedas', shop: 'tienda',
+};
+export const tutorialStepName = (step: string): string => TUTORIAL_STEP_NAMES[step] ?? step;
+
 export class GameTracker implements AnalyticsHooks {
   /** `null` si el almacén ha fallado: sin él no se sabe qué es «primera vez» y no se cuenta. */
   private reach: ReachState | null = null;
@@ -70,6 +76,8 @@ export class GameTracker implements AnalyticsHooks {
   private readonly controls = new Set<string>();
   private feedWindow: { residentId: string; at: number; given: number } | null = null;
   private shop: { at: number; bought: number; looked: Set<string> } | null = null;
+  /** Cuándo empezó el tutorial en marcha (ms), o null. */
+  private tutorialAt: number | null = null;
   private reading: { at: number; read: Set<string>; page: { id: string; kind: BookPageKind; at: number } | null } | null = null;
 
   constructor(private readonly deps: TrackerDeps) {}
@@ -140,6 +148,19 @@ export class GameTracker implements AnalyticsHooks {
       this.send('tiene', 'tiene-animal', part(penId, residentId));
       this.step('primera-compra');
       if (zooComplete(this.deps.state())) this.step('zoo-completo');
+    });
+    on('tutorial-offered', () => this.send('tutorial', 'tutorial-ofrece'));
+    on('tutorial-answered', ({ learn }) => this.send('tutorial', learn ? 'tutorial-aprende' : 'tutorial-salta'));
+    on('tutorial-started', ({ from }) => {
+      this.tutorialAt = this.time();
+      if (from === 'menu') this.send('tutorial', 'tutorial-menu');
+    });
+    // Cada paso al que se llega, con los segundos desde el principio: donde se corta la cuenta, ahí se atascan.
+    on('tutorial-step', ({ step }) => this.send('tutorial', 'tutorial-paso', tutorialStepName(step), this.tutorialSeconds()));
+    on('tutorial-ended', ({ done, step }) => {
+      if (done) this.send('tutorial', 'tutorial-fin', undefined, this.tutorialSeconds());
+      else this.send('tutorial', 'tutorial-deja', tutorialStepName(step), this.tutorialSeconds());
+      this.tutorialAt = null;
     });
     on('pet-bought', ({ petId, cost }) => {
       if (this.shop) this.shop.bought += 1;
@@ -371,6 +392,11 @@ export class GameTracker implements AnalyticsHooks {
 
   private send<C extends Category>(category: C, action: ActionOf<C>, name?: string, value?: number): void {
     this.deps.sink.event(category, action, name, value);
+  }
+
+  /** Segundos desde que empezó el tutorial en marcha. */
+  private tutorialSeconds(): number {
+    return this.tutorialAt === null ? 0 : Math.round((this.time() - this.tutorialAt) / 1000);
   }
 
   private time(): number {
