@@ -57,6 +57,8 @@ export class HudScene extends Phaser.Scene {
     this.input.on(Phaser.Input.Events.POINTER_DOWN, this.onPointerDown, this);
     this.input.on(Phaser.Input.Events.POINTER_MOVE, this.onPointerMove, this);
     this.input.on(Phaser.Input.Events.POINTER_UP, this.onPointerUp, this);
+    // Si el dedo se suelta fuera del juego (en el borde de la pantalla), llega este otro aviso y no el de arriba.
+    this.input.on(Phaser.Input.Events.POINTER_UP_OUTSIDE, this.onPointerUp, this);
     this.scale.on(Phaser.Scale.Events.RESIZE, this.layout, this);
 
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
@@ -64,6 +66,7 @@ export class HudScene extends Phaser.Scene {
       this.input.off(Phaser.Input.Events.POINTER_DOWN, this.onPointerDown, this);
       this.input.off(Phaser.Input.Events.POINTER_MOVE, this.onPointerMove, this);
       this.input.off(Phaser.Input.Events.POINTER_UP, this.onPointerUp, this);
+      this.input.off(Phaser.Input.Events.POINTER_UP_OUTSIDE, this.onPointerUp, this);
       this.scale.off(Phaser.Scale.Events.RESIZE, this.layout, this);
       joystickState.vector = { x: 0, y: 0 };
     });
@@ -82,6 +85,12 @@ export class HudScene extends Phaser.Scene {
   }
 
   update(): void {
+    // Red de seguridad: si el dedo ya no está apretado y no llegó ningún aviso (se soltó encima de otra
+    // ventana, o el juego pasó a segundo plano), el joystick se suelta. Si no, la cuidadora seguía andando sola.
+    if (this.stickPointerId !== null) {
+      const finger = this.input.manager.pointers.find((p) => p.id === this.stickPointerId);
+      if (!finger || !finger.isDown) this.onPointerUp({ id: this.stickPointerId } as Phaser.Input.Pointer);
+    }
     this.gear.setVisible(gearVisible(this.scene.manager.getScenes(true).map((scene) => scene.scene.key)));
   }
 
