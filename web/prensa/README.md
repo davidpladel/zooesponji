@@ -4,9 +4,21 @@ Páginas estáticas `/prensa` (ES) y `/press` (EN), servidas por `pagina.php` co
 
 ## Regeneración
 
-Python 3, `fpdf2==2.9.0`, `uharfbuzz`, `fonttools` y Pillow. Ejecutar `python web/prensa/build.py` desde la raíz del repositorio. Las fuentes se buscan en `C:/Windows/Fonts` o en `PRESS_FONTS_DIR`: arial.ttf, tahoma.ttf, Nirmala.ttc, msyh.ttc y YuGothR.ttc. No se copian los archivos de fuentes al repositorio; los PDF incorporan subconjuntos. Mantener las imágenes y el ZIP de `public/assets/prensa/20261102b` antes de regenerar. Revisar visualmente las dos páginas de cada idioma después de cambiar textos. Las traducciones no cuentan con revisión profesional externa.
+Python 3, `fpdf2==2.9.0`, `uharfbuzz`, `fonttools` y Pillow, en un entorno aparte para no tocar el Python del sistema:
+
+```bash
+python -m venv <carpeta-temporal>/venv
+<carpeta-temporal>/venv/Scripts/python.exe -m pip install fpdf2==2.9.0 uharfbuzz fonttools pillow
+<carpeta-temporal>/venv/Scripts/python.exe web/prensa/build.py
+```
+
+Desde la raíz del repositorio. Los avisos `MERG NOT subset` de fontTools son normales. Las fuentes se buscan en `C:/Windows/Fonts` o en `PRESS_FONTS_DIR`: arial.ttf, tahoma.ttf, Nirmala.ttc, msyh.ttc y YuGothR.ttc. No se copian los archivos de fuentes al repositorio; los PDF incorporan subconjuntos. Mantener las imágenes y el ZIP de `public/assets/prensa/20261102b` antes de regenerar. Revisar visualmente las dos páginas de cada idioma después de cambiar textos. Las traducciones no cuentan con revisión profesional externa.
 
 El generador actualiza únicamente los once PDF y las dos páginas. La navegación, rutas, CSS y ZIP se mantienen aparte. Los textos HTML proceden del mismo JSON que los PDF; la cabecera y el pie se derivan de las portadas existentes para mantener metadatos, fuentes y consentimiento. No editar el HTML generado para cambiar textos del dossier.
+
+**Nombre de contacto:** David Plaza (no «David Pladel»; `davidpladel` es solo el nombre de la cuenta de desarrollador y del dominio del correo). Está en `CONTACT` de `build.py` (contacto y autor de los PDF) y en la ficha de cada idioma de `dossiers.json` («Proyecto familiar…»).
+
+**Comprobar tras regenerar:** con `pdftotext` (Git Bash) que los 11 PDF dicen lo nuevo, y con `pypdf` que su autor y sus enlaces apuntan a la carpeta de `STAMP`. Las páginas `/prensa` y `/press` deben cambiar solo en lo esperado (texto, carpeta y tamaños en KB).
 
 ## Materiales y permisos
 
@@ -21,10 +33,19 @@ ZIP: cuatro capturas originales PNG de 1920 × 1080, logo transparente PNG de 20
 
 ## Publicación manual
 
-1. Copia de seguridad de la web del alojamiento.
+1. Seguir «Publicar» de [../README.md](../README.md): comparar con el servidor y copia de seguridad.
 2. Copiar `web/public/` a `public_html/`, incluida `.htaccess` y los nuevos assets.
 3. Copiar `web/paginas/` a `private/paginas/`, incluido `rutas.php`. Preservar `aviso-legal.html` y `legal-notice.html` existentes en el servidor, ignorados por Git.
 4. No subir `web/prensa/` al directorio público: contiene las fuentes editoriales y el generador.
 5. Abrir `/prensa` y `/press`; comprobar alternancia ES/EN, PDF, ZIP, logo, capturas, tráileres y aviso de cookies. Verificar cabeceras CSP y metadatos con la URL pública tras subir.
 
-Los assets tienen caché de larga duración. Para una nueva edición, usar otra carpeta con fecha y actualizar `STAMP` y los enlaces; para cambios de CSS subir su `?v=`. No sobrescribir descargables publicados bajo la misma URL si el contenido cambia.
+## Nueva edición (cambia cualquier PDF, el ZIP o una imagen)
+
+Los assets tienen caché de 10 años en el navegador: **nunca sobrescribir un descargable publicado en la misma dirección.**
+
+1. `git mv` de la carpeta actual a una nueva (fecha, o fecha + letra si es el mismo día: `20261102` → `20261102b`).
+2. Cambiar `STAMP` en `build.py` (también sube el `?v=` de `prensa.css`) y regenerar.
+3. Publicar la carpeta nueva y las dos páginas. La vieja se queda sin enlaces, pero sigue respondiendo.
+4. Con permiso de David, borrar la carpeta vieja del servidor después de guardar `~/copia-web/prensa-<carpeta>-borrada.tgz`.
+
+Historial: `20261102` (primera edición, borrada el 2026-11-02) → `20261102b` (contacto «David Plaza»).

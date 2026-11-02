@@ -12,6 +12,8 @@ REL = '/assets/prensa/' + STAMP
 OUT = ROOT / 'public' / REL.lstrip('/')
 SITE = 'https://www.zooesponji.com'
 PLAY = 'https://play.google.com/store/apps/details?id=com.davidpladel.zooesponji'
+# Public contact name for press; the family credit lives in dossiers.json ('facts').
+CONTACT = 'David Plaza'
 TRAILERS = ['https://www.youtube.com/watch?v=JdYJmbETObk', 'https://www.youtube.com/watch?v=OtgodN0wrYg']
 
 def urls(lang):
@@ -39,7 +41,7 @@ def pdfs():
             p.set_margins(18, 17, 18); p.set_auto_page_break(False)
             p.add_font('body', fname=str(font)); p.add_font('latin', fname=str(fonts / 'arial.ttf'))
             p.set_fallback_fonts(['latin']); p.set_text_shaping(True)
-            p.set_title('Zoo Esponji | ' + d['kit']); p.set_author('Zoo Esponji - David Plaza')
+            p.set_title('Zoo Esponji | ' + d['kit']); p.set_author('Zoo Esponji - ' + CONTACT)
             p.set_lang(lang); p.set_subject(d['tagline'])
             align = 'R' if lang == 'ar' else 'L'
             wrap = 'CHAR' if lang in ('zh','ja') else 'WORD'
@@ -128,7 +130,7 @@ def pages():
 <h3>{'Tráileres oficiales' if es else 'Official trailers'}</h3><p><a href="{TRAILERS[0]}">{d['links'][4]} · YouTube</a> · <a href="{TRAILERS[1]}">{d['links'][5]} · YouTube</a></p>
 <h3 id="{'idiomas' if es else 'languages'}">{'El dossier en los 11 idiomas del juego' if es else 'The press kit in all 11 game languages'}</h3><ul class="prensa-idiomas">{languageLinks}</ul></div></section>
 <section id="{'uso-editorial' if es else 'editorial-use'}" class="envoltura prensa-bloque"><h2>{d['rightsTitle']}</h2>{paras(d['rights'])}<a href="{REL}/{'Uso_editorial_de_materiales.txt' if es else 'Editorial_use.txt'}">{'Condiciones y créditos completos' if es else 'Full terms and credits'}</a></section>
-<section id="{anchors[3][0]}" class="envoltura prensa-contacto"><h2>{d['contact']}</h2><p>David Plaza · <a href="mailto:android@davidpladel.com">android@davidpladel.com</a></p><p>{'Para entrevistas, preguntas y material adicional.' if es else 'For interviews, questions and additional materials.'}</p><small>{d['date']}</small></section>
+<section id="{anchors[3][0]}" class="envoltura prensa-contacto"><h2>{d['contact']}</h2><p>{CONTACT} · <a href="mailto:android@davidpladel.com">android@davidpladel.com</a></p><p>{'Para entrevistas, preguntas y material adicional.' if es else 'For interviews, questions and additional materials.'}</p><small>{d['date']}</small></section>
 </main>
 '''
         if not es: body=body.replace('href="#materiales"','href="#assets"')

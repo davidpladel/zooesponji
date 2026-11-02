@@ -48,6 +48,16 @@ final class WebTest extends TestCase
             self::assertMatchesRegularExpression('#href="/(privacidad|privacy)"#', $html, $pagina);
             self::assertMatchesRegularExpression('#href="/(condiciones|terms)"#', $html, $pagina);
             self::assertMatchesRegularExpression('#href="/(aviso-legal|legal-notice)"#', $html, $pagina);
+            // El kit de prensa solo se enlaza desde el pie, así que tiene que estar en todas.
+            self::assertMatchesRegularExpression('#href="/(prensa|press)"#', $html, $pagina);
+        }
+    }
+
+    public function testElContactoDePrensaEsDavidPlaza(): void
+    {
+        // «davidpladel» (cuenta y dominio) sí vale; el nombre de persona no.
+        foreach ([...self::archivosDeTexto(), self::WEB . '/prensa/dossiers.json', self::WEB . '/prensa/build.py'] as $archivo) {
+            self::assertStringNotContainsStringIgnoringCase('David Pladel', (string) file_get_contents($archivo), $archivo);
         }
     }
 
