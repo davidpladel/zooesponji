@@ -234,7 +234,7 @@ describe('mapa del zoo', () => {
     });
     expect(flowers.length).toBeGreaterThanOrEqual(8);
     for (const p of flowers) {
-      expect(p.prop).toMatch(/^(cherry-tree|pink-bush)/);
+      expect(p.prop).toMatch(/^(cherry-tree|pink-star|pink-flowers)/);
       expect(p.block, p.prop).toBeNull();
       expect(p.solid, p.prop).toBe(false);
     }

@@ -269,10 +269,10 @@ for (const [x, y] of [[12, 20], [62, 16], [6, 38], [90, 38]]) at('bush', x, y);
 // Jardín dentro de la U (x 40-46, y 6-16), como lo dibujó David: cerezos a los dos lados, por dentro del
 // pasillo, y arbustos de flores rosas en medio. Solo decora.
 for (const [name, x, y] of [
-  ['cherry-tree', 41, 8], ['cherry-tree-light', 41, 11], ['cherry-tree', 41, 14],
-  ['cherry-tree-light', 45, 8], ['cherry-tree', 45, 11], ['cherry-tree-light', 45, 14],
-  ['pink-bush', 43, 8], ['pink-bush', 43, 10], ['pink-bush', 43, 12], ['pink-bush', 43, 14],
-  ['pink-bush', 41, 16], ['pink-bush', 43, 16], ['pink-bush', 45, 16],
+  ['cherry-tree', 41, 8], ['cherry-tree', 41, 11], ['cherry-tree', 41, 14],
+  ['cherry-tree', 45, 8], ['cherry-tree', 45, 11], ['cherry-tree', 45, 14],
+  ['pink-star', 43, 7], ['pink-star', 43, 9], ['pink-star', 43, 11], ['pink-star', 43, 13], ['pink-star', 43, 15],
+  ['pink-flowers', 41, 16], ['pink-flowers', 43, 16], ['pink-flowers', 45, 16],
 ]) at(name, x, y);
 for (const [x, y] of [[30, 16], [10, 38], [72, 38]]) prop('bench', (x + 1) * T, (y + 1) * T);
 
