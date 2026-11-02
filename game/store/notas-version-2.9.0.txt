@@ -1,0 +1,156 @@
+<en-US>
+What's new in Zoo Esponji!
+• Improvements from your ideas. Thank you Lola and Jose!
+• Moon, the keeper's little dog: buy her and she'll follow you around the park.
+• Jose, the baby panda, lives with Mochi and Pompón.
+• New paths and a lovely cherry blossom garden.
+• A short tutorial to learn how to play.
+• The zoo book is easier to find in the shop.
+• New prices for the duck pond and the sheep.
+• Fixed: the joystick no longer moves on its own.
+• The game is smaller and loads faster.
+</en-US>
+<ar>
+جديد في Zoo Esponji!
+• تحسينات من أفكاركم. شكرًا Lola وJose!
+• قمر، كلبة الحارسة الصغيرة: اشترِها وسترافقك في الحديقة.
+• Jose، صغير الباندا، يعيش مع Mochi وPompón.
+• طرق جديدة وحديقة رائعة من أشجار الكرز.
+• درس قصير لتتعلّم اللعب.
+• صار من الأسهل إيجاد كتاب الحديقة في المتجر.
+• أسعار جديدة لبركة البط والخراف.
+• إصلاح: عصا التحكم لم تعد تتحرك وحدها.
+• اللعبة أصغر حجمًا وتفتح أسرع.
+</ar>
+<en-GB>
+What's new in Zoo Esponji!
+• Improvements from your ideas. Thank you Lola and Jose!
+• Moon, the keeper's little dog: buy her and she'll follow you around the park.
+• Jose, the baby panda, lives with Mochi and Pompón.
+• New paths and a lovely cherry blossom garden.
+• A short tutorial to learn how to play.
+• The zoo book is easier to find in the shop.
+• New prices for the duck pond and the sheep.
+• Fixed: the joystick no longer moves on its own.
+• The game is smaller and loads faster.
+</en-GB>
+<es-419>
+¡Novedades en Zoo Esponji!
+• Mejoras con sus ideas. ¡Gracias Lola y Jose!
+• Luna, la perrita de la cuidadora: cómprala y te acompañará por el parque.
+• Jose, la cría de panda, vive con Mochi y Pompón.
+• Caminos nuevos y un precioso jardín de cerezos.
+• Un pequeño tutorial para aprender a jugar.
+• El libro del zoo se encuentra mejor en la tienda.
+• Nuevos precios del estanque y de las ovejas.
+• Arreglado: el joystick ya no empuja solo.
+• El juego ocupa menos y carga más rápido.
+</es-419>
+<es-ES>
+¡Novedades en Zoo Esponji!
+• Mejoras con vuestras ideas. ¡Gracias Lola y Jose!
+• Luna, la perrita de la cuidadora: cómprala y te acompañará por el parque.
+• Jose, la cría de panda, vive con Mochi y Pompón.
+• Caminos nuevos y un precioso jardín de cerezos.
+• Un pequeño tutorial para aprender a jugar.
+• El libro del zoo se encuentra mejor en la tienda.
+• Nuevos precios del estanque y de las ovejas.
+• Arreglado: el joystick ya no empuja solo.
+• El juego ocupa menos y carga más rápido.
+</es-ES>
+<fr-FR>
+Du nouveau dans Zoo Esponji !
+• Des améliorations grâce à vos idées. Merci Lola et Jose !
+• Lune, la chienne de la soigneuse : achète-la, elle te suivra au parc.
+• Jose, le bébé panda, vit avec Mochi et Pompón.
+• De nouveaux chemins et un joli jardin de cerisiers.
+• Un petit tutoriel pour apprendre à jouer.
+• Le livre du zoo se trouve mieux dans la boutique.
+• Nouveaux prix pour l'étang et les moutons.
+• Corrigé : le joystick ne bouge plus tout seul.
+• Le jeu est plus léger et plus rapide.
+</fr-FR>
+<hi-IN>
+Zoo Esponji में नया क्या है!
+• आपके सुझावों से सुधार। शुक्रिया Lola और Jose!
+• चंदा, देखभाल करने वाली की प्यारी डॉगी: उसे खरीदो और वह पूरे पार्क में तुम्हारे साथ चलेगी।
+• Jose, नन्हा पांडा, Mochi और Pompón के साथ रहता है।
+• नए रास्ते और चेरी के पेड़ों का सुंदर बगीचा।
+• खेलना सीखने के लिए छोटा ट्यूटोरियल।
+• चिड़ियाघर की किताब अब दुकान में आसानी से मिलती है।
+• बत्तख के तालाब और भेड़ों के नए दाम।
+• ठीक किया: जॉयस्टिक अब अपने आप नहीं चलता।
+• गेम अब छोटा है और जल्दी खुलता है।
+</hi-IN>
+<it-IT>
+Novità in Zoo Esponji!
+• Miglioramenti grazie alle vostre idee. Grazie Lola e Jose!
+• Luna, la cagnolina della guardiana: comprala e ti seguirà per il parco.
+• Jose, il cucciolo di panda, vive con Mochi e Pompón.
+• Nuovi sentieri e un bellissimo giardino di ciliegi.
+• Un piccolo tutorial per imparare a giocare.
+• Il libro dello zoo si trova meglio nel negozio.
+• Nuovi prezzi per lo stagno e le pecore.
+• Corretto: il joystick non si muove più da solo.
+• Il gioco è più leggero e si apre prima.
+</it-IT>
+<ja-JP>
+Zoo Esponji の新しいこと！
+• みんなのアイデアで改良しました。ありがとう、Lola と Jose！
+• ツキ（しいくいんの子犬）：お店で買うと、公園中ついてきます。
+• パンダの赤ちゃん Jose が Mochi と Pompón といっしょに暮らしています。
+• 新しい道と、きれいな桜の庭。
+• 遊び方を覚える短いチュートリアル。
+• 動物園の本がお店で見つけやすくなりました。
+• アヒルの池とヒツジの値段を変えました。
+• 修正：ジョイスティックが勝手に動かなくなりました。
+• ゲームが軽くなり、速く起動します。
+</ja-JP>
+<pt-BR>
+Novidades no Zoo Esponji!
+• Melhorias com as ideias de vocês. Obrigado Lola e Jose!
+• Luna, a cachorrinha da cuidadora: compre-a e ela te acompanha pelo parque.
+• Jose, o filhote de panda, vive com Mochi e Pompón.
+• Caminhos novos e um lindo jardim de cerejeiras.
+• Um pequeno tutorial para aprender a jogar.
+• O livro do zoo está mais fácil de achar na loja.
+• Novos preços para o lago e as ovelhas.
+• Corrigido: o joystick não anda mais sozinho.
+• O jogo está mais leve e abre mais rápido.
+</pt-BR>
+<pt-PT>
+Novidades no Zoo Esponji!
+• Melhorias com as vossas ideias. Obrigado Lola e Jose!
+• Luna, a cadelinha da tratadora: compra-a e ela acompanha-te pelo parque.
+• Jose, a cria de panda, vive com o Mochi e o Pompón.
+• Caminhos novos e um lindo jardim de cerejeiras.
+• Um pequeno tutorial para aprender a jogar.
+• O livro do zoo encontra-se melhor na loja.
+• Novos preços para o lago dos patos e as ovelhas.
+• Corrigido: o joystick já não anda sozinho.
+• O jogo está mais leve e abre mais depressa.
+</pt-PT>
+<ru-RU>
+Новое в Zoo Esponji!
+• Улучшения по вашим идеям. Спасибо Lola и Jose!
+• Луна, собачка смотрительницы: купи её, и она будет ходить с тобой по парку.
+• Jose, детёныш панды, живёт с Mochi и Pompón.
+• Новые дорожки и красивый вишнёвый сад.
+• Короткое обучение, как играть.
+• Книгу зоопарка теперь легче найти в магазине.
+• Новые цены на утиный пруд и овец.
+• Исправлено: джойстик больше не двигается сам.
+• Игра занимает меньше места и быстрее запускается.
+</ru-RU>
+<zh-CN>
+Zoo Esponji 新内容！
+• 根据大家的想法做了改进。谢谢 Lola 和 Jose！
+• 月亮，饲养员的小狗：在商店买下它，它会陪你逛遍公园。
+• 熊猫宝宝 Jose 和 Mochi、Pompón 住在一起。
+• 新的小路和美丽的樱花园。
+• 一个学习玩法的小教程。
+• 在商店里更容易找到动物园之书。
+• 鸭子池塘和绵羊有了新价格。
+• 已修复：摇杆不会再自己移动。
+• 游戏更小，启动更快。
+</zh-CN>

@@ -4,7 +4,7 @@ Páginas estáticas `/prensa` (ES) y `/press` (EN), servidas por `pagina.php` co
 
 ## Regeneración
 
-Python 3, `fpdf2==2.9.0`, `uharfbuzz`, `fonttools` y Pillow. Ejecutar `python web/prensa/build.py` desde la raíz del repositorio. Las fuentes se buscan en `C:/Windows/Fonts` o en `PRESS_FONTS_DIR`: arial.ttf, tahoma.ttf, Nirmala.ttc, msyh.ttc y YuGothR.ttc. No se copian los archivos de fuentes al repositorio; los PDF incorporan subconjuntos. Mantener las imágenes y el ZIP de `public/assets/prensa/20261102` antes de regenerar. Revisar visualmente las dos páginas de cada idioma después de cambiar textos. Las traducciones no cuentan con revisión profesional externa.
+Python 3, `fpdf2==2.9.0`, `uharfbuzz`, `fonttools` y Pillow. Ejecutar `python web/prensa/build.py` desde la raíz del repositorio. Las fuentes se buscan en `C:/Windows/Fonts` o en `PRESS_FONTS_DIR`: arial.ttf, tahoma.ttf, Nirmala.ttc, msyh.ttc y YuGothR.ttc. No se copian los archivos de fuentes al repositorio; los PDF incorporan subconjuntos. Mantener las imágenes y el ZIP de `public/assets/prensa/20261102b` antes de regenerar. Revisar visualmente las dos páginas de cada idioma después de cambiar textos. Las traducciones no cuentan con revisión profesional externa.
 
 El generador actualiza únicamente los once PDF y las dos páginas. La navegación, rutas, CSS y ZIP se mantienen aparte. Los textos HTML proceden del mismo JSON que los PDF; la cabecera y el pie se derivan de las portadas existentes para mantener metadatos, fuentes y consentimiento. No editar el HTML generado para cambiar textos del dossier.
 
