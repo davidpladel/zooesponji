@@ -249,8 +249,8 @@
       "edits": [{ "swap": { "a0a1a3": "b3a89a", "86888a": "978c7f", "c1c1c2": "d0c6b8", "77787a": "847a6e", "b1b2b4": "c2b8aa" } }]
     },
     "panda-jose": {
-      "zip": "wild", "file": "16x16/Default format/$bear_polar.png", "override": "panda.png", "retouchOverride": true, "shrink": 20,
-      "edits": [{ "swap": { "414040": "9a9a9a", "3e3a42": "8f8c94", "322f37": "7f7c85", "38343c": "86838b" } }]
+      "zip": "wild", "file": "16x16/Default format/$bear_polar.png", "override": "panda.png", "retouchOverride": true, "shrink": 22,
+      "edits": [{ "swap": { "414040": "6e6b74", "3e3a42": "66636c", "322f37": "5a5760", "38343c": "615e67" } }]
     },
     "elefante-asiatico-mali": { "zip": "wild", "file": "16x16/Default format/$elephant_asian_brown.png", "override": "elefante-asiatico-mali.png" }
   },

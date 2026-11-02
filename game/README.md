@@ -53,7 +53,7 @@ con la hoja del pack y una lista de `edits` (retoques):
 - `rows`: a qué filas se aplica (0 de frente, 1 izquierda, 2 derecha, 3 de espaldas).
 - `cols`: a qué fotogramas del paso (0, 1, 2); el central va 1 px más alto en la cabra.
 
-`shrink` reduce cada fotograma a ese lado en píxeles (Chispa, 13). Con `retouchOverride`, `shrink` y `edits` se aplican también encima de un dibujo terminado de los niños (primero se reduce y luego se cambian colores): así sale Jose, el panda de los niños a 20 px y con las manchas grises. `npm run art:preview -- <aspecto>`
+`shrink` reduce cada fotograma a ese lado en píxeles (Chispa, 13). Con `retouchOverride`, `shrink` y `edits` se aplican también encima de un dibujo terminado de los niños (primero se reduce y luego se cambian colores): así sale Jose, el panda de los niños a 22 px y con las manchas en gris oscuro. `npm run art:preview -- <aspecto>`
 deja una vista ×8 en el repo privado para ajustarlos. El aspecto se asigna al animal en
 `src/data/pens.ts` (`look`). Tras cambiar la configuración, o añadir una especie o un aspecto, hay que
 ejecutar `npm run art:import`: el manifiesto exige la hoja de cada especie y, si falta, el juego arranca
