@@ -226,7 +226,7 @@ describe('mapa del zoo', () => {
     expect(lost).toEqual([]);
   });
 
-  it('dentro de la U hay un jardín de flores que solo decora', () => {
+  it('dentro de la U hay un jardín de cerezos y flores rosas que solo decora', () => {
     const flowers = readProps(map).filter((p) => {
       const tx = Math.floor((p.x - 1) / 16);
       const ty = Math.floor((p.y - 1) / 16);
@@ -234,7 +234,7 @@ describe('mapa del zoo', () => {
     });
     expect(flowers.length).toBeGreaterThanOrEqual(8);
     for (const p of flowers) {
-      expect(p.prop).toMatch(/^(flowers|sunflowers|flowerbed)/);
+      expect(p.prop).toMatch(/^(cherry-tree|pink-bush)/);
       expect(p.block, p.prop).toBeNull();
       expect(p.solid, p.prop).toBe(false);
     }

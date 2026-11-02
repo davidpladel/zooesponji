@@ -52,7 +52,7 @@ for (let ty = 0; ty < map.height; ty++) {
 const objects = map.layers.find((l) => l.type === 'objectgroup')?.objects ?? [];
 for (const o of objects) {
   const prop = o.properties?.find((p) => p.name === 'prop')?.value;
-  if (typeof prop !== 'string' || !/^(flowers|sunflowers|flowerbed)/.test(prop)) continue;
+  if (typeof prop !== 'string' || !/^(flowers|sunflowers|flowerbed|cherry-tree|pink-bush)/.test(prop)) continue;
   paint(Math.floor((o.x - 1) / 16), Math.floor((o.y - 1) / 16), FLOWER, 2);
 }
 writeFileSync(out, PNG.sync.write(png));
