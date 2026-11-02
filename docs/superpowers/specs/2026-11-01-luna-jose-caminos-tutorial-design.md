@@ -1,6 +1,6 @@
 # Caminos nuevos, perrita Luna, cría Jose, tutorial visual y aviso del libro — diseño
 
-Fecha: 2026-11-01 · Rama: `feat/luna-jose-caminos-tutorial` (sale de `main`) · Estado: implementada en la rama, pendiente de que David la pruebe y de fusionar
+Fecha: 2026-11-01 · Rama: `feat/luna-jose-caminos-tutorial` (sale de `main`) · Estado: implementada, probada por David en el móvil y fusionada en `main` como **2.9.0 (versionCode 12)** el 2026-11-02; pendiente de subir a Play
 
 Se prueba de forma independiente de las otras ramas pendientes (R8/DEX, etc.) y se fusiona cuando David dé el visto bueno.
 

@@ -2,7 +2,7 @@
 
 Creado por y para Daniela y Adrián, con la ayuda de su padre y de Claude + OpenCode + DeepSeek + ChatGPT.
 
-**Versión actual: 2.8.1** (2026-10-23, en `main`) · Juega en la web: https://davidpladel.com/zoo/ (aún con una versión anterior) · Android: **publicado en Google Play** (producción) con la 2.8.1 (versionCode 11, desde el 2026-10-29)
+**Versión actual: 2.9.0** (2026-11-02, en `main`, versionCode 12; AAB compilado, pendiente de subir a Play) · Juega en la web: https://davidpladel.com/zoo/ (aún con una versión anterior) · Android: **publicado en Google Play** (producción) con la 2.8.1 (versionCode 11, desde el 2026-10-29)
 
 ## La idea
 
@@ -32,6 +32,7 @@ Pensado para niños de 6 a 9 años: sin textos largos y sin perder. En Android h
 
 | Versión | Fecha | Qué trajo |
 |---|---|---|
+| **2.9.0** | 2026-11-02 | Luna (la perrita de la cuidadora, 67 🪙, sigue a la cuidadora y curiosea en la tienda; con página en el libro), Jose (cría de panda), atajos y jardín de cerezos en la U, tutorial visual sin leer (con estadísticas en Matomo), tienda abierta desde el principio, libro siempre a la vista desde la 3.ª visita, estanque y ovejas a 120 🪙, arreglo del joystick que se quedaba empujando solo. Lleva también R8 (la 2.8.2, que no se llegó a subir): el código Android baja de 16,4 a 4,9 MB. |
 | **2.8.1** | 2026-10-23 | La 2.8.0 se subió a Play con un AAB anterior a los últimos arreglos (el libro se desbordaba en chino y japonés). Esta lleva todo lo de la 2.8.0, sin cambios de código. |
 | **2.8.0** | 2026-10-21 | El juego en 11 idiomas (submenú de idioma en Ajustes), también los titulares del tablón; el libro ya no se desborda en chino y japonés; las reacciones y monedas al dar de comer salen por delante del título y de la X, y la lluvia de monedas de la tienda por encima de todo. |
 | **2.7.1** | 2026-10-17 | Arreglos del tablón: el muro de ideas hechas con un solo tamaño de letra, título en negrita e «Idea de…» en letra normal; nombres de hasta 20 letras. |
@@ -132,7 +133,7 @@ Pendiente, por orden: el siguiente paquete para Play lleva R8 (2.8.2, [spec](doc
 
 🟡 **Comunidad** (plan 1 en `main` desde el 2026-10-15): servidor de votaciones e ideas (`server/`, en `api.zooesponji.com`), web www.zooesponji.com (`web/`: portada, kit de prensa en `/prensa` y `/press` enlazado desde el pie, formulario de ideas y fallos, condiciones, privacidad y cookies con Matomo; cómo publicar en `web/README.md`) y herramientas para preparar cada votación (`tools/comunidad/`). Todo instalado en el VPS y probado por David. Plan 2 (el tablón con el QR dentro del juego) en `main` (2.7.0) y probado en el móvil con el servidor real. Al acabar una votación sale un aviso con la ganadora y el tablón dice que pronto habrá ideas nuevas. 2026-10-17 (2.7.1): nombres de hasta 20 letras y el muro con un solo tamaño de letra, título en negrita e «Idea de…» en letra normal; probado por David en el móvil.
 
-🟡 **Rama `feat/luna-jose-caminos-tutorial`** (2026-11-01, pendiente de fusionar; versión por decidir al fusionar): atajos por los bordes y a las esquinas del cuadrado central (según el plano de David) con un jardín de flores dentro de la «U» de arriba, visitantes que van a donde hay menos gente, Luna, Jose (la cría de panda, tercera del recinto, 20 🪙), estanque y ovejas a 120 🪙, tutorial visual (con estadísticas en Matomo), libro a la vista, página de Luna en el libro y tienda abierta desde el principio. Probada en el móvil por David el 2026-11-02 con la 2.8.2 de `main` fusionada. Spec y plan: `docs/superpowers/specs/2026-11-01-luna-jose-caminos-tutorial-design.md` y `docs/superpowers/plans/2026-11-01-luna-jose-caminos-tutorial.md`.
+✅ **2.9.0** (2026-11-02, fusionada en `main`, versionCode 12; AAB `zooesponji-2.9.0-vc12.aab` compilado, pendiente de subir a Play; notas en `game/store/notas-version-2.9.0.txt`): atajos por los bordes y a las esquinas del cuadrado central (según el plano de David) con un jardín de flores dentro de la «U» de arriba, visitantes que van a donde hay menos gente, Luna, Jose (la cría de panda, tercera del recinto, 20 🪙), estanque y ovejas a 120 🪙, tutorial visual (con estadísticas en Matomo), libro a la vista, página de Luna en el libro y tienda abierta desde el principio. Probada en el móvil por David el 2026-11-02 con la 2.8.2 de `main` fusionada. Spec y plan: `docs/superpowers/specs/2026-11-01-luna-jose-caminos-tutorial-design.md` y `docs/superpowers/plans/2026-11-01-luna-jose-caminos-tutorial.md`.
 
 **Más adelante:** clínica veterinaria, bañar animales, limpiar jaulas, ciclo día-noche, acuario con delfines, más animales y zonas.
 
