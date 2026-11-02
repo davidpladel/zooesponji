@@ -41,6 +41,8 @@ const FEED_REACH = 18;
 const AD_OFFER_MS = 300;
 /** El aviso de votación se mira un poco después del anuncio, para no pisarse. */
 const NOTICE_MS = AD_OFFER_MS + 250;
+/** Lo que Luna espera quieta antes de pararse y mirar a la cuidadora. */
+const PET_REST_MS = 200;
 
 type WasdKeys = Record<'W' | 'A' | 'S' | 'D', Phaser.Input.Keyboard.Key>;
 
@@ -67,6 +69,8 @@ export class WorldScene extends Phaser.Scene {
   /** Luna, si se ha comprado: sigue el rastro de la cuidadora. */
   private pet: Walker | null = null;
   private petTrail: Vec[] = [];
+  /** Rato (ms) que Luna lleva sin avanzar: solo se sienta pasado PET_REST_MS (si no, se cortan los pasos). */
+  private petIdle = 0;
 
   constructor() {
     super('World');
@@ -537,7 +541,9 @@ export class WorldScene extends Phaser.Scene {
     const step = followTrail({ x: this.pet.x, y: this.pet.y }, this.petTrail, delta);
     this.petTrail = step.trail;
     if (step.pos.x !== this.pet.x || step.pos.y !== this.pet.y) this.pet.moveTo(step.pos.x, step.pos.y);
-    if (!step.moving) this.pet.face(facingFromDelta(keeper.x - this.pet.x, keeper.y - this.pet.y, 'down'));
+    // Pegada a la cuidadora avanza a tirones (un fotograma sí y otro no): pararla en cada uno cortaba la animación de las patas.
+    this.petIdle = step.moving ? 0 : this.petIdle + delta;
+    if (this.petIdle >= PET_REST_MS) this.pet.face(facingFromDelta(keeper.x - this.pet.x, keeper.y - this.pet.y, 'down'));
   }
 
   /** Para pruebas: dónde está Luna en el mapa. */
