@@ -1,9 +1,8 @@
 import * as Phaser from 'phaser';
 import type { Vec } from '../core/movement';
-import { COINS_SHOW_MS, MOVE_DISTANCE, advance, goodFood, handVisible, type TutorialEvent, type TutorialStep } from '../core/tutorial';
+import { COINS_SHOW_MS, MOVE_DISTANCE, advance, goodFood, type TutorialEvent, type TutorialStep } from '../core/tutorial';
 import { findResident } from '../data/pens';
 import { bus } from '../systems/events';
-import { getSession } from '../systems/session';
 import { addIcon } from '../ui/icons';
 import { addEmoji } from '../ui/text';
 import { HUD_COIN, addCloseBadge } from '../ui/widgets';
@@ -107,8 +106,6 @@ export class TutorialScene extends Phaser.Scene {
 
   /** Qué gesto toca ahora y dónde; null si la escena que hace falta no está a la vista. */
   private currentGesture(): Gesture | null {
-    const coins = getSession().state.coins;
-    if (!handVisible(this.step, coins)) return null;
     const world = this.world();
     switch (this.step) {
       case 'move': {

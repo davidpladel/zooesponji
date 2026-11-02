@@ -26,8 +26,9 @@ export function initialCounts(): Record<PenId, number> {
   return counts;
 }
 
+/** La tienda está abierta desde el principio (2026-11-02): así el tutorial puede llevar hasta ella. */
 export function initialState(): GameState {
-  return { coins: 0, counts: initialCounts(), shopUnlocked: false, luna: false };
+  return { coins: 0, counts: initialCounts(), shopUnlocked: true, luna: false };
 }
 
 export function addCoins(state: GameState, amount: number): GameState {

@@ -146,8 +146,8 @@ describe('GameTracker: alcance y embudo', () => {
     expect(t.sent.some((k) => k.startsWith('embudo'))).toBe(false);
   });
 
-  it('una partida nueva no tiene pasos dados', () => {
-    expect(knownSteps(initialState(), defaultBook())).toEqual([]);
+  it('una partida nueva solo tiene dado el de la tienda abierta (abierta de inicio desde el 2026-11-02)', () => {
+    expect(knownSteps(initialState(), defaultBook())).toEqual(['tienda-abierta']);
   });
 });
 

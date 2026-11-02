@@ -103,12 +103,11 @@ test('se aprende jugando: moverse, tocar, arrastrar la comida, monedas y tienda'
   await dragFood(page, food);
   await expect.poll(() => step(page)).toBe('coins');
   await expect.poll(() => step(page), { timeout: 8_000 }).toBe('shop');
+  expect(await scenes(page)).toContain('Feed');
 
-  // Con menos de 20 monedas se juega libre; con 20, la mano señala la tienda.
+  // Al cerrar la comida, la mano señala la tienda (abierta desde el principio, sin esperar monedas).
   await page.keyboard.press('Escape');
   await page.waitForFunction(() => !window.__ZOO__!.activeScenes().includes('Feed'));
-  expect(await hand(page)).toBeNull();
-  await page.evaluate(() => window.__ZOO__!.addCoins(20));
   await expect.poll(() => hand(page)).not.toBeNull();
   // Andando hasta la puerta, como el jugador: el mapa abre la tienda.
   const door = (await page.evaluate(() => window.__ZOO__!.shopDoorTile()))!;

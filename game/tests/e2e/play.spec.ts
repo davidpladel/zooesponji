@@ -165,12 +165,11 @@ test('con 60 monedas se entra en la tienda y se compra la pantera', async ({ pag
   expect(await page.evaluate(() => window.__ZOO__!.unlocked())).toContain('pantera');
 });
 
-test('sin 20 monedas la tienda no se abre', async ({ page }) => {
+test('la tienda está abierta desde el principio, sin monedas', async ({ page }) => {
   await startGame(page);
   const door = await page.evaluate(() => window.__ZOO__!.shopDoorTile());
   await walkTo(page, door!.x, door!.y);
-  await page.waitForTimeout(500);
-  expect(await page.evaluate(() => window.__ZOO__!.activeScenes())).not.toContain('Shop');
+  await page.waitForFunction(() => window.__ZOO__!.activeScenes().includes('Shop'), undefined, { timeout: 30_000 });
 });
 
 test('la cabra tiene lechuga en su bandeja y se la come', async ({ page }) => {

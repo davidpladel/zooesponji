@@ -125,7 +125,12 @@ describe('migrateLegacy (partidas de la v1.1)', () => {
 
   it('ignora valores corruptos', () => {
     const migrated = migrateLegacy('abc', 'no-es-json');
-    expect(migrated?.state).toEqual({ coins: 0, counts: { ...initialCounts(), leon: 1, cabra: 1, pantera: 0, panda: 0 }, shopUnlocked: false, luna: false });
+    expect(migrated?.state).toEqual({ coins: 0, counts: { ...initialCounts(), leon: 1, cabra: 1, pantera: 0, panda: 0 }, shopUnlocked: true, luna: false });
+  });
+
+  it('una partida de antes con la tienda cerrada la tiene abierta', () => {
+    const old = { version: 2, state: { coins: 3, counts: {}, shopUnlocked: false }, settings: {} };
+    expect(parseSave(old)!.state.shopUnlocked).toBe(true);
   });
 });
 

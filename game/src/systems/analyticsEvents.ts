@@ -43,8 +43,9 @@ export function knownSteps(state: GameState, book: BookProgress): Step[] {
   const initial = initialCounts();
   const bought = PEN_IDS.some((id) => state.counts[id] > initial[id]);
   const steps: Step[] = [];
-  if (state.coins > 0 || state.shopUnlocked || bought) steps.push('primer-paso', 'primer-toque-animal', 'primera-ventana', 'primera-comida');
-  if (state.shopUnlocked) steps.push('tienda-abierta');
+  if (state.coins > 0 || bought) steps.push('primer-paso', 'primer-toque-animal', 'primera-ventana', 'primera-comida');
+  // Desde el 2026-11-02 la tienda está abierta de inicio: el paso «tienda-abierta» ya no se da (se marca como dado).
+  steps.push('tienda-abierta');
   if (bought) steps.push('primera-tienda', 'primera-compra');
   if (book.seen.length > 0) steps.push('primer-libro');
   if (isBookComplete(state)) steps.push('libro-completo');

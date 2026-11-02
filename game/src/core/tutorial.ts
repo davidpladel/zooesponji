@@ -1,6 +1,5 @@
 import { trayFoods, ANIMALS, type AnimalId } from '../data/animals';
 import type { FoodId } from '../data/foods';
-import { SHOP_UNLOCK_COINS } from '../data/shop';
 
 /** Pasos del tutorial, en el orden que fijó David: moverse, tocar, arrastrar la comida, monedas y tienda. */
 export const TUTORIAL_STEPS = ['move', 'tap-animal', 'drag-food', 'coins', 'shop'] as const;
@@ -34,15 +33,11 @@ export function advance(step: TutorialStep, event: TutorialEvent): TutorialStep 
       if (event.type === 'feed-closed') return 'tap-animal';
       return step;
     case 'coins':
-      return event.type === 'coins-shown' ? 'shop' : step;
+      // Al cerrar la comida (o pasado un rato) la mano lleva a la tienda.
+      return event.type === 'coins-shown' || event.type === 'feed-closed' ? 'shop' : step;
     case 'shop':
       return event.type === 'shop-opened' ? 'done' : step;
   }
-}
-
-/** El paso de la tienda espera a tener las monedas que la abren (mientras, se juega libre); los demás, siempre. */
-export function handVisible(step: TutorialStep, coins: number): boolean {
-  return step !== 'shop' || coins >= SHOP_UNLOCK_COINS;
 }
 
 /** Comida de la bandeja que el animal se come (la primera que no rechaza): la que arrastra la mano. */

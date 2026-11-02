@@ -158,34 +158,14 @@ describe('Session: dar de comer, comprar y ajustes', () => {
     expect(handler).not.toHaveBeenCalled();
   });
 
-  it('emite shop-unlocked una sola vez al llegar a 20', async () => {
-    const { session, events } = await fresh();
-    const handler = vi.fn();
-    events.on('shop-unlocked', handler);
-    await session.earnCoins(19);
-    await session.earnCoins(1);
-    await session.earnCoins(5);
-    expect(handler).toHaveBeenCalledTimes(1);
-  });
-
-  it('no repite shop-unlocked al gastar y volver a juntar 20, ni tras recargar la partida', async () => {
+  it('la tienda está abierta desde el principio: no hay aviso de tienda abierta', async () => {
     const { session, events, store } = await fresh();
     const handler = vi.fn();
     events.on('shop-unlocked', handler);
-    await session.earnCoins(20);
-    expect((await session.buy('extra-cabra')).ok).toBe(true);
-    expect(session.state.coins).toBe(10);
-    await session.earnCoins(10);
-    expect(handler).toHaveBeenCalledTimes(1);
-
-    // Otra compra y se cierra el juego con menos de 20: al volver, la tienda sigue abierta.
-    expect((await session.buy('extra-cabra')).ok).toBe(true);
-    const reloaded = await fresh(store);
-    const again = vi.fn();
-    reloaded.events.on('shop-unlocked', again);
-    expect(reloaded.session.state).toMatchObject({ coins: 10, shopUnlocked: true });
-    await reloaded.session.earnCoins(10);
-    expect(again).not.toHaveBeenCalled();
+    expect(session.state.shopUnlocked).toBe(true);
+    await session.earnCoins(25);
+    expect(handler).not.toHaveBeenCalled();
+    expect((await fresh(store)).session.state.shopUnlocked).toBe(true);
   });
 
   it('comprar desbloquea el animal y emite animal-unlocked', async () => {

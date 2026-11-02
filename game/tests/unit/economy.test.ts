@@ -8,11 +8,11 @@ function withCoins(coins: number, extra: Partial<GameState> = {}): GameState {
 }
 
 describe('initialState', () => {
-  it('empieza con 0 monedas, león y cabra, y tienda cerrada', () => {
+  it('empieza con 0 monedas, león y cabra, y la tienda abierta', () => {
     expect(initialState()).toEqual({
       coins: 0,
       counts: { leon: 1, cabra: 1, pantera: 0, panda: 0, estanque: 0, ovejas: 0, establo: 0, pinguinos: 0, sabana: 0, 'elefantes-africanos': 0, 'elefantes-asiaticos': 0 },
-      shopUnlocked: false,
+      shopUnlocked: true,
       luna: false,
     });
   });

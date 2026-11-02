@@ -1,5 +1,4 @@
 import { PEN_IDS, isPenId, penCapacity, type PenId } from '../data/pens';
-import { SHOP_UNLOCK_COINS } from '../data/shop';
 import { isLanguage, type Language } from '../systems/language';
 import { initialCounts, type GameState } from './economy';
 
@@ -111,7 +110,7 @@ function parseShop(raw: unknown): ShopProgress {
 export function defaultSave(): SaveData {
   return {
     version: SAVE_VERSION,
-    state: { coins: 0, counts: initialCounts(), shopUnlocked: false, luna: false },
+    state: { coins: 0, counts: initialCounts(), shopUnlocked: true, luna: false },
     settings: defaultSettings(),
     book: defaultBook(),
     tutorial: { offered: false },
@@ -147,7 +146,8 @@ export function parseSave(value: unknown): SaveData | null {
 
   return {
     version: SAVE_VERSION,
-    state: { coins, counts, shopUnlocked: state.shopUnlocked === true, luna: state.luna === true },
+    // Desde el 2026-11-02 la tienda está abierta para todos, también en partidas de antes.
+    state: { coins, counts, shopUnlocked: true, luna: state.luna === true },
     settings: {
       music: bool('music'),
       sfx: bool('sfx'),
@@ -181,7 +181,7 @@ export function migrateLegacy(coinsRaw: string | null, purchasesRaw: string | nu
     state: {
       coins,
       counts: countsFromUnlocked(extra),
-      shopUnlocked: bought.shop === true || coins >= SHOP_UNLOCK_COINS,
+      shopUnlocked: true,
       luna: false,
     },
     settings: defaultSettings(),
