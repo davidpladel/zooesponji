@@ -1,6 +1,7 @@
 # Web de Zoo Esponji (www.zooesponji.com)
 
-Portada, formulario de ideas y fallos, condiciones, privacidad y cookies, en español e inglés. Sin librerías.
+Portada, prensa, formulario de ideas y fallos, condiciones, privacidad y cookies, en español e inglés. Sin librerías.
+Prensa: PDF en los 11 idiomas del juego, originales de imágenes y ZIP editorial. Fuentes y guía de regeneración/publicación en [prensa/README.md](prensa/README.md).
 El formulario envía a `api.zooesponji.com/envio.php` (código en `server/`).
 
 Medición: Matomo de statscrog.davidpladel.com, **sitio 4** (el juego usa otro sitio aparte). `assets/cookies.js`
@@ -22,6 +23,7 @@ Letras: solo dos, Baloo 2 (títulos y botones) y Nunito (texto), servidas desde 
 | Dirección | Página |
 |---|---|
 | `/` · `/en` | Portada |
+| `/prensa` · `/press` | Dossier, PDF, imágenes, tráileres y contacto de prensa |
 | `/ideas` · `/ideas/en` | Formulario de ideas y fallos |
 | `/condiciones` · `/terms` | Condiciones de las ideas |
 | `/privacidad` · `/privacy` | Privacidad del juego y de esta web |

@@ -43,6 +43,18 @@
       ],
       "port": 4173,
       "autoPort": false
+    },
+    {
+      "name": "web",
+      "runtimeExecutable": "C:/xampp/php/php.exe",
+      "runtimeArgs": [
+        "-S",
+        "localhost:8090",
+        "-t",
+        "web/public"
+      ],
+      "port": 8090,
+      "autoPort": false
     }
   ]
 }

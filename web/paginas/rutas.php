@@ -13,5 +13,7 @@ return [
     'legal-notice' => 'legal-notice.html',
     'cookies' => 'cookies.html',
     'cookies-en' => 'cookies-en.html',
+    'prensa' => 'prensa.html',
+    'press' => 'press.html',
     '404' => '404.html',
 ];
