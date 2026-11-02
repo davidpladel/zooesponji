@@ -146,8 +146,8 @@ export class ShopScene extends Phaser.Scene {
     const resumed = (): void => {
       this.adRequested = false;
       this.syncCloseBadge();
-      // Se acaba de leer el libro: vuelve a esconderse en la estantería.
-      if (this.notice && getSession().book.opened) this.endNotice();
+      // Recién leído por primera vez antes de la 3.ª visita: desde ya, siempre a la vista.
+      if (!this.notice && getSession().book.opened) this.startNoticeOnShelf();
     };
     // Con la tienda en pausa debajo de otra ventana (el libro, el anuncio), su X no se ve: una sola X, la de arriba.
     const paused = (): void => {
@@ -275,12 +275,13 @@ export class ShopScene extends Phaser.Scene {
     this.tweens.add({ targets: this.book, scale: 1.15, duration: 900, yoyo: true, repeat: -1, ease: 'Sine.InOut' });
   }
 
-  private endNotice(): void {
-    this.notice = false;
-    this.bookOut = false;
-    if (!this.book) return;
+  /** Lo mismo que `startNotice`, en el sitio del libro encima de la estantería. */
+  private startNoticeOnShelf(): void {
+    const spot = this.interior.bookShelf;
+    if (!spot || !this.book) return;
     this.tweens.killTweensOf(this.book);
-    this.book.setAlpha(1).setScale(1).setVisible(false);
+    this.bookOut = false;
+    this.startNotice(this.interior.screen({ x: spot.x, y: spot.y - 16 }));
   }
 
   /** Destello suave en la estantería; más a menudo si hay páginas sin leer. */

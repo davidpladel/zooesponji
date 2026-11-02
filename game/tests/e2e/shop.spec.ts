@@ -108,10 +108,13 @@ test('libro: se abre desde la estantería y al comprar la pantera aparece Noche'
 
   // El libro está escondido: tocar la estantería lleva hasta ella y el libro salta fuera.
   const openBook = async () => {
-    const shelf = (await page.evaluate(() => window.__ZOO__!.shopBookPos()))!;
-    await page.mouse.click(box.x + shelf.x, box.y + shelf.y);
-    await page.waitForFunction(() => window.__ZOO__!.shopBookOut(), undefined, { timeout: 10_000 });
-    await page.waitForTimeout(400);
+    // Si ya está a la vista (se abrió una vez), se toca directamente; si no, la estantería lo hace saltar.
+    if (!(await page.evaluate(() => window.__ZOO__!.shopBookNotice()))) {
+      const shelf = (await page.evaluate(() => window.__ZOO__!.shopBookPos()))!;
+      await page.mouse.click(box.x + shelf.x, box.y + shelf.y);
+      await page.waitForFunction(() => window.__ZOO__!.shopBookOut(), undefined, { timeout: 10_000 });
+      await page.waitForTimeout(400);
+    }
     const book = (await page.evaluate(() => window.__ZOO__!.shopBookPos()))!;
     await page.mouse.click(box.x + book.x, box.y + book.y);
     await page.waitForFunction(() => window.__ZOO__!.activeScenes().includes('Book'));
@@ -132,7 +135,7 @@ test('libro: se abre desde la estantería y al comprar la pantera aparece Noche'
   expect(await page.evaluate(() => window.__ZOO__!.bookText())).toContain('Noche es negra como el carbón');
 });
 
-test('libro: desde la 3.ª visita se ve parpadeando hasta que se abre', async ({ page }) => {
+test('libro: desde la 3.ª visita se ve parpadeando, y ya siempre', async ({ page }) => {
   await startGame(page);
   await page.evaluate(() => window.__ZOO__!.addCoins(30));
   const visit = async () => {
@@ -167,8 +170,9 @@ test('libro: desde la 3.ª visita se ve parpadeando hasta que se abre', async ({
   await page.waitForFunction(() => window.__ZOO__!.activeScenes().includes('Book'));
   await page.keyboard.press('Escape');
   await page.waitForFunction(() => !window.__ZOO__!.activeScenes().includes('Book'));
-  expect(await page.evaluate(() => window.__ZOO__!.shopBookNotice())).toBe(false);
+  // Una vez que ha salido, ya no se esconde.
+  expect(await page.evaluate(() => window.__ZOO__!.shopBookNotice())).toBe(true);
   await leave();
   await visit();
-  expect(await page.evaluate(() => window.__ZOO__!.shopBookNotice())).toBe(false);
+  expect(await page.evaluate(() => window.__ZOO__!.shopBookNotice())).toBe(true);
 });

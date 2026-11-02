@@ -113,11 +113,12 @@ describe('libro del zoo', () => {
 });
 
 describe('aviso del libro en la tienda', () => {
-  it('se enseña desde la 3.ª entrada mientras no se haya abierto nunca', () => {
+  it('desde la 3.ª entrada, o si ya se ha abierto alguna vez, se ve siempre', () => {
     expect(BOOK_NOTICE_VISITS).toBe(3);
     expect(showBookNotice(2, false)).toBe(false);
     expect(showBookNotice(3, false)).toBe(true);
-    expect(showBookNotice(10, true)).toBe(false);
+    expect(showBookNotice(10, true)).toBe(true);
+    expect(showBookNotice(1, true)).toBe(true);
   });
 });
 

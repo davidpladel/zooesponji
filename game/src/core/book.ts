@@ -51,10 +51,10 @@ export function pagePosition(page: BookPage): { n: number; total: number } | nul
   return { n: pages.findIndex((p) => p.id === page.id) + 1, total: pages.length };
 }
 
-/** Desde esta entrada a la tienda, el libro se enseña a la vista hasta que se abra. */
+/** Desde esta entrada a la tienda (o desde que se abre por primera vez), el libro está siempre a la vista. */
 export const BOOK_NOTICE_VISITS = 3;
 
-/** ¿El libro tiene que estar a la vista, parpadeando, en vez de escondido en la estantería? */
+/** ¿El libro tiene que estar a la vista, parpadeando, en vez de escondido en la estantería? (Pedido de David, 2026-11-02: una vez que sale, ya no se esconde.) */
 export function showBookNotice(visits: number, opened: boolean): boolean {
-  return visits >= BOOK_NOTICE_VISITS && !opened;
+  return visits >= BOOK_NOTICE_VISITS || opened;
 }
