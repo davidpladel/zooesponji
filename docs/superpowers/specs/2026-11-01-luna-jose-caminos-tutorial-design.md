@@ -119,6 +119,16 @@ Todo hecho en la rama, con pruebas unitarias y de juego (ver el plan, `docs/supe
 - **Libro:** la visita se cuenta al entrar y no al girar el móvil. Arreglado de paso un fallo anterior: tras girar el móvil dentro de la tienda, las visitas siguientes heredaban los datos del giro (no se contaban, no había paseo de entrada y las peanas no se renovaban).
 - **Matomo:** los tramos de monedas no cambian con los precios nuevos (se rompería la serie). La compra de Luna se cuenta como `tienda | compra | mascota/luna`.
 
+## Cambios tras la prueba en el móvil (2026-11-02)
+
+David probó la rama en el móvil (paquete de publicación con R8, ya con la 2.8.2 de `main` fusionada) y pidió:
+
+- **La tienda está abierta desde el principio**, sin las 20 monedas. Se quitan el candado y el aviso «abre a las 20». Las partidas antiguas también la tienen abierta.
+- **El tutorial, más claro:** tras dar de comer, al cerrar la ventana de comer (o pasado un rato) la mano lleva a la puerta de la tienda; al entrar, termina. Ya no hay espera de monedas ni se queda la ✕ sola.
+- **Luna mueve las patas:** pegada a la cuidadora avanzaba un fotograma sí y otro no, y pararla en cada uno cortaba la animación. Ahora solo se para tras 200 ms quieta.
+- **Jardín de la U:** cerezos altos (tres a cada lado) y flores rosas en estrella en medio, de la versión 16×16 de `vectoraith_tileset_details_temperate_forest_SPECIALS_B_reshade.png` (pack A, ReShade). Sin flores abajo.
+- **Página de Luna en el libro**, detrás de la de Mary; se consigue al comprarla. El libro pasa a 51 páginas y solo está completo con Luna. Mary no se traduce; Luna sí. Jose ya tenía la suya (sale al comprarlo).
+
 ## Estadísticas del tutorial (añadido el 2026-11-02, pedido por David)
 
 Categoría `tutorial` en Matomo, para saber si la gente ve el tutorial y dónde se atasca:
