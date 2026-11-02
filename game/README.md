@@ -13,6 +13,7 @@ npm test             # tests de lógica (Vitest)
 npm run test:e2e     # 30 pruebas de juego (29 corren solas; la de capturas en inglés, solo a mano con CAPTURAS=1) en el navegador (Playwright; en local usa el Chrome instalado; si alguna falla por tiempo, --workers=1)
 npm run build        # build de producción en dist/
 npm run check:manifest # comprueba el manifiesto fusionado de Android (sin identificador de publicidad, con el de AdMob); con `-- --publicar` exige el identificador real. Compilar antes con Gradle
+npm run check:aab      # comprueba que el AAB de publicación salió de R8 (con `r8.json` y el archivo de desofuscación, sin reglas que lo apaguen) y enseña lo que pesa el código Android. Compilar antes con Gradle
 npm run make:ui-assets # copia la letra y los iconos de la interfaz a public/ (solo si cambian)
 npm run make:test-map  # regenera el mapa de prueba
 npx cap sync android # copia la build al proyecto Android
@@ -132,7 +133,7 @@ El tablón de la plaza habla con el servidor de comunidad. Sin configuración no
 
 ## Versión
 
-`version` en `package.json` y `versionName` en `android/app/build.gradle`: **2.7.1**. `versionCode` sube en 1 con cada subida a Play: el **7** es la 2.6.0 (primera con anuncios), subida a la prueba cerrada el 2026-10-12; el **8** es la 2.7.0 (tablón de la comunidad), subida; el **9** es la 2.7.1 (arreglos del muro del tablón), publicada en Play. La siguiente será el 10.
+`version` en `package.json` y `versionName` en `android/app/build.gradle`: **2.8.2** (la de R8). `versionCode` sube en 1 con cada subida a Play: el **7** es la 2.6.0 (primera con anuncios), subida a la prueba cerrada el 2026-10-12; el **8** es la 2.7.0 (tablón de la comunidad), subida; el **9** es la 2.7.1 (arreglos del muro del tablón), publicada en Play; el **10** es la 2.8.0; el **11**, la 2.8.1, publicada; la 2.8.2 (R8) llevó el **12** en `build.gradle`, pero no se subió: el siguiente paquete que se suba usa el 12.
 
 Al sacar una versión nueva, la versión se cambia a mano en estos sitios (el resto la leen solos):
 

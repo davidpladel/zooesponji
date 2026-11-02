@@ -30,8 +30,8 @@ android {
         applicationId "com.davidpladel.zooesponji"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 11
-        versionName "2.8.1"
+        versionCode 12
+        versionName "2.8.2"
         manifestPlaceholders += [admobAppId: zooAdmobAppId]
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
@@ -55,8 +55,10 @@ android {
             if (zooCanSign) {
                 signingConfig signingConfigs.release
             }
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            // R8: quita el código y los recursos que no se usan, renombra y optimiza (lo que mide Google Play).
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 }

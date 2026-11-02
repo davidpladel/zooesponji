@@ -30,6 +30,9 @@ export function manifestProblems(xml: string, opts: { release?: boolean } = {}):
     problems.push('El paquete lleva el identificador de pruebas de Google: falta android/admob.properties o la variable ZOO_ADMOB_APP_ID.');
   }
   if (metaValue(xml, DELAY_NAME) !== 'true') problems.push(`Falta retrasar la medición del SDK (${DELAY_NAME} = true).`);
+  // Sin la marca de juego, Android 16 ignora en las tabletas la orientación apaisada (y el juego puede salir en vertical).
+  const application = /<application\b[^>]*>/.exec(xml)?.[0] ?? '';
+  if (!application.includes('android:appCategory="game"')) problems.push('Falta android:appCategory="game" en <application>.');
   return problems;
 }
 
