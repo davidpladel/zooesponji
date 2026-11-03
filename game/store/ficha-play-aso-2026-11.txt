@@ -7,10 +7,10 @@ valen cuando la 2.9.0 esté en producción.
 ==================================================
 Idioma: Español (España) — es-ES
 ==================================================
-Nombre: Zoo Esponji: Juego de animales
-Descripción breve: Juego de zoo para niños: cuida y da de comer a leones, pandas, jirafas y más
+Nombre: Zoo Esponji: Zoo para niños
+Descripción breve: Juego de animales para niños: da de comer a leones, pandas, jirafas y más
 Descripción completa:
-Zoo Esponji es un juego de animales para niños en el que cuidas tu propio zoo. Eres la cuidadora: recorre el parque, da de comer a los animales y descubre qué le gusta a cada uno. Gana monedas, compra animales nuevos y haz crecer tu zoológico.
+Zoo Esponji es un juego de animales para niños pequeños en el que cuidas tu propio zoo. Eres la cuidadora: recorre el parque, da de comer a los animales y descubre qué le gusta a cada uno. Sin prisas, sin tiempo límite y sin perder nunca: gana monedas, compra animales nuevos y haz crecer tu zoológico.
 
 🦁 ¿Qué come cada animal?
 El león come carne, la cabra prefiere piedras y zanahorias, y si le das la comida equivocada… ¡pondrá cara de asco! Pero cuidado con el conejo: si se lo das a la cabra o al panda, en vez de comérselo se harán amigos.
@@ -23,7 +23,7 @@ El león come carne, la cabra prefiere piedras y zanahorias, y si le das la comi
 · Cada animal tiene su nombre y su página en el libro secreto del zoo.
 
 🐶 Novedades
-· Luna, la perrita de la cuidadora: cómprala y te seguirá por todo el parque.
+· Luna, la perrita de la cuidadora: una mascota que te seguirá por todo el parque.
 · Jose, la cría de panda, vive con Mochi y Pompón.
 · Un tutorial sin palabras: una mano enseña cada gesto, así que los más peques aprenden a jugar aunque no sepan leer.
 
@@ -32,6 +32,7 @@ Envía tus ideas y vota las de otras niñas y niños. Se revisan antes de public
 
 👨‍👩‍👧 Pensado para niños y familias
 · Para niños de 5 a 12 años.
+· Fácil y tranquilo: se juega tocando y arrastrando, sin tiempo límite.
 · Sin compras ni registros.
 · De vez en cuando ofrece ver un anuncio a cambio de monedas, y siempre se puede decir que no.
 · Se puede jugar sin conexión a internet.
@@ -43,10 +44,10 @@ Creado por y para Daniela (9 años) y Adrián (5 años), con ayuda de su padre. 
 ==================================================
 Idioma: Español (Latinoamérica) — es-419
 ==================================================
-Nombre: Zoo Esponji: Juego de animales
-Descripción breve: Juego de zoológico para niños: cuida y alimenta a leones, pandas y jirafas
+Nombre: Zoo Esponji: Zoo para niños
+Descripción breve: Juego de animales para niños: alimenta a leones, pandas, jirafas y más
 Descripción completa:
-Zoo Esponji es un juego de animales para niños en el que cuidas tu propio zoológico. Eres la cuidadora: recorre el parque, alimenta a los animales y descubre qué le gusta a cada uno. Gana monedas, compra animales nuevos y haz crecer tu zoológico.
+Zoo Esponji es un juego de animales para niños pequeños en el que cuidas tu propio zoológico. Eres la cuidadora: recorre el parque, alimenta a los animales y descubre qué le gusta a cada uno. Sin prisas, sin tiempo límite y sin perder nunca: gana monedas, compra animales nuevos y haz crecer tu zoológico.
 
 🦁 ¿Qué come cada animal?
 El león come carne, la cabra prefiere piedras y zanahorias, y si le das la comida equivocada… ¡pondrá cara de asco! Pero cuidado con el conejo: si se lo das a la cabra o al panda, en lugar de comérselo se harán amigos.
@@ -59,7 +60,7 @@ El león come carne, la cabra prefiere piedras y zanahorias, y si le das la comi
 · Cada animal tiene su nombre y su página en el libro secreto del zoológico.
 
 🐶 Novedades
-· Luna, la perrita de la cuidadora: cómprala y te seguirá por todo el parque.
+· Luna, la perrita de la cuidadora: una mascota que te seguirá por todo el parque.
 · Jose, el bebé panda, vive con Mochi y Pompón.
 · Un tutorial sin palabras: una mano enseña cada gesto, así que los más pequeños aprenden a jugar aunque no sepan leer.
 
@@ -68,6 +69,7 @@ Envía tus ideas y vota las de otras niñas y niños. Se revisan antes de public
 
 👨‍👩‍👧 Pensado para niños y familias
 · Para niños de 5 a 12 años.
+· Fácil y tranquilo: se juega tocando y arrastrando, sin tiempo límite.
 · Sin compras ni registros.
 · De vez en cuando ofrece ver un anuncio a cambio de monedas, y siempre se puede decir que no.
 · Se puede jugar sin internet.
