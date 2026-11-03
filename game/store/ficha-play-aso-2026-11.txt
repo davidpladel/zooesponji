@@ -1,0 +1,113 @@
+Zoo Esponji — propuesta de ficha de Google Play optimizada (ASO), 2026-11-03
+Mercados: España primero (es-ES), después Latinoamérica (es-419). Idioma predeterminado: en-US.
+Público: niños (5–12 años) y sus familias. Sustituye a los textos de ficha-play-traducciones.txt
+para estos tres idiomas cuando David la valide. Los párrafos de Luna, Jose y el tutorial solo
+valen cuando la 2.9.0 esté en producción.
+
+==================================================
+Idioma: Español (España) — es-ES
+==================================================
+Nombre: Zoo Esponji: Juego de animales
+Descripción breve: Juego de zoo para niños: cuida y da de comer a leones, pandas, jirafas y más
+Descripción completa:
+Zoo Esponji es un juego de animales para niños en el que cuidas tu propio zoo. Eres la cuidadora: recorre el parque, da de comer a los animales y descubre qué le gusta a cada uno. Gana monedas, compra animales nuevos y haz crecer tu zoológico.
+
+🦁 ¿Qué come cada animal?
+El león come carne, la cabra prefiere piedras y zanahorias, y si le das la comida equivocada… ¡pondrá cara de asco! Pero cuidado con el conejo: si se lo das a la cabra o al panda, en vez de comérselo se harán amigos.
+
+🐘 Un zoo enorme para explorar
+· La sabana, con jirafas, cebras, gacelas y elefantes.
+· El bosque de bambú de los pandas y la catarata de la pantera negra.
+· El polo, con sus pingüinos.
+· La granja, con ovejas, caballos, gallinas y un estanque de patos.
+· Cada animal tiene su nombre y su página en el libro secreto del zoo.
+
+🐶 Novedades
+· Luna, la perrita de la cuidadora: cómprala y te seguirá por todo el parque.
+· Jose, la cría de panda, vive con Mochi y Pompón.
+· Un tutorial sin palabras: una mano enseña cada gesto, así que los más peques aprenden a jugar aunque no sepan leer.
+
+💡 Tus ideas llegan al zoo
+Envía tus ideas y vota las de otras niñas y niños. Se revisan antes de publicarse y algunas ya están dentro del juego.
+
+👨‍👩‍👧 Pensado para niños y familias
+· Para niños de 5 a 12 años.
+· Sin compras ni registros.
+· De vez en cuando ofrece ver un anuncio a cambio de monedas, y siempre se puede decir que no.
+· Se puede jugar sin conexión a internet.
+· Pixel art dibujado con cariño, música y efectos de sonido.
+· En 11 idiomas, entre ellos el español y el inglés.
+
+Creado por y para Daniela (9 años) y Adrián (5 años), con ayuda de su padre. Seguiremos añadiendo novedades, muchas inventadas por ellos y por ti.
+
+==================================================
+Idioma: Español (Latinoamérica) — es-419
+==================================================
+Nombre: Zoo Esponji: Juego de animales
+Descripción breve: Juego de zoológico para niños: cuida y alimenta a leones, pandas y jirafas
+Descripción completa:
+Zoo Esponji es un juego de animales para niños en el que cuidas tu propio zoológico. Eres la cuidadora: recorre el parque, alimenta a los animales y descubre qué le gusta a cada uno. Gana monedas, compra animales nuevos y haz crecer tu zoológico.
+
+🦁 ¿Qué come cada animal?
+El león come carne, la cabra prefiere piedras y zanahorias, y si le das la comida equivocada… ¡pondrá cara de asco! Pero cuidado con el conejo: si se lo das a la cabra o al panda, en lugar de comérselo se harán amigos.
+
+🐘 Un zoológico enorme para explorar
+· La sabana, con jirafas, cebras, gacelas y elefantes.
+· El bosque de bambú de los pandas y la cascada de la pantera negra.
+· El polo, con sus pingüinos.
+· La granja, con ovejas, caballos, gallinas y un estanque de patos.
+· Cada animal tiene su nombre y su página en el libro secreto del zoológico.
+
+🐶 Novedades
+· Luna, la perrita de la cuidadora: cómprala y te seguirá por todo el parque.
+· Jose, el bebé panda, vive con Mochi y Pompón.
+· Un tutorial sin palabras: una mano enseña cada gesto, así que los más pequeños aprenden a jugar aunque no sepan leer.
+
+💡 Tus ideas llegan al zoológico
+Envía tus ideas y vota las de otras niñas y niños. Se revisan antes de publicarse y algunas ya están dentro del juego.
+
+👨‍👩‍👧 Pensado para niños y familias
+· Para niños de 5 a 12 años.
+· Sin compras ni registros.
+· De vez en cuando ofrece ver un anuncio a cambio de monedas, y siempre se puede decir que no.
+· Se puede jugar sin internet.
+· Pixel art dibujado con cariño, música y efectos de sonido.
+· En 11 idiomas, entre ellos el español y el inglés.
+
+Creado por y para Daniela (9 años) y Adrián (5 años), con ayuda de su papá. Seguiremos agregando novedades, muchas inventadas por ellos y por ti.
+
+==================================================
+Language: English (United States) — en-US
+==================================================
+Name: Zoo Esponji: Kids Animal Game
+Short description: Zoo game for kids: feed lions, pandas, giraffes and more, and grow your zoo
+Full description:
+Zoo Esponji is an animal game for kids where you run your own zoo. You're the zookeeper: walk around the park, feed the animals and find out what each one likes. Earn coins, buy new animals and watch your zoo grow.
+
+🦁 What does each animal eat?
+The lion eats meat, the goat prefers rocks and carrots, and if you give them the wrong food… they'll make a yucky face! But watch out for the rabbit: give it to the goat or the panda and, instead of eating it, they'll become friends.
+
+🐘 A huge zoo to explore
+· The savanna, with giraffes, zebras, gazelles and elephants.
+· The pandas' bamboo forest and the black panther's waterfall.
+· The polar zone, with its penguins.
+· The farm, with sheep, horses, chickens and a duck pond.
+· Every animal has its own name and page in the zoo's secret book.
+
+🐶 What's new
+· Moon, the keeper's little dog: buy her and she'll follow you all around the park.
+· Jose, the baby panda, lives with Mochi and Pompón.
+· A tutorial without words: a hand shows each move, so little ones can learn to play even before they can read.
+
+💡 Your ideas come to the zoo
+Send your ideas and vote for other kids' ideas. They're reviewed before being published, and some are already in the game.
+
+👨‍👩‍👧 Made for kids and families
+· For kids aged 5 to 12.
+· No purchases or sign-ups.
+· Now and then it offers an ad in exchange for coins, and you can always say no.
+· Play offline, no internet needed.
+· Pixel art drawn with love, music and sound effects.
+· In 11 languages, including English and Spanish.
+
+Created by and for Daniela (age 9) and Adrián (age 5), with help from their dad. We'll keep adding new features, many of them invented by them and by you.
