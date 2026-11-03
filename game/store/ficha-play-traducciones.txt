@@ -1,266 +1,484 @@
-Zoo Esponji — textos de la ficha de Google Play (2026-10-23)
-Para «Importar traducciones con IA» en Play Console. Cada idioma: nombre (máx. 30), descripción breve (máx. 80) y descripción completa.
+Zoo Esponji — textos de la ficha de Google Play (2026-11-03, versión ASO: «zoo para niños»)
+Subidos a Play por la API el 2026-11-03 en los 13 idiomas (incluido en-GB). Cada idioma: nombre (máx. 30), descripción breve (máx. 80) y descripción completa (máx. 4000).
+Enfoque: juego de animales para niños pequeños (sin prisas, sin perder, se aprende sin leer, sin compras), el hueco que no ocupan los simuladores de zoológico para adolescentes y adultos.
 
 ==================================================
-Idioma: Español (España) — es-ES
+Idioma: en-US
 ==================================================
-Nombre: Zoo Esponji: Cuida animales
-Descripción breve: Cuida animales, gana monedas y envía ideas que pueden llegar al zoo.
+Nombre: Zoo Esponji: Zoo Game for Kids
+Descripción breve: Animal game for kids: feed lions, pandas, giraffes and more at your own zoo
 Descripción completa:
-Zoo Esponji es un juego de cuidar animales para niños y tus ideas pueden hacerse realidad. Eres la cuidadora del zoo: recorre el parque, da de comer a los animales y descubre qué le gusta a cada uno.
+Zoo Esponji is an animal game for young kids where you look after your own zoo. You're the zookeeper: walk around the park, feed the animals and find out what each one likes. No rush, no timers and you can never lose: earn coins, buy new animals and watch your zoo grow.
 
-El león come carne, la cabra prefiere piedras y zanahorias, y si le das la comida equivocada, ¡pondrá cara de asco! Pero cuidado con el conejo: si se lo das a la cabra o al panda...
+🦁 What does each animal eat?
+The lion eats meat, the goat prefers rocks and carrots, and if you give them the wrong food… they'll make a yucky face! But watch out for the rabbit: give it to the goat or the panda and, instead of eating it, they'll become friends.
 
-Con las monedas que ganas puedes visitar la tienda y comprar una cabra, una pantera negra, un oso panda y muchos más animales para tu zoo.
+🐘 A huge zoo to explore
+· The savanna, with giraffes, zebras, gazelles and elephants.
+· The pandas' bamboo forest and the black panther's waterfall.
+· The polar zone, with its penguins.
+· The farm, with sheep, horses, chickens and a duck pond.
+· Every animal has its own name and page in the zoo's secret book.
 
-· Animales salvajes de verdad: león, cabra, pantera negra, oso panda y muchos más.
-· Envía tus ideas y vota las de otras niñas y niños. Se revisan antes de publicarse.
-· Pixel art dibujado con cariño.
-· Pensado para niños de 5 a 12 años.
-· Sin compras ni registros. De vez en cuando ofrece ver un anuncio a cambio de monedas, y siempre se puede decir que no.
-· Música y efectos de sonido.
-· En 11 idiomas, entre ellos el español y el inglés.
+🐶 What's new
+· Moon, the keeper's little dog: a pet who follows you all around the park.
+· Jose, the baby panda, lives with Mochi and Pompón.
+· A tutorial without words: a hand shows each move, so little ones can learn to play even before they can read.
 
-Creado por y para Daniela (9 años) y Adrián (5 años), con ayuda de su padre. Seguiremos añadiendo novedades, muchas inventadas por ellos y por ti.
+💡 Your ideas come to the zoo
+Send your ideas and vote for other kids' ideas. They're reviewed before being published, and some are already in the game.
 
-==================================================
-Idioma: Español (Latinoamérica) — es-419
-==================================================
-Nombre: Zoo Esponji: Cuida animales
-Descripción breve: Cuida animales, gana monedas y envía ideas que pueden llegar al zoo.
-Descripción completa:
-Zoo Esponji es un juego de cuidar animales para niños y tus ideas pueden hacerse realidad. Eres la cuidadora del zoo: recorre el parque, da de comer a los animales y descubre qué le gusta a cada uno.
-
-El león come carne, la cabra prefiere piedras y zanahorias, y si le das la comida equivocada, ¡pondrá cara de asco! Pero cuidado con el conejo: si se lo das a la cabra o al panda...
-
-Con las monedas que ganas puedes visitar la tienda y comprar una cabra, una pantera negra, un oso panda y muchos más animales para tu zoo.
-
-· Animales salvajes de verdad: león, cabra, pantera negra, oso panda y muchos más.
-· Envía tus ideas y vota las de otras niñas y niños. Se revisan antes de publicarse.
-· Pixel art dibujado con cariño.
-· Pensado para niños de 5 a 12 años.
-· Sin compras ni registros. De vez en cuando ofrece ver un anuncio a cambio de monedas, y siempre se puede decir que no.
-· Música y efectos de sonido.
-· En 11 idiomas, entre ellos el español y el inglés.
-
-Creado por y para Daniela (9 años) y Adrián (5 años), con ayuda de su padre. Seguiremos añadiendo novedades, muchas inventadas por ellos y por ti.
-
-==================================================
-Language: English (United States) — en-US
-==================================================
-Name: Zoo Esponji: Animal Care
-Short description: Care for animals, earn coins and send ideas that can come to the zoo.
-Full description:
-Zoo Esponji is an animal care game for kids where your ideas can come true. You're the zookeeper: walk around the park, feed the animals and find out what each one likes.
-
-The lion eats meat, the goat prefers rocks and carrots, and if you give them the wrong food, they'll make a yucky face! But watch out for the rabbit: if you give it to the goat or the panda...
-
-With the coins you earn, you can visit the shop and buy a goat, a black panther, a panda bear and many more animals for your zoo.
-
-· Real wild animals: lion, goat, black panther, panda bear and many more.
-· Send your ideas and vote for other kids' ideas. They're reviewed before being published.
-· Pixel art drawn with love.
-· Designed for kids aged 5 to 12.
-· No purchases or sign-ups. Now and then it offers an ad in exchange for coins, and you can always say no.
-· Music and sound effects.
+👪 Made for kids and families
+· For kids aged 5 to 12.
+· Easy and calm: just tap and drag, with no time limits.
+· No purchases or sign-ups.
+· Now and then it offers an ad in exchange for coins, and you can always say no.
+· Play offline, no internet needed.
+· Pixel art drawn with love, music and sound effects.
 · In 11 languages, including English and Spanish.
 
 Created by and for Daniela (age 9) and Adrián (age 5), with help from their dad. We'll keep adding new features, many of them invented by them and by you.
 
 ==================================================
-Langue : Français (France) — fr-FR
+Idioma: en-GB
 ==================================================
-Nom : Zoo Esponji : Soin des animaux
-Description courte : Soigne les animaux, gagne des pièces et envoie des idées pour le zoo !
-Description complète :
-Zoo Esponji est un jeu pour enfants où l'on prend soin des animaux, et où tes idées peuvent devenir réalité. Tu es la soigneuse du zoo : parcours le parc, nourris les animaux et découvre ce que chacun aime.
+Nombre: Zoo Esponji: Zoo Game for Kids
+Descripción breve: Animal game for kids: feed lions, pandas, giraffes and more at your own zoo
+Descripción completa:
+Zoo Esponji is an animal game for young children where you look after your own zoo. You're the zookeeper: wander round the park, feed the animals and find out what each one likes. No rush, no timers and you can never lose: earn coins, buy new animals and watch your zoo grow.
 
-Le lion mange de la viande, la chèvre préfère les cailloux et les carottes, et si tu leur donnes le mauvais repas, ils font la grimace ! Mais attention au lapin : si tu le donnes à la chèvre ou au panda...
+🦁 What does each animal eat?
+The lion eats meat, the goat prefers rocks and carrots, and if you give them the wrong food… they'll pull a yucky face! But watch out for the rabbit: give it to the goat or the panda and, instead of eating it, they'll become friends.
 
-Avec les pièces que tu gagnes, tu peux aller à la boutique et acheter une chèvre, une panthère noire, un panda et bien d'autres animaux pour ton zoo.
+🐘 A huge zoo to explore
+· The savannah, with giraffes, zebras, gazelles and elephants.
+· The pandas' bamboo forest and the black panther's waterfall.
+· The polar zone, with its penguins.
+· The farm, with sheep, horses, hens and a duck pond.
+· Every animal has its own name and page in the zoo's secret book.
 
-· De vrais animaux sauvages : lion, chèvre, panthère noire, panda et bien d'autres.
-· Envoie tes idées et vote pour celles des autres enfants. Elles sont vérifiées avant d'être publiées.
-· Pixel art dessiné avec amour.
-· Conçu pour les enfants de 5 à 12 ans.
-· Sans achats ni inscription. De temps en temps, le jeu propose une pub en échange de pièces, et on peut toujours refuser.
-· Musique et effets sonores.
-· Le jeu est disponible en 11 langues, dont le français.
+🐶 What's new
+· Moon, the keeper's little dog: a pet who follows you all round the park.
+· Jose, the baby panda, lives with Mochi and Pompón.
+· A tutorial without words: a hand shows each move, so little ones can learn to play even before they can read.
+
+💡 Your ideas come to the zoo
+Send in your ideas and vote for other children's ideas. They're checked before being published, and some are already in the game.
+
+👪 Made for children and families
+· For children aged 5 to 12.
+· Easy and relaxed: just tap and drag, with no time limits.
+· No purchases or sign-ups.
+· Now and then it offers an advert in exchange for coins, and you can always say no.
+· Play offline, no internet needed.
+· Pixel art drawn with love, music and sound effects.
+· In 11 languages, including English and Spanish.
+
+Created by and for Daniela (age 9) and Adrián (age 5), with help from their dad. We'll keep adding new features, many of them dreamt up by them and by you.
+
+==================================================
+Idioma: es-ES
+==================================================
+Nombre: Zoo Esponji: Zoo para niños
+Descripción breve: Juego de animales para niños: da de comer a leones, pandas, jirafas y más
+Descripción completa:
+Zoo Esponji es un juego de animales para niños pequeños en el que cuidas tu propio zoo. Eres la cuidadora: recorre el parque, da de comer a los animales y descubre qué le gusta a cada uno. Sin prisas, sin tiempo límite y sin perder nunca: gana monedas, compra animales nuevos y haz crecer tu zoológico.
+
+🦁 ¿Qué come cada animal?
+El león come carne, la cabra prefiere piedras y zanahorias, y si le das la comida equivocada… ¡pondrá cara de asco! Pero cuidado con el conejo: si se lo das a la cabra o al panda, en vez de comérselo se harán amigos.
+
+🐘 Un zoo enorme para explorar
+· La sabana, con jirafas, cebras, gacelas y elefantes.
+· El bosque de bambú de los pandas y la catarata de la pantera negra.
+· El polo, con sus pingüinos.
+· La granja, con ovejas, caballos, gallinas y un estanque de patos.
+· Cada animal tiene su nombre y su página en el libro secreto del zoo.
+
+🐶 Novedades
+· Luna, la perrita de la cuidadora: una mascota que te seguirá por todo el parque.
+· Jose, la cría de panda, vive con Mochi y Pompón.
+· Un tutorial sin palabras: una mano enseña cada gesto, así que los más peques aprenden a jugar aunque no sepan leer.
+
+💡 Tus ideas llegan al zoo
+Envía tus ideas y vota las de otras niñas y niños. Se revisan antes de publicarse y algunas ya están dentro del juego.
+
+👪 Pensado para niños y familias
+· Para niños de 5 a 12 años.
+· Fácil y tranquilo: se juega tocando y arrastrando, sin tiempo límite.
+· Sin compras ni registros.
+· De vez en cuando ofrece ver un anuncio a cambio de monedas, y siempre se puede decir que no.
+· Se puede jugar sin conexión a internet.
+· Pixel art dibujado con cariño, música y efectos de sonido.
+· En 11 idiomas, entre ellos el español y el inglés.
+
+Creado por y para Daniela (9 años) y Adrián (5 años), con ayuda de su padre. Seguiremos añadiendo novedades, muchas inventadas por ellos y por ti.
+
+==================================================
+Idioma: es-419
+==================================================
+Nombre: Zoo Esponji: Zoo para niños
+Descripción breve: Juego de animales para niños: alimenta a leones, pandas, jirafas y más
+Descripción completa:
+Zoo Esponji es un juego de animales para niños pequeños en el que cuidas tu propio zoológico. Eres la cuidadora: recorre el parque, alimenta a los animales y descubre qué le gusta a cada uno. Sin prisas, sin tiempo límite y sin perder nunca: gana monedas, compra animales nuevos y haz crecer tu zoológico.
+
+🦁 ¿Qué come cada animal?
+El león come carne, la cabra prefiere piedras y zanahorias, y si le das la comida equivocada… ¡pondrá cara de asco! Pero cuidado con el conejo: si se lo das a la cabra o al panda, en lugar de comérselo se harán amigos.
+
+🐘 Un zoológico enorme para explorar
+· La sabana, con jirafas, cebras, gacelas y elefantes.
+· El bosque de bambú de los pandas y la cascada de la pantera negra.
+· El polo, con sus pingüinos.
+· La granja, con ovejas, caballos, gallinas y un estanque de patos.
+· Cada animal tiene su nombre y su página en el libro secreto del zoológico.
+
+🐶 Novedades
+· Luna, la perrita de la cuidadora: una mascota que te seguirá por todo el parque.
+· Jose, el bebé panda, vive con Mochi y Pompón.
+· Un tutorial sin palabras: una mano enseña cada gesto, así que los más pequeños aprenden a jugar aunque no sepan leer.
+
+💡 Tus ideas llegan al zoológico
+Envía tus ideas y vota las de otras niñas y niños. Se revisan antes de publicarse y algunas ya están dentro del juego.
+
+👪 Pensado para niños y familias
+· Para niños de 5 a 12 años.
+· Fácil y tranquilo: se juega tocando y arrastrando, sin tiempo límite.
+· Sin compras ni registros.
+· De vez en cuando ofrece ver un anuncio a cambio de monedas, y siempre se puede decir que no.
+· Se puede jugar sin internet.
+· Pixel art dibujado con cariño, música y efectos de sonido.
+· En 11 idiomas, entre ellos el español y el inglés.
+
+Creado por y para Daniela (9 años) y Adrián (5 años), con ayuda de su papá. Seguiremos agregando novedades, muchas inventadas por ellos y por ti.
+
+==================================================
+Idioma: fr-FR
+==================================================
+Nombre: Zoo Esponji : Zoo pour enfants
+Descripción breve: Jeu d'animaux pour enfants : nourris lions, pandas, girafes et bien d'autres
+Descripción completa:
+Zoo Esponji est un jeu d'animaux pour les jeunes enfants où tu t'occupes de ton propre zoo. Tu es la soigneuse : parcours le parc, nourris les animaux et découvre ce que chacun aime. Pas de chrono, pas de pression et on ne perd jamais : gagne des pièces, achète de nouveaux animaux et agrandis ton zoo.
+
+🦁 Que mange chaque animal ?
+Le lion mange de la viande, la chèvre préfère les cailloux et les carottes, et si tu leur donnes le mauvais repas… ils font la grimace ! Mais attention au lapin : si tu le donnes à la chèvre ou au panda, au lieu de le manger, ils deviennent amis.
+
+🐘 Un immense zoo à explorer
+· La savane, avec ses girafes, zèbres, gazelles et éléphants.
+· La forêt de bambous des pandas et la cascade de la panthère noire.
+· Le pôle, avec ses manchots.
+· La ferme, avec des moutons, des chevaux, des poules et une mare aux canards.
+· Chaque animal a son nom et sa page dans le livre secret du zoo.
+
+🐶 Nouveautés
+· Lune, la chienne de la soigneuse : un animal de compagnie qui te suit partout dans le parc.
+· Jose, le bébé panda, vit avec Mochi et Pompón.
+· Un tutoriel sans texte : une main montre chaque geste, pour que les plus petits apprennent à jouer même sans savoir lire.
+
+💡 Tes idées arrivent au zoo
+Envoie tes idées et vote pour celles des autres enfants. Elles sont vérifiées avant d'être publiées, et certaines sont déjà dans le jeu.
+
+👪 Pensé pour les enfants et les familles
+· Pour les enfants de 5 à 12 ans.
+· Simple et calme : on joue en touchant et en faisant glisser, sans limite de temps.
+· Sans achats ni inscription.
+· De temps en temps, le jeu propose une pub en échange de pièces, et on peut toujours refuser.
+· Se joue hors ligne, sans internet.
+· Pixel art dessiné avec amour, musique et effets sonores.
+· Disponible en 11 langues, dont le français.
 
 Créé par et pour Daniela (9 ans) et Adrián (5 ans), avec l'aide de leur papa. Nous continuerons d'ajouter des nouveautés, dont beaucoup inventées par eux et par toi.
 
 ==================================================
-Língua: Português (Brasil) — pt-BR
+Idioma: pt-BR
 ==================================================
-Nome: Zoo Esponji: Cuide dos animais
-Descrição curta: Cuide dos animais, ganhe moedas e envie ideias que podem chegar ao zoo!
-Descrição completa:
-Zoo Esponji é um jogo de cuidar de animais para crianças, e as suas ideias podem virar realidade. Você é a tratadora do zoológico: passeie pelo parque, dê comida aos animais e descubra do que cada um gosta.
+Nombre: Zoo Esponji: Zoo para crianças
+Descripción breve: Jogo de animais para crianças: alimente leões, pandas, girafas e muito mais
+Descripción completa:
+Zoo Esponji é um jogo de animais para crianças pequenas em que você cuida do seu próprio zoológico. Você é a cuidadora: passeie pelo parque, alimente os bichos e descubra do que cada um gosta. Sem pressa, sem tempo limite e sem nunca perder: ganhe moedas, compre novos animais e faça seu zoo crescer.
 
-O leão come carne, a cabra prefere pedras e cenouras, e se você der a comida errada, eles fazem cara de nojo! Mas cuidado com o coelho: se você der ele para a cabra ou para o panda...
+🦁 O que cada animal come?
+O leão come carne, a cabra prefere pedras e cenouras, e se você der a comida errada… ela faz cara de nojo! Mas cuidado com o coelho: se você der para a cabra ou para o panda, em vez de comer, eles viram amigos.
 
-Com as moedas que você ganha, pode visitar a loja e comprar uma cabra, uma pantera-negra, um panda e muitos outros animais para o seu zoológico.
+🐘 Um zoológico enorme para explorar
+· A savana, com girafas, zebras, gazelas e elefantes.
+· A floresta de bambu dos pandas e a cachoeira da pantera-negra.
+· O polo, com seus pinguins.
+· A fazendinha, com ovelhas, cavalos, galinhas e um lago de patos.
+· Cada animal tem seu nome e sua página no livro secreto do zoo.
 
-· Animais selvagens de verdade: leão, cabra, pantera-negra, panda e muitos outros.
-· Envie suas ideias e vote nas de outras crianças. Elas são revisadas antes de serem publicadas.
-· Pixel art desenhada com carinho.
-· Feito para crianças de 5 a 12 anos.
-· Sem compras nem cadastro. De vez em quando, o jogo oferece um anúncio em troca de moedas, e sempre dá para dizer não.
-· Música e efeitos sonoros.
-· O jogo está em 11 idiomas, incluindo português.
+🐶 Novidades
+· Luna, a cachorrinha da cuidadora: um bichinho de estimação que te acompanha pelo parque todo.
+· Jose, o filhote de panda, vive com Mochi e Pompón.
+· Um tutorial sem palavras: uma mão mostra cada gesto, então os pequenos aprendem a jogar mesmo sem saber ler.
+
+💡 Suas ideias chegam ao zoo
+Envie suas ideias e vote nas de outras crianças. Elas são revisadas antes de serem publicadas, e algumas já estão no jogo.
+
+👪 Feito para crianças e famílias
+· Para crianças de 5 a 12 anos.
+· Fácil e tranquilo: é só tocar e arrastar, sem tempo limite.
+· Sem compras nem cadastro.
+· De vez em quando oferece um anúncio em troca de moedas, e sempre dá para dizer não.
+· Dá para jogar off-line, sem internet.
+· Pixel art desenhada com carinho, música e efeitos sonoros.
+· Em 11 idiomas, incluindo o português.
 
 Criado por e para Daniela (9 anos) e Adrián (5 anos), com a ajuda do pai deles. Vamos continuar adicionando novidades, muitas inventadas por eles e por você.
 
 ==================================================
-Língua: Português (Portugal) — pt-PT
+Idioma: pt-PT
 ==================================================
-Nome: Zoo Esponji: Cuida dos animais
-Descrição breve: Cuida dos animais, ganha moedas e envia ideias que podem chegar ao zoo!
-Descrição completa:
-Zoo Esponji é um jogo de cuidar de animais para crianças, e as tuas ideias podem tornar-se realidade. És a tratadora do jardim zoológico: percorre o parque, dá de comer aos animais e descobre do que cada um gosta.
+Nombre: Zoo Esponji: Zoo para crianças
+Descripción breve: Jogo de animais para crianças: alimenta leões, pandas, girafas e muito mais
+Descripción completa:
+Zoo Esponji é um jogo de animais para crianças pequenas em que tomas conta do teu próprio jardim zoológico. És a tratadora: percorre o parque, dá de comer aos animais e descobre do que cada um gosta. Sem pressas, sem tempo limite e sem nunca perder: ganha moedas, compra novos animais e faz crescer o teu zoo.
 
-O leão come carne, a cabra prefere pedras e cenouras, e se lhes deres a comida errada, fazem cara de nojo! Mas cuidado com o coelho: se o deres à cabra ou ao panda...
+🦁 O que come cada animal?
+O leão come carne, a cabra prefere pedras e cenouras, e se lhes deres a comida errada… fazem cara de nojo! Mas cuidado com o coelho: se o deres à cabra ou ao panda, em vez de o comerem, ficam amigos.
 
-Com as moedas que ganhas, podes visitar a loja e comprar uma cabra, uma pantera-negra, um panda e muitos outros animais para o teu zoo.
+🐘 Um jardim zoológico enorme para explorar
+· A savana, com girafas, zebras, gazelas e elefantes.
+· O bosque de bambu dos pandas e a cascata da pantera-negra.
+· O polo, com os seus pinguins.
+· A quinta, com ovelhas, cavalos, galinhas e um lago dos patos.
+· Cada animal tem o seu nome e a sua página no livro secreto do zoo.
 
-· Animais selvagens a sério: leão, cabra, pantera-negra, panda e muitos outros.
-· Envia as tuas ideias e vota nas de outras crianças. São revistas antes de serem publicadas.
-· Pixel art desenhada com carinho.
-· Pensado para crianças dos 5 aos 12 anos.
-· Sem compras nem registos. De vez em quando, o jogo oferece um anúncio em troca de moedas, e podes sempre dizer que não.
-· Música e efeitos sonoros.
-· O jogo está em 11 línguas, incluindo português.
+🐶 Novidades
+· Luna, a cadelinha da tratadora: um animal de estimação que te acompanha por todo o parque.
+· Jose, a cria de panda, vive com o Mochi e o Pompón.
+· Um tutorial sem palavras: uma mão mostra cada gesto, para que os mais pequenos aprendam a jogar mesmo sem saber ler.
+
+💡 As tuas ideias chegam ao zoo
+Envia as tuas ideias e vota nas de outras crianças. São revistas antes de serem publicadas, e algumas já estão no jogo.
+
+👪 Pensado para crianças e famílias
+· Para crianças dos 5 aos 12 anos.
+· Fácil e tranquilo: joga-se a tocar e a arrastar, sem tempo limite.
+· Sem compras nem registos.
+· De vez em quando propõe ver um anúncio em troca de moedas, e pode sempre dizer-se que não.
+· Joga-se offline, sem internet.
+· Pixel art desenhada com carinho, música e efeitos sonoros.
+· Em 11 idiomas, incluindo o português.
 
 Criado por e para a Daniela (9 anos) e o Adrián (5 anos), com a ajuda do pai. Vamos continuar a juntar novidades, muitas inventadas por eles e por ti.
 
 ==================================================
-Lingua: Italiano — it-IT
+Idioma: it-IT
 ==================================================
-Nome: Zoo Esponji: Cura gli animali
-Descrizione breve: Cura gli animali, guadagna monete e invia idee che possono arrivare allo zoo!
-Descrizione completa:
-Zoo Esponji è un gioco per bambini in cui ci si prende cura degli animali, e le tue idee possono diventare realtà. Sei la guardiana dello zoo: esplora il parco, dai da mangiare agli animali e scopri cosa piace a ognuno.
+Nombre: Zoo Esponji: Zoo per bambini
+Descripción breve: Gioco di animali per bambini: dai da mangiare a leoni, panda, giraffe e altri
+Descripción completa:
+Zoo Esponji è un gioco di animali per bambini piccoli in cui ti prendi cura del tuo zoo. Sei la guardiana: esplora il parco, dai da mangiare agli animali e scopri cosa piace a ciascuno. Niente fretta, niente timer e non si perde mai: guadagna monete, compra nuovi animali e fai crescere il tuo zoo.
 
-Il leone mangia carne, la capra preferisce sassi e carote, e se dai il cibo sbagliato fanno una smorfia di disgusto! Ma attenzione al coniglio: se lo dai alla capra o al panda...
+🦁 Cosa mangia ogni animale?
+Il leone mangia la carne, la capra preferisce sassi e carote, e se dai il cibo sbagliato… fanno una smorfia di disgusto! Ma attenzione al coniglio: se lo dai alla capra o al panda, invece di mangiarlo diventano amici.
 
-Con le monete che guadagni puoi andare al negozio e comprare una capra, una pantera nera, un panda e tanti altri animali per il tuo zoo.
+🐘 Uno zoo enorme da esplorare
+· La savana, con giraffe, zebre, gazzelle ed elefanti.
+· Il bosco di bambù dei panda e la cascata della pantera nera.
+· Il polo, con i suoi pinguini.
+· La fattoria, con pecore, cavalli, galline e uno stagno con le anatre.
+· Ogni animale ha il suo nome e la sua pagina nel libro segreto dello zoo.
 
-· Veri animali selvatici: leone, capra, pantera nera, panda e tanti altri.
-· Invia le tue idee e vota quelle di altri bambini e bambine. Vengono controllate prima di essere pubblicate.
-· Pixel art disegnata con amore.
-· Pensato per bambini dai 5 ai 12 anni.
-· Niente acquisti né registrazioni. Ogni tanto il gioco propone una pubblicità in cambio di monete, e si può sempre dire di no.
-· Musica ed effetti sonori.
-· Il gioco è in 11 lingue, tra cui l'italiano.
+🐶 Novità
+· Luna, la cagnolina della guardiana: un animaletto che ti segue per tutto il parco.
+· Jose, il cucciolo di panda, vive con Mochi e Pompón.
+· Un tutorial senza parole: una mano mostra ogni gesto, così anche i più piccoli imparano a giocare prima di saper leggere.
+
+💡 Le tue idee arrivano allo zoo
+Invia le tue idee e vota quelle degli altri bambini. Vengono controllate prima di essere pubblicate, e alcune sono già nel gioco.
+
+👪 Pensato per bambini e famiglie
+· Per bambini dai 5 ai 12 anni.
+· Facile e rilassante: si gioca toccando e trascinando, senza limiti di tempo.
+· Niente acquisti né registrazioni.
+· Ogni tanto propone una pubblicità in cambio di monete, e si può sempre dire di no.
+· Si gioca offline, senza internet.
+· Pixel art disegnata con amore, musica ed effetti sonori.
+· In 11 lingue, tra cui l'italiano.
 
 Creato da e per Daniela (9 anni) e Adrián (5 anni), con l'aiuto del loro papà. Continueremo ad aggiungere novità, molte inventate da loro e da te.
 
 ==================================================
-Язык: Русский — ru-RU
+Idioma: ru-RU
 ==================================================
-Название: Zoo Esponji: Уход за зверями
-Краткое описание: Заботься о животных, собирай монеты и присылай идеи для зоопарка!
-Полное описание:
-Zoo Esponji — детская игра про уход за животными, где твои идеи могут стать реальностью. Ты — смотрительница зоопарка: гуляй по парку, корми животных и узнавай, что любит каждое из них.
+Nombre: Zoo Esponji: Зоопарк для детей
+Descripción breve: Игра про животных для детей: корми львов, панд, жирафов и других зверей
+Descripción completa:
+Zoo Esponji — игра про животных для малышей, в которой ты заботишься о своём зоопарке. Ты смотрительница: гуляй по парку, корми животных и узнавай, что любит каждое из них. Без спешки, без таймеров, и проиграть нельзя: зарабатывай монетки, покупай новых животных и расширяй свой зоопарк.
 
-Лев ест мясо, коза предпочитает камни и морковку, а если дать им не ту еду, они скорчат недовольную рожицу! Но осторожно с кроликом: если отдать его козе или панде...
+🦁 Кто что ест?
+Лев ест мясо, коза любит камни и морковку, а если дать не ту еду… все скорчат смешную рожицу! Но осторожно с кроликом: если дать его козе или панде, они не съедят его, а подружатся.
 
-На заработанные монеты можно зайти в магазин и купить козу, чёрную пантеру, панду и много других животных для своего зоопарка.
+🐘 Огромный зоопарк
+· Саванна с жирафами, зебрами, газелями и слонами.
+· Бамбуковый лес панд и водопад чёрной пантеры.
+· Полюс с пингвинами.
+· Ферма с овцами, лошадьми, курами и утиным прудом.
+· У каждого животного есть имя и своя страница в секретной книге зоопарка.
 
-· Настоящие дикие животные: лев, коза, чёрная пантера, панда и многие другие.
-· Присылай свои идеи и голосуй за идеи других детей. Их проверяют перед публикацией.
-· Пиксельная графика, нарисованная с любовью.
+🐶 Новое
+· Луна, собачка смотрительницы: питомец, который ходит за тобой по всему парку.
+· Jose, детёныш панды, живёт с Mochi и Pompón.
+· Обучение без слов: рука показывает каждое движение, и даже малыши, которые ещё не умеют читать, быстро учатся играть.
+
+💡 Твои идеи попадают в зоопарк
+Отправляй свои идеи и голосуй за идеи других детей. Их проверяют перед публикацией, и некоторые уже есть в игре.
+
+👪 Для детей и всей семьи
 · Для детей от 5 до 12 лет.
-· Без покупок и регистрации. Иногда игра предлагает посмотреть рекламу за монеты — от неё всегда можно отказаться.
-· Музыка и звуковые эффекты.
-· Игра на 11 языках, включая русский.
+· Просто и спокойно: нужно только нажимать и перетаскивать, без ограничений по времени.
+· Без покупок и регистрации.
+· Иногда игра предлагает посмотреть рекламу за монетки, и всегда можно отказаться.
+· Можно играть без интернета.
+· Пиксельная графика, нарисованная с любовью, музыка и звуки.
+· 11 языков, включая русский.
 
-Создано для Даниэлы (9 лет) и Адриана (5 лет) вместе с ними и с помощью их папы. Мы продолжим добавлять новое, и многое придумают они и ты.
-
-==================================================
-اللغة: العربية — ar
-==================================================
-الاسم: Zoo Esponji: اعتنِ بالحيوانات
-الوصف المختصر: اعتنِ بالحيوانات واجمع العملات وأرسل أفكارك لتصل إلى حديقة الحيوان!
-الوصف الكامل:
-Zoo Esponji لعبة للأطفال عن رعاية الحيوانات، وأفكارك يمكن أن تتحقق فيها. أنتِ حارسة حديقة الحيوان: تجوّل في الحديقة، وأطعم الحيوانات، واكتشف ما يحبه كل واحد منها.
-
-الأسد يأكل اللحم، والماعز تفضّل الحجارة والجزر، وإذا قدّمت لها الطعام الخطأ فستُظهر وجهًا مشمئزًا! لكن احذر من الأرنب: إذا أعطيته للماعز أو للباندا...
-
-بالعملات التي تجمعها يمكنك زيارة المتجر وشراء ماعز ونمر أسود وباندا وحيوانات أخرى كثيرة لحديقتك.
-
-· حيوانات برية حقيقية: أسد، ماعز، نمر أسود، باندا وغيرها الكثير.
-· أرسل أفكارك وصوّت لأفكار الأطفال الآخرين. تتم مراجعتها قبل نشرها.
-· رسوم بكسل مرسومة بحب.
-· مصممة للأطفال من 5 إلى 12 سنة.
-· بدون مشتريات أو تسجيل. تعرض اللعبة أحيانًا إعلانًا مقابل عملات، ويمكنك دائمًا الرفض.
-· موسيقى ومؤثرات صوتية.
-· اللعبة متوفرة بـ 11 لغة، منها العربية.
-
-صُنعت من أجل دانييلا (9 سنوات) وأدريان (5 سنوات) وبمشاركتهما، بمساعدة والدهما. سنواصل إضافة الجديد، والكثير منه من ابتكارهما ومن ابتكارك أنت.
+Сделано для Даниэлы (9 лет) и Адриана (5 лет) и вместе с ними, при помощи их папы. Мы будем добавлять новое, и многое придумают они и ты.
 
 ==================================================
-भाषा: हिन्दी — hi-IN
+Idioma: ar
 ==================================================
-नाम: Zoo Esponji: जानवरों की देखभाल
-संक्षिप्त विवरण: जानवरों की देखभाल करो, सिक्के कमाओ और चिड़ियाघर के लिए अपने आइडिया भेजो!
-पूरा विवरण:
-Zoo Esponji बच्चों के लिए जानवरों की देखभाल का खेल है, जिसमें तुम्हारे आइडिया सच हो सकते हैं। तुम चिड़ियाघर की देखभाल करने वाली हो: पार्क में घूमो, जानवरों को खाना खिलाओ और पता लगाओ कि हर एक को क्या पसंद है।
+Nombre: Zoo Esponji: حيوانات للأطفال
+Descripción breve: لعبة حيوانات للأطفال: أطعم الأسود والباندا والزرافات وغيرها في حديقتك
+Descripción completa:
+Zoo Esponji لعبة حيوانات للأطفال الصغار تعتني فيها بحديقة الحيوانات الخاصة بك. أنت الحارسة: تجوّل في الحديقة، وأطعم الحيوانات، واكتشف ما يحبه كل واحد منها. بلا عجلة، بلا مؤقّت، ولا خسارة أبدًا: اجمع العملات، واشترِ حيوانات جديدة، ووسّع حديقتك.
 
-शेर मांस खाता है, बकरी को पत्थर और गाजर पसंद हैं, और अगर तुमने गलत खाना दिया तो वे मुँह बना लेंगे! लेकिन खरगोश से सावधान: अगर तुमने उसे बकरी या पांडा को दे दिया...
+🦁 ماذا يأكل كل حيوان؟
+الأسد يأكل اللحم، والماعز تفضّل الحجارة والجزر، وإذا قدّمت لها الطعام الخطأ… ستصنع وجهًا مضحكًا من الاشمئزاز! لكن انتبه إلى الأرنب: إذا قدّمته للماعز أو للباندا، فلن يأكلاه بل سيصبحون أصدقاء.
 
-कमाए हुए सिक्कों से तुम दुकान जाकर बकरी, काला तेंदुआ, पांडा और कई दूसरे जानवर अपने चिड़ियाघर के लिए खरीद सकते हो।
+🐘 حديقة كبيرة لتستكشفها
+· السافانا، مع الزرافات والحمير الوحشية والغزلان والفيلة.
+· غابة الخيزران للباندا، وشلال النمر الأسود.
+· القطب، مع طيور البطريق.
+· المزرعة، مع الخراف والخيول والدجاج وبركة البط.
+· لكل حيوان اسمه وصفحته في كتاب الحديقة السري.
 
-· असली जंगली जानवर: शेर, बकरी, काला तेंदुआ, पांडा और कई और।
-· अपने आइडिया भेजो और दूसरे बच्चों के आइडिया पर वोट करो। प्रकाशित होने से पहले उनकी जाँच की जाती है।
-· प्यार से बनाया गया पिक्सेल आर्ट।
+🐶 الجديد
+· قمر، كلبة الحارسة الصغيرة: حيوان أليف يرافقك في كل أنحاء الحديقة.
+· Jose، صغير الباندا، يعيش مع Mochi وPompón.
+· درس بلا كلمات: يد تُظهر كل حركة، فيتعلّم الصغار اللعب حتى قبل أن يتعلّموا القراءة.
+
+💡 أفكارك تصل إلى الحديقة
+أرسل أفكارك وصوّت لأفكار الأطفال الآخرين. تُراجَع قبل نشرها، وبعضها موجود في اللعبة بالفعل.
+
+👪 مصمَّمة للأطفال والعائلات
+· للأطفال من 5 إلى 12 سنة.
+· سهلة وهادئة: لمس وسحب فقط، بلا حدود زمنية.
+· بلا مشتريات ولا تسجيل.
+· تعرض أحيانًا مشاهدة إعلان مقابل عملات، ويمكن دائمًا الرفض.
+· تُلعب بلا إنترنت.
+· رسومات بكسل مرسومة بحب، وموسيقى ومؤثرات صوتية.
+· متوفرة بـ 11 لغة، منها العربية.
+
+صُنعت لأجل Daniela (9 سنوات) وAdrián (5 سنوات) ومعهما، بمساعدة والدهما. سنواصل إضافة الجديد، والكثير منه من اختراعهما واختراعك.
+
+==================================================
+Idioma: hi-IN
+==================================================
+Nombre: Zoo Esponji: बच्चों का ज़ू
+Descripción breve: बच्चों के लिए जानवरों का गेम: शेर, पांडा, जिराफ़ और बाकी जानवरों को खाना खिलाओ
+Descripción completa:
+Zoo Esponji छोटे बच्चों के लिए जानवरों का गेम है, जिसमें तुम अपने चिड़ियाघर की देखभाल करते हो। तुम देखभाल करने वाली हो: पार्क में घूमो, जानवरों को खाना खिलाओ और पता करो कि किसे क्या पसंद है। कोई जल्दी नहीं, कोई टाइमर नहीं और कभी हारना नहीं: सिक्के कमाओ, नए जानवर खरीदो और अपना ज़ू बड़ा करो।
+
+🦁 कौन क्या खाता है?
+शेर मांस खाता है, बकरी को पत्थर और गाजर पसंद हैं, और अगर गलत खाना दोगे… तो वे मुँह बना लेंगे! पर खरगोश से सावधान: अगर उसे बकरी या पांडा को दोगे, तो वे उसे खाएँगे नहीं, बल्कि दोस्त बन जाएँगे।
+
+🐘 घूमने के लिए बड़ा सा ज़ू
+· सवाना, जिराफ़, ज़ेबरा, हिरण और हाथियों के साथ।
+· पांडा का बाँस का जंगल और काले तेंदुए का झरना।
+· ध्रुव, पेंगुइन के साथ।
+· खेत, भेड़ों, घोड़ों, मुर्गियों और बत्तखों के तालाब के साथ।
+· हर जानवर का अपना नाम है और ज़ू की गुप्त किताब में अपना पन्ना।
+
+🐶 नया क्या है
+· चंदा, देखभाल करने वाली की प्यारी डॉगी: एक पालतू जो पूरे पार्क में तुम्हारे साथ चलती है।
+· Jose, नन्हा पांडा, Mochi और Pompón के साथ रहता है।
+· बिना शब्दों का ट्यूटोरियल: एक हाथ हर कदम दिखाता है, ताकि छोटे बच्चे पढ़ना सीखने से पहले ही खेलना सीख जाएँ।
+
+💡 तुम्हारे सुझाव ज़ू तक पहुँचते हैं
+अपने सुझाव भेजो और दूसरे बच्चों के सुझावों पर वोट करो। छपने से पहले उनकी जाँच होती है, और कुछ तो गेम में आ भी चुके हैं।
+
+👪 बच्चों और परिवारों के लिए
 · 5 से 12 साल के बच्चों के लिए।
-· कोई खरीदारी या रजिस्ट्रेशन नहीं। कभी-कभी खेल सिक्कों के बदले विज्ञापन दिखाने की पेशकश करता है, और तुम हमेशा मना कर सकते हो।
-· संगीत और साउंड इफ़ेक्ट।
-· खेल हिंदी समेत 11 भाषाओं में है।
+· आसान और आरामदायक: बस छुओ और खींचो, कोई समय-सीमा नहीं।
+· कोई खरीदारी या साइन-अप नहीं।
+· कभी-कभी सिक्कों के बदले विज्ञापन देखने का विकल्प आता है, और हमेशा मना किया जा सकता है।
+· बिना इंटरनेट के भी खेल सकते हो।
+· प्यार से बनाया गया पिक्सेल आर्ट, संगीत और साउंड इफ़ेक्ट।
+· 11 भाषाओं में, जिनमें हिंदी भी है।
 
-डेनिएला (9 साल) और एड्रियन (5 साल) द्वारा और उनके लिए, उनके पापा की मदद से बनाया गया। हम नई चीज़ें जोड़ते रहेंगे, जिनमें से कई उनकी और तुम्हारी सोची हुई होंगी।
+Daniela (9 साल) और Adrián (5 साल) के लिए और उनके साथ, उनके पापा की मदद से बनाया गया। हम नई चीज़ें जोड़ते रहेंगे, जिनमें से कई उनकी और तुम्हारी सोची हुई होंगी।
 
 ==================================================
-语言：简体中文 — zh-CN
+Idioma: zh-CN
 ==================================================
-名称：Zoo Esponji：照顾动物
-简短说明：照顾动物、赚金币，还能提交你的点子，让它出现在动物园里！
-完整说明：
-Zoo Esponji 是一款照顾动物的儿童游戏，你的点子也可能成真。你是动物园的饲养员：在园里走走，给动物喂食，发现每只动物喜欢吃什么。
+Nombre: Zoo Esponji：儿童动物园
+Descripción breve: 儿童动物游戏：给狮子、熊猫、长颈鹿等动物喂食，打造属于你的动物园
+Descripción completa:
+Zoo Esponji 是一款为小朋友设计的动物游戏，你可以照顾属于自己的动物园。你是饲养员：在园里散步，给动物喂食，发现每只动物最喜欢吃什么。不用着急，没有倒计时，也永远不会输：赚金币、买新动物，让你的动物园越来越大。
 
-狮子吃肉，山羊喜欢石头和胡萝卜，喂错了食物，它们会做出嫌弃的鬼脸！不过要小心兔子：如果把它喂给山羊或熊猫……
+🦁 每种动物吃什么？
+狮子吃肉，山羊喜欢石头和胡萝卜，要是喂错了食物……它们会做出嫌弃的鬼脸！不过要小心兔子：如果把它喂给山羊或熊猫，它们不会吃掉它，反而会成为好朋友。
 
-用赚到的金币可以去商店，为你的动物园买山羊、黑豹、大熊猫和更多动物。
+🐘 一个超大的动物园等你探索
+· 草原：长颈鹿、斑马、羚羊和大象。
+· 熊猫的竹林和黑豹的瀑布。
+· 极地：可爱的企鹅。
+· 农场：绵羊、马、母鸡和鸭子池塘。
+· 每只动物都有自己的名字，在动物园的秘密之书里也有自己的一页。
 
-· 真实的野生动物：狮子、山羊、黑豹、大熊猫等等。
-· 提交你的点子，并为其他小朋友的点子投票。点子在发布前会经过审核。
-· 用心绘制的像素画。
+🐶 新内容
+· 月亮，饲养员的小狗：一只会陪你逛遍整个公园的宠物。
+· 熊猫宝宝 Jose 和 Mochi、Pompón 住在一起。
+· 无文字教程：一只小手示范每个动作，还不识字的小朋友也能学会玩。
+
+💡 你的想法会来到动物园
+提交你的想法，并为其他小朋友的想法投票。所有想法都会先审核再发布，有些已经出现在游戏里了。
+
+👪 专为儿童和家庭设计
 · 适合 5 到 12 岁的孩子。
-· 无需购买，无需注册。游戏偶尔会提供观看广告换金币的选项，随时都可以拒绝。
-· 音乐和音效。
-· 游戏支持包括中文在内的 11 种语言。
+· 简单轻松：只要点一点、拖一拖，没有时间限制。
+· 没有内购，也无需注册。
+· 偶尔会提供观看广告换金币的选项，随时可以拒绝。
+· 无需联网，离线也能玩。
+· 用心绘制的像素画，还有音乐和音效。
+· 支持 11 种语言，包括中文。
 
-由爸爸协助，为 Daniela（9 岁）和 Adrián（5 岁）并和他们一起制作。我们会继续加入新内容，很多都来自他们和你的点子。
+由爸爸协助，为 Daniela（9 岁）和 Adrián（5 岁）并和他们一起制作。我们会继续加入新内容，很多都是他们和你想出来的。
 
 ==================================================
-言語：日本語 — ja-JP
+Idioma: ja-JP
 ==================================================
-名前：Zoo Esponji：どうぶつのおせわ
-簡単な説明：どうぶつのおせわをして、コインをためて、アイデアを動物園に届けよう！
-詳しい説明：
-Zoo Esponji は、どうぶつのおせわをする子ども向けゲーム。あなたのアイデアがゲームに登場するかもしれません。あなたは動物園の飼育員。園内を歩いて、どうぶつにエサをあげて、それぞれの好きなものを見つけよう。
+Nombre: Zoo Esponji：こども動物園
+Descripción breve: 子ども向け動物ゲーム！ライオン、パンダ、キリンたちにごはんをあげて動物園を育てよう
+Descripción completa:
+Zoo Esponji は、小さな子ども向けの動物ゲーム。自分だけの動物園のお世話をします。あなたは飼育員さん。公園を歩いて、動物たちにごはんをあげて、それぞれの好きな食べ物を見つけよう。急がなくていい、タイマーもない、負けることもありません。コインをためて新しい動物を買い、動物園を大きくしよう。
 
-ライオンはお肉、ヤギは石とニンジンが大好き。まちがったエサをあげると、いやそうな顔をするよ！でもウサギには気をつけて。ヤギやパンダにあげてしまったら……
+🦁 どの動物が何を食べる？
+ライオンはお肉、ヤギは石とニンジンが大好き。まちがった食べ物をあげると…「うえっ」という顔をします！でもウサギには気をつけて。ヤギやパンダにあげると、食べずに仲良しになっちゃいます。
 
-ためたコインでお店に行って、ヤギやクロヒョウ、パンダなど、たくさんのどうぶつを動物園に迎えよう。
+🐘 広い動物園を探検しよう
+・キリン、シマウマ、ガゼル、ゾウがいるサバンナ。
+・パンダの竹林と、クロヒョウの滝。
+・ペンギンがいる南極エリア。
+・ヒツジ、ウマ、ニワトリ、アヒルの池がある牧場。
+・どの動物にも名前があり、動物園のひみつの本に専用のページがあります。
 
-· 本物の野生どうぶつ：ライオン、ヤギ、クロヒョウ、パンダなど。
-· アイデアを送って、ほかの子のアイデアに投票しよう。公開前に内容を確認しています。
-· 心をこめて描いたドット絵。
-· 5〜12歳の子ども向け。
-· 課金・登録なし。ときどきコインと引きかえに広告を見るか聞かれますが、いつでも断れます。
-· 音楽と効果音。
-· 日本語をふくむ 11 の言語であそべます。
+🐶 新しいこと
+・ツキ（飼育員さんの子犬）：公園中ついてきてくれるペットです。
+・パンダの赤ちゃん Jose が Mochi と Pompón といっしょに暮らしています。
+・ことばを使わないチュートリアル：手が動きをひとつずつ見せるので、字が読めない小さな子でも遊び方を覚えられます。
 
-パパの手を借りて、ダニエラ（9歳）とアドリアン（5歳）のために、ふたりと一緒に作りました。これからも新しい要素を追加していきます。その多くはふたりと、あなたのアイデアです。
+💡 あなたのアイデアが動物園に
+アイデアを送って、ほかの子どものアイデアに投票しよう。公開前にチェックしていて、いくつかはもうゲームに入っています。
+
+👪 子どもと家族のために
+・5〜12歳の子ども向け。
+・かんたんでのんびり：タッチとドラッグだけ、時間制限なし。
+・課金も登録もありません。
+・ときどきコインと引きかえに広告を見るか聞かれますが、いつでも断れます。
+・インターネットなしでも遊べます。
+・心をこめて描いたドット絵、音楽と効果音。
+・日本語をふくむ11の言語に対応。
+
+Daniela（9歳）と Adrián（5歳）のために、ふたりといっしょに、パパの手を借りて作りました。これからも新しいものを追加していきます。その多くは、ふたりとあなたが考えたものです。
