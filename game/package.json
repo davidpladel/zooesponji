@@ -29,6 +29,7 @@
     "art:props-sheet": "node scripts/art/propsSheet.ts",
     "map:preview": "node scripts/map-preview.ts",
     "map:snapshot": "node scripts/map-snapshot.ts",
+    "ia:mando": "node scripts/ia/mando.ts",
     "make:luna": "node scripts/make-luna.ts"
   },
   "dependencies": {

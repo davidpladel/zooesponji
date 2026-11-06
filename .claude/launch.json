@@ -45,6 +45,18 @@
       "autoPort": false
     },
     {
+      "name": "ia-mando",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "ia:mando",
+        "--prefix",
+        "game"
+      ],
+      "port": 7801,
+      "autoPort": false
+    },
+    {
       "name": "web",
       "runtimeExecutable": "C:/xampp/php/php.exe",
       "runtimeArgs": [
