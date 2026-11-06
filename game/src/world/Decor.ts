@@ -7,8 +7,14 @@ import { hasKey, t } from '../data/strings';
 
 /** Suelo del bioma: por encima del césped (0) y por debajo de las vallas (2). */
 const GROUND_DEPTH = 1;
-/** Piezas planas (agua, meseta): sobre el suelo y las vallas, bajo animales y personas. */
 const TILE = 16;
+
+/** Piezas que se pisan (hierba, rocas, meseta) ya dibujadas: para comprobar en pruebas que quedan debajo. */
+const walkPieces: { name: string; piece: Phaser.GameObjects.Image | Phaser.GameObjects.Sprite }[] = [];
+
+export function getWalkPieces(): readonly { name: string; piece: Phaser.GameObjects.Image | Phaser.GameObjects.Sprite }[] {
+  return walkPieces;
+}
 
 function nearestEnclosure(enclosures: EnclosureInfo[], x: number, y: number): EnclosureInfo | null {
   let best: EnclosureInfo | null = null;
@@ -40,6 +46,7 @@ export const Decor = {
     const art = getArt();
     if (!art) return;
     const enclosures = readEnclosures(mapData);
+    walkPieces.length = 0;
 
     for (const e of enclosures) {
       const ground = `ground-${e.biome}`;
@@ -60,6 +67,7 @@ export const Decor = {
       piece
         .setOrigin(0.5, 1)
         .setDepth(propDepth(p));
+      if (p.walk) walkPieces.push({ name: p.prop, piece });
 
       if (p.prop === 'park-gate') {
         // El nombre del zoo en el tejadillo del portón, como el arco del parque de la v1.

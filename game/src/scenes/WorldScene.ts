@@ -8,6 +8,7 @@ import { inJoystickZone } from '../core/joystick';
 import { stepAlongPath, tileCenter, tryMove, worldToTile, type Vec } from '../core/movement';
 import { findPathOrNearest, isWalkable, type Point, type WalkGrid } from '../core/pathfinding';
 import { withPenInteriors } from '../core/penGrid';
+import { tourWaypoints } from '../core/tour';
 import { followTrail, recordTrail } from '../core/petFollow';
 import { noPen, stepNear, type NearState } from '../core/penNear';
 import { buildWalkGrid, readBoard, readEnclosures, readGates, readProps, readWater, readShop, readSpawn, withSolidProps, type TiledMap } from '../core/tiledmap';
@@ -25,7 +26,7 @@ import { createKeeper, createPet, type Walker } from '../world/Actors';
 import { Board } from '../world/Board';
 import { Pens } from '../world/Pens';
 import { ShopBuilding } from '../world/ShopBuilding';
-import { Decor } from '../world/Decor';
+import { Decor, getWalkPieces } from '../world/Decor';
 import { TerrainArt } from '../world/TerrainArt';
 import { VisitorCrowd } from '../world/VisitorCrowd';
 import type { AdOfferSceneData } from './AdOfferScene';
@@ -544,6 +545,34 @@ export class WorldScene extends Phaser.Scene {
     // Pegada a la cuidadora avanza a tirones (un fotograma sí y otro no): pararla en cada uno cortaba la animación de las patas.
     this.petIdle = step.moving ? 0 : this.petIdle + delta;
     if (this.petIdle >= PET_REST_MS) this.pet.face(facingFromDelta(keeper.x - this.pet.x, keeper.y - this.pet.y, 'down'));
+  }
+
+  /** Para pruebas: casilla de la cuidadora. */
+  keeperTile(): Point {
+    return { x: Math.floor(this.keeper.x / TILE_SIZE), y: Math.floor(this.keeper.y / TILE_SIZE) };
+  }
+
+  /**
+   * Para pruebas: puntos para recorrer a pie desde donde está la cuidadora todos los caminos (`withPens`
+   * false) o el interior de los recintos abiertos (true), con como mucho `maxStep` pasos entre dos.
+   */
+  tourWaypoints(maxStep: number, withPens: boolean): Point[] {
+    const start = this.keeperTile();
+    if (!withPens) return tourWaypoints(this.pathGrid, start, maxStep);
+    return tourWaypoints(this.grid, start, maxStep, (p) => !isWalkable(this.pathGrid, p.x, p.y));
+  }
+
+  /** Para pruebas: piezas que se pisan y se dibujan encima de la cuidadora o de Luna (vacío = bien). */
+  walkPropsAbove(): string[] {
+    const actors = [this.keeper.object, this.pet?.object].filter((o): o is NonNullable<typeof o> => Boolean(o));
+    const above: string[] = [];
+    for (const { name, piece } of getWalkPieces()) {
+      const bounds = piece.getBounds();
+      for (const actor of actors) {
+        if (piece.depth >= actor.depth && Phaser.Geom.Intersects.RectangleToRectangle(bounds, actor.getBounds())) above.push(name);
+      }
+    }
+    return above;
   }
 
   /** Para pruebas: dónde está Luna en el mapa. */

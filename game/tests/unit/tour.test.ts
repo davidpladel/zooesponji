@@ -72,4 +72,22 @@ describe('tourWaypoints', () => {
     const seen = stepped(grid, spawn, points);
     expect([...all].filter((k) => !seen.has(k))).toEqual([]);
   });
+
+  it('con only, pisa todas las casillas que pide y usa las demás solo para pasar', () => {
+    const only = (p: Point) => p.x >= 12;
+    const points = tourWaypoints(ring, start, 6, only);
+    const seen = stepped(ring, start, points);
+    const wanted = [...reachable(ring, start)].filter((k) => only({ x: Number(k.split(',')[0]), y: Number(k.split(',')[1]) }));
+    expect(wanted.length).toBeGreaterThan(0);
+    expect(wanted.filter((k) => !seen.has(k))).toEqual([]);
+    expect(seen.has('0,5'), 'no hace falta ir a la otra punta del anillo').toBe(false);
+  });
+
+  it('en una sala abierta avanza a tramos rectos, no casilla a casilla', () => {
+    const room = gridFromAscii(Array.from({ length: 12 }, () => '.'.repeat(12)));
+    const points = tourWaypoints(room, { x: 0, y: 0 }, 6);
+    expect(stepped(room, { x: 0, y: 0 }, points).size).toBe(144);
+    expect(points.length).toBeLessThanOrEqual(40);
+  });
 });
+

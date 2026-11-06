@@ -33,6 +33,12 @@ import { getSession } from './session';
 export interface ZooTestApi {
   activeScenes(): string[];
   keeperPosition(): Vec | null;
+  /** Casilla de la cuidadora (null fuera del mapa). */
+  keeperTile(): { x: number; y: number } | null;
+  /** Puntos para recorrer a pie todos los caminos o, con `withPens`, el interior de los recintos abiertos. */
+  tourWaypoints(maxStep: number, withPens: boolean): { x: number; y: number }[];
+  /** Piezas que se pisan dibujadas encima de la cuidadora o de Luna (vacío = bien). */
+  walkPropsAbove(): string[];
   tileToScreen(x: number, y: number): Vec | null;
   addCoins(amount: number): Promise<void>;
   /** Compra un artículo sin pasar por la tienda (para llegar rápido a un recinto en las pruebas). */
@@ -175,6 +181,9 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
   window.__ZOO__ = {
     activeScenes: () => game.scene.getScenes(true).map((scene) => scene.scene.key),
     keeperPosition: () => activeScene<WorldScene>('World')?.keeperPosition() ?? null,
+    keeperTile: () => activeScene<WorldScene>('World')?.keeperTile() ?? null,
+    tourWaypoints: (maxStep, withPens) => game.scene.getScene<WorldScene>('World').tourWaypoints(maxStep, withPens),
+    walkPropsAbove: () => activeScene<WorldScene>('World')?.walkPropsAbove() ?? [],
     tileToScreen: (x, y) => activeScene<WorldScene>('World')?.tileToScreen({ x, y }) ?? null,
     addCoins: (amount) => getSession().earnCoins(amount),
     buy: async (itemId) => {
