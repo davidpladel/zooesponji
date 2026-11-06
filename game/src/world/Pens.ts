@@ -7,7 +7,7 @@ import { gateAtDoorstep, nearestWithin, rectContains, rectsOverlap, tapDistance,
 import { MIN_GAP } from '../core/obstacles';
 import type { Vec } from '../core/movement';
 import type { Point } from '../core/pathfinding';
-import type { EnclosureInfo, GateInfo, PropInfo } from '../core/tiledmap';
+import type { EnclosureInfo, GateInfo, PropInfo, WaterInfo } from '../core/tiledmap';
 import { ANIMALS, type AnimalId, type Reaction } from '../data/animals';
 import { PENS, isPenId, residentsIn, type PenId, type ResidentDef } from '../data/pens';
 import { shopItemForPen } from '../data/shop';
@@ -120,6 +120,7 @@ export class Pens {
     state: GameState,
     props: PropInfo[] = [],
     zoom = 1,
+    waters: WaterInfo[] = [],
   ) {
     this.zoom = zoom;
     for (const enclosure of enclosures) {
@@ -132,7 +133,7 @@ export class Pens {
       const unlocked = isPenOpen(state, id);
       const price = shopItemForPen(id)?.cost;
       const rect = { x: enclosure.x, y: enclosure.y, width: enclosure.width, height: enclosure.height };
-      const space = penSpace(rect, props, TILE_SIZE);
+      const space = penSpace(rect, props, TILE_SIZE, waters);
 
       // Con arte, el nombre va en el cartel de madera de la puerta (Decor).
       if (!getArt()) scene.add.text(home.x, enclosure.y + 11, t(def.nameKey), LABEL_STYLE).setOrigin(0.5).setResolution(4).setDepth(UI_DEPTH);

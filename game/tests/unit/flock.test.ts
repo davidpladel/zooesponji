@@ -135,4 +135,14 @@ describe('ovejas de la granja de contacto', () => {
   it('no atraviesa una roca para acercarse', () => {
     expect(followTarget({ x: 80, y: 50 }, { x: 150, y: 50 }, space, 20)).toBeNull();
   });
+
+  it('penSpace cuenta el agua del interior como obstáculo', () => {
+    const s = penSpace({ x: 0, y: 0, width: 160, height: 160 }, [], 16, [{ kind: 'agua', x: 32, y: 32, width: 32, height: 32 }]);
+    expect(s.obstacles).toContainEqual({ x: 32, y: 32, width: 32, height: 32 });
+  });
+
+  it('penSpace no cuenta el agua de fuera del recinto', () => {
+    const s = penSpace({ x: 0, y: 0, width: 160, height: 160 }, [], 16, [{ kind: 'agua', x: 400, y: 32, width: 32, height: 32 }]);
+    expect(s.obstacles).toEqual([]);
+  });
 });

@@ -135,6 +135,18 @@ const prop = (name, px, py, { block = null, flat = false, z = 0, zone = null, so
   if (zone) properties.push({ name: 'zone', type: 'string', value: zone });
   objects.push({ id: nextId++, name: `${name}-${nextId}`, type: 'prop', x: px, y: py, width: 0, height: 0, rotation: 0, visible: true, properties });
 };
+/**
+ * Zona de agua (o barro) en casillas del mapa, inclusivo. El agua no la pisa nadie: ni animales ni
+ * cuidadora. Las piezas de agua son planas y sin `block`: lo que no se pisa lo dice esta zona, así en
+ * el risco de la pantera la roca se pisa y la cascada no. `kind`: 'agua' o 'barro' (charca de los cerdos).
+ */
+const water = (kind, x0, y0, x1, y1) => {
+  objects.push({
+    id: nextId++, name: `${kind}-${nextId}`, type: 'agua',
+    x: x0 * T, y: y0 * T, width: (x1 - x0 + 1) * T, height: (y1 - y0 + 1) * T, rotation: 0, visible: true,
+    properties: [{ name: 'kind', type: 'string', value: kind }],
+  });
+};
 /** Prop apoyado en la casilla (tx,ty) del mapa: centro horizontal de la casilla, borde inferior. */
 const at = (name, tx, ty, opts) => prop(name, tx * T + T / 2, (ty + 1) * T, opts);
 /** Lo mismo, en coordenadas del parque de siempre. */
@@ -176,7 +188,15 @@ cabra('rock-grey-big', 0, 5);
 // del pack: bloque alto de acantilado a cada lado (con su remate), la catarata en medio empalmando con la
 // roca y el agua al pie, montada con las casillas 16x16 del terrain como pide el autor (catarata
 // arriba/medio/abajo alineada con el acantilado C/D y empalmando con el agua E). 112x112 (7x7).
-pantera('waterfall', 9, 7, { flat: true, block: [112, 104] });
+pantera('waterfall', 9, 7, { flat: true });
+{
+  // Casilla de apoyo de la catarata (centro abajo de la pieza de 7x7): la cascada son las 3 columnas del
+  // medio (5 filas) y la poza, las 2 filas de abajo de esas columnas. Los lados son roca: se pisan.
+  const tx = enclosures[2].x + 1 + 9;
+  const ty = enclosures[2].y + 1 + 7;
+  water('agua', tx - 1, ty - 6, tx + 1, ty - 2);
+  water('agua', tx - 1, ty - 1, tx + 1, ty);
+}
 pantera('lilypad', 10, 6, { flat: true, z: 2 });
 pantera('palm', 1, 2, { block: [16, 8] });
 pantera('palm', 2, 7, { block: [16, 8] });
@@ -212,7 +232,9 @@ asiaticos('rock-savannah', 1, 1);
 asiaticos('rock-savannah-big', 1, 6);
 for (const [cx, cy] of [[5, 2], [7, 6]]) asiaticos('grass-tall-dry', cx, cy);
 // 🐧 Polo (interior 14x8, puerta abajo en las columnas 6-7): nieve y una charca.
-pinguinos('pond-tundra', 10, 3, { flat: true, block: [48, 40] });
+pinguinos('pond-tundra', 10, 3, { flat: true });
+// La charca (3x3) acaba en la casilla de apoyo (centro abajo).
+water('agua', enclosures[7].x + 1 + 10 - 1, enclosures[7].y + 1 + 3 - 2, enclosures[7].x + 1 + 10 + 1, enclosures[7].y + 1 + 3);
 pinguinos('rock-snow-big', 1, 1);
 pinguinos('rock-snow', 3, 5);
 pinguinos('pine-snow-small', 0, 6);
@@ -225,7 +247,8 @@ for (const [cx, cy] of [[3, 2], [6, 5]]) ovejas('flowers', cx, cy);
 // la orilla debajo, por donde pasean los patos y entra la cuidadora.
 const lakeLeft = (enclosures[9].x + 2) * T;
 const lakeTop = (enclosures[9].y + 2) * T;
-prop('lake-grassland', lakeLeft + 48, lakeTop + 96, { flat: true, block: [96, 96] });
+prop('lake-grassland', lakeLeft + 48, lakeTop + 96, { flat: true });
+water('agua', lakeLeft / T, lakeTop / T, lakeLeft / T + 5, lakeTop / T + 5);
 estanque('lilypad', 2, 2, { flat: true, z: 2 });
 estanque('lilypad-flower', 5, 4, { flat: true, z: 2 });
 estanque('lilypad', 3, 5, { flat: true, z: 2 });

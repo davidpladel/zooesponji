@@ -1,7 +1,7 @@
 import { rectContains, type Rect } from './interaction';
 import type { Vec } from './movement';
 import { MIN_GAP, pickWanderTarget, segmentHitsRects } from './obstacles';
-import type { EnclosureInfo, PropInfo } from './tiledmap';
+import type { EnclosureInfo, PropInfo, WaterInfo } from './tiledmap';
 import type { Rng } from './wander';
 
 /** Interior de un recinto (sin la valla) y zonas que no se pueden pisar. */
@@ -29,7 +29,13 @@ export function gapBetween(a: Pick<Roamer, 'radius'>, b: Pick<Roamer, 'radius'>)
 
 export const ROAM_SPEED = 14;
 
-export function penSpace(enclosure: Rect, props: readonly PropInfo[] | readonly Pick<PropInfo, 'x' | 'y' | 'block'>[], tile: number): PenSpace {
+/** Interior del recinto y lo que no se pisa dentro: la base de los props que bloquean y el agua. */
+export function penSpace(
+  enclosure: Rect,
+  props: readonly PropInfo[] | readonly Pick<PropInfo, 'x' | 'y' | 'block'>[],
+  tile: number,
+  waters: readonly WaterInfo[] = [],
+): PenSpace {
   const inner = {
     x: enclosure.x + tile,
     y: enclosure.y + tile,
@@ -39,6 +45,9 @@ export function penSpace(enclosure: Rect, props: readonly PropInfo[] | readonly 
   const obstacles = props
     .filter((p) => p.block !== null && rectContains(inner, { x: p.x, y: p.y - 1 }))
     .map((p) => p.block!);
+  for (const w of waters) {
+    if (rectContains(inner, { x: w.x + w.width / 2, y: w.y + w.height / 2 })) obstacles.push({ x: w.x, y: w.y, width: w.width, height: w.height });
+  }
   return { inner, obstacles };
 }
 

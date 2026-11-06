@@ -4,7 +4,9 @@ import { describe, expect, it } from 'vitest';
 import { PEN_IDS } from '../../src/data/pens';
 import { approachTile } from '../../src/core/interaction';
 import { findPath, isWalkable } from '../../src/core/pathfinding';
-import { buildWalkGrid, isShopDoor, readEnclosures, readBoard, readGates, readProps, readShop, readSpawn, withSolidProps, type TiledMap } from '../../src/core/tiledmap';
+import { buildWalkGrid, isShopDoor, readEnclosures, readBoard, readGates, readProps, readShop, readSpawn, readWater, withSolidProps, type TiledMap } from '../../src/core/tiledmap';
+import { penSpace } from '../../src/core/flock';
+import { withPenInteriors } from '../../src/core/penGrid';
 
 const url = new URL('../../public/assets/maps/zoo.tmj', import.meta.url);
 const map = JSON.parse(readFileSync(fileURLToPath(url), 'utf8')) as TiledMap;
@@ -170,12 +172,12 @@ describe('mapa del zoo', () => {
 
   it('el estanque tiene un lago de 6×6 casillas y deja orilla para pasear', () => {
     const pen = enclosure('estanque');
-    const lake = readProps(map).find((p) => p.prop === 'lake-grassland')!;
-    expect(lake.block).toMatchObject({ width: 96, height: 96 });
+    const lake = readWater(map).find((w) => w.x >= pen.x && w.x < pen.x + pen.width && w.y >= pen.y && w.y < pen.y + pen.height)!;
+    expect(lake).toMatchObject({ width: 96, height: 96 });
     // Dentro de la valla, con una casilla de césped por arriba y a los lados y cuatro filas de orilla abajo.
-    expect(lake.block!.x - pen.x).toBe(2 * 16);
-    expect(lake.block!.y - pen.y).toBe(2 * 16);
-    expect(pen.y + pen.height - 16 - (lake.block!.y + 96)).toBe(4 * 16);
+    expect(lake.x - pen.x).toBe(2 * 16);
+    expect(lake.y - pen.y).toBe(2 * 16);
+    expect(pen.y + pen.height - 16 - (lake.y + 96)).toBe(4 * 16);
   });
 
   it('cada zona nueva tiene su cartel a la entrada', () => {
@@ -250,4 +252,22 @@ describe('mapa del zoo', () => {
         }
     }
   });
+
+  it('el agua del mapa es zona propia y ningún prop de agua bloquea por su cuenta', () => {
+    const waters = readWater(map);
+    expect(waters.length).toBeGreaterThanOrEqual(4); // estanque, pingüinos, pantera (cascada + poza)
+    for (const p of readProps(map)) if (/^(lake|pond|waterfall)/.test(p.prop)) expect(p.block, p.prop).toBeNull();
+  });
+
+  it('en el risco de la pantera la roca se pisa y el agua no', () => {
+    const e = enclosure('pantera');
+    const space = penSpace(e, readProps(map), 16, readWater(map));
+    const open = withPenInteriors(grid, [space], 16);
+    // La catarata (7x7) ocupa las casillas 37-43 x 41-47: acantilado a los lados, cascada y poza en 39-41.
+    expect(isWalkable(open, 37, 43), 'roca del acantilado').toBe(true);
+    expect(isWalkable(open, 42, 42), 'roca del acantilado').toBe(true);
+    expect(isWalkable(open, 40, 43), 'cascada').toBe(false);
+    expect(isWalkable(open, 40, 47), 'poza').toBe(false);
+  });
 });
+

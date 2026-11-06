@@ -278,6 +278,25 @@ export function readProps(map: TiledMap): PropInfo[] {
   return result;
 }
 
+/** Zona de agua del mapa (lago, charca, cascada): no la pisa nadie. `barro`: charca de barro (cerdos). */
+export interface WaterInfo {
+  kind: 'agua' | 'barro';
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+export function readWater(map: TiledMap): WaterInfo[] {
+  const result: WaterInfo[] = [];
+  for (const object of objectsOf(map)) {
+    if (objectKind(object) !== 'agua') continue;
+    const kind = getProperty(object.properties, 'kind') === 'barro' ? 'barro' : 'agua';
+    result.push({ kind, x: object.x, y: object.y, width: object.width, height: object.height });
+  }
+  return result;
+}
+
 /** Tipos de tile del interior de la tienda (mapa lógico, el arte lo pone ShopInterior). */
 export const INTERIOR_GIDS = { floor: 1, wall: 2, furniture: 3 } as const;
 

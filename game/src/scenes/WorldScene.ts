@@ -10,7 +10,7 @@ import { findPathOrNearest, isWalkable, type Point, type WalkGrid } from '../cor
 import { withPenInteriors } from '../core/penGrid';
 import { followTrail, recordTrail } from '../core/petFollow';
 import { noPen, stepNear, type NearState } from '../core/penNear';
-import { buildWalkGrid, readBoard, readEnclosures, readGates, readProps, readShop, readSpawn, withSolidProps, type TiledMap } from '../core/tiledmap';
+import { buildWalkGrid, readBoard, readEnclosures, readGates, readProps, readWater, readShop, readSpawn, withSolidProps, type TiledMap } from '../core/tiledmap';
 import { PEN_IDS, residentsIn, type PenId } from '../data/pens';
 import { SHOP_UNLOCK_COINS } from '../data/shop';
 import { t } from '../data/strings';
@@ -93,7 +93,7 @@ export class WorldScene extends Phaser.Scene {
     }
 
     const state = getSession().state;
-    this.pens = new Pens(this, readEnclosures(mapData), readGates(mapData), state, readProps(mapData), computeZoom(this.scale.width, this.scale.height));
+    this.pens = new Pens(this, readEnclosures(mapData), readGates(mapData), state, readProps(mapData), computeZoom(this.scale.width, this.scale.height), readWater(mapData));
     this.grid = withPenInteriors(this.pathGrid, this.pens.openSpaces(state), TILE_SIZE);
     const shopInfo = readShop(mapData);
     this.shop = shopInfo ? new ShopBuilding(this, shopInfo, state) : null;
