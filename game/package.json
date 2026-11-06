@@ -28,6 +28,7 @@
     "art:compare": "node scripts/art/compare.ts",
     "art:props-sheet": "node scripts/art/propsSheet.ts",
     "map:preview": "node scripts/map-preview.ts",
+    "map:snapshot": "node scripts/map-snapshot.ts",
     "make:luna": "node scripts/make-luna.ts"
   },
   "dependencies": {
