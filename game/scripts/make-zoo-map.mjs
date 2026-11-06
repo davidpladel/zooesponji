@@ -150,7 +150,7 @@ objects.push({ id: nextId++, name: 'tablon', type: 'tablon', x: (PLAZA.x0 + 2 + 
  * bambú no se atraviesan. Lo que casa con esto se pisa: no lleva `block` y se dibuja por debajo de quien
  * lo pisa (propiedad `walk`).
  */
-const WALK = /^(grass|flowers|sunflowers|rock|plateau|cave|lilypad|pebble|daisies)/;
+const WALK = /^(grass|flowers|sunflowers|rock|boulder|plateau|cave|lilypad|pebble|daisies|fern|cattails|reeds)/;
 const prop = (name, px, py, { block = null, flat = false, z = 0, zone = null, solid = false } = {}) => {
   const walk = WALK.test(name);
   if (walk && block) throw new Error(`"${name}" se pisa: no puede llevar block`);
@@ -192,6 +192,8 @@ const pprop = (name, px, py, opts) => prop(name, px + OX * T, py + OY * T, opts)
 /** Ancho (px) de las piezas con volumen que no dan su bloqueo: se bloquea su base (ancho × 1 casilla). */
 const BASE_W = {
   'pine-small': 16, 'jungle-tree': 32, 'bush-jungle': 32, 'pine-snow-small': 16, stump: 32, bush: 16,
+  'log-savannah': 48, 'log-alpine': 48, 'log-moss': 48, 'tree-grassland': 16, 'jungle-tree-vines': 32,
+  shelter: 48, trough: 16, barrel: 16, pumpkin: 16, scarecrow: 16, well: 16,
 };
 /**
  * Igual, en coordenadas del interior de un recinto (0,0 = primera casilla dentro de la valla).
@@ -204,81 +206,117 @@ const inPen = (e) => (name, cx, cy, opts = {}) => {
 };
 
 const [leon, cabra, pantera, panda, sabana, africanos, asiaticos, pinguinos, ovejas, estanque, establo] = enclosures.map(inPen);
-// 🦁 Sabana (puerta abajo: se deja libre la zona central inferior).
-leon('acacia', 2, 2, { block: [32, 16] });
-leon('acacia-small', 8, 5, { block: [16, 16] });
-leon('rock-savannah-big', 6, 1);
-leon('rock-savannah', 1, 5);
-for (const [cx, cy] of [[5, 1], [9, 2], [3, 3], [7, 3]]) leon('grass-tall-dry', cx, cy);
-leon('grass-tall-dry-big', 0, 1);
-// 🐐 Montaña (puerta abajo). La meseta, la cueva y las rocas se suben.
-cabra('plateau', 8, 4, { flat: true });
-cabra('cave', 2, 1);
-cabra('pine', 1, 4, { block: [16, 16] });
-cabra('pine-small', 5, 1);
-cabra('rock-grey', 5, 3);
-cabra('rock-grey-big', 0, 5);
-// 🐆 Selva con catarata (puerta arriba), a la derecha junto al pasillo. Montada como enseña el autor
-// del pack: bloque alto de acantilado a cada lado (con su remate), la catarata en medio empalmando con la
-// roca y el agua al pie, montada con las casillas 16x16 del terrain como pide el autor (catarata
-// arriba/medio/abajo alineada con el acantilado C/D y empalmando con el agua E). 112x112 (7x7).
+/**
+ * Charca de 48x48 (pieza plana y animada) con su zona de agua de 3x3 casillas, en coordenadas del interior.
+ * `rows`: alto del agua en casillas (la cascada de hielo mide 5).
+ */
+const pondIn = (e, place) => (name, cx, cy, rows = 3) => {
+  place(name, cx, cy, { flat: true });
+  water('agua', e.x + 1 + cx - 1, e.y + 1 + cy - rows + 1, e.x + 1 + cx + 1, e.y + 1 + cy);
+};
+const pond = Object.fromEntries(enclosures.map((e, i) => [e.penId, pondIn(e, [leon, cabra, pantera, panda, sabana, africanos, asiaticos, pinguinos, ovejas, estanque, establo][i])]));
+
+// Paisaje de cada especie (2026-11-06). Interior de 14x9 casillas salvo la sabana (20x10), la pantera
+// (14x10) y el estanque (14x11). Criterios: sombra (árbol) en una esquina del fondo, un sitio alto (rocas,
+// meseta) que se vea desde el camino, el agua lejos de la puerta, la puerta y su frente despejados, y lo alto
+// (bambú, árboles) al fondo para no tapar a los animales. El fondo es el lado contrario a la puerta.
+
+// 🦁 Leones (puerta abajo, columnas 6-7): sabana seca con una acacia grande de sombra y su roca para tumbarse.
+leon('acacia', 2, 3, { block: [32, 16] });
+leon('acacia-small', 12, 2, { block: [16, 16] });
+leon('rock-savannah-big', 9, 4);
+leon('rock-savannah', 5, 2);
+leon('log-savannah', 11, 6);
+for (const [cx, cy] of [[4, 6], [1, 7], [7, 1], [10, 1], [13, 5]]) leon('grass-tall-dry', cx, cy);
+leon('grass-tall-dry-big', 1, 5);
+// 🐐 Cabras (puerta abajo): montaña con meseta y cueva para trepar, pino de sombra y flores alpinas.
+cabra('plateau', 11, 5, { flat: true });
+cabra('cave', 4, 2);
+cabra('pine', 1, 2, { block: [16, 16] });
+cabra('pine-small', 12, 8);
+cabra('rock-grey', 7, 3);
+cabra('rock-grey-big', 5, 6);
+cabra('boulder-alpine', 9, 7);
+cabra('log-alpine', 2, 8);
+cabra('flowers-alpine-red', 2, 6);
+cabra('flowers-alpine-white', 8, 1);
+cabra('flowers-alpine-purple', 13, 1);
+// 🐆 Pantera (puerta arriba): selva con catarata al fondo a la derecha. La catarata (7x7) está montada como
+// enseña el autor del pack: acantilado a cada lado, la cascada en medio y el agua al pie.
 pantera('waterfall', 10, 9, { flat: true });
 {
-  // Casilla de apoyo de la catarata (centro abajo de la pieza de 7x7): la cascada son las 3 columnas del
-  // medio (5 filas) y la poza, las 2 filas de abajo de esas columnas. Los lados son roca: se pisan.
+  // Casilla de apoyo de la catarata (centro abajo de la pieza): la cascada son las 3 columnas del medio
+  // (5 filas) y la poza, las 2 filas de abajo de esas columnas. Los lados son roca: se pisan.
   const tx = enclosures[2].x + 1 + 10;
   const ty = enclosures[2].y + 1 + 9;
   water('agua', tx - 1, ty - 6, tx + 1, ty - 2);
   water('agua', tx - 1, ty - 1, tx + 1, ty);
 }
 pantera('lilypad', 11, 8, { flat: true, z: 2 });
-pantera('palm', 1, 2, { block: [16, 8] });
-pantera('palm', 2, 7, { block: [16, 8] });
-pantera('bush-jungle', 1, 5);
-pantera('flowers-red', 3, 1);
-// 🐼 Bosquecillo de bambú en el lado de fuera y abajo (puerta arriba). El bambú mide 5-6 casillas:
-// arriba taparía el camino y el cartel, en el centro escondería al panda y junto al pasillo central
-// taparía el recinto; ahí solo un bambú pequeño en la esquina de abajo.
-panda('bamboo-big', 12, 5, { block: [32, 16] });
-panda('bamboo-big', 12, 2, { block: [32, 16] });
-panda('bamboo-mid', 10, 5, { block: [32, 16] });
-panda('bamboo-mid', 8, 5, { block: [32, 16] });
-panda('bamboo-small', 10, 2, { block: [16, 16] });
-panda('bamboo-small', 0, 5, { block: [16, 16] });
-panda('log', 4, 3, { block: [32, 16] });
-panda('flowers', 3, 2);
-panda('flowers-red', 8, 2);
-// 🦒 Sabana grande (interior 20x10, puerta abajo en las columnas 9-10: esa franja queda libre).
+pantera('jungle-tree-vines', 2, 9, { block: [32, 16] });
+pantera('palm', 4, 6, { block: [16, 8] });
+pantera('bush-jungle', 1, 7);
+pantera('rock-moss-big', 4, 2);
+pantera('rock-moss', 11, 1);
+for (const [cx, cy] of [[2, 1], [5, 8], [13, 1]]) pantera('fern', cx, cy);
+pantera('flowers-red', 9, 1);
+pantera('flowers-red', 3, 4);
+// 🐼 Panda (puerta arriba): bosquecillo de bambú al fondo, charca, tronco y rocas con musgo.
+panda('bamboo-big', 12, 8, { block: [32, 16] });
+panda('bamboo-mid', 9, 8, { block: [32, 16] });
+panda('bamboo-small', 3, 8, { block: [16, 16] });
+pond.panda('pond-rainforest', 11, 4);
+panda('log', 3, 4, { block: [32, 16] });
+panda('stump', 8, 5);
+panda('rock-moss', 1, 2);
+panda('rock-moss-big', 5, 6);
+panda('flowers', 3, 1);
+panda('flowers-red', 9, 2);
+// 🦒 Sabana grande (interior 20x10, puerta abajo en las columnas 9-10): acacias, charca y hierba alta.
 sabana('acacia', 3, 3, { block: [32, 16] });
-sabana('acacia', 15, 2, { block: [32, 16] });
+sabana('acacia', 16, 2, { block: [32, 16] });
 sabana('acacia-small', 13, 6, { block: [16, 16] });
-sabana('rock-savannah-big', 7, 1);
-sabana('rock-savannah', 17, 7);
+pond.sabana('water-savannah', 16, 8);
+sabana('rock-savannah-big', 8, 2);
+sabana('rock-savannah', 12, 8);
 sabana('rock-savannah', 1, 8);
-for (const [cx, cy] of [[5, 2], [11, 3], [14, 8], [2, 5], [18, 4]]) sabana('grass-tall-dry', cx, cy);
-sabana('grass-tall-dry-big', 0, 1);
-// 🐘 Elefantes (interior 10x8, puerta abajo en las columnas 4-5): poca cosa, que los elefantes son grandes.
-africanos('acacia', 1, 2, { block: [32, 16] });
-africanos('rock-savannah-big', 7, 1);
-for (const [cx, cy] of [[4, 1], [8, 5]]) africanos('grass-tall-dry', cx, cy);
-asiaticos('acacia-small', 8, 3, { block: [16, 16] });
-asiaticos('rock-savannah', 1, 1);
-asiaticos('rock-savannah-big', 1, 6);
-for (const [cx, cy] of [[5, 2], [7, 6]]) asiaticos('grass-tall-dry', cx, cy);
-// 🐧 Polo (interior 14x8, puerta abajo en las columnas 6-7): nieve y una charca.
-pinguinos('pond-tundra', 10, 3, { flat: true });
-// La charca (3x3) acaba en la casilla de apoyo (centro abajo).
-water('agua', enclosures[7].x + 1 + 10 - 1, enclosures[7].y + 1 + 3 - 2, enclosures[7].x + 1 + 10 + 1, enclosures[7].y + 1 + 3);
-pinguinos('rock-snow-big', 1, 1);
-pinguinos('rock-snow', 3, 5);
-pinguinos('pine-snow-small', 0, 6);
-pinguinos('pine-snow', 13, 6, { block: [16, 16] });
-// 🐑 Ovejas (interior 9x8, puerta abajo en las columnas 4-5). Aquí entran también los visitantes.
-ovejas('sunflowers', 0, 1);
-ovejas('stump', 5, 1);
-for (const [cx, cy] of [[3, 2], [6, 5]]) ovejas('flowers', cx, cy);
-// 🦆 Estanque (interior 8x11, puerta abajo en las columnas 3-4): un lago de 6x6 casillas arriba y
-// la orilla debajo, por donde pasean los patos y entra la cuidadora.
+for (const [cx, cy] of [[5, 2], [11, 3], [2, 6], [19, 4], [7, 7]]) sabana('grass-tall-dry', cx, cy);
+sabana('grass-tall-dry-big', 1, 1);
+// 🐘 Elefantes africanos: charca para refrescarse al fondo, acacia de sombra, roca y tronco.
+pond['elefantes-africanos']('water-savannah', 11, 4);
+africanos('acacia', 2, 3, { block: [32, 16] });
+africanos('rock-savannah-big', 6, 2);
+africanos('log-savannah', 10, 7);
+for (const [cx, cy] of [[4, 6], [13, 1]]) africanos('grass-tall-dry', cx, cy);
+// 🐘 Elefantes asiáticos: selva de Asia con charca, palmeras, bambú y rocas con musgo.
+pond['elefantes-asiaticos']('water-savannah', 11, 4); // la charca alpina trae suelo gris: no casa con la sabana
+asiaticos('palm', 1, 3, { block: [16, 8] });
+asiaticos('palm', 8, 2, { block: [16, 8] });
+asiaticos('jungle-tree', 5, 2);
+asiaticos('bamboo-small', 12, 8, { block: [16, 16] });
+asiaticos('rock-moss', 4, 5);
+asiaticos('rock-moss-big', 9, 6);
+// 🐧 Pingüinos (puerta abajo): cascada de hielo al fondo que cae en la charca, placa de hielo y nieve.
+pond.pinguinos('ice-waterfall', 11, 4, 5);
+pond.pinguinos('pond-tundra', 11, 7);
+pinguinos('ice-floe', 3, 4, { flat: true });
+pinguinos('rock-snow-big', 7, 2);
+pinguinos('rock-snow', 1, 7);
+pinguinos('rock-snow', 8, 6);
+pinguinos('pine-snow', 1, 2, { block: [16, 16] });
+pinguinos('pine-snow-small', 0, 5);
+// 🐑 Ovejas (puerta abajo): pradera de margaritas y girasoles con un árbol de sombra. Aquí entran también
+// los visitantes.
+ovejas('tree-grassland', 1, 2);
+ovejas('stump', 5, 2);
+ovejas('rock-grassland', 8, 4);
+ovejas('rock-grassland-big', 11, 4);
+for (const [cx, cy] of [[3, 4], [9, 2], [11, 7], [4, 7], [13, 1]]) ovejas('daisies', cx, cy);
+ovejas('sunflowers', 12, 2);
+ovejas('sunflowers', 0, 6);
+ovejas('flowers', 2, 2);
+// 🦆 Estanque (interior 14x11, puerta abajo en las columnas 6-7): un lago de 6x6 casillas arriba con
+// juncos en la orilla, y la orilla de abajo, por donde pasean los patos y entra la cuidadora.
 const lakeLeft = (enclosures[9].x + 2) * T;
 const lakeTop = (enclosures[9].y + 2) * T;
 prop('lake-grassland', lakeLeft + 48, lakeTop + 96, { flat: true });
@@ -286,14 +324,24 @@ water('agua', lakeLeft / T, lakeTop / T, lakeLeft / T + 5, lakeTop / T + 5);
 estanque('lilypad', 2, 2, { flat: true, z: 2 });
 estanque('lilypad-flower', 5, 4, { flat: true, z: 2 });
 estanque('lilypad', 3, 5, { flat: true, z: 2 });
-estanque('sunflowers', 7, 8);
+estanque('cattails', 7, 3);
+estanque('reeds', 7, 6);
+estanque('cattails', 0, 5);
+estanque('reeds', 4, 7);
+estanque('rock-wetland', 9, 2);
+estanque('rock-wetland', 12, 6);
+estanque('sunflowers', 12, 9);
 estanque('flowers', 0, 9);
-// 🐴 Establo (interior 14x8, puerta arriba en las columnas 6-7).
-establo('stump', 1, 6);
-establo('log', 11, 6, { block: [32, 16] });
-establo('sunflowers', 13, 1);
+// 🐴 Establo (puerta arriba): granja con cobertizo al fondo, bebedero, barril, calabazas y espantapájaros.
+establo('shelter', 11, 8);
+establo('trough', 8, 7);
+establo('barrel', 13, 8);
+establo('pumpkin', 2, 7);
+establo('pumpkin', 4, 8);
+establo('scarecrow', 2, 4);
 establo('bush', 0, 1);
-for (const [cx, cy] of [[3, 3], [10, 2]]) establo('flowers', cx, cy);
+establo('sunflowers', 13, 2);
+for (const [cx, cy] of [[4, 3], [10, 3]]) establo('flowers', cx, cy);
 
 // Parque.
 // La fuente animada en el centro de la plaza (80x64): su isla de césped es del mismo tamaño, así que su bloqueo
