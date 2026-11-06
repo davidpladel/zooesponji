@@ -35,8 +35,7 @@ describe('caminos del zoo', () => {
     expect([...tiles].filter((t) => !seen.has(t)), 'casillas de camino sueltas').toEqual([]);
   });
 
-  // Se arregla en la tarea 4 (isla de la fuente del tamaño del dibujo).
-  it.fails('nada sólido tapa camino', () => {
+  it('nada sólido tapa camino', () => {
     expect(solidOverPath(map)).toEqual([]);
   });
 });

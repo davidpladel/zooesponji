@@ -33,7 +33,7 @@
 
 ### Tarea 0: Rama
 
-- [ ] **Paso 1:** `git switch -c feat/plaza-recintos-recorrido` desde `main` actualizado. Comprobar con `git log --oneline -1` que sale de `main`.
+- [x] **Paso 1:** `git switch -c feat/plaza-recintos-recorrido` desde `main` actualizado. Comprobar con `git log --oneline -1` que sale de `main`.
 
 ---
 
@@ -55,7 +55,7 @@ Hoy el agua es un prop con `block` (lago, charcas, catarata entera). Pasa a ser 
 - Produce: `penSpace(enclosure: Rect, props, tile: number, waters: readonly WaterInfo[] = []): PenSpace` — los rectángulos de agua dentro del interior se añaden a `obstacles`.
 - Produce (generador): `water(kind, x0, y0, x1, y1)` en casillas del mapa, inclusivo; escribe un objeto `{ type: 'agua', properties: [{ name: 'kind', value: kind }] }`.
 
-- [ ] **Paso 1: Pruebas que fallan**
+- [x] **Paso 1: Pruebas que fallan**
 
 ```ts
 // water.test.ts
@@ -83,13 +83,13 @@ it('en el risco de la pantera la roca se pisa y el agua no', () => {
 
 El último caso se completa en el paso 3 con dos casillas concretas del recinto de la pantera, una de roca del acantilado y otra de la cascada, comprobando con `withPenInteriors` que la primera es pisable y la segunda no.
 
-- [ ] **Paso 2: Pedir a David** `npm test -- water flock zoomap` → esperado: FALLAN las pruebas nuevas.
+- [x] **Paso 2: Pedir a David** `npm test -- water flock zoomap` → esperado: FALLAN las pruebas nuevas.
 
-- [ ] **Paso 3: Implementar** `readWater`, `waterAt`, el parámetro `waters` de `penSpace` (y pasarlo en `Pens.ts`), y en el generador: `water()`; el lago del estanque, la charca de los pingüinos y la de la cabra (si la hay) pasan a `flat` sin `block` más su `water()` del mismo tamaño; la catarata de la pantera pasa a `flat` sin `block` y con dos `water()`: la columna de la cascada y la poza del pie. Las medidas salen de la composición de 7×7 casillas del prop `waterfall` en `art.config.json` (la columna central de la cascada y la fila de agua de abajo). Regenerar con `npm run make:zoo-map`.
+- [x] **Paso 3: Implementar** `readWater`, `waterAt`, el parámetro `waters` de `penSpace` (y pasarlo en `Pens.ts`), y en el generador: `water()`; el lago del estanque, la charca de los pingüinos y la de la cabra (si la hay) pasan a `flat` sin `block` más su `water()` del mismo tamaño; la catarata de la pantera pasa a `flat` sin `block` y con dos `water()`: la columna de la cascada y la poza del pie. Las medidas salen de la composición de 7×7 casillas del prop `waterfall` en `art.config.json` (la columna central de la cascada y la fila de agua de abajo). Regenerar con `npm run make:zoo-map`.
 
-- [ ] **Paso 4: Pedir a David** `npm test` → esperado: todo en verde.
+- [x] **Paso 4: Pedir a David** `npm test` → esperado: todo en verde.
 
-- [ ] **Paso 5: Commit** `feat(mapa): el agua es zona propia del mapa (roca del risco pisable) y las charcas saben quién está dentro`
+- [x] **Paso 5: Commit** `feat(mapa): el agua es zona propia del mapa (roca del risco pisable) y las charcas saben quién está dentro`
 
 ---
 
@@ -109,7 +109,7 @@ El último caso se completa en el paso 3 con dos casillas concretas del recinto 
 
 Lo que **no** se pisa por nombre: árboles (`acacia`, `pine`, `palm`, `jungle-tree`, `cherry-tree`, `tree`), troncos y tocones (`log`, `stump`), `bamboo`, arbustos (`bush`, `bush-jungle`, `pink-star`), `fountain`. Fuera de los recintos (bancos, farolas, barriles, cajas, carteles) no cambia nada.
 
-- [ ] **Paso 1: Pruebas que fallan**
+- [x] **Paso 1: Pruebas que fallan**
 
 ```ts
 // depth.test.ts
@@ -134,15 +134,15 @@ it('una roca dentro de un recinto abierto no corta el paso de la cuidadora', () 
 
 `insideSomePen` es un ayudante local de la prueba con `readEnclosures` y `rectContains`.
 
-- [ ] **Paso 2: Pedir a David** `npm test -- depth zoomap penGrid` → esperado: FALLAN las nuevas.
+- [x] **Paso 2: Pedir a David** `npm test -- depth zoomap penGrid` → esperado: FALLAN las nuevas.
 
-- [ ] **Paso 3: Implementar** según las interfaces. En el generador quitar `block` a `rock-*`, `plateau`, `cave` y `sunflowers`, y quitarlos de `BASE_W`. Regenerar el mapa.
+- [x] **Paso 3: Implementar** según las interfaces. En el generador quitar `block` a `rock-*`, `plateau`, `cave` y `sunflowers`, y quitarlos de `BASE_W`. Regenerar el mapa.
 
-- [ ] **Paso 4: Pedir a David** `npm test` y `npm run typecheck` → esperado: en verde.
+- [x] **Paso 4: Pedir a David** `npm test` y `npm run typecheck` → esperado: en verde.
 
-- [ ] **Paso 5: Revisión visual.** Pedir a David que abra el juego (`npm run dev`) y pase con la cuidadora por encima de una hierba alta de la sabana y de la roca grande de los leones: las piernas se ven por encima. Se le pasa también una captura propia si el navegador interno está visible.
+- [x] **Paso 5: Revisión visual.** Pedir a David que abra el juego (`npm run dev`) y pase con la cuidadora por encima de una hierba alta de la sabana y de la roca grande de los leones: las piernas se ven por encima. Se le pasa también una captura propia si el navegador interno está visible.
 
-- [ ] **Paso 6: Commit** `feat(juego): rocas y montañas se suben; lo que se pisa queda por debajo de cuidadora, Luna y animales`
+- [x] **Paso 6: Commit** `feat(juego): rocas y montañas se suben; lo que se pisa queda por debajo de cuidadora, Luna y animales`
 
 ---
 
@@ -161,7 +161,7 @@ Antes de tocar el mapa se guarda la lista de caminos de hoy, para que todo cambi
 - Produce: `pathTiles(map: TiledMap): string[]` — casillas `"x,y"` pisables de `withSolidProps(buildWalkGrid(map), readProps(map), 16)`, ordenadas.
 - Produce: `solidOverPath(map: TiledMap): { prop: string; tile: string }[]` — casillas de camino de `buildWalkGrid` que cierra el `block` de algún prop `solid`.
 
-- [ ] **Paso 1: Pruebas que fallan**
+- [x] **Paso 1: Pruebas que fallan**
 
 ```ts
 it('no se ha quitado ningún camino sin actualizar la foto', () => {
@@ -173,13 +173,13 @@ it('desde el inicio se llega a todas las casillas de camino', () => { /* BFS des
 it('nada sólido tapa camino', () => { expect(solidOverPath(map)).toEqual([]); });
 ```
 
-- [ ] **Paso 2: Pedir a David** `npm test -- caminos` → esperado: FALLA (no hay foto y la fuente de hoy tapa 8 casillas: `solidOverPath` devuelve la fuente).
+- [x] **Paso 2: Pedir a David** `npm test -- caminos` → esperado: FALLA (no hay foto y la fuente de hoy tapa 8 casillas: `solidOverPath` devuelve la fuente).
 
-- [ ] **Paso 3: Implementar** `mapCheck.ts` y `map-snapshot.ts`; generar la foto con el mapa de hoy (`npm run map:snapshot`, lo puede lanzar Claude: no es una prueba). La prueba de «nada sólido tapa camino» se deja **marcada `it.fails`** con el comentario «se arregla en la tarea 4 (isla de la fuente del tamaño del dibujo)».
+- [x] **Paso 3: Implementar** `mapCheck.ts` y `map-snapshot.ts`; generar la foto con el mapa de hoy (`npm run map:snapshot`, lo puede lanzar Claude: no es una prueba). La prueba de «nada sólido tapa camino» se deja **marcada `it.fails`** con el comentario «se arregla en la tarea 4 (isla de la fuente del tamaño del dibujo)».
 
-- [ ] **Paso 4: Pedir a David** `npm test -- caminos` → esperado: en verde (la de la fuente, como fallo esperado).
+- [x] **Paso 4: Pedir a David** `npm test -- caminos` → esperado: en verde (la de la fuente, como fallo esperado).
 
-- [ ] **Paso 5: Commit** `test(mapa): foto de los caminos y aviso si algo sólido tapa camino`
+- [x] **Paso 5: Commit** `test(mapa): foto de los caminos y aviso si algo sólido tapa camino`
 
 ---
 
@@ -203,7 +203,7 @@ Esta tarea mueve y agranda; la decoración nueva va en la tarea 6. Los adornos q
 - La partida no guarda la posición en el mapa (`save.ts`); la tienda guarda una posición dentro de la tienda, que no cambia. No hace falta migrar partidas; basta con que `zoomap.test.ts` y la prueba de la tienda sigan en verde.
 - `W` y `H`, los mínimos que hagan falta. La decisión exacta del trazado es de quien construye, con la revisión de David en el paso 5.
 
-- [ ] **Paso 1: Pruebas que fallan** (`zoomap.test.ts`)
+- [x] **Paso 1: Pruebas que fallan** (`zoomap.test.ts`)
 
 ```ts
 it('la plaza deja 4 casillas de camino alrededor de la fuente', () => {
@@ -219,15 +219,15 @@ it('cada puerta de recinto, la de la tienda y el tablón son camino alcanzable d
 
 Las pruebas que ya hay en `zoomap.test.ts` con coordenadas fijas del mapa de 96×60 se reescriben para leer del mapa (recintos, puertas, tienda), no de números.
 
-- [ ] **Paso 2: Pedir a David** `npm test -- zoomap caminos` → esperado: FALLAN las nuevas.
+- [x] **Paso 2: Pedir a David** `npm test -- zoomap caminos` → esperado: FALLAN las nuevas.
 
-- [ ] **Paso 3: Implementar** el trazado nuevo en el generador y regenerar. Guardar la foto nueva con `npm run map:snapshot` y anotar en el mensaje del commit cuántas casillas de camino se quitan y se ganan y dónde (la plaza vieja queda dentro de la nueva, así que no debería perderse ningún tramo útil).
+- [x] **Paso 3: Implementar** el trazado nuevo en el generador y regenerar. Guardar la foto nueva con `npm run map:snapshot` y anotar en el mensaje del commit cuántas casillas de camino se quitan y se ganan y dónde (la plaza vieja queda dentro de la nueva, así que no debería perderse ningún tramo útil).
 
-- [ ] **Paso 4: Pedir a David** `npm test` y `npm run typecheck` → esperado: en verde.
+- [x] **Paso 4: Pedir a David** `npm test` y `npm run typecheck` → esperado: en verde.
 
 - [ ] **Paso 5: Revisión de David (punto de parada).** Enviarle con SendUserFile la vista del mapa nuevo comparada con `main` (en rojo lo nuevo). No se sigue a la tarea 6 sin su visto bueno al trazado. Después de su visto bueno, que pruebe en el móvil o en `npm run dev` a 640×360 que la cámara sigue a la cuidadora en las esquinas del mapa.
 
-- [ ] **Paso 6: Commit** `feat(mapa): mapa más grande con plaza de la fuente de 15x13 y recintos más amplios`
+- [x] **Paso 6: Commit** `feat(mapa): mapa más grande con plaza de la fuente de 15x13 y recintos más amplios`
 
 ---
 

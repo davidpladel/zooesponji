@@ -8,6 +8,7 @@ import { buildWalkGrid, isShopDoor, readEnclosures, readBoard, readGates, readPr
 import { penSpace } from '../../src/core/flock';
 import { rectContains } from '../../src/core/interaction';
 import { withPenInteriors } from '../../src/core/penGrid';
+import { solidOverPath } from '../../src/core/mapCheck';
 
 const url = new URL('../../public/assets/maps/zoo.tmj', import.meta.url);
 const map = JSON.parse(readFileSync(fileURLToPath(url), 'utf8')) as TiledMap;
@@ -40,16 +41,38 @@ function reachable(g: typeof grid, from: { x: number; y: number }): Set<string> 
   return seen;
 }
 
+const W = grid.width;
+const H = grid.height;
+/** Isla de la fuente, en casillas (su `block` coincide con la isla). */
+const island = (() => {
+  const b = readProps(map).find((p) => p.prop === 'fountain')!.block!;
+  return { x0: b.x / 16, y0: b.y / 16, x1: (b.x + b.width) / 16 - 1, y1: (b.y + b.height) / 16 - 1 };
+})();
+/** Avenida de arriba: la primera fila de camino del borde izquierdo. */
+const northRow = (() => {
+  for (let y = 0; y < H; y++) if (isWalkable(grid, 3, y)) return y;
+  return -1;
+})();
+/** Fila de abajo del anillo del parque (y del atajo de abajo), justo encima de la entrada. */
+const ringBottom = spawn.y - 2;
+/** Patas de la U: las columnas de camino entre la sabana y los elefantes. */
+const uLegs = (() => {
+  const sab = enclosure('sabana');
+  const afr = enclosure('elefantes-africanos');
+  const legs: number[] = [];
+  for (let x = (sab.x + sab.width) / 16; x < afr.x / 16; x++) if (isWalkable(grid, x, 10)) legs.push(x);
+  return legs;
+})();
 const ATAJOS: [string, number, number][] = [
-  ['izquierda', 8, 17], ['izquierda', 3, 25], ['izquierda', 3, 45], ['izquierda', 15, 50],
-  ['arriba izquierda', 26, 20], ['arriba derecha', 68, 20],
-  ['U', 38, 10], ['U', 44, 4], ['U', 47, 10],
-  ['derecha', 85, 17], ['derecha', 92, 25], ['derecha', 92, 45], ['derecha', 80, 50],
+  ['izquierda', 8, northRow], ['izquierda', 3, 25], ['izquierda', 3, ringBottom - 10], ['izquierda', 15, ringBottom],
+  ['U', uLegs[0] ?? -1, 10], ['U', uLegs[uLegs.length - 1] ?? -1, 10],
+  ['derecha', W - 10, northRow], ['derecha', W - 4, 25], ['derecha', W - 4, ringBottom - 10], ['derecha', W - 16, ringBottom],
 ];
 
 describe('mapa del zoo', () => {
-  it('mide 96×60 y el inicio es transitable', () => {
-    expect([grid.width, grid.height]).toEqual([96, 60]);
+  it('es más grande que el de 96×60 y el inicio es transitable', () => {
+    expect(grid.width).toBeGreaterThan(96);
+    expect(grid.height).toBeGreaterThan(60);
     expect(isWalkable(grid, spawn.x, spawn.y)).toBe(true);
   });
 
@@ -155,11 +178,11 @@ describe('mapa del zoo', () => {
     }
   });
 
-  it('el parque de siempre queda en el centro, sin cambios', () => {
-    expect(enclosure('leon')).toMatchObject({ x: (9 + 24) * 16, y: (5 + 20) * 16, width: 12 * 16, height: 8 * 16 });
-    expect(enclosure('pantera')).toMatchObject({ x: (6 + 24) * 16, y: (19 + 20) * 16, width: 15 * 16, height: 10 * 16 });
-    expect(readShop(map)).toMatchObject({ x: (25 + 24) * 16, y: (4 + 20) * 16, door: { x: 27 + 24, y: 9 + 20 } });
-    expect(spawn.x).toBe(47);
+  it('la tienda sigue pegada a las cabras y la entrada queda debajo de la fuente', () => {
+    const shop = readShop(map)!;
+    expect(shop.x + shop.width).toBe(enclosure('cabra').x);
+    expect(spawn.x).toBeGreaterThanOrEqual(island.x0);
+    expect(spawn.x).toBeLessThanOrEqual(island.x1);
   });
 
   it('la sabana es el recinto grande y los elefantes van en dos jaulas con un pasillo de césped', () => {
@@ -167,7 +190,9 @@ describe('mapa del zoo', () => {
     const african = enclosure('elefantes-africanos');
     const asian = enclosure('elefantes-asiaticos');
     expect(asian.x - (african.x + african.width)).toBe(2 * 16);
-    for (const x of [64, 65]) for (let y = 5; y <= 14; y++) expect(isWalkable(grid, x, y), `(${x},${y})`).toBe(false);
+    const gap = (african.x + african.width) / 16;
+    for (const x of [gap, gap + 1])
+      for (let y = african.y / 16; y < (african.y + african.height) / 16; y++) expect(isWalkable(grid, x, y), `(${x},${y})`).toBe(false);
   });
 
   it('el estanque tiene un lago de 6×6 casillas y deja orilla para pasear', () => {
@@ -213,10 +238,15 @@ describe('mapa del zoo', () => {
   });
 
   it('los atajos acortan de verdad', () => {
-    // Antes había que bajar al centro y volver a subir.
-    expect(findPath(grid, { x: 12, y: 17 }, { x: 5, y: 36 })!.length).toBeLessThanOrEqual(32);
-    expect(findPath(grid, { x: 79, y: 17 }, { x: 93, y: 36 })!.length).toBeLessThanOrEqual(40);
-    expect(findPath(grid, { x: 5, y: 37 }, spawn)!.length).toBeLessThanOrEqual(65);
+    // Antes había que bajar al centro y volver a subir: con los atajos se va casi en línea recta.
+    const sideRow = readGates(map).find((g) => g.penId === 'pinguinos')!.tile.y + 2;
+    const near = (a: { x: number; y: number }, b: { x: number; y: number }) =>
+      expect(findPath(grid, a, b)!.length, `${a.x},${a.y} → ${b.x},${b.y}`).toBeLessThanOrEqual(Math.abs(a.x - b.x) + Math.abs(a.y - b.y) + 8);
+    expect(isWalkable(grid, 5, sideRow), 'avenida del polo').toBe(true);
+    expect(isWalkable(grid, W - 5, sideRow), 'avenida de la granja').toBe(true);
+    near({ x: 12, y: northRow }, { x: 5, y: sideRow });
+    near({ x: W - 17, y: northRow }, { x: W - 5, y: sideRow });
+    near({ x: 5, y: sideRow + 1 }, spawn);
   });
 
   it('se llega andando a cualquier casilla de camino desde la entrada (nadie se queda atascado)', () => {
@@ -232,7 +262,7 @@ describe('mapa del zoo', () => {
     const flowers = readProps(map).filter((p) => {
       const tx = Math.floor((p.x - 1) / 16);
       const ty = Math.floor((p.y - 1) / 16);
-      return tx >= 40 && tx <= 46 && ty >= 6 && ty <= 16;
+      return tx > uLegs[0]! && tx < uLegs[uLegs.length - 1]! && ty >= 6 && ty < northRow;
     });
     expect(flowers.length).toBeGreaterThanOrEqual(8);
     for (const p of flowers) {
@@ -263,11 +293,17 @@ describe('mapa del zoo', () => {
     const e = enclosure('pantera');
     const space = penSpace(e, readProps(map), 16, readWater(map));
     const open = withPenInteriors(grid, [space], 16);
-    // La catarata (7x7) ocupa las casillas 37-43 x 41-47: acantilado a los lados, cascada y poza en 39-41.
-    expect(isWalkable(open, 37, 43), 'roca del acantilado').toBe(true);
-    expect(isWalkable(open, 42, 42), 'roca del acantilado').toBe(true);
-    expect(isWalkable(open, 40, 43), 'cascada').toBe(false);
-    expect(isWalkable(open, 40, 47), 'poza').toBe(false);
+    // La catarata (7x7): acantilado de 2 casillas a cada lado, cascada (3 de ancho) y poza en medio.
+    const fall = readWater(map)
+      .filter((w) => w.x >= e.x && w.x < e.x + e.width && w.y >= e.y && w.y < e.y + e.height)
+      .sort((a, b) => a.y - b.y);
+    expect(fall).toHaveLength(2);
+    const cx = fall[0]!.x / 16 + 1;
+    const cy = fall[0]!.y / 16 + 2;
+    expect(isWalkable(open, cx - 3, cy), 'roca del acantilado izquierdo').toBe(true);
+    expect(isWalkable(open, cx + 2, cy - 1), 'roca del acantilado derecho').toBe(true);
+    expect(isWalkable(open, cx, cy), 'cascada').toBe(false);
+    expect(isWalkable(open, cx, fall[1]!.y / 16 + 1), 'poza').toBe(false);
   });
 
   it('regla de pisar: el agua y los árboles no, las rocas y las flores sí', () => {
@@ -282,6 +318,66 @@ describe('mapa del zoo', () => {
         expect(p.block, p.prop).toBeNull();
       }
     }
+  });
+
+  it('la plaza deja 4 casillas de camino alrededor de la fuente', () => {
+    const solid = withSolidProps(grid, readProps(map), 16);
+    for (let x = island.x0; x <= island.x1; x++)
+      for (let d = 1; d <= 4; d++) {
+        expect(isWalkable(solid, x, island.y0 - d), `arriba (${x},${island.y0 - d})`).toBe(true);
+        expect(isWalkable(solid, x, island.y1 + d), `abajo (${x},${island.y1 + d})`).toBe(true);
+      }
+    for (let y = island.y0; y <= island.y1; y++)
+      for (let d = 1; d <= 4; d++) {
+        expect(isWalkable(solid, island.x0 - d, y), `izquierda (${island.x0 - d},${y})`).toBe(true);
+        expect(isWalkable(solid, island.x1 + d, y), `derecha (${island.x1 + d},${y})`).toBe(true);
+      }
+  });
+
+  it('la isla de la fuente es del tamaño del dibujo (5x4) y es césped', () => {
+    expect([island.x1 - island.x0 + 1, island.y1 - island.y0 + 1]).toEqual([5, 4]);
+    for (let y = island.y0; y <= island.y1; y++) for (let x = island.x0; x <= island.x1; x++) expect(isWalkable(grid, x, y)).toBe(false);
+  });
+
+  it('la fuente no tapa camino', () => {
+    expect(solidOverPath(map)).toEqual([]);
+  });
+
+  it('cada recinto mide al menos 14x9 por dentro y la sabana es el mayor', () => {
+    const inner = (e: { width: number; height: number }) => (e.width / 16 - 2) * (e.height / 16 - 2);
+    for (const e of readEnclosures(map)) {
+      expect(e.width / 16 - 2, `${e.penId} ancho`).toBeGreaterThanOrEqual(14);
+      expect(e.height / 16 - 2, `${e.penId} alto`).toBeGreaterThanOrEqual(9);
+      if (e.penId !== 'sabana') expect(inner(e), e.penId).toBeLessThan(inner(enclosure('sabana')));
+    }
+  });
+
+  it('los caminos que llegan a la plaza tienen 3 casillas de ancho', () => {
+    /** Casillas de camino seguidas en la fila (o columna) `fixed`, empezando por la primera del tramo [from, to]. */
+    const run = (horizontal: boolean, fixed: number, from: number, to: number): number => {
+      const ok = (i: number) => (horizontal ? isWalkable(grid, i, fixed) : isWalkable(grid, fixed, i));
+      let start = from;
+      while (start <= to && !ok(start)) start++;
+      if (start > to) return 0;
+      let end = start;
+      while (ok(end + 1)) end++;
+      while (ok(start - 1)) start--;
+      return end - start + 1;
+    };
+    expect(run(true, island.y0 - 7, island.x0, island.x1), 'arriba').toBe(3);
+    expect(run(true, island.y1 + 7, island.x0, island.x1), 'abajo').toBe(3);
+    expect(run(false, island.x0 - 7, island.y0, island.y1), 'izquierda').toBe(3);
+    expect(run(false, island.x1 + 7, island.y0, island.y1), 'derecha').toBe(3);
+  });
+
+  it('cada puerta de recinto, la de la tienda y el tablón son camino alcanzable desde el inicio', () => {
+    const solid = withSolidProps(grid, readProps(map), 16);
+    const seen = reachable(solid, spawn);
+    for (const g of readGates(map)) expect(seen.has(`${g.tile.x},${g.tile.y}`), `puerta de ${g.penId}`).toBe(true);
+    const shop = readShop(map)!;
+    expect(seen.has(`${shop.door.x},${shop.door.y}`), 'puerta de la tienda').toBe(true);
+    const board = readBoard(map)!;
+    expect(seen.has(`${board.tile.x},${board.tile.y}`), 'tablón').toBe(true);
   });
 });
 

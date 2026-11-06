@@ -1,15 +1,24 @@
-// Genera public/assets/maps/zoo.tmj: el zoo de verdad (96x60), lógico (césped/camino/valla/puerta/edificio).
+// Genera public/assets/maps/zoo.tmj: el zoo de verdad (116x75), lógico (césped/camino/valla/puerta/edificio).
 // El arte real lo pone el autotiler en el juego; este mapa también sirve en modo provisional.
+//
+// Trazado del 2026-11-06 (plaza grande y recintos de al menos 14x9 por dentro): el parque del centro pasó de
+// 48x35 a 55x49 casillas, con una plaza de 15x13 en el cruce. Lo de fuera (sabana arriba, polo a la izquierda,
+// granja a la derecha) conserva su sitio respecto al parque; las avenidas y atajos se alargan con él.
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const W = 96;
-const H = 60;
+const W = 116;
+const H = 75;
 const T = 16;
-/** El parque de siempre (48x35) queda en el centro: lo suyo se escribe en sus coordenadas de antes. */
+/** El parque del centro: sus cosas se escriben en coordenadas propias (0,0 = esquina de arriba a la izquierda). */
 const OX = 24;
 const OY = 20;
+const PW = 55;
+const PH = 49;
+/** Cruce del parque: columna y fila del centro de los dos caminos que llegan a la plaza (3 de ancho). */
+const CX = 25;
+const CY = 23;
 const GRASS = 1;
 const PATH = 2;
 const FENCE = 3;
@@ -23,72 +32,84 @@ const set = (x, y, gid) => {
 const fill = (x0, y0, x1, y1, gid) => {
   for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) set(x, y, gid);
 };
-/** Igual, en coordenadas del parque de siempre. */
+/** Igual, en coordenadas del parque. */
 const pfill = (x0, y0, x1, y1, gid) => fill(x0 + OX, y0 + OY, x1 + OX, y1 + OY, gid);
 
-// Parque. Caminos de 2 de ancho: anillo exterior y cruz central.
-pfill(2, 2, 45, 3, PATH);
-pfill(2, 30, 45, 31, PATH);
-pfill(2, 2, 3, 31, PATH);
-pfill(44, 2, 45, 31, PATH);
-pfill(2, 16, 45, 17, PATH);
-pfill(23, 2, 24, 31, PATH);
-// Entrada: el camino central baja hasta el portón, en el borde de abajo del mapa.
-fill(23 + OX, 32 + OY, 24 + OX, H - 1, PATH);
-// Plaza en el cruce (8x8) con la fuente en medio sobre una isla de césped de 4x4, como el parque de la v1.
-pfill(20, 13, 27, 20, PATH);
-pfill(22, 15, 25, 18, GRASS);
+// Parque. Anillo de 2 de ancho y una cruz de 3 de ancho: son los caminos que llegan a la plaza.
+pfill(2, 2, PW - 3, 3, PATH);
+pfill(2, PH - 4, PW - 3, PH - 3, PATH);
+pfill(2, 2, 3, PH - 3, PATH);
+pfill(PW - 4, 2, PW - 3, PH - 3, PATH);
+pfill(2, CY - 1, PW - 3, CY + 1, PATH);
+pfill(CX - 1, 2, CX + 1, PH - 3, PATH);
+// Entrada: de la esquina de abajo de la cruz baja hasta el portón, en el borde de abajo del mapa (2 de ancho).
+fill(CX - 1 + OX, PH - 2 + OY, CX + OX, H - 1, PATH);
+// Plaza de la fuente (15x13) con las esquinas recortadas en diagonal, y la isla de la fuente (5x4, el tamaño
+// del dibujo) en medio: queda una vuelta de 4 casillas (5 a los lados y abajo).
+const PLAZA = { x0: CX - 7, y0: CY - 6, x1: CX + 7, y1: CY + 6 };
+const ISLAND = { x0: CX - 2, y0: CY - 2, x1: CX + 2, y1: CY + 1 };
+pfill(PLAZA.x0, PLAZA.y0, PLAZA.x1, PLAZA.y1, PATH);
+for (const [cx, cy, sx, sy] of [[PLAZA.x0, PLAZA.y0, 1, 1], [PLAZA.x1, PLAZA.y0, -1, 1], [PLAZA.x0, PLAZA.y1, 1, -1], [PLAZA.x1, PLAZA.y1, -1, -1]]) {
+  for (const [dx, dy] of [[0, 0], [1, 0], [0, 1]]) pfill(cx + dx * sx, cy + dy * sy, cx + dx * sx, cy + dy * sy, GRASS);
+}
+pfill(ISLAND.x0, ISLAND.y0, ISLAND.x1, ISLAND.y1, GRASS);
 
-// Avenidas a las zonas nuevas.
-fill(12, 17, 79, 18, PATH); // norte: sabana y elefantes
-fill(23 + OX, 19, 24 + OX, OY + 1, PATH); // baja de la avenida norte a la cruz central
-fill(5, 16 + OY, 1 + OX, 17 + OY, PATH); // oeste (polo): sigue el camino del medio
-fill(46 + OX, 16 + OY, 93, 17 + OY, PATH); // este (granja)
+// Las columnas y filas de fuera del parque, en el mapa.
+const LEFT = 3; // camino del borde izquierdo (3-4)
+const RIGHT = W - 4; // camino del borde derecho
+const NORTH = 17; // avenida de arriba (17-18)
+const MID = CY - 1 + OY; // avenidas del polo y de la granja: siguen la cruz del parque (2 de ancho)
+const RING_L = OX + 2;
+const RING_R = OX + PW - 4;
+const RING_B = OY + PH - 4; // fila de arriba del anillo de abajo
+const SPINE = OX + CX - 1; // columna izquierda del camino del centro (de la avenida de arriba al parque)
+
+// Avenidas a las zonas de fuera.
+fill(LEFT, NORTH, RIGHT + 1, NORTH + 1, PATH); // arriba: sabana y elefantes, de borde a borde
+fill(SPINE, NORTH + 2, SPINE + 1, OY + 1, PATH); // baja de la avenida de arriba a la cruz del parque
+fill(LEFT + 2, MID, RING_L - 1, MID + 1, PATH); // oeste (polo): sigue el camino del medio
+fill(RING_R + 2, MID, RIGHT - 1, MID + 1, PATH); // este (granja)
 
 // Atajos (plano a mano de David, 2026-11-01): así no hay que bajar al centro para ir de una punta a otra.
-fill(3, 17, 11, 18, PATH); // izquierda: la avenida de arriba sigue hasta el borde,
-fill(3, 19, 4, 51, PATH); //    baja pegada a él (cruza la avenida de los pingüinos)
-fill(5, 50, 25, 51, PATH); //    y gira hasta la esquina de abajo a la izquierda del cuadrado central
-fill(26, 19, 27, 21, PATH); // de la avenida de arriba a la esquina de arriba a la izquierda del cuadrado
-fill(68, 19, 69, 21, PATH); // y a la de arriba a la derecha
-fill(38, 4, 48, 5, PATH); // la «U» entre la Sabana y los elefantes (dentro, un jardín); su pata derecha
-fill(38, 6, 39, 16, PATH); //    sigue en línea con el camino central
-fill(47, 6, 48, 16, PATH);
-fill(80, 17, 93, 18, PATH); // derecha: la avenida de arriba sigue hasta el borde,
-fill(92, 19, 93, 51, PATH); //    baja pegada a él (cruza la avenida de la granja)
-fill(70, 50, 91, 51, PATH); //    y gira hasta la esquina de abajo a la derecha del cuadrado central
+fill(LEFT, NORTH + 2, LEFT + 1, RING_B + 1, PATH); // izquierda: baja pegada al borde (cruza la avenida del polo)
+fill(LEFT + 2, RING_B, RING_L - 1, RING_B + 1, PATH); //    y gira hasta la esquina de abajo a la izquierda del parque
+fill(RING_L, NORTH + 2, RING_L + 1, OY + 1, PATH); // de la avenida de arriba a la esquina de arriba a la izquierda del parque
+fill(RING_R, NORTH + 2, RING_R + 1, OY + 1, PATH); // y a la de arriba a la derecha
+const U = { x0: SPINE - 9, x1: SPINE + 1, top: 4 }; // la «U» entre la Sabana y los elefantes (dentro, un jardín)
+fill(U.x0, U.top, U.x1, U.top + 1, PATH);
+fill(U.x0, U.top + 2, U.x0 + 1, NORTH - 1, PATH);
+fill(U.x1 - 1, U.top + 2, U.x1, NORTH - 1, PATH); //    su pata derecha sigue en línea con el camino central
+fill(RIGHT, NORTH + 2, RIGHT + 1, RING_B + 1, PATH); // derecha: baja pegada al borde (cruza la avenida de la granja)
+fill(RING_R + 2, RING_B, RIGHT - 1, RING_B + 1, PATH); //    y gira hasta la esquina de abajo a la derecha del parque
 
 const objects = [];
 let nextId = 1;
-// Alto por defecto; la pantera es más alta (10) para que quepa la catarata entera.
-const DEFAULT_EH = 8;
-/** Recinto del parque de siempre, en sus coordenadas de antes. */
+/** Recinto del parque, en sus coordenadas. */
 const park = (e) => ({ ...e, x: e.x + OX, y: e.y + OY, gateX: e.gateX + OX, gateRow: e.gateRow + OY, link: [e.link[0] + OY, e.link[1] + OY] });
-// ew: ancho; eh: alto; gateRow: fila de la valla con la puerta; link: filas de camino hasta la avenida.
-// En el parque el pasillo central deja solo 2 casillas de césped a cada lado para que al andar se vea el
-// interior: pantera y panda son más anchos (15) y el león se arrima al centro. La cabra no se mueve: a su
-// lado está el puesto de la tienda.
+// ew/eh: ancho y alto con la valla (al menos 16x11: 14x9 por dentro); gateRow: fila de la valla con la puerta;
+// link: filas de camino de la puerta a la avenida. Los cuatro del parque se apartan de la plaza: entre ellos y
+// la cruz quedan 2 casillas de césped para ver el interior al pasar. La cabra no se mueve de al lado de la tienda.
 const enclosures = [
-  park({ penId: 'leon', biome: 'savannah', x: 9, y: 5, ew: 12, gateX: 14, gateRow: 12, link: [13, 15] }),
-  park({ penId: 'cabra', biome: 'alpine', x: 30, y: 5, ew: 12, gateX: 35, gateRow: 12, link: [13, 15] }),
-  park({ penId: 'pantera', biome: 'rainforest', x: 6, y: 19, ew: 15, eh: 10, gateX: 12, gateRow: 19, link: [18, 18] }),
-  park({ penId: 'panda', biome: 'bamboo', x: 27, y: 21, ew: 15, gateX: 33, gateRow: 21, link: [18, 20] }),
-  // Norte, sabana: el recinto grande y, al lado, dos jaulas de elefantes con un pasillo de césped (64-65).
+  park({ penId: 'leon', biome: 'savannah', x: 6, y: 5, ew: 16, eh: 11, gateX: 13, gateRow: 15, link: [16, CY - 2] }),
+  park({ penId: 'cabra', biome: 'alpine', x: 33, y: 5, ew: 16, eh: 11, gateX: 40, gateRow: 15, link: [16, CY - 2] }),
+  // La pantera es más alta (12) para que quepa la catarata entera con suelo delante.
+  park({ penId: 'pantera', biome: 'rainforest', x: 6, y: 31, ew: 16, eh: 12, gateX: 13, gateRow: 31, link: [CY + 2, 30] }),
+  park({ penId: 'panda', biome: 'bamboo', x: 33, y: 31, ew: 16, eh: 11, gateX: 40, gateRow: 31, link: [CY + 2, 30] }),
+  // Norte, sabana: el recinto grande y, al lado, dos jaulas de elefantes con un pasillo de césped.
   { penId: 'sabana', biome: 'savannah', x: 14, y: 3, ew: 22, eh: 12, gateX: 24, gateRow: 14, link: [15, 16] },
-  { penId: 'elefantes-africanos', biome: 'savannah', x: 52, y: 5, ew: 12, eh: 10, gateX: 57, gateRow: 14, link: [15, 16] },
-  { penId: 'elefantes-asiaticos', biome: 'savannah', x: 66, y: 5, ew: 12, eh: 10, gateX: 71, gateRow: 14, link: [15, 16] },
+  { penId: 'elefantes-africanos', biome: 'savannah', x: U.x1 + 4, y: 4, ew: 16, eh: 11, gateX: U.x1 + 11, gateRow: 14, link: [15, 16] },
+  { penId: 'elefantes-asiaticos', biome: 'savannah', x: U.x1 + 22, y: 4, ew: 16, eh: 11, gateX: U.x1 + 29, gateRow: 14, link: [15, 16] },
   // Oeste, polo.
-  { penId: 'pinguinos', biome: 'tundra', x: 5, y: 25, ew: 16, eh: 10, gateX: 12, gateRow: 34, link: [35, 35] },
-  // Este, granja: ovejas y estanque arriba de la avenida, establo debajo.
-  // Las ovejas y el estanque dejan libre el borde derecho para el camino 5.
-  { penId: 'ovejas', biome: 'grassland', x: 72, y: 25, ew: 9, eh: 10, gateX: 77, gateRow: 34, link: [35, 35] },
-  // El estanque es más alto que sus vecinos: arriba le cabe un lago de verdad.
-  { penId: 'estanque', biome: 'grassland', x: 82, y: 22, ew: 10, eh: 13, gateX: 86, gateRow: 34, link: [35, 35] },
-  { penId: 'establo', biome: 'grassland', x: 74, y: 39, ew: 16, eh: 10, gateX: 81, gateRow: 39, link: [38, 38] },
+  { penId: 'pinguinos', biome: 'tundra', x: 5, y: MID - 12, ew: 16, eh: 11, gateX: 12, gateRow: MID - 2, link: [MID - 1, MID - 1] },
+  // Este, granja: ovejas y estanque arriba de la avenida, establo debajo. El estanque deja libre el borde
+  // derecho para el camino; es más alto que sus vecinos: arriba le cabe un lago de verdad.
+  { penId: 'ovejas', biome: 'grassland', x: RING_R + 4, y: MID - 12, ew: 16, eh: 11, gateX: RING_R + 11, gateRow: MID - 2, link: [MID - 1, MID - 1] },
+  { penId: 'estanque', biome: 'grassland', x: RING_R + 21, y: MID - 14, ew: 16, eh: 13, gateX: RING_R + 28, gateRow: MID - 2, link: [MID - 1, MID - 1] },
+  { penId: 'establo', biome: 'grassland', x: RING_R + 6, y: MID + 3, ew: 16, eh: 11, gateX: RING_R + 13, gateRow: MID + 3, link: [MID + 2, MID + 2] },
 ];
 for (const e of enclosures) {
   const EW = e.ew;
-  const EH = e.eh ?? DEFAULT_EH;
+  const EH = e.eh;
   fill(e.x, e.y, e.x + EW - 1, e.y, FENCE);
   fill(e.x, e.y + EH - 1, e.x + EW - 1, e.y + EH - 1, FENCE);
   fill(e.x, e.y, e.x, e.y + EH - 1, FENCE);
@@ -107,16 +128,17 @@ for (const e of enclosures) {
   });
 }
 
-// Tienda: puesto de mercado 5x5 con la puerta (2 casillas) debajo y conexión al camino.
-pfill(25, 4, 29, 8, BUILDING);
-pfill(27, 9, 28, 9, GATE);
-pfill(27, 10, 28, 13, PATH);
-objects.push({ id: nextId++, name: 'tienda', type: 'tienda', x: (25 + OX) * T, y: (4 + OY) * T, width: 5 * T, height: 5 * T, rotation: 0, visible: true });
-objects.push({ id: nextId++, name: 'puerta-tienda', type: 'puertaTienda', x: (27 + OX) * T, y: (9 + OY) * T, width: 2 * T, height: T, rotation: 0, visible: true });
+// Tienda: puesto de mercado 5x5 pegado a las cabras, con la puerta (2 casillas) debajo y un camino a la plaza.
+const SHOP = { x: 28, y: 4 };
+pfill(SHOP.x, SHOP.y, SHOP.x + 4, SHOP.y + 4, BUILDING);
+pfill(SHOP.x + 1, SHOP.y + 5, SHOP.x + 2, SHOP.y + 5, GATE);
+pfill(SHOP.x + 1, SHOP.y + 6, SHOP.x + 2, PLAZA.y0 - 1, PATH);
+objects.push({ id: nextId++, name: 'tienda', type: 'tienda', x: (SHOP.x + OX) * T, y: (SHOP.y + OY) * T, width: 5 * T, height: 5 * T, rotation: 0, visible: true });
+objects.push({ id: nextId++, name: 'puerta-tienda', type: 'puertaTienda', x: (SHOP.x + 1 + OX) * T, y: (SHOP.y + 5 + OY) * T, width: 2 * T, height: T, rotation: 0, visible: true });
 
-// Tablón de la comunidad: en la esquina de arriba a la izquierda de la plaza, junto a la fuente. El objeto marca
+// Tablón de la comunidad: en la esquina de arriba a la izquierda de la plaza, junto al recorte. El objeto marca
 // la casilla del camino que se pisa para abrirlo; el tablón se dibuja en el césped de encima.
-objects.push({ id: nextId++, name: 'tablon', type: 'tablon', x: (20 + OX) * T, y: (13 + OY) * T, width: T, height: T, rotation: 0, visible: true });
+objects.push({ id: nextId++, name: 'tablon', type: 'tablon', x: (PLAZA.x0 + 2 + OX) * T, y: (PLAZA.y0 + OY) * T, width: T, height: T, rotation: 0, visible: true });
 
 // Props de decoración: x,y = punto de apoyo (centro de la base) en px.
 // blockW/blockH: rectángulo que el animal no puede pisar (centrado en la base); solid: tampoco lo pisan la
@@ -194,16 +216,16 @@ cabra('rock-grey-big', 0, 5);
 // del pack: bloque alto de acantilado a cada lado (con su remate), la catarata en medio empalmando con la
 // roca y el agua al pie, montada con las casillas 16x16 del terrain como pide el autor (catarata
 // arriba/medio/abajo alineada con el acantilado C/D y empalmando con el agua E). 112x112 (7x7).
-pantera('waterfall', 9, 7, { flat: true });
+pantera('waterfall', 10, 9, { flat: true });
 {
   // Casilla de apoyo de la catarata (centro abajo de la pieza de 7x7): la cascada son las 3 columnas del
   // medio (5 filas) y la poza, las 2 filas de abajo de esas columnas. Los lados son roca: se pisan.
-  const tx = enclosures[2].x + 1 + 9;
-  const ty = enclosures[2].y + 1 + 7;
+  const tx = enclosures[2].x + 1 + 10;
+  const ty = enclosures[2].y + 1 + 9;
   water('agua', tx - 1, ty - 6, tx + 1, ty - 2);
   water('agua', tx - 1, ty - 1, tx + 1, ty);
 }
-pantera('lilypad', 10, 6, { flat: true, z: 2 });
+pantera('lilypad', 11, 8, { flat: true, z: 2 });
 pantera('palm', 1, 2, { block: [16, 8] });
 pantera('palm', 2, 7, { block: [16, 8] });
 pantera('bush-jungle', 1, 5);
@@ -268,44 +290,53 @@ establo('bush', 0, 1);
 for (const [cx, cy] of [[3, 3], [10, 2]]) establo('flowers', cx, cy);
 
 // Parque.
-// La fuente animada en el centro de la plaza (80x64: tapa la isla de césped de 4x4).
-// Sólida: el pilón tapa media casilla de camino a cada lado y sin esto la cuidadora se metía en el agua.
-pprop('fountain', 24 * T, 19 * T, { block: [72, 60], solid: true });
-for (const [x, y] of [[4, 6], [4, 13], [6, 8], [6, 11], [4, 22], [4, 26], [21, 7], [21, 11], [21, 23], [22, 27], [26, 23], [25, 27], [42, 6], [42, 11], [42, 22], [42, 27], [33, 4], [39, 4]]) {
+// La fuente animada en el centro de la plaza (80x64): su isla de césped es del mismo tamaño, así que su bloqueo
+// (sólida: la cuidadora no se mete en el agua) no tapa camino.
+pprop('fountain', (ISLAND.x0 + ISLAND.x1 + 1) / 2 * T, (ISLAND.y1 + 1) * T, { block: [80, 64], solid: true });
+// Plaza: una farola en cada esquina recortada y dos bancos a cada lado, en el césped junto al borde.
+for (const [x, y] of [[PLAZA.x0, PLAZA.y0], [PLAZA.x1, PLAZA.y0], [PLAZA.x0, PLAZA.y1], [PLAZA.x1, PLAZA.y1]]) pat('lamp', x, y);
+for (const [x, y] of [[PLAZA.x0 - 2, PLAZA.y0 + 2], [PLAZA.x0 - 2, PLAZA.y1 - 2], [PLAZA.x1 + 1, PLAZA.y0 + 2], [PLAZA.x1 + 1, PLAZA.y1 - 2]]) {
+  pprop('bench', (x + 1) * T, (y + 1) * T);
+}
+for (const [x, y] of [
+  [4, 7], [4, 12], [4, 18], [4, 28], [4, 34], [4, 39], [22, 7], [22, 11], [22, 34], [22, 39],
+  [49, 7], [49, 12], [49, 34], [49, 39], [28, 34], [31, 39], [37, 4], [45, 4],
+]) {
   pat('tree', x, y);
 }
-for (const [x, y] of [[7, 13], [22, 22], [26, 25], [43, 14], [10, 4], [15, 29], [36, 29]]) pat('bush', x, y);
-for (const [x, y] of [[13, 13], [34, 13], [11, 18], [32, 20]]) pat('sign', x, y);
-for (const [x, y] of [[22, 9], [25, 11], [22, 25], [25, 25]]) pat('lamp', x, y);
-for (const [x, y] of [[17, 14], [7, 14], [29, 19], [39, 19]]) pprop('bench', (x + 1) * T, (y + 1) * T);
-pprop('flowerbed', 22 * T, 5 * T);
-pat('barrel', 26, 9);
-pat('crate-fruit', 29, 9);
+for (const [x, y] of [[8, 17], [10, 27], [20, 30], [30, 30], [46, 18], [46, 28], [11, 44], [40, 44]]) pat('bush', x, y);
+pprop('flowerbed', 23 * T, 5 * T);
+pat('barrel', SHOP.x - 1, SHOP.y + 5);
+pat('crate-fruit', SHOP.x + 3, SHOP.y + 5);
 
-// Zonas nuevas: cartel de cada recinto junto a su puerta y cartel de zona a la entrada.
-for (const [x, y] of [[23, 15], [56, 15], [70, 15], [11, 35], [76, 35], [85, 35], [80, 38]]) at('sign', x, y);
-at('sign-zone', 49, 20, { zone: 'sabana' });
-at('sign-zone', 24, 35, { zone: 'polo' });
-at('sign-zone', 70, 35, { zone: 'granja' });
+// Cartel de cada recinto junto a su puerta (a la izquierda del camino que sale de ella) y cartel de zona a la
+// entrada de cada zona de fuera.
+for (const e of enclosures) {
+  const bottom = e.gateRow === e.y + e.eh - 1;
+  at('sign', e.gateX - 1, bottom ? e.gateRow + 1 : e.gateRow - 1);
+}
+at('sign-zone', SPINE + 2, NORTH + 3, { zone: 'sabana' });
+at('sign-zone', RING_L - 2, MID - 1, { zone: 'polo' });
+at('sign-zone', RING_R + 2, MID - 1, { zone: 'granja' });
 for (const [x, y] of [
-  [10, 6], [10, 12], [36, 6], [36, 12], [50, 9], [80, 6], [80, 12], [30, 20], [64, 20], [8, 20], [86, 20],
-  [7, 21], [23, 30], [8, 40], [16, 42], [22, 46], [7, 46], [14, 52],
-  [71, 44], [90, 44], [80, 52], [90, 52], [74, 22],
+  [10, 6], [10, 12], [36, 6], [36, 12], [51, 9], [88, 6], [88, 12], [32, 20], [64, 20], [8, 20], [95, 20],
+  [7, 24], [23, 33], [8, 47], [16, 50], [22, 55], [7, 57], [14, 62],
+  [78, 50], [99, 50], [86, 60], [97, 60], [82, 25],
 ]) {
   at('tree', x, y);
 }
-for (const [x, y] of [[12, 20], [62, 16], [6, 38], [90, 38]]) at('bush', x, y);
-// Jardín dentro de la U (x 40-46, y 6-16), como lo dibujó David: cerezos a los dos lados, por dentro del
-// pasillo, y arbustos de flores rosas en medio. Solo decora.
+for (const [x, y] of [[12, 20], [63, 16], [6, 44], [109, 44]]) at('bush', x, y);
+// Jardín dentro de la U, como lo dibujó David: cerezos a los dos lados, por dentro del pasillo, y arbustos de
+// flores rosas en medio. Solo decora.
 for (const [name, x, y] of [
-  ['cherry-tree', 41, 9], ['cherry-tree', 41, 12], ['cherry-tree', 41, 15],
-  ['cherry-tree', 45, 9], ['cherry-tree', 45, 12], ['cherry-tree', 45, 15],
-  ['pink-star', 43, 8], ['pink-star', 43, 10], ['pink-star', 43, 12], ['pink-star', 43, 14],
+  ['cherry-tree', U.x0 + 3, 9], ['cherry-tree', U.x0 + 3, 12], ['cherry-tree', U.x0 + 3, 15],
+  ['cherry-tree', U.x1 - 3, 9], ['cherry-tree', U.x1 - 3, 12], ['cherry-tree', U.x1 - 3, 15],
+  ['pink-star', U.x0 + 5, 8], ['pink-star', U.x0 + 5, 10], ['pink-star', U.x0 + 5, 12], ['pink-star', U.x0 + 5, 14],
 ]) at(name, x, y);
-for (const [x, y] of [[30, 16], [10, 38], [72, 38]]) prop('bench', (x + 1) * T, (y + 1) * T);
+for (const [x, y] of [[30, 16], [10, MID + 2], [RING_R + 4, MID + 2]]) prop('bench', (x + 1) * T, (y + 1) * T);
 
 // Muro del parque (madera sobre piedra) alrededor de todo, con el portón abajo, donde acaba el camino central.
-const gatePx = (24 + OX) * T;
+const gatePx = (CX + OX) * T;
 for (let x = 0; x < W * T; x += 32) prop('park-wall', x + 16, 2 * T);
 for (let x = 0; x < W * T; x += 32) if (x + 32 <= gatePx - 2 * T || x >= gatePx + 2 * T) prop('park-wall', x + 16, H * T);
 for (let y = 3; y <= H - 3; y++) {
@@ -316,7 +347,7 @@ prop('park-gate', gatePx, H * T);
 
 objects.push({
   id: nextId++, name: 'inicio', type: 'punto', point: true,
-  x: (23 + OX) * T + T / 2, y: (33 + OY) * T + T / 2, width: 0, height: 0, rotation: 0, visible: true,
+  x: (CX - 1 + OX) * T + T / 2, y: (RING_B + 3) * T + T / 2, width: 0, height: 0, rotation: 0, visible: true,
 });
 
 const walkable = [{ name: 'walkable', type: 'bool', value: true }];
