@@ -1,4 +1,4 @@
-// Genera public/assets/maps/zoo.tmj: el zoo de verdad (116x75), lógico (césped/camino/valla/puerta/edificio).
+// Genera public/assets/maps/zoo.tmj: el zoo de verdad (117x75), lógico (césped/camino/valla/puerta/edificio).
 // El arte real lo pone el autotiler en el juego; este mapa también sirve en modo provisional.
 //
 // Trazado del 2026-11-06 (plaza grande y recintos de al menos 14x9 por dentro): el parque del centro pasó de
@@ -8,7 +8,7 @@ import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const W = 116;
+const W = 117;
 const H = 75;
 const T = 16;
 /** El parque del centro: sus cosas se escriben en coordenadas propias (0,0 = esquina de arriba a la izquierda). */
@@ -178,6 +178,12 @@ const water = (kind, x0, y0, x1, y1) => {
     properties: [{ name: 'kind', type: 'string', value: kind }],
   });
 };
+/**
+ * Farola en la casilla (tx,ty). El dibujo mide 32 px con el poste a la izquierda y el brazo hacia la derecha:
+ * se apoya en el borde derecho de la casilla para que el pie del poste caiga entero en ella (en el césped) y
+ * no en la tierra del camino de al lado.
+ */
+const lampAt = (tx, ty) => prop('lamp', (tx + 1) * T, (ty + 1) * T);
 /** Prop apoyado en la casilla (tx,ty) del mapa: centro horizontal de la casilla, borde inferior. */
 const at = (name, tx, ty, opts) => prop(name, tx * T + T / 2, (ty + 1) * T, opts);
 /** Lo mismo, en coordenadas del parque de siempre. */
@@ -294,7 +300,9 @@ for (const [cx, cy] of [[3, 3], [10, 2]]) establo('flowers', cx, cy);
 // (sólida: la cuidadora no se mete en el agua) no tapa camino.
 pprop('fountain', (ISLAND.x0 + ISLAND.x1 + 1) / 2 * T, (ISLAND.y1 + 1) * T, { block: [80, 64], solid: true });
 // Plaza: una farola en cada esquina recortada y dos bancos a cada lado, en el césped junto al borde.
-for (const [x, y] of [[PLAZA.x0, PLAZA.y0], [PLAZA.x1, PLAZA.y0], [PLAZA.x0, PLAZA.y1], [PLAZA.x1, PLAZA.y1]]) pat('lamp', x, y);
+// Arriba van en la casilla de debajo de la esquina (también recortada): en la esquina misma la farola, que mide
+// 3 de alto, se montaría sobre la valla de los leones y de las cabras.
+for (const [x, y] of [[PLAZA.x0, PLAZA.y0 + 1], [PLAZA.x1, PLAZA.y0 + 1], [PLAZA.x0, PLAZA.y1], [PLAZA.x1, PLAZA.y1]]) lampAt(x + OX, y + OY);
 for (const [x, y] of [[PLAZA.x0 - 2, PLAZA.y0 + 2], [PLAZA.x0 - 2, PLAZA.y1 - 2], [PLAZA.x1 + 1, PLAZA.y0 + 2], [PLAZA.x1 + 1, PLAZA.y1 - 2]]) {
   pprop('bench', (x + 1) * T, (y + 1) * T);
 }
@@ -340,7 +348,7 @@ for (const [x, y] of [[30, 16], [10, MID + 2], [RING_R + 4, MID + 2]]) prop('ben
 // de al lado, fuera de los recintos, lejos del muro y sin pegarse a otro adorno.
 {
   const isPath = (x, y) => x >= 0 && y >= 0 && x < W && y < H && (data[y * W + x] === PATH || data[y * W + x] === GATE);
-  const tileOf = (o) => ({ x: Math.floor(o.x / T), y: Math.floor((o.y - 1) / T) });
+  const tileOf = (o) => ({ x: Math.floor((o.x - 1) / T), y: Math.floor((o.y - 1) / T) });
   const props = objects.filter((o) => o.type === 'prop').map(tileOf);
   const lamps = objects.filter((o) => o.type === 'prop' && o.properties[0].value === 'lamp').map(tileOf);
   const pens = enclosures.map((e) => ({ x0: e.x, y0: e.y, x1: e.x + e.ew - 1, y1: e.y + e.eh - 1 }));
@@ -348,10 +356,12 @@ for (const [x, y] of [[30, 16], [10, MID + 2], [RING_R + 4, MID + 2]]) prop('ben
   const boardStand = { x: Math.floor(board.x / T), y: Math.floor(board.y / T) - 1 };
   const cheb = (a, b) => Math.max(Math.abs(a.x - b.x), Math.abs(a.y - b.y));
   const free = (x, y) =>
-    x >= 2 && x <= W - 2 && y >= 3 && y <= H - 3 &&
+    // Con su dibujo (2x3 casillas) lejos del muro: a la derecha cabe del todo, arriba no toca la fila del muro.
+    x >= 2 && x + 1 <= W - 3 && y >= 4 && y <= H - 3 &&
     data[y * W + x] === GRASS &&
+    !(x > U.x0 + 1 && x < U.x1 - 1 && y > U.top + 1 && y < NORTH) && // el jardín de la U es solo de flores
     // Ni dentro de un recinto ni con su valla encima: el dibujo mide 3 de alto y el brazo sale hacia un lado.
-    !pens.some((r) => x + 1 >= r.x0 && x - 1 <= r.x1 && y >= r.y0 && y - 2 <= r.y1) &&
+    !pens.some((r) => x + 1 >= r.x0 && x <= r.x1 && y >= r.y0 && y - 2 <= r.y1) && // ocupa su casilla y la de la derecha
     !props.some((p) => cheb(p, { x, y }) <= 2) &&
     cheb(boardStand, { x, y }) > 1;
   for (let y = 0; y < H; y++)
@@ -359,7 +369,7 @@ for (const [x, y] of [[30, 16], [10, MID + 2], [RING_R + 4, MID + 2]]) prop('ben
       if (!isPath(x, y) || lamps.some((l) => cheb(l, { x, y }) <= 7)) continue;
       const spot = [[0, -1], [-1, 0], [1, 0], [0, 1]].map(([dx, dy]) => ({ x: x + dx, y: y + dy })).find((c) => free(c.x, c.y));
       if (!spot) continue;
-      at('lamp', spot.x, spot.y);
+      lampAt(spot.x, spot.y);
       lamps.push(spot);
       props.push(spot);
     }
@@ -375,7 +385,7 @@ for (const [x, y] of [[30, 16], [10, MID + 2], [RING_R + 4, MID + 2]]) prop('ben
         .filter((c) => free(c.x, c.y) && touchesPath(c))
         .sort((a, b) => cheb(a, { x, y }) - cheb(b, { x, y }))[0];
       if (!spot) continue;
-      at('lamp', spot.x, spot.y);
+      lampAt(spot.x, spot.y);
       lamps.push(spot);
       props.push(spot);
     }

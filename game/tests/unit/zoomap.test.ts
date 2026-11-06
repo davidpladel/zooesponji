@@ -383,7 +383,7 @@ describe('mapa del zoo', () => {
   it('hay farolas por todos los caminos, no solo en la plaza', () => {
     const lamps = readProps(map)
       .filter((p) => p.prop === 'lamp')
-      .map((p) => ({ x: Math.floor(p.x / 16), y: Math.floor((p.y - 1) / 16) }));
+      .map((p) => ({ x: Math.floor((p.x - 1) / 16), y: Math.floor((p.y - 1) / 16) }));
     expect(lamps.length).toBeGreaterThan(20);
     const far: string[] = [];
     for (let y = 0; y < H; y++)
@@ -397,11 +397,45 @@ describe('mapa del zoo', () => {
   it('las farolas están junto al camino, fuera de los recintos', () => {
     const pens = readEnclosures(map);
     for (const p of readProps(map).filter((q) => q.prop === 'lamp')) {
-      const tx = Math.floor(p.x / 16);
+      const tx = Math.floor((p.x - 1) / 16);
       const ty = Math.floor((p.y - 1) / 16);
       const nextToPath = [[1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [1, -1], [-1, 1], [-1, -1]].some(([dx, dy]) => isWalkable(grid, tx + dx!, ty + dy!));
       expect(nextToPath, `farola en (${tx},${ty})`).toBe(true);
       expect(pens.some((e) => rectContains(e, { x: p.x, y: p.y - 1 })), `farola en (${tx},${ty})`).toBe(false);
+    }
+  });
+
+  it('el pie de cada farola cae entero en el césped, nunca en la tierra del camino', () => {
+    // El dibujo mide 32 px y el poste está a la izquierda: su pie ocupa de x-14 a x-4 respecto al punto de apoyo.
+    for (const p of readProps(map).filter((q) => q.prop === 'lamp')) {
+      const ty = Math.floor((p.y - 1) / 16);
+      for (const fx of [p.x - 14, p.x - 4]) {
+        const tx = Math.floor(fx / 16);
+        expect(isWalkable(grid, tx, ty), `pie de la farola de (${p.x},${p.y}) en la casilla (${tx},${ty})`).toBe(false);
+      }
+    }
+  });
+
+  it('ninguna farola se monta sobre una valla (mide 2x3 casillas desde su pie)', () => {
+    const pens = readEnclosures(map);
+    for (const p of readProps(map).filter((q) => q.prop === 'lamp')) {
+      const left = (p.x - 16) / 16;
+      const bottom = Math.floor((p.y - 1) / 16);
+      for (let ty = bottom - 2; ty <= bottom; ty++)
+        for (let tx = Math.floor(left); tx <= Math.floor(left) + 1; tx++) {
+          const c = { x: tx * 16 + 8, y: ty * 16 + 8 };
+          expect(pens.some((e) => rectContains(e, c)), `farola de (${p.x},${p.y}) sobre la valla en (${tx},${ty})`).toBe(false);
+        }
+    }
+  });
+
+  it('ninguna farola se monta sobre el muro del zoo', () => {
+    for (const p of readProps(map).filter((q) => q.prop === 'lamp')) {
+      const left = Math.floor((p.x - 16) / 16);
+      const bottom = Math.floor((p.y - 1) / 16);
+      expect(left, `farola de (${p.x},${p.y})`).toBeGreaterThanOrEqual(2);
+      expect(left + 1, `farola de (${p.x},${p.y})`).toBeLessThanOrEqual(W - 3);
+      expect(bottom - 2, `farola de (${p.x},${p.y})`).toBeGreaterThanOrEqual(2);
     }
   });
 });
