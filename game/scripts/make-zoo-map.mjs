@@ -335,6 +335,52 @@ for (const [name, x, y] of [
 ]) at(name, x, y);
 for (const [x, y] of [[30, 16], [10, MID + 2], [RING_R + 4, MID + 2]]) prop('bench', (x + 1) * T, (y + 1) * T);
 
+// Farolas por todo el zoo (David, 2026-11-06: «si hay farolas en la plaza, hay que poner más por los caminos»).
+// Se reparten solas: recorriendo los caminos, donde no hay ninguna farola a 7 casillas se pone una en el césped
+// de al lado, fuera de los recintos, lejos del muro y sin pegarse a otro adorno.
+{
+  const isPath = (x, y) => x >= 0 && y >= 0 && x < W && y < H && (data[y * W + x] === PATH || data[y * W + x] === GATE);
+  const tileOf = (o) => ({ x: Math.floor(o.x / T), y: Math.floor((o.y - 1) / T) });
+  const props = objects.filter((o) => o.type === 'prop').map(tileOf);
+  const lamps = objects.filter((o) => o.type === 'prop' && o.properties[0].value === 'lamp').map(tileOf);
+  const pens = enclosures.map((e) => ({ x0: e.x, y0: e.y, x1: e.x + e.ew - 1, y1: e.y + e.eh - 1 }));
+  const board = objects.find((o) => o.type === 'tablon');
+  const boardStand = { x: Math.floor(board.x / T), y: Math.floor(board.y / T) - 1 };
+  const cheb = (a, b) => Math.max(Math.abs(a.x - b.x), Math.abs(a.y - b.y));
+  const free = (x, y) =>
+    x >= 2 && x <= W - 2 && y >= 3 && y <= H - 3 &&
+    data[y * W + x] === GRASS &&
+    // Ni dentro de un recinto ni con su valla encima: el dibujo mide 3 de alto y el brazo sale hacia un lado.
+    !pens.some((r) => x + 1 >= r.x0 && x - 1 <= r.x1 && y >= r.y0 && y - 2 <= r.y1) &&
+    !props.some((p) => cheb(p, { x, y }) <= 2) &&
+    cheb(boardStand, { x, y }) > 1;
+  for (let y = 0; y < H; y++)
+    for (let x = 0; x < W; x++) {
+      if (!isPath(x, y) || lamps.some((l) => cheb(l, { x, y }) <= 7)) continue;
+      const spot = [[0, -1], [-1, 0], [1, 0], [0, 1]].map(([dx, dy]) => ({ x: x + dx, y: y + dy })).find((c) => free(c.x, c.y));
+      if (!spot) continue;
+      at('lamp', spot.x, spot.y);
+      lamps.push(spot);
+      props.push(spot);
+    }
+  // Segunda pasada: los tramos que quedaron lejos de toda farola (puertas entre vallas) la buscan a 3 casillas
+  // del camino, en el césped que dejen libre.
+  const touchesPath = (c) => [-1, 0, 1].some((dy) => [-1, 0, 1].some((dx) => isPath(c.x + dx, c.y + dy)));
+  for (let y = 0; y < H; y++)
+    for (let x = 0; x < W; x++) {
+      if (!isPath(x, y) || lamps.some((l) => cheb(l, { x, y }) <= 8)) continue;
+      const near = [];
+      for (let dy = -3; dy <= 3; dy++) for (let dx = -3; dx <= 3; dx++) near.push({ x: x + dx, y: y + dy });
+      const spot = near
+        .filter((c) => free(c.x, c.y) && touchesPath(c))
+        .sort((a, b) => cheb(a, { x, y }) - cheb(b, { x, y }))[0];
+      if (!spot) continue;
+      at('lamp', spot.x, spot.y);
+      lamps.push(spot);
+      props.push(spot);
+    }
+}
+
 // Muro del parque (madera sobre piedra) alrededor de todo, con el portón abajo, donde acaba el camino central.
 const gatePx = (CX + OX) * T;
 for (let x = 0; x < W * T; x += 32) prop('park-wall', x + 16, 2 * T);

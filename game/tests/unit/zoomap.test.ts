@@ -379,5 +379,30 @@ describe('mapa del zoo', () => {
     const board = readBoard(map)!;
     expect(seen.has(`${board.tile.x},${board.tile.y}`), 'tablón').toBe(true);
   });
+
+  it('hay farolas por todos los caminos, no solo en la plaza', () => {
+    const lamps = readProps(map)
+      .filter((p) => p.prop === 'lamp')
+      .map((p) => ({ x: Math.floor(p.x / 16), y: Math.floor((p.y - 1) / 16) }));
+    expect(lamps.length).toBeGreaterThan(20);
+    const far: string[] = [];
+    for (let y = 0; y < H; y++)
+      for (let x = 0; x < W; x++) {
+        if (!isWalkable(grid, x, y)) continue;
+        if (!lamps.some((l) => Math.max(Math.abs(l.x - x), Math.abs(l.y - y)) <= 8)) far.push(`(${x},${y})`);
+      }
+    expect(far, 'casillas de camino sin farola a 8 casillas').toEqual([]);
+  });
+
+  it('las farolas están junto al camino, fuera de los recintos', () => {
+    const pens = readEnclosures(map);
+    for (const p of readProps(map).filter((q) => q.prop === 'lamp')) {
+      const tx = Math.floor(p.x / 16);
+      const ty = Math.floor((p.y - 1) / 16);
+      const nextToPath = [[1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [1, -1], [-1, 1], [-1, -1]].some(([dx, dy]) => isWalkable(grid, tx + dx!, ty + dy!));
+      expect(nextToPath, `farola en (${tx},${ty})`).toBe(true);
+      expect(pens.some((e) => rectContains(e, { x: p.x, y: p.y - 1 })), `farola en (${tx},${ty})`).toBe(false);
+    }
+  });
 });
 
