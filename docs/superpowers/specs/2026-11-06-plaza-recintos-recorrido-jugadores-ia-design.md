@@ -1,6 +1,6 @@
 # Plaza grande, recintos por especie, prueba del recorrido y jugadores con IA — diseño
 
-Fecha: 2026-11-06 · Rama: `feat/plaza-recintos-recorrido` (sale de `main`) · Estado: diseño pendiente de aprobar por David
+Fecha: 2026-11-06 · Rama: `feat/plaza-recintos-recorrido` (sale de `main`) · Estado: implementado en la rama (bloques 1 a 6), pendiente de probar en el móvil y de fusionar
 
 ## Por qué
 
@@ -190,3 +190,16 @@ David: «Feedback vital de UX/UI del juego que ayude a coger ideas para mejorarl
 2. Bloque 1 (mapa y plaza) y bloque 3 (recintos), juntos, porque los dos mueven el mapa. Bloque 4 dentro de este.
 3. Bloque 5 (prueba del recorrido) sobre el mapa nuevo. Antes de cambiar el mapa se guarda la «foto» de caminos de hoy para ver exactamente qué cambia.
 4. Bloque 6 (jugadores con IA) al final, sobre el juego ya cambiado.
+
+## Cambios durante la implementación (2026-11-06)
+
+- **Farolas por todo el zoo** (David, al ver el mapa nuevo): se reparten solas por los caminos (cada casilla de
+  camino con una a 8 casillas como mucho), en el césped, con el pie fuera de la tierra y sin montarse en vallas ni
+  en el muro. El mapa pasa a 117×75 para que quepan junto al estanque.
+- **Bancos de la plaza** en el césped junto al borde (las piezas se apoyan siempre en césped) y farolas en las
+  esquinas recortadas.
+- **Charcas:** la alpina trae suelo gris; el panda usa una charca de selva (`pond-rainforest`) y los elefantes
+  asiáticos la de sabana.
+- **Mando de los jugadores con IA:** la versión construida no tiene `window.__ZOO__`, así que el diario no anota
+  las escenas cuando se juega contra `npm run preview`.
+

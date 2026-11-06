@@ -16,6 +16,11 @@ npm run check:manifest # comprueba el manifiesto fusionado de Android (sin ident
 npm run check:aab      # comprueba que el AAB de publicación salió de R8 (con `r8.json` y el archivo de desofuscación, sin reglas que lo apaguen) y enseña lo que pesa el código Android. Compilar antes con Gradle
 npm run make:ui-assets # copia la letra y los iconos de la interfaz a public/ (solo si cambian)
 npm run make:test-map  # regenera el mapa de prueba
+npm run make:zoo-map   # regenera el mapa del zoo desde scripts/make-zoo-map.mjs (nunca se toca a mano el .tmj)
+npm run map:snapshot   # vuelve a sacar la «foto» de los caminos (solo si se quitan caminos a propósito)
+npm run map:preview -- --salida <png>  # dibuja el mapa lógico en un PNG para revisarlo
+npx playwright test recorrido  # la cuidadora y Luna recorren a pie todos los caminos y el interior de los recintos (unos minutos)
+npm run ia:mando       # mando para los jugadores con IA (ver «Jugadores con IA»)
 npx cap sync android # copia la build al proyecto Android
 npx cap open android # abre Android Studio (▶ Run para probar en el móvil)
 ```
@@ -69,6 +74,34 @@ siguiente de la lista del recinto al precio de su especie. Las especies grandes 
 - **Calcetín:** `npm run make:calcetin` dibuja el icono en `art-work/terminados/calcetin.png` del
   repo privado si no existe; si los niños pintan el suyo, no se toca.
 
+## Mapa del zoo
+
+Todo el mapa sale de `scripts/make-zoo-map.mjs` (`npm run make:zoo-map` → `public/assets/maps/zoo.tmj`, 117×75 casillas).
+Plaza de la fuente de 15×13 con la fuente sobre una isla de su tamaño, caminos de 3 de ancho que llegan a la plaza,
+recintos de al menos 14×9 por dentro con el paisaje de cada especie y farolas repartidas solas por los caminos.
+
+- **Regla de pisar:** todo lo que no es agua se puede subir (rocas, meseta, cueva, hierba, flores, helechos); árboles,
+  troncos, arbustos, bambú y objetos de granja bloquean su base. Lo que se pisa lleva `walk` y se dibuja siempre
+  por debajo de la cuidadora, Luna, los animales y los visitantes (`propDepth`).
+- **Agua:** es una zona propia del mapa (objetos `agua` con `kind` `agua` o `barro`), no un prop que bloquea: así en
+  el risco de la pantera la roca se pisa y la cascada no. `waterAt` dice en qué charca está un punto.
+- **Foto de los caminos** (`tests/unit/data/caminos.json`): si un cambio quita casillas de camino, `caminos.test.ts`
+  falla y dice cuáles. Si es a propósito, `npm run map:snapshot` y se explica en el commit.
+- Las pruebas del mapa (`zoomap`, `caminos`, `recintos`, `tour`) leen las posiciones del propio mapa, no números
+  fijos. La prueba de juego `recorrido.spec.ts` hace andar a la cuidadora tocando la pantalla por una ruta que pisa
+  todas las casillas (`core/tour.ts`) y comprueba que llega, que Luna la sigue y que nada que se pisa queda encima.
+
+## Jugadores con IA
+
+Niños simulados (5 años sin leer y 10 años que lee) juegan a la versión construida solo con capturas, tocando,
+arrastrando y esperando, y dejan un informe de UX/UI y fallos. Perfiles y objetivos: `scripts/ia/perfiles.md`;
+encargo de cada jugador: `scripts/ia/instrucciones.md`.
+
+1. `npm run build`, y en ventanas aparte `npm run preview` y `npm run ia:mando` (escucha en `127.0.0.1:7801`).
+2. Cada jugador es un subagente con Sonnet que recibe `instrucciones.md` con su perfil, objetivo e id.
+3. Capturas, diario e informes van al repo privado: `zooesponji-private/docs/jugadores-ia/AAAA-MM-DD/<id>/`, y el
+   resumen de la pasada en `resumen.md` de esa carpeta. 60 acciones como mucho por partida.
+
 ## Interfaz
 
 Las piezas de los menús (píldoras, paneles, carteles, chapa de cerrar, monedas) están en `src/ui/`. Se pintan con Canvas 2D en texturas porque el juego usa `pixelArt: true`. Todo botón pasa por `makePressable` (`src/ui/press.ts`), que le da el efecto al pulsar, y todo texto de la interfaz se crea con `addUiText` (`src/ui/text.ts`) para que no tiemble al cambiar de tamaño. Los bocetos de referencia están en `docs/superpowers/mockups/`.
@@ -96,7 +129,7 @@ Los tests de contenido fallan si falta alguna de estas piezas.
 
 En `npm run dev` existe `window.__ZOO__` en la consola del navegador (p. ej. `await __ZOO__.addCoins(10)`). No existe en la build de producción.
 
-Ganchos disponibles: `addCoins(n)`, `openFeed('leon')`, `openShop()`, `openSettings()`, `back()` (simula el botón atrás), `crash()` (fuerza la pantalla de error), `goToTile(x, y)`, `unlocked()`, `counts()`, `hudCoinsText()`, `keeperPosition()`, `activeScenes()`, `petPosition()`, `openTutorial()`, `tutorialStep()`. Las pruebas de juego abren `/?sin-tutorial` para que no salga el aviso de aprender (solo funciona en desarrollo). `window.__GAME__` es el juego de Phaser.
+Ganchos disponibles: `addCoins(n)`, `openFeed('leon')`, `openShop()`, `openSettings()`, `back()` (simula el botón atrás), `crash()` (fuerza la pantalla de error), `goToTile(x, y)`, `keeperTile()`, `tourWaypoints(pasos, conRecintos)`, `walkPropsAbove()`, `unlocked()`, `counts()`, `hudCoinsText()`, `keeperPosition()`, `activeScenes()`, `petPosition()`, `openTutorial()`, `tutorialStep()`. Las pruebas de juego abren `/?sin-tutorial` para que no salga el aviso de aprender (solo funciona en desarrollo). `window.__GAME__` es el juego de Phaser.
 
 ## Sonido
 

@@ -225,7 +225,7 @@ Las pruebas que ya hay en `zoomap.test.ts` con coordenadas fijas del mapa de 96�
 
 - [x] **Paso 4: Pedir a David** `npm test` y `npm run typecheck` → esperado: en verde.
 
-- [ ] **Paso 5: Revisión de David (punto de parada).** Enviarle con SendUserFile la vista del mapa nuevo comparada con `main` (en rojo lo nuevo). No se sigue a la tarea 6 sin su visto bueno al trazado. Después de su visto bueno, que pruebe en el móvil o en `npm run dev` a 640×360 que la cámara sigue a la cuidadora en las esquinas del mapa.
+- [x] **Paso 5: Revisión de David (punto de parada).** Enviarle con SendUserFile la vista del mapa nuevo comparada con `main` (en rojo lo nuevo). No se sigue a la tarea 6 sin su visto bueno al trazado. Después de su visto bueno, que pruebe en el móvil o en `npm run dev` a 640×360 que la cámara sigue a la cuidadora en las esquinas del mapa.
 
 - [x] **Paso 6: Commit** `feat(mapa): mapa más grande con plaza de la fuente de 15x13 y recintos más amplios`
 
@@ -260,11 +260,11 @@ Piezas a añadir (nombre → hoja del pack; coordenadas en px aproximadas, **se 
 | `shelter` / `scarecrow` / `pumpkin` / `trough` / `well` | wooden · `buildings_wooden_1.png` | 128,112,48,48 / 176,128,16,32 / 208,144,16,16 / 240,208,16,16 / 96,96,16,16 |
 | `palm-leaning` | monocots · `ReShade/16x16/tree_palm_large_leaning.png` | hoja entera |
 
-- [ ] **Paso 1:** añadir las entradas; lanzar `npm run art:import` (lo puede lanzar Claude: no es una prueba) y `npm run art:props-sheet -- <scratchpad>/props.png`.
-- [ ] **Paso 2:** mirar el tablón y corregir cada recorte que corte o arrastre otra pieza. Repetir hasta que estén limpios.
-- [ ] **Paso 3:** enviar el tablón a David con SendUserFile y esperar su visto bueno al arte.
-- [ ] **Paso 4: Pedir a David** `npm test -- artConfig` → esperado: en verde.
-- [ ] **Paso 5: Commit** `feat(arte): piezas nuevas para los paisajes de los recintos` (solo `art.config.json`; el PNG importado está ignorado por git).
+- [x] **Paso 1:** añadir las entradas; lanzar `npm run art:import` (lo puede lanzar Claude: no es una prueba) y `npm run art:props-sheet -- <scratchpad>/props.png`.
+- [x] **Paso 2:** mirar el tablón y corregir cada recorte que corte o arrastre otra pieza. Repetir hasta que estén limpios.
+- [x] **Paso 3:** enviar el tablón a David con SendUserFile y esperar su visto bueno al arte.
+- [x] **Paso 4: Pedir a David** `npm test -- artConfig` → esperado: en verde.
+- [x] **Paso 5: Commit** `feat(arte): piezas nuevas para los paisajes de los recintos` (solo `art.config.json`; el PNG importado está ignorado por git).
 
 ---
 
@@ -294,7 +294,7 @@ const PAISAJE: Record<PenId, RegExp[]> = {
 
 Toda pieza de agua nueva (`water-savannah`, charcas) lleva su `water()` de la tarea 1.
 
-- [ ] **Paso 1: Pruebas que fallan** (`recintos.test.ts`)
+- [x] **Paso 1: Pruebas que fallan** (`recintos.test.ts`)
 
 ```ts
 it.each(PEN_IDS)('%s tiene su paisaje', (id) => { /* cada regex de PAISAJE[id] casa con algún prop dentro del recinto */ });
@@ -308,15 +308,15 @@ it.each(PEN_IDS)('%s: caben todos sus animales separados', (id) => {
 it.each(PEN_IDS)('%s: ningún adorno se sale del recinto ni pisa la valla', (id) => {});
 ```
 
-- [ ] **Paso 2: Pedir a David** `npm test -- recintos` → esperado: FALLAN.
+- [x] **Paso 2: Pedir a David** `npm test -- recintos` → esperado: FALLAN.
 
-- [ ] **Paso 3: Implementar** la decoración de cada recinto siguiendo la tabla del diseño (bloque 3). Criterios de colocación: sombra (árbol) en una esquina de atrás, sitio alto (rocas o meseta) visible desde el camino, agua donde la haya lejos de la puerta, la puerta y su frente despejados, las piezas altas (bambú, árboles) lejos del lado que da al camino para no tapar a los animales. Regenerar.
+- [x] **Paso 3: Implementar** la decoración de cada recinto siguiendo la tabla del diseño (bloque 3). Criterios de colocación: sombra (árbol) en una esquina de atrás, sitio alto (rocas o meseta) visible desde el camino, agua donde la haya lejos de la puerta, la puerta y su frente despejados, las piezas altas (bambú, árboles) lejos del lado que da al camino para no tapar a los animales. Regenerar.
 
-- [ ] **Paso 4: Pedir a David** `npm test` y `npm run typecheck` → esperado: en verde.
+- [x] **Paso 4: Pedir a David** `npm test` y `npm run typecheck` → esperado: en verde.
 
-- [ ] **Paso 5: Revisión de David (punto de parada).** Capturas de los 11 recintos con el juego en marcha (navegador interno visible, o que las haga David). Ajustar lo que pida.
+- [x] **Paso 5: Revisión de David (punto de parada).** Capturas de los 11 recintos con el juego en marcha (navegador interno visible, o que las haga David). Ajustar lo que pida.
 
-- [ ] **Paso 6: Commit** `feat(recintos): paisaje propio de cada especie, más grande y más bonito`
+- [x] **Paso 6: Commit** `feat(recintos): paisaje propio de cada especie, más grande y más bonito`
 
 ---
 
@@ -331,7 +331,7 @@ it.each(PEN_IDS)('%s: ningún adorno se sale del recinto ni pisa la valla', (id)
 
 Algoritmo (no lo determinan la firma ni las pruebas): voraz. Pendientes = todas las alcanzables. Desde la actual, ir a la pendiente más cercana por BFS; si está a más de `maxStep`, meter puntos intermedios del camino cada `maxStep`. Marcar como pisadas todas las casillas de cada `findPath` recorrido.
 
-- [ ] **Paso 1: Pruebas que fallan**
+- [x] **Paso 1: Pruebas que fallan**
 
 ```ts
 it('la ruta pisa todas las casillas alcanzables', () => { /* rejilla en forma de anillo con dos ramas: la unión de los findPath = todas */ });
@@ -339,10 +339,10 @@ it('dos puntos seguidos están a como mucho maxStep casillas', () => {});
 it('con el mapa real, la ruta pisa todo pathGrid', () => { /* zoo.tmj */ });
 ```
 
-- [ ] **Paso 2: Pedir a David** `npm test -- tour` → FALLAN.
-- [ ] **Paso 3: Implementar** `tourWaypoints`.
-- [ ] **Paso 4: Pedir a David** `npm test -- tour` → en verde.
-- [ ] **Paso 5: Commit** `feat(pruebas): ruta que pasa por todas las casillas de camino`
+- [x] **Paso 2: Pedir a David** `npm test -- tour` → FALLAN.
+- [x] **Paso 3: Implementar** `tourWaypoints`.
+- [x] **Paso 4: Pedir a David** `npm test -- tour` → en verde.
+- [x] **Paso 5: Commit** `feat(pruebas): ruta que pasa por todas las casillas de camino`
 
 ---
 
