@@ -247,6 +247,8 @@ export interface PropInfo {
   block: { x: number; y: number; width: number; height: number } | null;
   /** Zona que anuncia (solo los carteles de zona): `sabana`, `polo`, `granja`. */
   zone: string | null;
+  /** Se pisa o se sube (hierba, flores, rocas, meseta, cueva): se dibuja por debajo de quien la pisa. */
+  walk: boolean;
   /** Su zona `block` tampoco la pisan la cuidadora ni los visitantes (la fuente de la plaza). */
   solid: boolean;
 }
@@ -269,6 +271,7 @@ export function readProps(map: TiledMap): PropInfo[] {
       x: object.x,
       y: object.y,
       flat: getProperty(object.properties, 'flat') === true,
+      walk: getProperty(object.properties, 'walk') === true,
       z: num('z'),
       block: blocks && w > 0 && h > 0 ? { x: object.x - w / 2, y: object.y - h, width: w, height: h } : null,
       zone: typeof zone === 'string' ? zone : null,

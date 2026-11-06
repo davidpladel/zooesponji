@@ -6385,7 +6385,7 @@
       {
        "name": "blocks",
        "type": "bool",
-       "value": true
+       "value": false
       },
       {
        "name": "flat",
@@ -6398,14 +6398,9 @@
        "value": 0
       },
       {
-       "name": "blockW",
-       "type": "int",
-       "value": 32
-      },
-      {
-       "name": "blockH",
-       "type": "int",
-       "value": 16
+       "name": "walk",
+       "type": "bool",
+       "value": true
       }
      ]
     },
@@ -6428,7 +6423,7 @@
       {
        "name": "blocks",
        "type": "bool",
-       "value": true
+       "value": false
       },
       {
        "name": "flat",
@@ -6441,14 +6436,9 @@
        "value": 0
       },
       {
-       "name": "blockW",
-       "type": "int",
-       "value": 16
-      },
-      {
-       "name": "blockH",
-       "type": "int",
-       "value": 16
+       "name": "walk",
+       "type": "bool",
+       "value": true
       }
      ]
     },
@@ -6482,6 +6472,11 @@
        "name": "z",
        "type": "int",
        "value": 0
+      },
+      {
+       "name": "walk",
+       "type": "bool",
+       "value": true
       }
      ]
     },
@@ -6515,6 +6510,11 @@
        "name": "z",
        "type": "int",
        "value": 0
+      },
+      {
+       "name": "walk",
+       "type": "bool",
+       "value": true
       }
      ]
     },
@@ -6548,6 +6548,11 @@
        "name": "z",
        "type": "int",
        "value": 0
+      },
+      {
+       "name": "walk",
+       "type": "bool",
+       "value": true
       }
      ]
     },
@@ -6581,6 +6586,11 @@
        "name": "z",
        "type": "int",
        "value": 0
+      },
+      {
+       "name": "walk",
+       "type": "bool",
+       "value": true
       }
      ]
     },
@@ -6614,6 +6624,11 @@
        "name": "z",
        "type": "int",
        "value": 0
+      },
+      {
+       "name": "walk",
+       "type": "bool",
+       "value": true
       }
      ]
     },
@@ -6647,6 +6662,11 @@
        "name": "z",
        "type": "int",
        "value": 0
+      },
+      {
+       "name": "walk",
+       "type": "bool",
+       "value": true
       }
      ]
     },
@@ -6669,7 +6689,7 @@
       {
        "name": "blocks",
        "type": "bool",
-       "value": true
+       "value": false
       },
       {
        "name": "flat",
@@ -6682,14 +6702,9 @@
        "value": 0
       },
       {
-       "name": "blockW",
-       "type": "int",
-       "value": 48
-      },
-      {
-       "name": "blockH",
-       "type": "int",
-       "value": 16
+       "name": "walk",
+       "type": "bool",
+       "value": true
       }
      ]
     },
@@ -6798,7 +6813,7 @@
       {
        "name": "blocks",
        "type": "bool",
-       "value": true
+       "value": false
       },
       {
        "name": "flat",
@@ -6811,14 +6826,9 @@
        "value": 0
       },
       {
-       "name": "blockW",
-       "type": "int",
-       "value": 16
-      },
-      {
-       "name": "blockH",
-       "type": "int",
-       "value": 16
+       "name": "walk",
+       "type": "bool",
+       "value": true
       }
      ]
     },
@@ -6841,7 +6851,7 @@
       {
        "name": "blocks",
        "type": "bool",
-       "value": true
+       "value": false
       },
       {
        "name": "flat",
@@ -6854,14 +6864,9 @@
        "value": 0
       },
       {
-       "name": "blockW",
-       "type": "int",
-       "value": 32
-      },
-      {
-       "name": "blockH",
-       "type": "int",
-       "value": 16
+       "name": "walk",
+       "type": "bool",
+       "value": true
       }
      ]
     },
@@ -6964,6 +6969,11 @@
        "name": "z",
        "type": "int",
        "value": 2
+      },
+      {
+       "name": "walk",
+       "type": "bool",
+       "value": true
       }
      ]
     },
@@ -7126,6 +7136,11 @@
        "name": "z",
        "type": "int",
        "value": 0
+      },
+      {
+       "name": "walk",
+       "type": "bool",
+       "value": true
       }
      ]
     },
@@ -7460,6 +7475,11 @@
        "name": "z",
        "type": "int",
        "value": 0
+      },
+      {
+       "name": "walk",
+       "type": "bool",
+       "value": true
       }
      ]
     },
@@ -7493,6 +7513,11 @@
        "name": "z",
        "type": "int",
        "value": 0
+      },
+      {
+       "name": "walk",
+       "type": "bool",
+       "value": true
       }
      ]
     },
@@ -7644,7 +7669,7 @@
       {
        "name": "blocks",
        "type": "bool",
-       "value": true
+       "value": false
       },
       {
        "name": "flat",
@@ -7657,14 +7682,9 @@
        "value": 0
       },
       {
-       "name": "blockW",
-       "type": "int",
-       "value": 32
-      },
-      {
-       "name": "blockH",
-       "type": "int",
-       "value": 16
+       "name": "walk",
+       "type": "bool",
+       "value": true
       }
      ]
     },
@@ -7687,7 +7707,7 @@
       {
        "name": "blocks",
        "type": "bool",
-       "value": true
+       "value": false
       },
       {
        "name": "flat",
@@ -7700,14 +7720,9 @@
        "value": 0
       },
       {
-       "name": "blockW",
-       "type": "int",
-       "value": 16
-      },
-      {
-       "name": "blockH",
-       "type": "int",
-       "value": 16
+       "name": "walk",
+       "type": "bool",
+       "value": true
       }
      ]
     },
@@ -7730,7 +7745,7 @@
       {
        "name": "blocks",
        "type": "bool",
-       "value": true
+       "value": false
       },
       {
        "name": "flat",
@@ -7743,14 +7758,9 @@
        "value": 0
       },
       {
-       "name": "blockW",
-       "type": "int",
-       "value": 16
-      },
-      {
-       "name": "blockH",
-       "type": "int",
-       "value": 16
+       "name": "walk",
+       "type": "bool",
+       "value": true
       }
      ]
     },
@@ -7784,6 +7794,11 @@
        "name": "z",
        "type": "int",
        "value": 0
+      },
+      {
+       "name": "walk",
+       "type": "bool",
+       "value": true
       }
      ]
     },
@@ -7817,6 +7832,11 @@
        "name": "z",
        "type": "int",
        "value": 0
+      },
+      {
+       "name": "walk",
+       "type": "bool",
+       "value": true
       }
      ]
     },
@@ -7850,6 +7870,11 @@
        "name": "z",
        "type": "int",
        "value": 0
+      },
+      {
+       "name": "walk",
+       "type": "bool",
+       "value": true
       }
      ]
     },
@@ -7883,6 +7908,11 @@
        "name": "z",
        "type": "int",
        "value": 0
+      },
+      {
+       "name": "walk",
+       "type": "bool",
+       "value": true
       }
      ]
     },
@@ -7916,6 +7946,11 @@
        "name": "z",
        "type": "int",
        "value": 0
+      },
+      {
+       "name": "walk",
+       "type": "bool",
+       "value": true
       }
      ]
     },
@@ -7949,6 +7984,11 @@
        "name": "z",
        "type": "int",
        "value": 0
+      },
+      {
+       "name": "walk",
+       "type": "bool",
+       "value": true
       }
      ]
     },
@@ -8014,7 +8054,7 @@
       {
        "name": "blocks",
        "type": "bool",
-       "value": true
+       "value": false
       },
       {
        "name": "flat",
@@ -8027,14 +8067,9 @@
        "value": 0
       },
       {
-       "name": "blockW",
-       "type": "int",
-       "value": 32
-      },
-      {
-       "name": "blockH",
-       "type": "int",
-       "value": 16
+       "name": "walk",
+       "type": "bool",
+       "value": true
       }
      ]
     },
@@ -8068,6 +8103,11 @@
        "name": "z",
        "type": "int",
        "value": 0
+      },
+      {
+       "name": "walk",
+       "type": "bool",
+       "value": true
       }
      ]
     },
@@ -8101,6 +8141,11 @@
        "name": "z",
        "type": "int",
        "value": 0
+      },
+      {
+       "name": "walk",
+       "type": "bool",
+       "value": true
       }
      ]
     },
@@ -8166,7 +8211,7 @@
       {
        "name": "blocks",
        "type": "bool",
-       "value": true
+       "value": false
       },
       {
        "name": "flat",
@@ -8179,14 +8224,9 @@
        "value": 0
       },
       {
-       "name": "blockW",
-       "type": "int",
-       "value": 16
-      },
-      {
-       "name": "blockH",
-       "type": "int",
-       "value": 16
+       "name": "walk",
+       "type": "bool",
+       "value": true
       }
      ]
     },
@@ -8209,7 +8249,7 @@
       {
        "name": "blocks",
        "type": "bool",
-       "value": true
+       "value": false
       },
       {
        "name": "flat",
@@ -8222,14 +8262,9 @@
        "value": 0
       },
       {
-       "name": "blockW",
-       "type": "int",
-       "value": 32
-      },
-      {
-       "name": "blockH",
-       "type": "int",
-       "value": 16
+       "name": "walk",
+       "type": "bool",
+       "value": true
       }
      ]
     },
@@ -8263,6 +8298,11 @@
        "name": "z",
        "type": "int",
        "value": 0
+      },
+      {
+       "name": "walk",
+       "type": "bool",
+       "value": true
       }
      ]
     },
@@ -8296,6 +8336,11 @@
        "name": "z",
        "type": "int",
        "value": 0
+      },
+      {
+       "name": "walk",
+       "type": "bool",
+       "value": true
       }
      ]
     },
@@ -8369,7 +8414,7 @@
       {
        "name": "blocks",
        "type": "bool",
-       "value": true
+       "value": false
       },
       {
        "name": "flat",
@@ -8382,14 +8427,9 @@
        "value": 0
       },
       {
-       "name": "blockW",
-       "type": "int",
-       "value": 32
-      },
-      {
-       "name": "blockH",
-       "type": "int",
-       "value": 16
+       "name": "walk",
+       "type": "bool",
+       "value": true
       }
      ]
     },
@@ -8412,7 +8452,7 @@
       {
        "name": "blocks",
        "type": "bool",
-       "value": true
+       "value": false
       },
       {
        "name": "flat",
@@ -8425,14 +8465,9 @@
        "value": 0
       },
       {
-       "name": "blockW",
-       "type": "int",
-       "value": 16
-      },
-      {
-       "name": "blockH",
-       "type": "int",
-       "value": 16
+       "name": "walk",
+       "type": "bool",
+       "value": true
       }
      ]
     },
@@ -8541,7 +8576,7 @@
       {
        "name": "blocks",
        "type": "bool",
-       "value": true
+       "value": false
       },
       {
        "name": "flat",
@@ -8554,14 +8589,9 @@
        "value": 0
       },
       {
-       "name": "blockW",
-       "type": "int",
-       "value": 16
-      },
-      {
-       "name": "blockH",
-       "type": "int",
-       "value": 16
+       "name": "walk",
+       "type": "bool",
+       "value": true
       }
      ]
     },
@@ -8638,6 +8668,11 @@
        "name": "z",
        "type": "int",
        "value": 0
+      },
+      {
+       "name": "walk",
+       "type": "bool",
+       "value": true
       }
      ]
     },
@@ -8671,6 +8706,11 @@
        "name": "z",
        "type": "int",
        "value": 0
+      },
+      {
+       "name": "walk",
+       "type": "bool",
+       "value": true
       }
      ]
     },
@@ -8755,6 +8795,11 @@
        "name": "z",
        "type": "int",
        "value": 2
+      },
+      {
+       "name": "walk",
+       "type": "bool",
+       "value": true
       }
      ]
     },
@@ -8788,6 +8833,11 @@
        "name": "z",
        "type": "int",
        "value": 2
+      },
+      {
+       "name": "walk",
+       "type": "bool",
+       "value": true
       }
      ]
     },
@@ -8821,6 +8871,11 @@
        "name": "z",
        "type": "int",
        "value": 2
+      },
+      {
+       "name": "walk",
+       "type": "bool",
+       "value": true
       }
      ]
     },
@@ -8843,7 +8898,7 @@
       {
        "name": "blocks",
        "type": "bool",
-       "value": true
+       "value": false
       },
       {
        "name": "flat",
@@ -8856,14 +8911,9 @@
        "value": 0
       },
       {
-       "name": "blockW",
-       "type": "int",
-       "value": 16
-      },
-      {
-       "name": "blockH",
-       "type": "int",
-       "value": 16
+       "name": "walk",
+       "type": "bool",
+       "value": true
       }
      ]
     },
@@ -8897,6 +8947,11 @@
        "name": "z",
        "type": "int",
        "value": 0
+      },
+      {
+       "name": "walk",
+       "type": "bool",
+       "value": true
       }
      ]
     },
@@ -9005,7 +9060,7 @@
       {
        "name": "blocks",
        "type": "bool",
-       "value": true
+       "value": false
       },
       {
        "name": "flat",
@@ -9018,14 +9073,9 @@
        "value": 0
       },
       {
-       "name": "blockW",
-       "type": "int",
-       "value": 16
-      },
-      {
-       "name": "blockH",
-       "type": "int",
-       "value": 16
+       "name": "walk",
+       "type": "bool",
+       "value": true
       }
      ]
     },
@@ -9102,6 +9152,11 @@
        "name": "z",
        "type": "int",
        "value": 0
+      },
+      {
+       "name": "walk",
+       "type": "bool",
+       "value": true
       }
      ]
     },
@@ -9135,6 +9190,11 @@
        "name": "z",
        "type": "int",
        "value": 0
+      },
+      {
+       "name": "walk",
+       "type": "bool",
+       "value": true
       }
      ]
     },

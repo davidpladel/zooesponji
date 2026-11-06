@@ -1,6 +1,6 @@
 import * as Phaser from 'phaser';
 import { getArt, propAnimKey, propKey } from '../art/art';
-import { depthForY } from '../core/depth';
+import { depthForY, propDepth } from '../core/depth';
 import { readEnclosures, readProps, type EnclosureInfo, type PropInfo, type TiledMap } from '../core/tiledmap';
 import { PENS, isPenId } from '../data/pens';
 import { hasKey, t } from '../data/strings';
@@ -8,7 +8,6 @@ import { hasKey, t } from '../data/strings';
 /** Suelo del bioma: por encima del césped (0) y por debajo de las vallas (2). */
 const GROUND_DEPTH = 1;
 /** Piezas planas (agua, meseta): sobre el suelo y las vallas, bajo animales y personas. */
-const FLAT_DEPTH = 10;
 const TILE = 16;
 
 function nearestEnclosure(enclosures: EnclosureInfo[], x: number, y: number): EnclosureInfo | null {
@@ -60,7 +59,7 @@ export const Decor = {
         : scene.add.image(p.x, p.y, propKey(p.prop));
       piece
         .setOrigin(0.5, 1)
-        .setDepth(p.flat ? FLAT_DEPTH + p.z : depthForY(p.y));
+        .setDepth(propDepth(p));
 
       if (p.prop === 'park-gate') {
         // El nombre del zoo en el tejadillo del portón, como el arco del parque de la v1.

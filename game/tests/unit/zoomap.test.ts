@@ -6,6 +6,7 @@ import { approachTile } from '../../src/core/interaction';
 import { findPath, isWalkable } from '../../src/core/pathfinding';
 import { buildWalkGrid, isShopDoor, readEnclosures, readBoard, readGates, readProps, readShop, readSpawn, readWater, withSolidProps, type TiledMap } from '../../src/core/tiledmap';
 import { penSpace } from '../../src/core/flock';
+import { rectContains } from '../../src/core/interaction';
 import { withPenInteriors } from '../../src/core/penGrid';
 
 const url = new URL('../../public/assets/maps/zoo.tmj', import.meta.url);
@@ -127,14 +128,13 @@ describe('mapa del zoo', () => {
     }
   });
 
-  it('dentro de un recinto, toda pieza con volumen bloquea salvo hierba y flores', () => {
-    const walkable = /^(grass-tall-dry|flowers)/;
+  it('dentro de un recinto, toda pieza con volumen bloquea salvo lo que se pisa', () => {
     const props = readProps(map);
     for (const e of readEnclosures(map)) {
       const inner = { x: e.x + 16, y: e.y + 16, width: e.width - 32, height: e.height - 32 };
       const inside = props.filter((p) => p.x > inner.x && p.x < inner.x + inner.width && p.y > inner.y && p.y <= inner.y + inner.height);
       for (const p of inside) {
-        if (p.flat || walkable.test(p.prop)) continue;
+        if (p.flat || p.walk) continue;
         expect(p.block, `${p.prop} en ${e.penId}`).not.toBeNull();
       }
     }
@@ -268,6 +268,20 @@ describe('mapa del zoo', () => {
     expect(isWalkable(open, 42, 42), 'roca del acantilado').toBe(true);
     expect(isWalkable(open, 40, 43), 'cascada').toBe(false);
     expect(isWalkable(open, 40, 47), 'poza').toBe(false);
+  });
+
+  it('regla de pisar: el agua y los árboles no, las rocas y las flores sí', () => {
+    const NEVER_WALK = /^(acacia|pine|palm|jungle-tree|cherry-tree|tree|log|stump|bamboo|bush|pink-star|fountain)/;
+    const ALWAYS_WALK = /^(grass|flowers|sunflowers|rock|plateau|cave|lilypad)/;
+    const pens = readEnclosures(map);
+    const insideSomePen = (p: { x: number; y: number }) => pens.some((e) => rectContains(e, { x: p.x, y: p.y - 1 }));
+    for (const p of readProps(map)) {
+      if (NEVER_WALK.test(p.prop) && insideSomePen(p)) expect(p.block, p.prop).not.toBeNull();
+      if (ALWAYS_WALK.test(p.prop)) {
+        expect(p.walk, p.prop).toBe(true);
+        expect(p.block, p.prop).toBeNull();
+      }
+    }
   });
 });
 

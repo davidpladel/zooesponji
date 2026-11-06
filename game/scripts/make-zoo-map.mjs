@@ -123,13 +123,22 @@ objects.push({ id: nextId++, name: 'tablon', type: 'tablon', x: (20 + OX) * T, y
 // cuidadora ni los visitantes (casillas que toca el rectángulo); flat: pieza plana
 // (agua, meseta) que se dibuja pegada al suelo, por debajo de animales y personas; zone: zona que
 // anuncia un cartel de zona.
+/**
+ * Regla de pisar (David, 2026-11-06): todo lo que no sea agua se puede subir; árboles, troncos, arbustos y
+ * bambú no se atraviesan. Lo que casa con esto se pisa: no lleva `block` y se dibuja por debajo de quien
+ * lo pisa (propiedad `walk`).
+ */
+const WALK = /^(grass|flowers|sunflowers|rock|plateau|cave|lilypad|pebble|daisies)/;
 const prop = (name, px, py, { block = null, flat = false, z = 0, zone = null, solid = false } = {}) => {
+  const walk = WALK.test(name);
+  if (walk && block) throw new Error(`"${name}" se pisa: no puede llevar block`);
   const properties = [
     { name: 'prop', type: 'string', value: name },
     { name: 'blocks', type: 'bool', value: block !== null },
     { name: 'flat', type: 'bool', value: flat },
     { name: 'z', type: 'int', value: z },
   ];
+  if (walk) properties.push({ name: 'walk', type: 'bool', value: true });
   if (solid) properties.push({ name: 'solid', type: 'bool', value: true });
   if (block) properties.push({ name: 'blockW', type: 'int', value: block[0] }, { name: 'blockH', type: 'int', value: block[1] });
   if (zone) properties.push({ name: 'zone', type: 'string', value: zone });
@@ -152,19 +161,16 @@ const at = (name, tx, ty, opts) => prop(name, tx * T + T / 2, (ty + 1) * T, opts
 /** Lo mismo, en coordenadas del parque de siempre. */
 const pat = (name, tx, ty, opts) => at(name, tx + OX, ty + OY, opts);
 const pprop = (name, px, py, opts) => prop(name, px + OX * T, py + OY * T, opts);
-/** Piezas que se pisan (el animal pasa por encima): hierba y flores. */
-const WALKABLE = /^(grass-tall-dry|flowers)/;
 /** Ancho (px) de las piezas con volumen que no dan su bloqueo: se bloquea su base (ancho × 1 casilla). */
 const BASE_W = {
-  'rock-grey': 16, 'rock-grey-big': 32, 'pine-small': 16, 'rock-savannah': 16, 'rock-savannah-big': 32, 'jungle-tree': 32, 'bush-jungle': 32,
-  'rock-snow': 16, 'rock-snow-big': 32, 'pine-snow-small': 16, sunflowers: 16, stump: 32, bush: 16,
+  'pine-small': 16, 'jungle-tree': 32, 'bush-jungle': 32, 'pine-snow-small': 16, stump: 32, bush: 16,
 };
 /**
  * Igual, en coordenadas del interior de un recinto (0,0 = primera casilla dentro de la valla).
- * Dentro de un recinto toda pieza no plana bloquea (su base), salvo las pisables.
+ * Dentro de un recinto toda pieza no plana bloquea (su base), salvo las que se pisan (`WALK`).
  */
 const inPen = (e) => (name, cx, cy, opts = {}) => {
-  const solid = !opts.flat && !WALKABLE.test(name) && !opts.block;
+  const solid = !opts.flat && !WALK.test(name) && !opts.block;
   if (solid && !BASE_W[name]) throw new Error(`Falta el ancho de la base de "${name}" en BASE_W`);
   at(name, e.x + 1 + cx, e.y + 1 + cy, solid ? { ...opts, block: [BASE_W[name], T] } : opts);
 };
@@ -177,9 +183,9 @@ leon('rock-savannah-big', 6, 1);
 leon('rock-savannah', 1, 5);
 for (const [cx, cy] of [[5, 1], [9, 2], [3, 3], [7, 3]]) leon('grass-tall-dry', cx, cy);
 leon('grass-tall-dry-big', 0, 1);
-// 🐐 Montaña (puerta abajo). La meseta es plana: la cabra puede subir.
+// 🐐 Montaña (puerta abajo). La meseta, la cueva y las rocas se suben.
 cabra('plateau', 8, 4, { flat: true });
-cabra('cave', 2, 1, { block: [48, 16] });
+cabra('cave', 2, 1);
 cabra('pine', 1, 4, { block: [16, 16] });
 cabra('pine-small', 5, 1);
 cabra('rock-grey', 5, 3);
