@@ -19,7 +19,7 @@ curl -s -X POST http://127.0.0.1:7801/fin       -d '{"id":"{ID}"}'
 ```
 
 - Las coordenadas son píxeles de la captura (x de 0 a 640, y de 0 a 360).
-- Tienes **60 acciones como mucho**. Si el mando responde `límite`, termina.
+- Tienes **30 acciones como mucho**. Si el mando responde `límite`, termina.
 - Empieza con `/partida`. Termina siempre con `/fin`.
 - **No** leas el código del juego, ni uses nada que no sea el mando, ni mires otras partidas. Juega solo con lo
   que ves en las capturas, como el niño que eres.

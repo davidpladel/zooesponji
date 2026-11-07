@@ -100,7 +100,8 @@ encargo de cada jugador: `scripts/ia/instrucciones.md`.
 1. `npm run build`, y en ventanas aparte `npm run preview` y `npm run ia:mando` (escucha en `127.0.0.1:7801`).
 2. Cada jugador es un subagente con Sonnet que recibe `instrucciones.md` con su perfil, objetivo e id.
 3. Capturas, diario e informes van al repo privado: `zooesponji-private/docs/jugadores-ia/AAAA-MM-DD/<id>/`, y el
-   resumen de la pasada en `resumen.md` de esa carpeta. 60 acciones como mucho por partida.
+   resumen de la pasada en `resumen.md` de esa carpeta. 30 acciones como mucho por partida.
+4. **Los jugadores se lanzan de uno en uno, nunca en paralelo:** seis navegadores a la vez dejan el PC muy lento.
 
 ## Interfaz
 

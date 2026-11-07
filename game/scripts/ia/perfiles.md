@@ -1,6 +1,6 @@
 # Jugadores con IA: perfiles y objetivos
 
-Cada pasada son **6 jugadores**: los 2 perfiles × los 3 objetivos. Cada uno juega una partida nueva y limpia.
+Cada pasada son **6 jugadores**: los 2 perfiles × los 3 objetivos. Cada uno juega una partida nueva y limpia, **de uno en uno** (en paralelo el PC va muy lento), con 30 acciones como mucho.
 
 ## Perfiles
 

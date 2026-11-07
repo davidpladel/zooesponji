@@ -8,7 +8,7 @@
 //   POST /arrastrar { id, x0, y0, x1, y1 }  → { captura }
 //   POST /esperar   { id, ms }  (máx. 5000) → { captura }
 //   POST /fin       { id }                  → { diario }
-// Capturas y diario en zooesponji-private/docs/jugadores-ia/AAAA-MM-DD/<id>/. Máximo 60 acciones por partida.
+// Capturas y diario en zooesponji-private/docs/jugadores-ia/AAAA-MM-DD/<id>/. Máximo 30 acciones por partida.
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
@@ -17,7 +17,7 @@ import { chromium, type Browser, type BrowserContext, type Page } from 'playwrig
 
 const PORT = 7801;
 const GAME_URL = process.env.IA_GAME_URL ?? 'http://localhost:4173/';
-const MAX_ACTIONS = 60;
+const MAX_ACTIONS = 30;
 const MAX_WAIT = 5000;
 const SIZE = { width: 640, height: 360 };
 
