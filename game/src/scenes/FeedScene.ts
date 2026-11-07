@@ -11,6 +11,8 @@ import { bus } from '../systems/events';
 import { getSession } from '../systems/session';
 import { foodKey, getArt } from '../art/art';
 import { animalPortrait } from '../world/Actors';
+import { addHand } from '../ui/hand';
+import type { TutorialScene } from './TutorialScene';
 import { sceneryTexture } from '../ui/paint';
 import { textStyle } from '../ui/theme';
 import { addUiText, type UiText } from '../ui/text';
@@ -29,6 +31,10 @@ const DROP_MARGIN = 48;
 const FOLLOW = 0.35;
 /** Reacciones, monedas y corazones van por encima de todo: título (25) y botón de cerrar (30). */
 const REACTION_DEPTH = 60;
+/** La mano que enseña a arrastrar, encima de todo. */
+const HINT_DEPTH = 70;
+/** Veces que la mano repite el gesto de arrastrar tras tocar una comida. */
+const HINT_REPEATS = 2;
 
 type Food = Phaser.GameObjects.Text | Phaser.GameObjects.Image;
 
@@ -50,6 +56,10 @@ export class FeedScene extends Phaser.Scene {
   private dragging: { id: FoodId; target: Vec } | null = null;
   private busy = false;
   private pool: Phaser.GameObjects.Text[] = [];
+  /** Mano que enseña a arrastrar la comida que se ha tocado (sin arrastrarla). */
+  private hint: Phaser.GameObjects.Image | Phaser.GameObjects.Text | null = null;
+  /** Copia transparente de la comida que lleva la mano. */
+  private hintFood: Food | null = null;
 
   constructor() {
     super('Feed');
@@ -67,6 +77,8 @@ export class FeedScene extends Phaser.Scene {
     this.dragging = null;
     this.busy = false;
     this.pool = [];
+    this.hint = null;
+    this.hintFood = null;
   }
 
   create(): void {
@@ -172,6 +184,8 @@ export class FeedScene extends Phaser.Scene {
   }
 
   private onDragStart(_pointer: Phaser.Input.Pointer, food: Food): void {
+    // Empieza a arrastrar: la mano ya no hace falta.
+    this.hideDragHint();
     if (this.busy) return;
     const id = food.getData('food') as FoodId;
     this.tweens.killTweensOf(food);
@@ -195,9 +209,66 @@ export class FeedScene extends Phaser.Scene {
     if (!this.busy && isDropOnTarget({ x: pointer.x, y: pointer.y }, target, DROP_MARGIN)) {
       void this.feed(id, food);
     } else {
-      if (!this.busy && pointer.getDistance() > MISS_MIN_DRAG) bus.emit('food-missed', { residentId: this.residentId, foodId: id });
+      const tapped = pointer.getDistance() <= MISS_MIN_DRAG;
+      if (!this.busy && !tapped) bus.emit('food-missed', { residentId: this.residentId, foodId: id });
       this.returnHome(id, food);
+      // Un toque sin arrastrar: la mano enseña el gesto, sin palabras.
+      if (tapped && !this.busy) this.showDragHint(id);
     }
+  }
+
+  /** ¿El tutorial ya está enseñando a arrastrar? Entonces su mano basta. */
+  private tutorialTeachingDrag(): boolean {
+    return this.scene.isActive('Tutorial') && this.scene.get<TutorialScene>('Tutorial').currentStep() === 'drag-food';
+  }
+
+  /** La mano lleva la comida tocada hasta la boca del animal, dos veces, y se va. */
+  private showDragHint(id: FoodId): void {
+    this.hideDragHint();
+    if (this.tutorialTeachingDrag()) return;
+    const from = this.homes.get(id);
+    if (!from) return;
+    const to = { x: this.animal.x, y: this.animal.y };
+    const food = this.foods.get(id);
+    const ghost: Food | null =
+      food instanceof Phaser.GameObjects.Image
+        ? this.add.image(from.x, from.y, food.texture.key).setScale(baseScaleOf(food))
+        : food
+          ? this.add.text(from.x, from.y, food.text, food.style).setOrigin(0.5)
+          : null;
+    ghost?.setDepth(HINT_DEPTH - 1).setAlpha(0);
+    this.hintFood = ghost;
+    const hand = addHand(this).setDepth(HINT_DEPTH).setAlpha(0);
+    this.hint = hand;
+    const once = [
+      { x: from.x, y: from.y + 14, alpha: 1, duration: 1, delay: 150 },
+      { y: from.y, duration: 200, ease: 'Quad.easeOut' },
+      { x: to.x, y: to.y, duration: 900, ease: 'Sine.easeInOut' },
+      { alpha: 0, duration: 250, delay: 150 },
+    ];
+    this.tweens.chain({
+      targets: hand,
+      tweens: Array.from({ length: HINT_REPEATS }, () => once).flat(),
+      // La comida va con la mano mientras la mano aprieta (arriba del todo, cuando aún no ha bajado, no).
+      onUpdate: () => ghost?.setPosition(hand.x, Math.min(hand.y, from.y)).setAlpha(hand.y <= from.y + 1 ? hand.alpha * 0.6 : 0),
+      onComplete: () => {
+        if (this.hint === hand) this.hideDragHint();
+      },
+    });
+  }
+
+  private hideDragHint(): void {
+    this.hintFood?.destroy();
+    this.hintFood = null;
+    if (!this.hint) return;
+    this.tweens.killTweensOf(this.hint);
+    this.hint.destroy();
+    this.hint = null;
+  }
+
+  /** ¿Se ve la mano que enseña a arrastrar? (para pruebas) */
+  dragHintPos(): Vec | null {
+    return this.hint ? { x: this.hint.x, y: this.hint.y } : null;
   }
 
   private async feed(id: FoodId, food: Food): Promise<void> {

@@ -2,8 +2,10 @@ import * as Phaser from 'phaser';
 import { getArt, propAnimKey, propKey } from '../art/art';
 import { depthForY, propDepth } from '../core/depth';
 import { readEnclosures, readProps, type EnclosureInfo, type PropInfo, type TiledMap } from '../core/tiledmap';
-import { PENS, isPenId } from '../data/pens';
+import { PENS, isPenId, type PenId } from '../data/pens';
 import { hasKey, t } from '../data/strings';
+import { textStyle } from '../ui/theme';
+import { MEDALLION_HEIGHT, medallionTexture } from './Medallion';
 
 /** Suelo del bioma: por encima del césped (0) y por debajo de las vallas (2). */
 const GROUND_DEPTH = 1;
@@ -29,15 +31,28 @@ function nearestEnclosure(enclosures: EnclosureInfo[], x: number, y: number): En
   return best;
 }
 
+/** Recinto de un cartel de recinto (el que tiene más cerca). */
+function signPen(p: PropInfo, enclosures: EnclosureInfo[]): PenId | null {
+  if (p.prop !== 'sign') return null;
+  const enclosure = nearestEnclosure(enclosures, p.x, p.y);
+  return enclosure && isPenId(enclosure.penId) ? enclosure.penId : null;
+}
+
 /** Texto de un cartel: el nombre de su zona, o el del recinto que tiene más cerca. Null si no es un cartel. */
 function signLabel(p: PropInfo, enclosures: EnclosureInfo[]): string | null {
   if (p.prop === 'sign-zone') {
     const key = `zone.${p.zone}`;
     return hasKey(key) ? t(key) : null;
   }
-  if (p.prop !== 'sign') return null;
-  const enclosure = nearestEnclosure(enclosures, p.x, p.y);
-  return enclosure && isPenId(enclosure.penId) ? t(PENS[enclosure.penId].nameKey) : null;
+  const pen = signPen(p, enclosures);
+  return pen ? t(PENS[pen].nameKey) : null;
+}
+
+/** Carteles de recinto dibujados (para pruebas). */
+const signs: { penId: PenId; x: number; y: number }[] = [];
+
+export function getSigns(): readonly { penId: PenId; x: number; y: number }[] {
+  return signs;
 }
 
 export const Decor = {
@@ -47,6 +62,7 @@ export const Decor = {
     if (!art) return;
     const enclosures = readEnclosures(mapData);
     walkPieces.length = 0;
+    signs.length = 0;
 
     for (const e of enclosures) {
       const ground = `ground-${e.biome}`;
@@ -60,6 +76,20 @@ export const Decor = {
     for (const p of readProps(mapData)) {
       const info = art.props[p.prop];
       if (!info) continue;
+      // Cartel de recinto: medallón con el dibujo del animal sobre un poste (2026-11-07): un niño de 5 años no lee.
+      // Con el recinto cerrado también sale el animal: así sabe qué hay ahí.
+      const pen = signPen(p, enclosures);
+      if (pen) {
+        const species = PENS[pen].residents[0]!.species;
+        scene.add.image(p.x, p.y, medallionTexture(scene, species)).setOrigin(0.5, 1).setDepth(propDepth(p));
+        signs.push({ penId: pen, x: p.x, y: p.y });
+        scene.add
+          .text(p.x, p.y - MEDALLION_HEIGHT - 1, t(PENS[pen].nameKey), { ...textStyle(7, '#ffffff', '#4e342e'), strokeThickness: 2 })
+          .setOrigin(0.5, 1)
+          .setResolution(4)
+          .setDepth(depthForY(p.y) + 1);
+        continue;
+      }
       const animated = (info.frames ?? 1) > 1;
       // Volteada (farola con el camino a la izquierda): el dibujo se refleja sobre el pie, que no cambia de
       // casilla. Las farolas se apoyan en el borde derecho de su casilla, así que el dibujo se corre una a la izquierda.

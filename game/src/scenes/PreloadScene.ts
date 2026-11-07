@@ -11,6 +11,7 @@ import { installAnalytics } from '../systems/analyticsInstall';
 import { bus } from '../systems/events';
 import { deviceLanguages, resolveLanguage, setLanguage } from '../systems/language';
 import { Session, setSession } from '../systems/session';
+import { queueHand } from '../ui/hand';
 import { queueIcons, smoothIcons } from '../ui/icons';
 import { addTitleBackdrop } from '../ui/titleBackdrop';
 import { pillImage } from '../ui/widgets';
@@ -50,6 +51,7 @@ export class PreloadScene extends Phaser.Scene {
     this.load.image('qr-ideas', withVersion('assets/ui/qr-ideas.png'));
     this.load.image('qr-ideas-en', withVersion('assets/ui/qr-ideas-en.png'));
     queueIcons(this);
+    queueHand(this);
     queueAudio(this);
   }
 

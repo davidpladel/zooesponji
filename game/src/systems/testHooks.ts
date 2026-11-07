@@ -54,6 +54,20 @@ export interface ZooTestApi {
   tutorialHand(): Vec | null;
   /** Dónde está la ✕ del tutorial. */
   tutorialClosePos(): Vec | null;
+  /** ¿Se ve la ✕ del tutorial? (se esconde con la comida abierta) */
+  tutorialCloseVisible(): boolean;
+  /** ¿El tutorial enseña el bocadillo del borde (sitio del mapa fuera de la pantalla)? */
+  tutorialEdgeBubble(): boolean;
+  /** Botón de la tienda del HUD: dónde está, si se ve. */
+  hudShopButtonPos(): Vec | null;
+  /** ¿Se ve el bocadillo del borde que señala la tienda? */
+  hudShopEdgeVisible(): boolean;
+  /** Casillas con huellas de Luna hasta la tienda. */
+  shopTrailTiles(): { x: number; y: number }[];
+  /** Ruta que andaría la cuidadora hasta la puerta de la tienda. */
+  shopRoute(): { x: number; y: number }[];
+  /** Mano que enseña a arrastrar en la ventana de comer (null si no se ve). */
+  feedDragHint(): Vec | null;
   /** Dónde está Luna en el mapa (null si no se ha comprado). */
   petPosition(): Vec | null;
   /** Dónde está Luna dentro de la tienda (px del interior). */
@@ -204,6 +218,16 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
     tutorialStep: () => activeScene<TutorialScene>('Tutorial')?.currentStep() ?? null,
     tutorialClosePos: () => activeScene<TutorialScene>('Tutorial')?.closePos() ?? null,
     tutorialHand: () => activeScene<TutorialScene>('Tutorial')?.handPos() ?? null,
+    tutorialCloseVisible: () => activeScene<TutorialScene>('Tutorial')?.closeVisible() ?? false,
+    tutorialEdgeBubble: () => activeScene<TutorialScene>('Tutorial')?.edgeBubbleVisible() ?? false,
+    hudShopButtonPos: () => {
+      const hud = activeScene<HudScene>('Hud');
+      return hud?.shopButtonVisible() ? hud.shopButtonPos() : null;
+    },
+    hudShopEdgeVisible: () => activeScene<HudScene>('Hud')?.shopEdgeVisible() ?? false,
+    shopTrailTiles: () => activeScene<WorldScene>('World')?.shopTrailTiles() ?? [],
+    shopRoute: () => activeScene<WorldScene>('World')?.shopRoute() ?? [],
+    feedDragHint: () => activeScene<FeedScene>('Feed')?.dragHintPos() ?? null,
     hudCoinsText: () => activeScene<HudScene>('Hud')?.coinsLabel() ?? null,
     hudGearVisible: () => activeScene<HudScene>('Hud')?.gearVisible() ?? false,
     openFeed: (residentId) => {

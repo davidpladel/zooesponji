@@ -154,6 +154,8 @@ Arte de **VectoRaith** (https://vectoraith.itch.io/), comprado con licencia come
 
 El panda y la pantera negra los pintaron **Daniela y Adrián** a partir de los sprites originales.
 
+La mano que señala del tutorial es del [Pixel Hand Gesture Cursor Asset](https://lintnaya.itch.io/pixel-hand-gesture-asset) de **Lintnaya** (CC0), en [`game/public/assets/ui/hand.png`](game/public/assets/ui/hand.png). La tiendita, el bocadillo, las huellas de Luna y los medallones de los carteles están dibujados en el propio código (`game/src/core/guideArt.ts`, `game/src/world/Medallion.ts`).
+
 Sonido: efectos de [Kenney](https://kenney.nl/), música "Happy Adventure" de TinyWorlds y la campanita y los pasos de la tienda (sintetizados para el juego), todo CC0 (créditos en [`game/public/audio/CREDITS.md`](game/public/audio/CREDITS.md)).
 
 ## Licencia

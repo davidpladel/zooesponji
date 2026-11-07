@@ -10,6 +10,7 @@ Componentes de terceros usados por Zoo Esponji, cada uno bajo su propia licencia
 | Música "Happy Adventure" (TinyWorlds, OpenGameArt) | CC0 1.0 |
 | Letra [Baloo 2](https://fonts.google.com/specimen/Baloo+2) (Ek Type) | SIL Open Font License 1.1 |
 | Iconos [Tabler Icons](https://tabler.io/icons) | MIT |
+| Mano del tutorial: [Pixel Hand Gesture Cursor Asset](https://lintnaya.itch.io/pixel-hand-gesture-asset) (Lintnaya) | CC0 1.0 |
 
 Créditos de audio detallados: [`game/public/audio/CREDITS.md`](game/public/audio/CREDITS.md).
 

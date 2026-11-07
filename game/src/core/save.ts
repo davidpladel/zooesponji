@@ -38,9 +38,17 @@ export interface TutorialProgress {
   offered: boolean;
 }
 
-/** Veces que se ha entrado en la tienda (el libro se enseña desde la 3.ª). */
+/**
+ * Veces que se ha entrado en la tienda (el libro se enseña desde la 3.ª). Con alguna, el botón de la tienda lleva
+ * andando a la cuidadora; sin ninguna, enseña las huellas de Luna hasta la puerta.
+ */
 export interface ShopProgress {
   visits: number;
+}
+
+/** ¿Ha entrado alguna vez en la tienda? */
+export function shopVisited(shop: ShopProgress): boolean {
+  return shop.visits > 0;
 }
 
 export interface SaveData {
@@ -102,9 +110,17 @@ function parseTutorial(raw: unknown): TutorialProgress {
   return { offered: isObject(raw) && raw.offered === true };
 }
 
-function parseShop(raw: unknown): ShopProgress {
+/**
+ * Partidas de antes de contar las visitas (2026-11-07): si ya compró algo (Luna o un animal más de los de
+ * inicio) es que entró en la tienda, y cuenta como una visita.
+ */
+function parseShop(raw: unknown, state: Pick<GameState, 'luna' | 'counts'>): ShopProgress {
   const visits = isObject(raw) ? raw.visits : undefined;
-  return { visits: typeof visits === 'number' && Number.isInteger(visits) && visits >= 0 ? visits : 0 };
+  const counted = typeof visits === 'number' && Number.isInteger(visits) && visits >= 0 ? visits : 0;
+  if (counted > 0) return { visits: counted };
+  const base = initialCounts();
+  const bought = state.luna || PEN_IDS.some((id) => state.counts[id] > base[id]);
+  return { visits: bought ? 1 : 0 };
 }
 
 export function defaultSave(): SaveData {
@@ -144,10 +160,11 @@ export function parseSave(value: unknown): SaveData | null {
   // Cualquier otro valor se ignora: el idioma vuelve a ser automático.
   const language = isLanguage(rawSettings.language) ? rawSettings.language : undefined;
 
+  const luna = state.luna === true;
   return {
     version: SAVE_VERSION,
     // Desde el 2026-11-02 la tienda está abierta para todos, también en partidas de antes.
-    state: { coins, counts, shopUnlocked: true, luna: state.luna === true },
+    state: { coins, counts, shopUnlocked: true, luna },
     settings: {
       music: bool('music'),
       sfx: bool('sfx'),
@@ -157,7 +174,7 @@ export function parseSave(value: unknown): SaveData | null {
     },
     book: parseBook(value.book),
     tutorial: parseTutorial(value.tutorial),
-    shop: parseShop(value.shop),
+    shop: parseShop(value.shop, { luna, counts }),
   };
 }
 

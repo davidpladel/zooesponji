@@ -10,6 +10,7 @@ import {
   loadSave,
   migrateLegacy,
   parseSave,
+  shopVisited,
   writeSave,
 } from '../../src/core/save';
 import { createMemoryStore } from '../../src/systems/storage';
@@ -58,7 +59,8 @@ describe('parseSave', () => {
       settings: { music: true, sfx: false, joystick: false, stats: true },
       book: { seen: [], hinted: false, page: null, opened: false },
       tutorial: { offered: false },
-      shop: { visits: 0 },
+      // Tenía el panda (de compra): ya había entrado en la tienda.
+      shop: { visits: 1 },
     });
   });
 
@@ -104,7 +106,7 @@ describe('parseSave', () => {
       settings: { ...old.settings, stats: true },
       book: { ...old.book, opened: true },
       tutorial: { offered: false },
-      shop: { visits: 0 },
+      shop: { visits: 1 },
     });
   });
 });
@@ -141,7 +143,7 @@ describe('loadSave / writeSave', () => {
 
   it('lo que se escribe se vuelve a leer igual', async () => {
     const store = createMemoryStore();
-    const data = { ...defaultSave(), state: { coins: 42, counts: { ...initialCounts(), leon: 1, cabra: 3, pantera: 0, panda: 0 }, shopUnlocked: true, luna: false } };
+    const data = { ...defaultSave(), state: { coins: 42, counts: { ...initialCounts(), leon: 1, cabra: 3, pantera: 0, panda: 0 }, shopUnlocked: true, luna: false }, shop: { visits: 2 } };
     await writeSave(store, data);
     expect(await loadSave(store)).toEqual(data);
   });
@@ -247,8 +249,21 @@ describe('guardado de Luna, el tutorial, las visitas a la tienda y el libro', ()
     const parsed = roundTrip(old)!;
     expect(parsed.state.luna).toBe(false);
     expect(parsed.tutorial).toEqual({ offered: false });
-    expect(parsed.shop).toEqual({ visits: 0 });
+    // Tenía 2 cabras (una comprada): cuenta como que ya entró en la tienda.
+    expect(parsed.shop).toEqual({ visits: 1 });
     expect(parsed.book.opened).toBe(true);
+  });
+
+  it('tienda ya visitada: las partidas viejas con compras o con Luna cuentan; las que no, no', () => {
+    const base = { version: 2, settings: {} };
+    const parse = (state: object, shop?: object) => parseSave({ ...base, state: { coins: 0, shopUnlocked: true, ...state }, ...(shop ? { shop } : {}) })!;
+    expect(shopVisited(parse({ counts: initialCounts() }).shop)).toBe(false);
+    expect(shopVisited(parse({ counts: initialCounts(), luna: true }).shop)).toBe(true);
+    expect(shopVisited(parse({ counts: { ...initialCounts(), cabra: 2 } }).shop)).toBe(true);
+    expect(shopVisited(parse({ counts: { ...initialCounts(), pantera: 1 } }).shop)).toBe(true);
+    // Las visitas contadas mandan.
+    expect(parse({ counts: initialCounts(), luna: true }, { visits: 5 }).shop).toEqual({ visits: 5 });
+    expect(shopVisited(parse({ counts: initialCounts() }, { visits: 1 }).shop)).toBe(true);
   });
 
   it('sin páginas leídas, el libro no cuenta como abierto (la página se pone sola al comprar)', () => {

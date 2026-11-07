@@ -106,15 +106,36 @@ test('se aprende jugando: moverse, tocar, arrastrar la comida, monedas y tienda'
   await expect.poll(() => step(page)).toBe('tap-animal');
 
   await feed(page, 'gordi');
+  // Con la comida abierta, la ✕ del tutorial se esconde: la comida ya tiene la suya.
+  await expect.poll(() => page.evaluate(() => window.__ZOO__!.tutorialCloseVisible())).toBe(false);
   await dragFood(page, food);
   await expect.poll(() => step(page)).toBe('coins');
+  // La mano señala el contador mismo (es interfaz): ni la encierra el margen del borde ni sale el bocadillo.
+  await expect.poll(async () => {
+    const h = await hand(page);
+    return h ? Math.hypot(h.x - 38, h.y - 38) : Infinity;
+  }).toBeLessThan(30);
+  expect(await page.evaluate(() => window.__ZOO__!.tutorialEdgeBubble())).toBe(false);
   await expect.poll(() => step(page), { timeout: 8_000 }).toBe('shop');
   expect(await scenes(page)).toContain('Feed');
 
-  // Al cerrar la comida, la mano señala la tienda (abierta desde el principio, sin esperar monedas).
+  // Al cerrar la comida, la mano señala el botón de la tienda (debajo de las monedas) y vuelve la ✕.
   await page.keyboard.press('Escape');
   await page.waitForFunction(() => !window.__ZOO__!.activeScenes().includes('Feed'));
-  await expect.poll(() => hand(page)).not.toBeNull();
+  await expect.poll(() => page.evaluate(() => window.__ZOO__!.tutorialCloseVisible())).toBe(true);
+  const button = (await page.evaluate(() => window.__ZOO__!.hudShopButtonPos()))!;
+  await expect.poll(async () => {
+    const h = await hand(page);
+    return h ? Math.hypot(h.x - button.x, h.y - button.y) : Infinity;
+  }).toBeLessThan(30);
+  // La ✕ del tutorial queda debajo del botón, sin tocarlo.
+  const close = (await page.evaluate(() => window.__ZOO__!.tutorialClosePos()))!;
+  expect(close.x).toBe(button.x);
+  expect(close.y - button.y).toBeGreaterThanOrEqual(56);
+  // Tocar el botón saca las huellas de Luna hasta la puerta (aún no ha entrado nunca).
+  const box = await canvasBox(page);
+  await page.mouse.click(box.x + button.x, box.y + button.y);
+  await expect.poll(() => page.evaluate(() => window.__ZOO__!.shopTrailTiles().length)).toBeGreaterThan(3);
   // Andando hasta la puerta, como el jugador: el mapa abre la tienda.
   const door = (await page.evaluate(() => window.__ZOO__!.shopDoorTile()))!;
   expect(await page.evaluate(([x, y]) => window.__ZOO__!.goToTile(x, y), [door.x, door.y] as const)).toBe(true);

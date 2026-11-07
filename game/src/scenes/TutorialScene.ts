@@ -3,27 +3,36 @@ import type { Vec } from '../core/movement';
 import { COINS_SHOW_MS, MOVE_DISTANCE, advance, goodFood, type TutorialEvent, type TutorialStep } from '../core/tutorial';
 import { findResident } from '../data/pens';
 import { bus } from '../systems/events';
+import { edgeHint } from '../core/guideArt';
+import { addHand } from '../ui/hand';
 import { addIcon } from '../ui/icons';
+import { addShopBubble, pawTexture, setBubbleTail } from '../ui/pixelArt';
 import { addEmoji } from '../ui/text';
-import { HUD_COIN, addCloseBadge } from '../ui/widgets';
+import { HUD_COIN, HUD_SHOP, addCloseBadge } from '../ui/widgets';
 import type { FeedScene } from './FeedScene';
 import type { HudScene } from './HudScene';
 import type { WorldScene } from './WorldScene';
 
-/** Margen (px) del borde de la pantalla: un sitio fuera de ella se señala desde aquí, con una flecha. */
+/** Margen (px) del borde de la pantalla: un sitio del mapa fuera de ella se señala desde aquí, con un bocadillo. */
 const EDGE = 56;
+/** Escala del bocadillo del borde (32 px de dibujo). */
+const BUBBLE_SCALE = 2;
 /** Duración de cada gesto de la mano (ms). */
 const TAP_MS = 1200;
 const DRAG_MS = 1800;
-/** Dónde va la ✕ que cierra el tutorial. */
-export const CLOSE_AT: Vec = { x: 38, y: 100 };
+/** Dónde va la ✕ que cierra el tutorial: debajo del botón de la tienda, en la columna de las monedas. */
+export const CLOSE_AT: Vec = { x: HUD_SHOP.x, y: HUD_SHOP.y + 62 };
 
 /** Desde dónde se abre: el aviso de la primera vez o el botón Aprender del menú (para Matomo). */
 export interface TutorialSceneData {
   from?: 'aviso' | 'menu';
 }
 
-type Gesture = { kind: 'tap'; at: Vec } | { kind: 'drag'; from: Vec; to: Vec };
+/**
+ * `ui`: el sitio es de la interfaz (contador, botón de la tienda), en coordenadas de pantalla: se señala tal cual.
+ * Si no, es un sitio del mapa: si se sale de la pantalla, la mano va al borde, junto a un bocadillo que apunta hacia él.
+ */
+type Gesture = { kind: 'tap'; at: Vec; ui?: boolean } | { kind: 'drag'; from: Vec; to: Vec };
 
 /**
  * El tutorial, sin palabras: una mano encima del juego hace el gesto junto a lo que hay que tocar y
@@ -34,9 +43,10 @@ export class TutorialScene extends Phaser.Scene {
   private moveFrom: Vec | null = null;
   private clock = 0;
   private gesture: Gesture | null = null;
-  private hand!: Phaser.GameObjects.Text;
+  private hand!: Phaser.GameObjects.Image | Phaser.GameObjects.Text;
+  private handScale = 1;
   private ring!: Phaser.GameObjects.Arc;
-  private arrow!: Phaser.GameObjects.Text;
+  private bubble!: Phaser.GameObjects.Container;
   private joystick!: Phaser.GameObjects.Container;
   private coinsTimer: Phaser.Time.TimerEvent | null = null;
   private closeBadge: Phaser.GameObjects.Container | null = null;
@@ -57,9 +67,10 @@ export class TutorialScene extends Phaser.Scene {
 
   create(): void {
     this.ring = this.add.circle(0, 0, 20, 0xffffff, 0).setStrokeStyle(4, 0xffffff, 0.9).setVisible(false);
-    this.arrow = addEmoji(this, 0, 0, '➡️', 34).setVisible(false);
-    this.hand = addEmoji(this, 0, 0, '👆', 52).setOrigin(0.35, 0.05).setVisible(false);
-    this.hand.setShadow(2, 3, '#00000066', 4, false, true);
+    this.bubble = addShopBubble(this, BUBBLE_SCALE, 'up', pawTexture(this)).setVisible(false);
+    (this.bubble.list[1] as Phaser.GameObjects.Image).setTint(0x8d5a3b);
+    this.hand = addHand(this).setVisible(false);
+    this.handScale = this.hand.scaleX;
     // Junto al engranaje: el joystick existe, y se enciende ahí (paso de moverse).
     const stick = addIcon(this, 0, 0, 'joystick', 40);
     const toGear = addEmoji(this, -46, 0, '⬅️', 30);
@@ -144,10 +155,12 @@ export class TutorialScene extends Phaser.Scene {
         return from ? { kind: 'drag', from, to: targets.animal } : null;
       }
       case 'coins':
-        return { kind: 'tap', at: HUD_COIN };
+        return { kind: 'tap', at: HUD_COIN, ui: true };
       case 'shop': {
-        const door = world?.shopDoorTile();
-        return world && door ? { kind: 'tap', at: world.tileToScreen(door) } : null;
+        // Se señala el botón de la tienda: al tocarlo salen las huellas hasta la puerta (y el bocadillo del borde,
+        // si la puerta no se ve, lo pone el HUD).
+        const hud = this.scene.get<HudScene>('Hud');
+        return world && this.scene.isActive('Hud') && hud.shopButtonVisible() ? { kind: 'tap', at: hud.shopButtonPos(), ui: true } : null;
       }
     }
   }
@@ -159,31 +172,33 @@ export class TutorialScene extends Phaser.Scene {
     this.joystick.setPosition(gear.x + 100, gear.y).setVisible(true);
   }
 
-  /** Lleva a la pantalla un punto que se sale (con margen) y dice hacia dónde queda. */
-  private onScreen(p: Vec): { at: Vec; outside: number | null } {
-    const { width, height } = this.scale;
-    const at = { x: Phaser.Math.Clamp(p.x, EDGE, width - EDGE), y: Phaser.Math.Clamp(p.y, EDGE, height - EDGE) };
-    const outside = at.x !== p.x || at.y !== p.y ? Math.atan2(p.y - at.y, p.x - at.x) : null;
-    return { at, outside };
-  }
-
   private draw(): void {
     const g = this.gesture;
     this.hand.setVisible(g !== null);
     this.ring.setVisible(false);
-    this.arrow.setVisible(false);
+    this.bubble.setVisible(false);
+    // Con la comida abierta, su ✕ basta: dos ✕ rojas a la vez parecían decir «sal del tutorial».
+    this.closeBadge?.setVisible(!this.scene.isActive('Feed'));
     if (!g) return;
     if (g.kind === 'tap') {
-      const { at, outside } = this.onScreen(g.at);
+      let at = g.at;
+      if (!g.ui) {
+        const hint = edgeHint(g.at, this.scale.width, this.scale.height, EDGE);
+        if (hint) {
+          // Fuera de la pantalla: el bocadillo en el borde, con la colita hacia el sitio, y la mano en él.
+          setBubbleTail(this.bubble, hint.side);
+          this.bubble.setVisible(true).setPosition(hint.x, hint.y);
+          at = { x: hint.x, y: hint.y };
+        }
+      }
       const u = (this.clock % TAP_MS) / TAP_MS;
-      // Baja, aprieta (se encoge y sale un anillo) y vuelve a subir.
-      const lift = u < 0.35 ? (1 - u / 0.35) * 26 : u < 0.6 ? 0 : ((u - 0.6) / 0.4) * 26;
-      this.hand.setPosition(at.x, at.y + lift).setScale(u >= 0.35 && u < 0.6 ? 0.85 : 1).setAlpha(1);
+      // Baja, aprieta (baja un poco más y sale un anillo) y vuelve a subir.
+      const lift = u < 0.35 ? (1 - u / 0.35) * 26 : u < 0.6 ? -2 : ((u - 0.6) / 0.4) * 26;
+      this.hand.setPosition(at.x, at.y + lift).setScale(this.handScale).setAlpha(1);
       if (u >= 0.35) {
         const r = Math.min(1, (u - 0.35) / 0.5);
         this.ring.setVisible(true).setPosition(at.x, at.y).setRadius(10 + r * 26).setStrokeStyle(4, 0xffffff, 0.9 * (1 - r));
       }
-      if (outside !== null) this.arrow.setVisible(true).setPosition(at.x, at.y - 44).setRotation(outside);
       return;
     }
     // Arrastre: va a la comida, la coge, la lleva hasta el animal y la suelta.
@@ -192,7 +207,7 @@ export class TutorialScene extends Phaser.Scene {
     const x = g.from.x + (g.to.x - g.from.x) * k;
     const y = g.from.y + (g.to.y - g.from.y) * k;
     const pressed = u >= 0.15 && u <= 0.85;
-    this.hand.setPosition(x, y + (pressed ? 0 : 14)).setScale(pressed ? 0.88 : 1).setAlpha(u > 0.9 ? 1 - (u - 0.9) / 0.1 : 1);
+    this.hand.setPosition(x, y + (pressed ? 0 : 14)).setScale(this.handScale).setAlpha(u > 0.9 ? 1 - (u - 0.9) / 0.1 : 1);
   }
 
   // --- API para pruebas ---
@@ -207,5 +222,15 @@ export class TutorialScene extends Phaser.Scene {
 
   handPos(): Vec | null {
     return this.hand?.visible ? { x: this.hand.x, y: this.hand.y } : null;
+  }
+
+  /** ¿Se ve el bocadillo del borde (sitio del mapa fuera de la pantalla)? */
+  edgeBubbleVisible(): boolean {
+    return this.bubble?.visible ?? false;
+  }
+
+  /** ¿Se ve la ✕ del tutorial? */
+  closeVisible(): boolean {
+    return this.closeBadge?.visible ?? false;
   }
 }

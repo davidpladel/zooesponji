@@ -10,6 +10,8 @@ type Tap = (pointer: Phaser.Input.Pointer) => void;
 
 /** Centro de la moneda del contador, en pantalla. Ahí vuelan las monedas al dar de comer. */
 export const HUD_COIN: Vec = { x: 38, y: 38 };
+/** Centro del botón de la tienda: debajo del contador, en su misma columna. */
+export const HUD_SHOP: Vec = { x: 38, y: 100 };
 
 /** Las texturas llevan la sombra por debajo: el origen se sube para que (x, y) sea el centro del cuerpo. */
 function centered(image: Phaser.GameObjects.Image, bodyH: number): Phaser.GameObjects.Image {
@@ -177,8 +179,15 @@ export function addHeartLine(scene: Phaser.Scene, x: number, y: number, text: st
 
 /** Superposiciones (tienda, comida, menú): al cambiar el tamaño de la pantalla se vuelven a montar. */
 export function restartOnResize(scene: Phaser.Scene, data?: () => object): void {
-  const restart = () => scene.scene.restart(data?.());
-  scene.scale.once(Phaser.Scale.Events.RESIZE, restart);
+  // Solo si cambia el tamaño de verdad: a veces llega el aviso con el mismo tamaño (visto el 2026-11-08 tras girar
+  // la pantalla) y rehacer la ventana en mitad de un arrastre soltaba la comida.
+  const { width, height } = scene.scale;
+  const restart = (size: Phaser.Structs.Size) => {
+    if (size.width === width && size.height === height) return;
+    scene.scale.off(Phaser.Scale.Events.RESIZE, restart);
+    scene.scene.restart(data?.());
+  };
+  scene.scale.on(Phaser.Scale.Events.RESIZE, restart);
   scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => scene.scale.off(Phaser.Scale.Events.RESIZE, restart));
 }
 

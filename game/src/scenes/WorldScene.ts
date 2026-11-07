@@ -8,6 +8,7 @@ import { inJoystickZone } from '../core/joystick';
 import { stepAlongPath, tileCenter, tryMove, worldToTile, type Vec } from '../core/movement';
 import { findPathOrNearest, isWalkable, type Point, type WalkGrid } from '../core/pathfinding';
 import { withPenInteriors } from '../core/penGrid';
+import { shopVisited } from '../core/save';
 import { tourWaypoints } from '../core/tour';
 import { followTrail, recordTrail } from '../core/petFollow';
 import { noPen, stepNear, type NearState } from '../core/penNear';
@@ -28,9 +29,11 @@ import { Pens } from '../world/Pens';
 import { ShopBuilding } from '../world/ShopBuilding';
 import { Decor, getWalkPieces } from '../world/Decor';
 import { TerrainArt } from '../world/TerrainArt';
+import { PawTrail } from '../world/PawTrail';
 import { VisitorCrowd } from '../world/VisitorCrowd';
 import type { AdOfferSceneData } from './AdOfferScene';
 import type { FeedSceneData } from './FeedScene';
+import type { HudScene } from './HudScene';
 
 /** Si el dedo se desplaza más que esto entre pulsar y soltar, no es un toque. */
 const TAP_MAX_DISTANCE = 12;
@@ -44,6 +47,8 @@ const AD_OFFER_MS = 300;
 const NOTICE_MS = AD_OFFER_MS + 250;
 /** Lo que Luna espera quieta antes de pararse y mirar a la cuidadora. */
 const PET_REST_MS = 200;
+/** Lo que duran las huellas hasta la tienda si nadie las sigue (ms). */
+const TRAIL_MS = 30_000;
 
 type WasdKeys = Record<'W' | 'A' | 'S' | 'D', Phaser.Input.Keyboard.Key>;
 
@@ -72,6 +77,8 @@ export class WorldScene extends Phaser.Scene {
   private petTrail: Vec[] = [];
   /** Rato (ms) que Luna lleva sin avanzar: solo se sienta pasado PET_REST_MS (si no, se cortan los pasos). */
   private petIdle = 0;
+  /** Huellas de Luna hasta la tienda (botón de la tienda, antes de la primera visita). */
+  private trail!: PawTrail;
 
   constructor() {
     super('World');
@@ -102,6 +109,7 @@ export class WorldScene extends Phaser.Scene {
     this.board = boardInfo ? new Board(this, boardInfo) : null;
     this.visitors = new VisitorCrowd(this, this.pathGrid);
     this.syncVisitors(state);
+    this.trail = new PawTrail(this, TILE_SIZE);
 
     const spawn = tileCenter(readSpawn(mapData), TILE_SIZE);
     this.marker = this.add.image(0, 0, TEXTURES.marker).setVisible(false).setDepth(3);
@@ -160,6 +168,7 @@ export class WorldScene extends Phaser.Scene {
     const state = getSession().state;
 
     const tile = worldToTile(this.keeper, TILE_SIZE);
+    this.trail.stepOn(tile);
     if (this.pens.lockedDoorstep(tile, state)) bus.emit('toast', { text: t('toast.needShop') });
     const doorEvent = this.shop?.onKeeperTile(tile, state) ?? null;
     if (doorEvent === 'open') this.openShop();
@@ -249,6 +258,51 @@ export class WorldScene extends Phaser.Scene {
 
   shopDoorTile(): Point | null {
     return readShop(this.mapData)?.door ?? null;
+  }
+
+  /** Centro de la puerta de la tienda, en pantalla (las 2 casillas). */
+  shopDoorScreenPos(): Vec | null {
+    const shop = readShop(this.mapData);
+    if (!shop) return null;
+    return this.worldToScreen({ x: (shop.door.x + shop.doorWidth / 2) * TILE_SIZE, y: (shop.door.y + 0.5) * TILE_SIZE });
+  }
+
+  /**
+   * Botón de la tienda. Antes de la primera visita salen las huellas de Luna por el camino hasta la puerta (otro
+   * toque las apaga); después, la cuidadora va andando sola. Devuelve lo que ha hecho.
+   */
+  guideToShop(): 'huellas' | 'apagar' | 'andando' | null {
+    const door = this.shopDoorTile();
+    if (!door) return null;
+    if (shopVisited(getSession().shop)) {
+      this.cancelFeedTarget();
+      this.trail.hide();
+      return this.goToTile(door.x, door.y) ? 'andando' : null;
+    }
+    if (this.trail.active) {
+      this.trail.fadeOut();
+      return 'apagar';
+    }
+    const path = findPathOrNearest(this.grid, worldToTile(this.keeper, TILE_SIZE), door);
+    if (!path || path.length < 2) return null;
+    this.trail.show(path, TRAIL_MS);
+    return 'huellas';
+  }
+
+  /** ¿Hay huellas hasta la tienda? */
+  shopTrailActive(): boolean {
+    return this.trail?.active ?? false;
+  }
+
+  /** Para pruebas: casillas con huella. */
+  shopTrailTiles(): Point[] {
+    return this.trail?.tiles() ?? [];
+  }
+
+  /** Para pruebas: la ruta que andaría la cuidadora hasta la puerta de la tienda. */
+  shopRoute(): Point[] {
+    const door = this.shopDoorTile();
+    return door ? (findPathOrNearest(this.grid, worldToTile(this.keeper, TILE_SIZE), door) ?? []) : [];
   }
 
   spawnTile(): Point {
@@ -346,6 +400,7 @@ export class WorldScene extends Phaser.Scene {
     if (pointer.getDistance() > TAP_MAX_DISTANCE) return;
     const down = { x: pointer.downX, y: pointer.downY };
     if (getSession().settings.joystick && inJoystickZone(down, this.scale.width, this.scale.height)) return;
+    if (this.scene.isActive('Hud') && this.scene.get<HudScene>('Hud').coversPoint(down.x, down.y)) return;
 
     const point = this.cameras.main.getWorldPoint(pointer.x, pointer.y);
     const world = { x: point.x, y: point.y };
@@ -385,6 +440,7 @@ export class WorldScene extends Phaser.Scene {
 
   private openShop(): void {
     this.stopWalking();
+    this.trail.hide();
     bus.emit('shop-opened', {});
     this.scene.pause();
     // Datos vacíos a propósito: Phaser se queda con los del último reinicio (un giro dentro de la tienda)
