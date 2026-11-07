@@ -129,12 +129,18 @@ for (const e of enclosures) {
 }
 
 // Tienda: puesto de mercado 5x5 pegado a las cabras, con la puerta (2 casillas) debajo y un camino a la plaza.
+// El dibujo tiene el mostrador con fruta en las casillas 2-3 y la puerta en la 4 (px 48-64): la puerta del mapa
+// empieza en la 4 (2026-11-07; antes caía bajo el mostrador). Es de 2 casillas, como el camino que baja de ella.
 const SHOP = { x: 28, y: 4 };
+/** Primera casilla (en el parque) de la puerta de la tienda y del camino que baja de ella. */
+const SHOP_DOOR_X = SHOP.x + 3;
 pfill(SHOP.x, SHOP.y, SHOP.x + 4, SHOP.y + 4, BUILDING);
-pfill(SHOP.x + 1, SHOP.y + 5, SHOP.x + 2, SHOP.y + 5, GATE);
-pfill(SHOP.x + 1, SHOP.y + 6, SHOP.x + 2, PLAZA.y0 - 1, PATH);
+pfill(SHOP_DOOR_X, SHOP.y + 5, SHOP_DOOR_X + 1, SHOP.y + 5, GATE);
+pfill(SHOP_DOOR_X, SHOP.y + 6, SHOP_DOOR_X + 1, PLAZA.y0 - 1, PATH);
+// Abajo cae sobre la esquina recortada de la plaza: un codo de 2 de alto lo lleva a la izquierda, donde ya es plaza.
+pfill(SHOP_DOOR_X - 2, PLAZA.y0 - 2, SHOP_DOOR_X - 1, PLAZA.y0 - 1, PATH);
 objects.push({ id: nextId++, name: 'tienda', type: 'tienda', x: (SHOP.x + OX) * T, y: (SHOP.y + OY) * T, width: 5 * T, height: 5 * T, rotation: 0, visible: true });
-objects.push({ id: nextId++, name: 'puerta-tienda', type: 'puertaTienda', x: (SHOP.x + 1 + OX) * T, y: (SHOP.y + 5 + OY) * T, width: 2 * T, height: T, rotation: 0, visible: true });
+objects.push({ id: nextId++, name: 'puerta-tienda', type: 'puertaTienda', x: (SHOP_DOOR_X + OX) * T, y: (SHOP.y + 5 + OY) * T, width: 2 * T, height: T, rotation: 0, visible: true });
 
 // Tablón de la comunidad: en la esquina de arriba a la izquierda de la plaza, junto al recorte. El objeto marca
 // la casilla del camino que se pisa para abrirlo; el tablón se dibuja en el césped de encima.
@@ -151,7 +157,7 @@ objects.push({ id: nextId++, name: 'tablon', type: 'tablon', x: (PLAZA.x0 + 2 + 
  * lo pisa (propiedad `walk`).
  */
 const WALK = /^(grass|flowers|sunflowers|rock|boulder|plateau|cave|lilypad|pebble|daisies|fern|cattails|reeds)/;
-const prop = (name, px, py, { block = null, flat = false, z = 0, zone = null, solid = false } = {}) => {
+const prop = (name, px, py, { block = null, flat = false, z = 0, zone = null, solid = false, flip = false } = {}) => {
   const walk = WALK.test(name);
   if (walk && block) throw new Error(`"${name}" se pisa: no puede llevar block`);
   const properties = [
@@ -164,6 +170,7 @@ const prop = (name, px, py, { block = null, flat = false, z = 0, zone = null, so
   if (solid) properties.push({ name: 'solid', type: 'bool', value: true });
   if (block) properties.push({ name: 'blockW', type: 'int', value: block[0] }, { name: 'blockH', type: 'int', value: block[1] });
   if (zone) properties.push({ name: 'zone', type: 'string', value: zone });
+  if (flip) properties.push({ name: 'flip', type: 'bool', value: true });
   objects.push({ id: nextId++, name: `${name}-${nextId}`, type: 'prop', x: px, y: py, width: 0, height: 0, rotation: 0, visible: true, properties });
 };
 /**
@@ -181,9 +188,11 @@ const water = (kind, x0, y0, x1, y1) => {
 /**
  * Farola en la casilla (tx,ty). El dibujo mide 32 px con el poste a la izquierda y el brazo hacia la derecha:
  * se apoya en el borde derecho de la casilla para que el pie del poste caiga entero en ella (en el césped) y
- * no en la tierra del camino de al lado.
+ * no en la tierra del camino de al lado. Si el camino queda a su izquierda (y no a su derecha), se dibuja
+ * volteada (`flip`): el poste sigue en la misma casilla y el farol cuelga sobre el camino (David, 2026-11-07).
  */
-const lampAt = (tx, ty) => prop('lamp', (tx + 1) * T, (ty + 1) * T);
+const isPathTile = (x, y) => x >= 0 && y >= 0 && x < W && y < H && (data[y * W + x] === PATH || data[y * W + x] === GATE);
+const lampAt = (tx, ty) => prop('lamp', (tx + 1) * T, (ty + 1) * T, { flip: isPathTile(tx - 1, ty) && !isPathTile(tx + 1, ty) });
 /** Prop apoyado en la casilla (tx,ty) del mapa: centro horizontal de la casilla, borde inferior. */
 const at = (name, tx, ty, opts) => prop(name, tx * T + T / 2, (ty + 1) * T, opts);
 /** Lo mismo, en coordenadas del parque de siempre. */
@@ -363,7 +372,7 @@ for (const [x, y] of [
 for (const [x, y] of [[8, 17], [10, 27], [20, 30], [30, 30], [46, 18], [46, 28], [11, 44], [40, 44]]) pat('bush', x, y);
 pprop('flowerbed', 23 * T, 5 * T);
 pat('barrel', SHOP.x - 1, SHOP.y + 5);
-pat('crate-fruit', SHOP.x + 3, SHOP.y + 5);
+pat('crate-fruit', SHOP.x + 1, SHOP.y + 5); // bajo el mostrador de la fruta (la puerta está a la derecha)
 
 // Cartel de cada recinto junto a su puerta (a la izquierda del camino que sale de ella) y cartel de zona a la
 // entrada de cada zona de fuera.
@@ -395,7 +404,7 @@ for (const [x, y] of [[30, 16], [10, MID + 2], [RING_R + 4, MID + 2]]) prop('ben
 // Se reparten solas: recorriendo los caminos, donde no hay ninguna farola a 7 casillas se pone una en el césped
 // de al lado, fuera de los recintos, lejos del muro y sin pegarse a otro adorno.
 {
-  const isPath = (x, y) => x >= 0 && y >= 0 && x < W && y < H && (data[y * W + x] === PATH || data[y * W + x] === GATE);
+  const isPath = isPathTile;
   const tileOf = (o) => ({ x: Math.floor((o.x - 1) / T), y: Math.floor((o.y - 1) / T) });
   const props = objects.filter((o) => o.type === 'prop').map(tileOf);
   const lamps = objects.filter((o) => o.type === 'prop' && o.properties[0].value === 'lamp').map(tileOf);

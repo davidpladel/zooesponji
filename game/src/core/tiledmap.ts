@@ -251,6 +251,11 @@ export interface PropInfo {
   walk: boolean;
   /** Su zona `block` tampoco la pisan la cuidadora ni los visitantes (la fuente de la plaza). */
   solid: boolean;
+  /**
+   * Se dibuja volteada (farolas con el camino a la izquierda): el pie sigue en la casilla de apoyo y lo que
+   * sale hacia un lado (el brazo con el farol) cuelga hacia el otro.
+   */
+  flip: boolean;
 }
 
 export function readProps(map: TiledMap): PropInfo[] {
@@ -276,6 +281,7 @@ export function readProps(map: TiledMap): PropInfo[] {
       block: blocks && w > 0 && h > 0 ? { x: object.x - w / 2, y: object.y - h, width: w, height: h } : null,
       zone: typeof zone === 'string' ? zone : null,
       solid: getProperty(object.properties, 'solid') === true,
+      flip: getProperty(object.properties, 'flip') === true,
     });
   }
   return result;

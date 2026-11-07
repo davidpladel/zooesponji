@@ -61,9 +61,13 @@ export const Decor = {
       const info = art.props[p.prop];
       if (!info) continue;
       const animated = (info.frames ?? 1) > 1;
+      // Volteada (farola con el camino a la izquierda): el dibujo se refleja sobre el pie, que no cambia de
+      // casilla. Las farolas se apoyan en el borde derecho de su casilla, así que el dibujo se corre una a la izquierda.
+      const x = p.flip ? p.x - TILE : p.x;
       const piece = animated
-        ? scene.add.sprite(p.x, p.y, propKey(p.prop)).play(propAnimKey(p.prop))
-        : scene.add.image(p.x, p.y, propKey(p.prop));
+        ? scene.add.sprite(x, p.y, propKey(p.prop)).play(propAnimKey(p.prop))
+        : scene.add.image(x, p.y, propKey(p.prop));
+      if (p.flip) piece.setFlipX(true);
       piece
         .setOrigin(0.5, 1)
         .setDepth(propDepth(p));

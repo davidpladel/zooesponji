@@ -105,6 +105,18 @@ describe('mapa del zoo', () => {
     expect(findPath(grid, spawn, shop!.door)).not.toBeNull();
   });
 
+  it('la puerta de la tienda está bajo la puerta del dibujo (casilla 4 de 5), no bajo el mostrador', () => {
+    const shop = readShop(map)!;
+    const left = shop.x / 16;
+    expect(shop.door.x).toBe(left + 3);
+    expect(shop.door.y).toBe((shop.y + shop.height) / 16);
+    // Lo que queda bajo el mostrador (casillas 2 y 3) ya no es camino.
+    expect(isWalkable(grid, left + 1, shop.door.y)).toBe(false);
+    expect(isWalkable(grid, left + 2, shop.door.y)).toBe(false);
+    // Y su camino baja derecho hasta la plaza: desde la casilla de debajo de la puerta se llega al inicio.
+    expect(findPath(grid, { x: shop.door.x, y: shop.door.y + 1 }, spawn)).not.toBeNull();
+  });
+
   it('la puerta de la tienda ocupa las 2 casillas del camino: cualquiera abre', () => {
     const shop = readShop(map)!;
     expect(shop.doorWidth).toBe(2);
@@ -416,10 +428,23 @@ describe('mapa del zoo', () => {
     }
   });
 
+  it('el farol cuelga sobre el camino: volteada si el camino está a la izquierda', () => {
+    const lamps = readProps(map).filter((q) => q.prop === 'lamp');
+    expect(lamps.some((p) => p.flip)).toBe(true);
+    for (const p of lamps) {
+      const tx = Math.floor((p.x - 1) / 16);
+      const ty = Math.floor((p.y - 1) / 16);
+      const pathLeft = isWalkable(grid, tx - 1, ty);
+      const pathRight = isWalkable(grid, tx + 1, ty);
+      expect(p.flip, `farola en (${tx},${ty})`).toBe(pathLeft && !pathRight);
+    }
+  });
+
   it('ninguna farola se monta sobre una valla (mide 2x3 casillas desde su pie)', () => {
     const pens = readEnclosures(map);
     for (const p of readProps(map).filter((q) => q.prop === 'lamp')) {
-      const left = (p.x - 16) / 16;
+      // Volteada, el brazo ocupa la casilla de la izquierda en vez de la de la derecha.
+      const left = (p.x - 16) / 16 - (p.flip ? 1 : 0);
       const bottom = Math.floor((p.y - 1) / 16);
       for (let ty = bottom - 2; ty <= bottom; ty++)
         for (let tx = Math.floor(left); tx <= Math.floor(left) + 1; tx++) {
