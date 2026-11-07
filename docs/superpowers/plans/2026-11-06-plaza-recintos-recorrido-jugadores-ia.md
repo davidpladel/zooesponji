@@ -360,7 +360,7 @@ it('con el mapa real, la ruta pisa todo pathGrid', () => { /* zoo.tmj */ });
   - `keeperTile(): { x: number; y: number } | null`
   - `walkPropsAbove(): string[]` — nombres de los props `walk` cuyo dibujo se cruza con el de la cuidadora o el de Luna y tienen más profundidad que ellas. Vacío = bien.
 
-- [ ] **Paso 1: Escribir la prueba**
+- [x] **Paso 1: Escribir la prueba**
 
 ```ts
 test.setTimeout(30 * 60_000);
@@ -376,10 +376,10 @@ test('con todos los recintos abiertos, la cuidadora recorre sus interiores', asy
 
 Si un punto no está en pantalla al ir a tocarlo, la prueba falla diciendo qué punto. No se teletransporta a la cuidadora.
 
-- [ ] **Paso 2: Implementar** los ganchos.
-- [ ] **Paso 3: Pedir a David** `npx playwright test recorrido` → esperado: 2 pasadas. Tarda varios minutos.
-- [ ] **Paso 4:** si falla, `superpowers:systematic-debugging` con lo que diga la prueba (punto, casilla). No se relaja la prueba para que pase.
-- [ ] **Paso 5: Commit** `test(e2e): la cuidadora y Luna recorren todos los caminos y los recintos`
+- [x] **Paso 2: Implementar** los ganchos.
+- [x] **Paso 3: Pedir a David** `npx playwright test recorrido` → esperado: 2 pasadas. Tarda varios minutos.
+- [x] **Paso 4:** si falla, `superpowers:systematic-debugging` con lo que diga la prueba (punto, casilla). No se relaja la prueba para que pase.
+- [x] **Paso 5: Commit** `test(e2e): la cuidadora y Luna recorren todos los caminos y los recintos`
 
 ---
 
@@ -398,25 +398,31 @@ Si un punto no está en pantalla al ir a tocarlo, la prueba falla diciendo qué 
 - Carpeta de salida: `zooesponji-private/docs/jugadores-ia/AAAA-MM-DD/<id>/`.
 - Límite: 60 acciones por partida; la 61 responde `{ error: 'límite' }`.
 
-- [ ] **Paso 1:** escribir `mando.ts`. Prueba de humo a mano (David): `npm run build`, `npm run preview` y `npm run ia:mando` en ventanas aparte; luego `curl -X POST localhost:7801/partida -d '{"id":"humo"}'` → esperado: devuelve una captura con la pantalla de título.
-- [ ] **Paso 2:** escribir `perfiles.md` con los dos perfiles del diseño (5 años sin leer; 10 años que lee) y 3 objetivos (dar de comer a todos los animales; comprar en la tienda; pasear con Luna y explorar). Escribir `instrucciones.md`: el jugador solo mira capturas y solo toca, arrastra o espera mediante `curl`; habla como el niño; al terminar escribe `informe.md` en su carpeta con lo que intentó, dónde se atascó, qué le gustó, ideas y fallos (cada fallo con captura y pasos).
-- [ ] **Paso 3: Commit** `feat(ia): mando para que jugadores con IA prueben el juego como un niño`
+- [x] **Paso 1:** escribir `mando.ts`. Prueba de humo a mano (David): `npm run build`, `npm run preview` y `npm run ia:mando` en ventanas aparte; luego `curl -X POST localhost:7801/partida -d '{"id":"humo"}'` → esperado: devuelve una captura con la pantalla de título.
+- [x] **Paso 2:** escribir `perfiles.md` con los dos perfiles del diseño (5 años sin leer; 10 años que lee) y 3 objetivos (dar de comer a todos los animales; comprar en la tienda; pasear con Luna y explorar). Escribir `instrucciones.md`: el jugador solo mira capturas y solo toca, arrastra o espera mediante `curl`; habla como el niño; al terminar escribe `informe.md` en su carpeta con lo que intentó, dónde se atascó, qué le gustó, ideas y fallos (cada fallo con captura y pasos).
+- [x] **Paso 3: Commit** `feat(ia): mando para que jugadores con IA prueben el juego como un niño`
 
 ---
 
 ### Tarea 10: Primera pasada de jugadores con IA
 
-- [ ] **Paso 1:** pedir a David que deje en marcha `npm run preview` y `npm run ia:mando`.
-- [ ] **Paso 2:** lanzar **6 subagentes con `model: "sonnet"`** en paralelo (3 perfiles de 5 años y 3 de 10, uno por objetivo), cada uno con `instrucciones.md` y su perfil. Es la excepción acordada a «sin subagentes».
-- [ ] **Paso 3:** leer los 6 `informe.md` (no las capturas una a una) y escribir `resumen.md` en la carpeta de la fecha: problemas que se repiten, ordenados por importancia; mejores ideas de UX/UI; fallos con captura y pasos.
-- [ ] **Paso 4:** enviar `resumen.md` a David con SendUserFile. Los fallos que él elija se arreglan en este trabajo o en otro, según diga.
-- [ ] **Paso 5:** commit en el repo privado `docs(ia): primera pasada de jugadores con IA`.
+- [x] **Paso 1:** pedir a David que deje en marcha `npm run preview` y `npm run ia:mando`.
+- [x] **Paso 2:** lanzar **6 subagentes con `model: "sonnet"`** en paralelo (3 perfiles de 5 años y 3 de 10, uno por objetivo), cada uno con `instrucciones.md` y su perfil. Es la excepción acordada a «sin subagentes».
+- [x] **Paso 3:** leer los 6 `informe.md` (no las capturas una a una) y escribir `resumen.md` en la carpeta de la fecha: problemas que se repiten, ordenados por importancia; mejores ideas de UX/UI; fallos con captura y pasos.
+- [x] **Paso 4:** enviar `resumen.md` a David con SendUserFile. Los fallos que él elija se arreglan en este trabajo o en otro, según diga.
+- [x] **Paso 5:** commit en el repo privado `docs(ia): primera pasada de jugadores con IA`.
 
 ---
 
 ### Tarea 11: Cierre
 
-- [ ] **Paso 1:** README del juego (cómo se lanza la prueba del recorrido, `map:snapshot` y los jugadores con IA), estado del diseño («implementado, pendiente de probar en el móvil»), casillas de este plan.
-- [ ] **Paso 2: Pedir a David** `npm run typecheck`, `npm test` y `npm run test:e2e` → esperado: todo en verde.
-- [ ] **Paso 3: Commit** `docs: plaza, recintos, recorrido y jugadores con IA`
+- [x] **Paso 1:** README del juego (cómo se lanza la prueba del recorrido, `map:snapshot` y los jugadores con IA), estado del diseño («implementado, pendiente de probar en el móvil»), casillas de este plan.
+- [x] **Paso 2: Pedir a David** `npm run typecheck`, `npm test` y `npm run test:e2e` → esperado: todo en verde.
+- [x] **Paso 3: Commit** `docs: plaza, recintos, recorrido y jugadores con IA`
 - [ ] **Paso 4:** usar `superpowers:finishing-a-development-branch` para fusionar cuando David dé el visto bueno en el móvil.
+
+**Resultado (2026-11-07, lanzado por Claude):** `npm run typecheck` bien; `npm test` 65 ficheros, 4787 pruebas en verde;
+`npm run test:e2e --workers=1` 81 pasan, 1 se salta y 2 fallan: `shop.spec.ts:138` (pasa sola; fue lentitud) y
+`tutorial.spec.ts:78` (**falla igual en `main`**: tras arrastrar la comida de la segunda vez el tutorial no pasa a
+`coins`; no es de esta rama). Jugadores con IA: resumen en `zooesponji-private/docs/jugadores-ia/2026-11-07/resumen.md`.
+
