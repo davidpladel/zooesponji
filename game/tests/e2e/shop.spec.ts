@@ -61,7 +61,8 @@ test('fase B: la cuidadora entra andando, compra con el bocadillo y sale por el 
   // Sin monedas para el panda: bocadillo gris y el tendero avisa.
   const panda = await walkToProduct(page, 'panda');
   await page.mouse.click(box.x + panda.x, box.y + panda.y);
-  await expect.poll(() => page.evaluate(() => window.__ZOO__!.shopBubble())).toBe('¡Te faltan monedas!');
+  // Dice cuántas faltan y cómo se ganan (los jugadores con IA no lo sabían).
+  await expect.poll(() => page.evaluate(() => window.__ZOO__!.shopBubble())).toMatch(/^¡Te faltan \d+ monedas! Dales de comer a los animales/);
   expect(await page.evaluate(() => window.__ZOO__!.shopCardStatus('panda'))).toBe('buy');
 
   // Tocar el felpudo: la cuidadora va andando, sale y aparece delante de la puerta del puesto.

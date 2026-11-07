@@ -78,6 +78,7 @@ export const STRINGS_HI: Record<StringKey, string> = {
   'shop.hello': 'नमस्ते! आज कौन-सा जानवर चाहिए?',
   'shop.thanks': 'धन्यवाद! इसका अच्छे से ध्यान रखना!',
   'shop.needCoins': 'तुम्हें और सिक्के चाहिए!',
+  'shop.needCoinsHow': 'तुम्हें {n} सिक्के और चाहिए! जानवरों को खाना खिलाओ और सिक्के कमाओ।',
   'shop.buy': 'खरीदो!',
   'shop.extra.cabra': 'एक और बकरी',
   'shop.extra.pantera': 'एक और तेंदुआ',

@@ -78,6 +78,7 @@ export const STRINGS_ZH: Record<StringKey, string> = {
   'shop.hello': '你好！今天想要哪只动物？',
   'shop.thanks': '谢谢！要好好照顾它哦！',
   'shop.needCoins': '你需要更多金币！',
+  'shop.needCoinsHow': '还差 {n} 个金币！喂动物就能赚到更多。',
   'shop.buy': '买！',
   'shop.extra.cabra': '再来一只山羊',
   'shop.extra.pantera': '再来一只黑豹',

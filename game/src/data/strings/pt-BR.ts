@@ -78,6 +78,7 @@ export const STRINGS_PT_BR: Record<StringKey, string> = {
   'shop.hello': 'Olá! Qual animal você quer hoje?',
   'shop.thanks': 'Obrigado! Cuide bem dele!',
   'shop.needCoins': 'Você precisa de mais moedas!',
+  'shop.needCoinsHow': 'Faltam {n} moedas! Dê comida aos animais para ganhar mais.',
   'shop.buy': 'Comprar!',
   'shop.extra.cabra': 'Outra cabra',
   'shop.extra.pantera': 'Outra pantera',

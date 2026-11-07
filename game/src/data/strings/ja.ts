@@ -78,6 +78,7 @@ export const STRINGS_JA: Record<StringKey, string> = {
   'shop.hello': 'こんにちは！きょうは どの どうぶつに する？',
   'shop.thanks': 'ありがとう！だいじに してね！',
   'shop.needCoins': 'コインが たりないよ！',
+  'shop.needCoinsHow': 'コインが あと {n}まい たりないよ！どうぶつに ごはんを あげて ためよう。',
   'shop.buy': 'かう！',
   'shop.extra.cabra': 'もう1ぴき ヤギ',
   'shop.extra.pantera': 'もう1ぴき クロヒョウ',

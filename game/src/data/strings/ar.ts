@@ -79,6 +79,7 @@ export const STRINGS_AR: Record<StringKey, string> = {
   'shop.hello': 'مرحبًا! أي حيوان تريد اليوم؟',
   'shop.thanks': 'شكرًا! اعتنِ به جيدًا!',
   'shop.needCoins': 'تحتاج إلى عملات أكثر!',
+  'shop.needCoinsHow': 'ينقصك {n} عملة! أطعم الحيوانات لتربح المزيد.',
   'shop.buy': 'اشترِ!',
   'shop.extra.cabra': 'ماعز آخر',
   'shop.extra.pantera': 'نمر آخر',

@@ -72,6 +72,7 @@ export const STRINGS_ES = {
   'shop.hello': '¡Hola! ¿Qué animal quieres hoy?',
   'shop.thanks': '¡Gracias! ¡Cuídalo mucho!',
   'shop.needCoins': '¡Te faltan monedas!',
+  'shop.needCoinsHow': '¡Te faltan {n} monedas! Dales de comer a los animales y ganarás más.',
   'shop.buy': '¡Comprar!',
   'shop.about.leon': '¡El león es el rey del zoo!',
   'shop.about.cabra': '¡Las cabras comen de todo… hasta piedras!',

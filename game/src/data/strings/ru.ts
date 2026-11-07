@@ -78,6 +78,7 @@ export const STRINGS_RU: Record<StringKey, string> = {
   'shop.hello': 'Привет! Какое животное хочешь сегодня?',
   'shop.thanks': 'Спасибо! Заботься о нём!',
   'shop.needCoins': 'Нужно больше монет!',
+  'shop.needCoinsHow': 'Не хватает монет: {n}! Покорми животных, чтобы заработать ещё.',
   'shop.buy': 'Купить!',
   'shop.extra.cabra': 'Ещё одна коза',
   'shop.extra.pantera': 'Ещё одна пантера',

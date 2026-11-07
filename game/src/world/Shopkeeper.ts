@@ -3,7 +3,11 @@ import { ART_KEYS, getArt, idleFrame } from '../art/art';
 import type { Facing } from '../core/facing';
 import type { Point } from '../core/pathfinding';
 import type { ShopInterior } from './ShopInterior';
+import { HUD_COIN } from '../ui/widgets';
 import { wrapStyle } from '../ui/wrap';
+
+/** Borde de abajo del contador de monedas (moneda de 44 px centrada en HUD_COIN) y un poco de aire. */
+const COIN_CLEAR_Y = HUD_COIN.y + 22 + 6;
 
 /** Cuánto se aparta la cuidadora (px de pantalla por unidad de escala) antes de que el tendero gire la cabeza. */
 const LOOK_MARGIN = 10;
@@ -83,9 +87,12 @@ export class Shopkeeper {
     const g = this.scene.add.graphics();
     g.fillStyle(0xffffff, 1).lineStyle(Math.max(2, s * 0.75), 0x5d4037, 1);
     g.fillRoundedRect(-w / 2, -h / 2, w, h, 4 * s).strokeRoundedRect(-w / 2, -h / 2, w, h, 4 * s);
-    g.fillTriangle(-6 * s, h / 2 - 1, 2 * s, h / 2 - 1, -8 * s, h / 2 + 6 * s);
-    const x = Math.max(w / 2 + 8, this.feet.x + 30 * s);
-    const y = Math.max(h / 2 + 8, this.feet.y - this.sprite.displayHeight - 2 * s - h / 2);
+    // Punta abajo a la izquierda: el globo va a la derecha de la tendera.
+    g.fillTriangle(-w / 2 + 6 * s, h / 2 - 1, -w / 2 + 14 * s, h / 2 - 1, -w / 2 + 2 * s, h / 2 + 6 * s);
+    // A la derecha de la tendera, a la altura de su cabeza, y siempre por debajo del contador de monedas (arriba a
+    // la izquierda) para no taparlo.
+    const x = Math.min(this.scene.scale.width - w / 2 - 8, this.feet.x + 10 * s + w / 2);
+    const y = Math.max(h / 2 + COIN_CLEAR_Y, this.feet.y - this.sprite.displayHeight - 2 * s - h / 2);
     const bubble = this.scene.add.container(x, y, [g, text]).setDepth(2000).setScale(0);
     this.bubble = bubble;
     this.current = message;

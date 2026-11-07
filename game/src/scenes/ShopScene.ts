@@ -6,6 +6,7 @@ import { tileCenter, type Vec } from '../core/movement';
 import { isWalkable, type WalkGrid } from '../core/pathfinding';
 import { newlyUnlockedPages, showBookNotice, unreadPageIds } from '../core/book';
 import { shopEntries, shopStock, type ShopEntry, type StockId } from '../core/shopEntries';
+import { shopkeeperLine } from '../core/shopLine';
 import type { PenId } from '../data/pens';
 import { ENTRY_TARGET, approachPoint, hintTarget, onDoorMat, openInteriorGrid, pickShopSpot, productInReach, shopWalkGrid } from '../core/shopWalk';
 import { buildWalkGrid, type TiledMap } from '../core/tiledmap';
@@ -562,9 +563,8 @@ export class ShopScene extends Phaser.Scene {
     if (!quiet && product.entry.status === 'buy') bus.emit('shop-look', { itemId: product.entry.id });
     if (!quiet) {
       this.greet(product);
-      const entry = product.entry;
-      const line: StringKey = entry.status === 'owned' ? 'shop.owned' : entry.status === 'full' ? 'shop.full' : entry.kind === 'pet' ? 'shop.about.luna' : (`shop.about.${entry.species}` as StringKey);
-      this.shopkeeper.say(t(line), 2400);
+      const line = shopkeeperLine(product.entry, getSession().state.coins);
+      this.shopkeeper.say(t(line.key, line.params), 2400);
     }
     if (product.entry.status === 'buy') this.showBuyBubble(product);
   }
@@ -645,7 +645,7 @@ export class ShopScene extends Phaser.Scene {
       sfx.play('rechaza');
       const product = this.products.get(entry.id);
       if (product) this.tweens.add({ targets: product.animal, x: product.animal.x + 3 * s, duration: 50, yoyo: true, repeat: 3 });
-      this.shopkeeper.say(t('shop.needCoins'), 1980);
+      this.shopkeeper.say(t('shop.needCoinsHow', { n: Math.max(0, entry.cost - getSession().state.coins) }), 2400);
     }
     this.busy = false;
   }
