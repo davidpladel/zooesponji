@@ -92,10 +92,11 @@ En `game/scripts/make-zoo-map.mjs` (líneas ~131–137 y ~365–366):
 
 ## Bloque 6 · La mano que molesta al dar de comer con el tutorial
 
-- David: con el tutorial puesto, al dar de comer, «la mano molesta arriba a la derecha».
-- Primero **reproducirlo** (tutorial con «Aprender», ir a un animal, abrir la comida) y ver qué es. Sospecha: arriba a la derecha está la X de cerrar la comida, o una mano del paso anterior que se queda pintada. Los agentes vieron también la mano tapando la moneda y la X roja.
-- Arreglo: que durante la comida solo haya **una** mano, la del arrastre, y que nada del tutorial tape la X de cerrar.
-- Si no se reproduce, decírselo a David con capturas en vez de inventar el arreglo.
+- David lo mandó con captura (2026-11-07): tras dar de comer con el tutorial puesto, la mano rebota junto a la X roja del tutorial, arriba a la izquierda, y en la esquina sale la flecha ↖.
+- **Causa** (`TutorialScene.ts`): tras el «¡Ñam!» el paso es `coins` y la mano debe señalar el contador (`HUD_COIN = (38, 38)`). Pero `draw()` pasa todo destino de toque por `onScreen()`, que lo encierra a `EDGE = 56` px del borde, como si fuera un punto del mapa. El contador queda «fuera» → la mano se dibuja en (56, 56) + la subida de la animación, encima de la X del tutorial (`CLOSE_AT = (38, 100)`), y además se enseña la flecha de «está fuera de la pantalla». Parece que el juego dice «sal del tutorial».
+- **Arreglo:** los destinos que son interfaz (contador, botón de la tienda, X…) van en coordenadas de pantalla y **no** se encierran ni sacan aviso de borde; solo los destinos del mapa (animal, puerta) usan `onScreen()`. La mano tiene que quedar apuntando al contador, sin flecha.
+- **Dos X rojas a la vez:** mientras está abierta la comida, la X del tutorial se oculta (la comida ya tiene la suya). **Decisión mía.** Vuelve al cerrar la comida.
+- Prueba: E2E del tutorial hasta el paso `coins` comprobando que `tutorialHand()` queda junto a `HUD_COIN` (no a 56 px) y que no hay flecha.
 
 ## Bloque 7 · Carteles con el animal (medallón)
 
@@ -128,3 +129,4 @@ En `game/scripts/make-zoo-map.mjs` (líneas ~131–137 y ~365–366):
 4. La X del tutorial baja un hueco y el paso de la tienda del tutorial señala el botón.
 5. Carteles de zona sin medallón.
 6. Las partidas viejas con compras o con Luna cuentan como «tienda ya visitada».
+7. La X del tutorial se oculta mientras está abierta la comida.
