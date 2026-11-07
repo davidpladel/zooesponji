@@ -1,6 +1,6 @@
 # Llegar a la tienda, mano del tutorial, carteles con dibujo y farolas — diseño
 
-Fecha: 2026-11-07 · Rama: `feat/plaza-recintos-recorrido` (se sigue en la misma) · Estado: diseño aprobado por partes en el chat, pendiente de revisar este documento
+Fecha: 2026-11-07 · Rama: `feat/plaza-recintos-recorrido` (se sigue en la misma) · Estado: **implementado** el 2026-11-08 (ver «Estado de implementación» al final); falta que David lo vea en el juego
 
 ## Por qué
 
@@ -130,3 +130,47 @@ En `game/scripts/make-zoo-map.mjs` (líneas ~131–137 y ~365–366):
 5. Carteles de zona sin medallón.
 6. Las partidas viejas con compras o con Luna cuentan como «tienda ya visitada».
 7. La X del tutorial se oculta mientras está abierta la comida.
+
+## Estado de implementación (2026-11-08)
+
+Hecho en `feat/plaza-recintos-recorrido`, sin plan aparte (David pidió hacerlo de noche y decidir lo que hiciera falta):
+
+| Bloque | Estado | Dónde |
+|---|---|---|
+| 1 · Puerta y camino de la tienda | ✅ | `scripts/make-zoo-map.mjs`; foto de caminos regenerada (16 casillas movidas 2 a la derecha y 4 nuevas en el codo) |
+| 2 · Farolas hacia el camino | ✅ | `flip` en el generador, `PropInfo.flip`, `Decor` (13 volteadas) |
+| 3 · Mano de Lintnaya | ✅ | `public/assets/ui/hand.png`, `ui/hand.ts`; créditos en README y `THIRD_PARTY_NOTICES.md` |
+| 4 · Botón, huellas y bocadillo | ✅ | `HudScene`, `WorldScene.guideToShop`, `world/PawTrail.ts`, `core/guideArt.ts`, `core/pawTrail.ts` |
+| 5 · Tocar comida enseña a arrastrar | ✅ | `FeedScene.showDragHint` |
+| 6 · Mano junto a la X tras dar de comer | ✅ | `TutorialScene`: destinos de interfaz sin encerrar; X oculta con la comida abierta |
+| 7 · Carteles con medallón | ✅ | `core/medallion.ts`, `world/Medallion.ts`, `Decor` |
+
+Pruebas: unitarias nuevas en `tests/unit/guia.test.ts` (dibujos, bocadillo del borde, huellas por la ruta, medallón),
+`zoomap.test.ts` (puerta bajo el dibujo, farolas volteadas) y `save.test.ts` (tienda visitada); E2E nueva
+`tests/e2e/guia.spec.ts` y `tutorial.spec.ts` ampliada (mano en el contador, X escondida, botón de la tienda).
+
+## Decisiones tomadas durante la implementación
+
+1. **Puerta de 2 casillas** (`+3 … +4`), no de 1: la prueba «no hay caminos de 1 casilla» y el autotiler piden 2, y
+   la casilla 5 es pared del dibujo, no mostrador. El camino nuevo caía en la esquina recortada de la plaza: lleva un
+   **codo** de 2×2 a la izquierda para entrar en ella.
+2. **«Tienda visitada» sale de `shop.visits`**, que ya existía (sube al entrar): no hace falta campo nuevo. La
+   migración pone 1 visita a las partidas sin visitas que tienen Luna o algún animal comprado.
+3. **Mano a ×4** (64 px, como el emoji de antes). Al apretar baja 2 px en vez de encogerse: encogerla a escala no
+   entera deformaba los píxeles.
+4. **Huellas de 9×9** (la maqueta), cada 2 casillas, giradas de 90 en 90 según hacia dónde se anda; se apagan al
+   pisarlas. Duran 30 s si nadie las sigue.
+5. **Bocadillo del borde** a ×2 (64 px), a 44 px del borde; si cae en la esquina de las monedas, el botón y la X del
+   tutorial, se aparta. En el tutorial, un animal fuera de la pantalla se señala con el mismo bocadillo y una huella
+   marrón dentro (la flecha ➡️ ya no existe).
+6. **Botón de la tienda a ×2** (46 px de dibujo, 64 px de toque) en (38, 100); la X del tutorial baja a (38, 162). El
+   juego es solo apaisado: se comprobó en 640×360 que no toca el engranaje.
+7. **Tocar la comida:** además de la mano, una copia transparente de la comida viaja con ella (se entiende mejor que
+   se lleva la comida). Un toque no cuenta como `food-missed`.
+8. **Medallón de 24 px** (dentro 18) con poste; el animal se reduce a escala entera si mide más de 18×1,3 y luego
+   se recorta por abajo (queda la cabeza). Al reducir, cada bloque toma el color que más se repite, para no perder el
+   contorno. El nombre va encima en Baloo blanco con borde marrón.
+9. **Arreglo encontrado de paso:** tras girar la pantalla con la comida abierta, a veces llega un aviso de cambio de
+   tamaño con el mismo tamaño; la ventana se rehacía en mitad del arrastre y soltaba la comida (la prueba del
+   tutorial fallaba también sin estos cambios). `restartOnResize` ya solo rehace si el tamaño cambia de verdad.
+10. Sin evento nuevo de Matomo para el botón de la tienda (no lo pedía la spec); se puede añadir si David quiere medirlo.

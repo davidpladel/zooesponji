@@ -85,11 +85,27 @@ recintos de al menos 14×9 por dentro con el paisaje de cada especie y farolas r
   por debajo de la cuidadora, Luna, los animales y los visitantes (`propDepth`).
 - **Agua:** es una zona propia del mapa (objetos `agua` con `kind` `agua` o `barro`), no un prop que bloquea: así en
   el risco de la pantera la roca se pisa y la cascada no. `waterAt` dice en qué charca está un punto.
+- **Tienda:** la puerta (2 casillas) está bajo la casilla 4 del edificio, donde el dibujo tiene la puerta; el camino
+  baja de ella y entra en la plaza con un codo. Las **farolas** con el camino a su izquierda llevan `flip` y se
+  dibujan volteadas: el pie queda en la misma casilla de césped y el farol cuelga sobre el camino.
+- **Carteles de recinto:** medallón con el animal de frente sobre un poste (`world/Medallion.ts`); los grandes se
+  reducen a escala entera y se quedan con la cabeza. Los carteles de zona siguen siendo de texto.
 - **Foto de los caminos** (`tests/unit/data/caminos.json`): si un cambio quita casillas de camino, `caminos.test.ts`
   falla y dice cuáles. Si es a propósito, `npm run map:snapshot` y se explica en el commit.
 - Las pruebas del mapa (`zoomap`, `caminos`, `recintos`, `tour`) leen las posiciones del propio mapa, no números
   fijos. La prueba de juego `recorrido.spec.ts` hace andar a la cuidadora tocando la pantalla por una ruta que pisa
   todas las casillas (`core/tour.ts`) y comprueba que llega, que Luna la sigue y que nada que se pisa queda encima.
+
+## Llegar a la tienda sin leer
+
+- **Botón de la tienda** debajo de las monedas (tiendita en píxeles, `core/guideArt.ts`). Antes de la primera visita
+  (`shop.visits` del guardado; las partidas viejas con compras o con Luna cuentan como visitada) saca **huellas de
+  Luna** por la ruta de la cuidadora hasta la puerta (`world/PawTrail.ts`): se apagan al pisarlas, al volver a tocar
+  el botón, al entrar o a los 30 s. Después de la primera visita la cuidadora va andando sola.
+- **Bocadillo del borde:** si la puerta no se ve (con huellas o en el paso de la tienda del tutorial), un bocadillo
+  crema con la tiendita sale en el borde con la colita hacia ella. No se gira: hay un dibujo por lado.
+- **Mano:** la de Lintnaya (CC0, `public/assets/ui/hand.png`, ×4). Tocar una comida sin arrastrarla hace que la
+  mano la lleve dos veces a la boca del animal (salvo si el tutorial ya lo está enseñando).
 
 ## Jugadores con IA
 
