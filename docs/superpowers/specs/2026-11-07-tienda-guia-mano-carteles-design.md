@@ -185,3 +185,6 @@ Pruebas: unitarias nuevas en `tests/unit/guia.test.ts` (dibujos, bocadillo del b
    compras o Luna). El tramo de monedas de los eventos (`coinsBucket`) sigue siendo «0-19» al empezar.
 3. **Tutorial:** la mano lleva a la cabra una comida normal (zanahoria), no la piedra ni el conejo, que son de
    sorpresa.
+4. **Entrada del parque:** los tramos del muro de abajo salen de los dos lados del portón, pegados a él (en la
+   rejilla fija de 32 px quedaba un hueco junto al portón). La farola de detrás del portón se quita y van dos, una a
+   cada lado del camino nada más entrar, a una casilla de él y con el farol hacia el camino.

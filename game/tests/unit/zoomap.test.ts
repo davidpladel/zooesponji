@@ -411,7 +411,10 @@ describe('mapa del zoo', () => {
     for (const p of readProps(map).filter((q) => q.prop === 'lamp')) {
       const tx = Math.floor((p.x - 1) / 16);
       const ty = Math.floor((p.y - 1) / 16);
-      const nextToPath = [[1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [1, -1], [-1, 1], [-1, -1]].some(([dx, dy]) => isWalkable(grid, tx + dx!, ty + dy!));
+      // Pegada al camino o, como las de la entrada (2026-11-08), a una casilla de él.
+      const near: number[][] = [];
+      for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) near.push([dx, dy]);
+      const nextToPath = near.some(([dx, dy]) => isWalkable(grid, tx + dx!, ty + dy!));
       expect(nextToPath, `farola en (${tx},${ty})`).toBe(true);
       expect(pens.some((e) => rectContains(e, { x: p.x, y: p.y - 1 })), `farola en (${tx},${ty})`).toBe(false);
     }
@@ -430,13 +433,19 @@ describe('mapa del zoo', () => {
 
   it('el farol cuelga sobre el camino: volteada si el camino está a la izquierda', () => {
     const lamps = readProps(map).filter((q) => q.prop === 'lamp');
+    // Entrada: en la fila de las farolas, el camino del portón es lo único andable a 2 casillas a un lado.
+    const entrance = (tx: number, ty: number) =>
+      !isWalkable(grid, tx - 1, ty) && !isWalkable(grid, tx + 1, ty) && isWalkable(grid, tx - 2, ty) !== isWalkable(grid, tx + 2, ty) && ty > 66;
+    expect(lamps.filter((p) => entrance(Math.floor((p.x - 1) / 16), Math.floor((p.y - 1) / 16)))).toHaveLength(2);
     expect(lamps.some((p) => p.flip)).toBe(true);
     for (const p of lamps) {
       const tx = Math.floor((p.x - 1) / 16);
       const ty = Math.floor((p.y - 1) / 16);
       const pathLeft = isWalkable(grid, tx - 1, ty);
       const pathRight = isWalkable(grid, tx + 1, ty);
-      expect(p.flip, `farola en (${tx},${ty})`).toBe(pathLeft && !pathRight);
+      // Las dos de la entrada (2026-11-08) van a una casilla del camino, mirándolo: la de la derecha, volteada.
+      if (entrance(tx, ty)) expect(p.flip, `farola de la entrada en (${tx},${ty})`).toBe(isWalkable(grid, tx - 2, ty));
+      else expect(p.flip, `farola en (${tx},${ty})`).toBe(pathLeft && !pathRight);
     }
   });
 

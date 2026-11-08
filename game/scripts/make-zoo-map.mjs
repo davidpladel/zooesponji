@@ -400,6 +400,12 @@ for (const [name, x, y] of [
 ]) at(name, x, y);
 for (const [x, y] of [[30, 16], [10, MID + 2], [RING_R + 4, MID + 2]]) prop('bench', (x + 1) * T, (y + 1) * T);
 
+// Entrada: una farola a cada lado del camino nada más pasar el portón, con el farol hacia el camino (David,
+// 2026-11-08: la que salía detrás del portón no pegaba). Con ellas, el reparto de abajo ya no pone otra allí.
+// Una casilla apartadas del camino, como las de los cruces: el farol cuelga sobre el césped de su borde.
+prop('lamp', (CX - 3 + OX + 1) * T, (PH + OY + 1) * T);
+prop('lamp', (CX + 2 + OX + 1) * T, (PH + OY + 1) * T, { flip: true });
+
 // Farolas por todo el zoo (David, 2026-11-06: «si hay farolas en la plaza, hay que poner más por los caminos»).
 // Se reparten solas: recorriendo los caminos, donde no hay ninguna farola a 7 casillas se pone una en el césped
 // de al lado, fuera de los recintos, lejos del muro y sin pegarse a otro adorno.
@@ -451,7 +457,11 @@ for (const [x, y] of [[30, 16], [10, MID + 2], [RING_R + 4, MID + 2]]) prop('ben
 // Muro del parque (madera sobre piedra) alrededor de todo, con el portón abajo, donde acaba el camino central.
 const gatePx = (CX + OX) * T;
 for (let x = 0; x < W * T; x += 32) prop('park-wall', x + 16, 2 * T);
-for (let x = 0; x < W * T; x += 32) if (x + 32 <= gatePx - 2 * T || x >= gatePx + 2 * T) prop('park-wall', x + 16, H * T);
+// Abajo, los tramos (32 px) salen de los dos lados del portón (64 px), pegados a él: en la rejilla fija de 32 px
+// quedaba un hueco de media pieza junto al portón (David, 2026-11-08).
+const GATE_HALF = 32;
+for (let x = gatePx - GATE_HALF - 16; x > -16; x -= 32) prop('park-wall', x, H * T);
+for (let x = gatePx + GATE_HALF + 16; x < W * T + 16; x += 32) prop('park-wall', x, H * T);
 for (let y = 3; y <= H - 3; y++) {
   prop('park-wall-side', T, y * T);
   prop('park-wall-side', (W - 1) * T, y * T);
