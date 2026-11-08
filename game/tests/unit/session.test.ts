@@ -1,12 +1,13 @@
 import { describe, expect, it, vi } from 'vitest';
+import { STARTING_COINS } from '../../src/core/economy';
 import { EventBus, type GameEvents } from '../../src/systems/events';
 import { Session, getSession, setSession } from '../../src/systems/session';
 import { createMemoryStore } from '../../src/systems/storage';
 
 describe('Session', () => {
-  it('sin partida guardada empieza con 0 monedas', async () => {
+  it('sin partida guardada empieza con las monedas de inicio', async () => {
     const session = await Session.load(createMemoryStore(), new EventBus<GameEvents>());
-    expect(session.state.coins).toBe(0);
+    expect(session.state.coins).toBe(STARTING_COINS);
     expect(session.settings.music).toBe(true);
   });
 
@@ -19,9 +20,9 @@ describe('Session', () => {
     const session = await Session.load(store, events);
     await session.earnCoins(3);
 
-    expect(handler).toHaveBeenCalledWith({ coins: 3 });
+    expect(handler).toHaveBeenCalledWith({ coins: STARTING_COINS + 3 });
     const reloaded = await Session.load(store, new EventBus<GameEvents>());
-    expect(reloaded.state.coins).toBe(3);
+    expect(reloaded.state.coins).toBe(STARTING_COINS + 3);
   });
 
   it('update sin cambio de monedas no emite coins-changed', async () => {
@@ -105,7 +106,7 @@ describe('Session: animales extra', () => {
     expect(result.ok).toBe(true);
     expect(added).toHaveBeenCalledWith({ penId: 'cabra', count: 2, residentId: 'nube' });
     expect(unlocked).not.toHaveBeenCalled();
-    expect(session.state.coins).toBe(20);
+    expect(session.state.coins).toBe(STARTING_COINS + 20);
   });
 });
 
@@ -125,7 +126,7 @@ describe('Session.saveIfValid', () => {
     (session as unknown as { data: { state: { coins: number } } }).data.state.coins = Number.NaN;
     expect(await session.saveIfValid()).toBe(false);
     const reloaded = await Session.load(store, new EventBus<GameEvents>());
-    expect(reloaded.state.coins).toBe(5);
+    expect(reloaded.state.coins).toBe(STARTING_COINS + 5);
   });
 });
 
@@ -147,7 +148,7 @@ describe('Session: dar de comer, comprar y ajustes', () => {
   it('dar comida que le gusta suma monedas', async () => {
     const { session } = await fresh();
     expect(await session.feed('bills', 'carne')).toEqual({ reaction: 'come', coins: 1 });
-    expect(session.state.coins).toBe(1);
+    expect(session.state.coins).toBe(STARTING_COINS + 1);
   });
 
   it('comida rechazada no emite coins-changed', async () => {
@@ -176,14 +177,14 @@ describe('Session: dar de comer, comprar y ajustes', () => {
     const result = await session.buy('pantera');
     expect(result.ok).toBe(true);
     expect(handler).toHaveBeenCalledWith({ penId: 'pantera' });
-    expect(session.state.coins).toBe(10);
+    expect(session.state.coins).toBe(STARTING_COINS + 10);
   });
 
   it('comprar sin monedas no cambia nada', async () => {
     const { session } = await fresh();
     await session.earnCoins(20);
     expect(await session.buy('panda')).toEqual({ ok: false, error: 'not-enough-coins' });
-    expect(session.state.coins).toBe(20);
+    expect(session.state.coins).toBe(STARTING_COINS + 20);
   });
 
   it('updateSettings guarda y emite settings-changed', async () => {

@@ -1,6 +1,6 @@
 import { PEN_IDS, isPenId, penCapacity, type PenId } from '../data/pens';
 import { isLanguage, type Language } from '../systems/language';
-import { initialCounts, type GameState } from './economy';
+import { initialCounts, initialState, type GameState } from './economy';
 
 export interface KeyValueStore {
   get(key: string): Promise<string | null>;
@@ -126,7 +126,7 @@ function parseShop(raw: unknown, state: Pick<GameState, 'luna' | 'counts'>): Sho
 export function defaultSave(): SaveData {
   return {
     version: SAVE_VERSION,
-    state: { coins: 0, counts: initialCounts(), shopUnlocked: true, luna: false },
+    state: initialState(),
     settings: defaultSettings(),
     book: defaultBook(),
     tutorial: { offered: false },

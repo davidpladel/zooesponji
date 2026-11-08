@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { adReward, addCoins, penCount, buyExtra, initialState, isPenOpen, purchase, openPens, type GameState } from '../../src/core/economy';
+import { STARTING_COINS, adReward, addCoins, penCount, buyExtra, initialState, isPenOpen, purchase, openPens, type GameState } from '../../src/core/economy';
 import { PENS } from '../../src/data/pens';
 import { SHOP_ITEMS } from '../../src/data/shop';
 
@@ -8,9 +8,11 @@ function withCoins(coins: number, extra: Partial<GameState> = {}): GameState {
 }
 
 describe('initialState', () => {
-  it('empieza con 0 monedas, león y cabra, y la tienda abierta', () => {
+  it('empieza con las monedas justas para comprar lo más barato (otra cabra), león y cabra, y la tienda abierta', () => {
+    expect(STARTING_COINS).toBe(10);
+    expect(purchase(initialState(), 'extra-cabra').ok).toBe(true);
     expect(initialState()).toEqual({
-      coins: 0,
+      coins: STARTING_COINS,
       counts: { leon: 1, cabra: 1, pantera: 0, panda: 0, estanque: 0, ovejas: 0, establo: 0, pinguinos: 0, sabana: 0, 'elefantes-africanos': 0, 'elefantes-asiaticos': 0 },
       shopUnlocked: true,
       luna: false,
@@ -20,7 +22,7 @@ describe('initialState', () => {
 
 describe('addCoins', () => {
   it('suma monedas', () => {
-    expect(addCoins(addCoins(initialState(), 1), 2).coins).toBe(3);
+    expect(addCoins(addCoins(initialState(), 1), 2).coins).toBe(STARTING_COINS + 3);
   });
 
   it('abre la tienda justo al alcanzar 20', () => {
@@ -31,7 +33,7 @@ describe('addCoins', () => {
   it('no modifica el estado original', () => {
     const state = initialState();
     addCoins(state, 5);
-    expect(state.coins).toBe(0);
+    expect(state.coins).toBe(STARTING_COINS);
   });
 
   it.each([-1, 1.5, Number.NaN])('rechaza cantidades no válidas (%s)', (amount) => {

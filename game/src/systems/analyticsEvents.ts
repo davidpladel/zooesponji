@@ -1,7 +1,7 @@
 // game/src/systems/analyticsEvents.ts
 import { dayKey, type ActivityFlag } from '../core/activity';
 import { isBookComplete } from '../core/book';
-import { initialCounts, openPens, type GameState } from '../core/economy';
+import { STARTING_COINS, initialCounts, openPens, type GameState } from '../core/economy';
 import {
   animalsBucket, bookBucket, coinsBucket, feedsBucket, pagesBucket, part, reachAction, residentName,
   type ActionOf, type Category, type ReachKind, type Step,
@@ -43,7 +43,9 @@ export function knownSteps(state: GameState, book: BookProgress): Step[] {
   const initial = initialCounts();
   const bought = PEN_IDS.some((id) => state.counts[id] > initial[id]);
   const steps: Step[] = [];
-  if (state.coins > 0 || bought) steps.push('primer-paso', 'primer-toque-animal', 'primera-ventana', 'primera-comida');
+  // Desde el 2026-11-08 se empieza con STARTING_COINS: tener otras monedas (más o menos) es que ya se ha jugado.
+  const played = state.coins !== STARTING_COINS || bought || state.luna;
+  if (played) steps.push('primer-paso', 'primer-toque-animal', 'primera-ventana', 'primera-comida');
   // Desde el 2026-11-02 la tienda está abierta de inicio: el paso «tienda-abierta» ya no se da (se marca como dado).
   steps.push('tienda-abierta');
   if (bought) steps.push('primera-tienda', 'primera-compra');

@@ -52,7 +52,7 @@ test('comprar la pantera y luego otra: al completarse su peana queda AGOTADA', a
   await buyInShop(page, 'extra-pantera');
   await expect.poll(() => page.evaluate(() => window.__ZOO__!.shopCardStatus('extra-pantera'))).toBe('full');
   expect(await page.evaluate(() => window.__ZOO__!.counts().pantera)).toBe(2);
-  expect(await page.evaluate(() => window.__ZOO__!.hudCoinsText())).toBe('30');
+  expect(await page.evaluate(() => window.__ZOO__!.hudCoinsText())).toBe('40');
 });
 
 test('menú ⚙️: las estadísticas anónimas se pueden apagar y se quedan apagadas', async ({ page }) => {

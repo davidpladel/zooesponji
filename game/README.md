@@ -105,7 +105,11 @@ recintos de al menos 14×9 por dentro con el paisaje de cada especie y farolas r
 - **Bocadillo del borde:** si la puerta no se ve (con huellas o en el paso de la tienda del tutorial), un bocadillo
   crema con la tiendita sale en el borde con la colita hacia ella. No se gira: hay un dibujo por lado.
 - **Mano:** la de Lintnaya (CC0, `public/assets/ui/hand.png`, ×4). Tocar una comida sin arrastrarla hace que la
-  mano la lleve dos veces a la boca del animal (salvo si el tutorial ya lo está enseñando).
+  mano la lleve dos veces a la boca del animal (salvo si el tutorial ya lo está enseñando). En el tutorial la mano
+  lleva una comida normal (a la cabra, la zanahoria), no la piedra ni el conejo, que son de sorpresa (`goodFood`).
+- **Monedas de inicio:** una partida nueva empieza con `STARTING_COINS` (`core/economy.ts`), lo justo para comprar
+  lo más barato de la tienda al empezar (hoy otra cabra, 10). Se calcula de los precios: si cambian, cambia solo. El
+  aviso «Cómpralo en la tienda» lleva la tiendita pixelada en vez del emoji.
 
 ## Jugadores con IA
 

@@ -174,3 +174,14 @@ Pruebas: unitarias nuevas en `tests/unit/guia.test.ts` (dibujos, bocadillo del b
    tamaño con el mismo tamaño; la ventana se rehacía en mitad del arrastre y soltaba la comida (la prueba del
    tutorial fallaba también sin estos cambios). `restartOnResize` ya solo rehace si el tamaño cambia de verdad.
 10. Sin evento nuevo de Matomo para el botón de la tienda (no lo pedía la spec); se puede añadir si David quiere medirlo.
+
+## Cambios tras probarlo David (2026-11-08)
+
+1. **Aviso «Cómpralo en la tienda»** con la tiendita pixelada (×3) detrás del texto en vez del emoji 🏪 (a la
+   izquierda en árabe). El evento `toast` admite `icon: 'shop'`.
+2. **Monedas de inicio** (lo sugirió un niño): una partida nueva empieza con `STARTING_COINS`, lo más barato que se
+   puede comprar al empezar (otra cabra, 10 monedas). Solo afecta a partidas nuevas; las guardadas no cambian.
+   Matomo: el embudo deducía «ya ha jugado» de tener más de 0 monedas; ahora de tener otras que las de inicio (o
+   compras o Luna). El tramo de monedas de los eventos (`coinsBucket`) sigue siendo «0-19» al empezar.
+3. **Tutorial:** la mano lleva a la cabra una comida normal (zanahoria), no la piedra ni el conejo, que son de
+   sorpresa.

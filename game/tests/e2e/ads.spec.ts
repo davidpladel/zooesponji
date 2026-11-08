@@ -75,10 +75,10 @@ test('al entrar en la tienda salta el panel y el botón verde da las monedas', a
   expect(await scenes(page)).not.toContain('Shop');
   // Sin tocar nada el anuncio no empieza: en la tienda no hay cuenta atrás.
   await page.waitForTimeout(1500);
-  expect(await coins(page)).toBe('0');
+  expect(await coins(page)).toBe('10'); // las 10 de inicio
 
   await tap(page, 'yes');
-  await expect.poll(() => coins(page)).toBe('10');
+  await expect.poll(() => coins(page)).toBe('20');
   await expect.poll(() => scenes(page)).toContain('Shop');
   expect(await scenes(page)).not.toContain('AdOffer');
   expect((await log(page)).filter((name) => name.startsWith('ad-'))).toEqual(['ad-offered', 'ad-accepted', 'ad-closed', 'ad-watched']);
@@ -93,7 +93,7 @@ test('la X cierra el panel sin anuncio ni monedas, y no vuelve a saltar al momen
   await tap(page, 'no');
   await expect.poll(() => scenes(page)).toContain('Shop');
   expect(await scenes(page)).not.toContain('AdOffer');
-  expect(await coins(page)).toBe('0');
+  expect(await coins(page)).toBe('10'); // las 10 de inicio
   expect((await log(page)).filter((name) => name.startsWith('ad-'))).toEqual(['ad-offered', 'ad-declined']);
 
   // Salir y volver a entrar enseguida: hay que esperar 15 minutos de juego.
@@ -127,7 +127,7 @@ test('el botón atrás de Android equivale a la X', async ({ page }) => {
   expect(await page.evaluate(() => window.__ZOO__!.back())).toBe('close-ad');
   await expect.poll(() => scenes(page)).toContain('Shop');
   expect(await log(page)).toContain('ad-declined');
-  expect(await coins(page)).toBe('0');
+  expect(await coins(page)).toBe('10'); // las 10 de inicio
 });
 
 test('un anuncio cerrado antes de tiempo no da monedas', async ({ page }) => {
@@ -139,7 +139,7 @@ test('un anuncio cerrado antes de tiempo no da monedas', async ({ page }) => {
   await tap(page, 'yes');
   await expect.poll(() => log(page)).toContain('ad-cut');
   await expect.poll(() => scenes(page)).toContain('Shop');
-  expect(await coins(page)).toBe('0');
+  expect(await coins(page)).toBe('10'); // las 10 de inicio
 });
 
 test('cambiar el tamaño con el panel abierto no repite la oferta ni cambia el premio', async ({ page }) => {
@@ -154,7 +154,7 @@ test('cambiar el tamaño con el panel abierto no repite la oferta ni cambia el p
   expect(await page.evaluate(() => window.__ZOO__!.adOfferAmount())).toBe(10);
   expect((await log(page)).filter((name) => name === 'ad-offered')).toHaveLength(1);
   await tap(page, 'yes');
-  await expect.poll(() => coins(page)).toBe('10');
+  await expect.poll(() => coins(page)).toBe('20');
   expect((await log(page)).filter((name) => name === 'ad-watched')).toHaveLength(1);
 });
 
@@ -172,7 +172,7 @@ test('pausa: al volver al mapa tras 15 minutos salta el panel y el anuncio empie
   // El mapa queda en pausa debajo del panel.
   expect(await scenes(page)).not.toContain('World');
   // Sin tocar nada: a los 5 segundos empieza el anuncio.
-  await expect.poll(() => coins(page), { timeout: 12_000 }).toBe('10');
+  await expect.poll(() => coins(page), { timeout: 12_000 }).toBe('20');
   await expect.poll(() => scenes(page)).toContain('World');
   expect((await log(page)).filter((name) => name.startsWith('ad-'))).toEqual(['ad-offered', 'ad-accepted', 'ad-closed', 'ad-watched']);
 });
@@ -188,7 +188,7 @@ test('pausa: la X se salta el anuncio', async ({ page }) => {
   await tap(page, 'no');
   await expect.poll(() => scenes(page)).toContain('World');
   await page.waitForTimeout(6000);
-  expect(await coins(page)).toBe('0');
+  expect(await coins(page)).toBe('10'); // las 10 de inicio
   expect((await log(page)).filter((name) => name.startsWith('ad-'))).toEqual(['ad-offered', 'ad-declined']);
 });
 

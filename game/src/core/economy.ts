@@ -26,9 +26,29 @@ export function initialCounts(): Record<PenId, number> {
   return counts;
 }
 
+/**
+ * Lo más barato que se puede comprar en la tienda nada más empezar: otro residente de un recinto abierto, un
+ * recinto nuevo o Luna.
+ */
+function cheapestAtStart(): number {
+  const counts = initialCounts();
+  const extras = PEN_IDS.filter((id) => counts[id] > 0).map((id) => {
+    const next = nextResident(id, counts[id]);
+    return next ? ANIMALS[next.species].extraCost : undefined;
+  });
+  const costs = [...extras, ...SHOP_ITEMS.map((item) => item.cost), LUNA_COST].filter((c): c is number => c !== undefined);
+  return Math.min(...costs);
+}
+
+/**
+ * Monedas de una partida nueva: justo para comprar algo en la tienda (lo pidió un niño, 2026-11-08). Así la
+ * primera visita a la tienda ya sirve para algo.
+ */
+export const STARTING_COINS = cheapestAtStart();
+
 /** La tienda está abierta desde el principio (2026-11-02): así el tutorial puede llevar hasta ella. */
 export function initialState(): GameState {
-  return { coins: 0, counts: initialCounts(), shopUnlocked: true, luna: false };
+  return { coins: STARTING_COINS, counts: initialCounts(), shopUnlocked: true, luna: false };
 }
 
 export function addCoins(state: GameState, amount: number): GameState {

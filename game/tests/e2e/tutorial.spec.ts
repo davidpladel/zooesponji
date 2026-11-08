@@ -170,6 +170,6 @@ test('la ✕ lo cierra a medias y desde el menú se vuelve a ver sin tocar las m
   const learn = (await page.evaluate(() => window.__ZOO__!.settingsButtonPos('learn')))!;
   await page.mouse.click(box.x + learn.x, box.y + learn.y);
   await expect.poll(() => step(page)).toBe('move');
-  expect(await page.evaluate(() => window.__ZOO__!.hudCoinsText())).toBe('7');
+  expect(await page.evaluate(() => window.__ZOO__!.hudCoinsText())).toBe('17');
   expect(await scenes(page)).not.toContain('Settings');
 });

@@ -28,6 +28,8 @@ describe('pasos del tutorial', () => {
 
   it('la mano arrastra una comida que el animal se come', () => {
     expect(goodFood('leon')).toBe('carne');
+    // A la cabra, algo normal: ni la piedra ni el conejo (que son de sorpresa).
+    expect(['zanahoria', 'lechuga']).toContain(goodFood('cabra'));
     for (const id of ANIMAL_IDS) expect(ANIMALS[id].reactions[goodFood(id)], id).not.toBe('rechaza');
   });
 });

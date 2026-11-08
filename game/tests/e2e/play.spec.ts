@@ -44,10 +44,10 @@ test('tocar al león: la cuidadora entra en su recinto y se le da de comer arras
   expect(await page.evaluate(() => window.__ZOO__!.keeperInPen('leon'))).toBe(true);
 
   await dragFood(page, 'carne');
-  await expect.poll(() => page.evaluate(() => window.__ZOO__!.hudCoinsText())).toBe('1');
+  await expect.poll(() => page.evaluate(() => window.__ZOO__!.hudCoinsText())).toBe('11');
 
   await dragFood(page, 'piedra');
-  await expect.poll(() => page.evaluate(() => window.__ZOO__!.hudCoinsText())).toBe('1');
+  await expect.poll(() => page.evaluate(() => window.__ZOO__!.hudCoinsText())).toBe('11');
 
   await page.keyboard.press('Escape');
   await page.waitForFunction(() => {
@@ -71,7 +71,7 @@ test('a Sasha, la leona, se le da de comer como al león', async ({ page }) => {
   expect(await page.evaluate(() => window.__ZOO__!.busLog())).toContain('feed-opened');
 
   await dragFood(page, 'carne');
-  await expect.poll(() => page.evaluate(() => window.__ZOO__!.hudCoinsText())).toBe('1');
+  await expect.poll(() => page.evaluate(() => window.__ZOO__!.hudCoinsText())).toBe('11');
 
   await page.keyboard.press('Escape');
   await page.waitForFunction(() => !window.__ZOO__?.activeScenes().includes('Feed'));
@@ -88,7 +88,7 @@ test('la ventana de dar de comer se abre para Sasha aunque no haya arte', async 
   await page.evaluate(() => window.__ZOO__!.openFeed('sasha'));
   await page.waitForFunction(() => window.__ZOO__?.activeScenes().includes('Feed'));
   await dragFood(page, 'carne');
-  await expect.poll(() => page.evaluate(() => window.__ZOO__!.hudCoinsText())).toBe('1');
+  await expect.poll(() => page.evaluate(() => window.__ZOO__!.hudCoinsText())).toBe('11');
 });
 
 test('con el dedo: tocar al animal que está al lado abre su comida', async ({ page }) => {
@@ -126,7 +126,7 @@ test('soltar la comida lejos no da monedas', async ({ page }) => {
   await page.mouse.move(box.x + 20, box.y + box.height - 20, { steps: 8 });
   await page.mouse.up();
   await page.waitForTimeout(500);
-  expect(await page.evaluate(() => window.__ZOO__!.hudCoinsText())).toBe('0');
+  expect(await page.evaluate(() => window.__ZOO__!.hudCoinsText())).toBe('10');
 });
 
 /** En la tienda: tocar el animal (la cuidadora va andando) y luego el bocadillo de compra. */
@@ -154,7 +154,7 @@ test('con 60 monedas se entra en la tienda y se compra la pantera', async ({ pag
 
   await buyInShop(page, 'pantera');
 
-  await expect.poll(() => page.evaluate(() => window.__ZOO__!.hudCoinsText())).toBe('10');
+  await expect.poll(() => page.evaluate(() => window.__ZOO__!.hudCoinsText())).toBe('20');
   expect(await page.evaluate(() => window.__ZOO__!.unlocked())).toContain('pantera');
 
   await page.keyboard.press('Escape');
@@ -180,5 +180,5 @@ test('la cabra tiene lechuga en su bandeja y se la come', async ({ page }) => {
   const targets = await page.evaluate(() => window.__ZOO__!.feedTargets());
   expect(Object.keys(targets!.foods)).toHaveLength(5);
   await dragFood(page, 'lechuga');
-  await expect.poll(() => page.evaluate(() => window.__ZOO__!.hudCoinsText())).toBe('1');
+  await expect.poll(() => page.evaluate(() => window.__ZOO__!.hudCoinsText())).toBe('11');
 });

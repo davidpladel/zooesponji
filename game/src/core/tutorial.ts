@@ -41,7 +41,16 @@ export function advance(step: TutorialStep, event: TutorialEvent): TutorialStep 
 }
 
 /** Comida de la bandeja que el animal se come (la primera que no rechaza): la que arrastra la mano. */
+/** Comidas de sorpresa (la piedra, el conejo): el tutorial no empieza por ellas (David, 2026-11-08). */
+const SURPRISE_FOODS: readonly FoodId[] = ['piedra', 'conejo'];
+
 export function goodFood(species: AnimalId): FoodId {
   const foods = trayFoods(species);
-  return foods.find((f) => ANIMALS[species].reactions[f] !== 'rechaza') ?? foods[0]!;
+  const reaction = (f: FoodId) => ANIMALS[species].reactions[f];
+  return (
+    foods.find((f) => reaction(f) === 'come' && !SURPRISE_FOODS.includes(f)) ??
+    foods.find((f) => reaction(f) === 'come') ??
+    foods.find((f) => reaction(f) !== 'rechaza') ??
+    foods[0]!
+  );
 }

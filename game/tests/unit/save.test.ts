@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { initialCounts } from '../../src/core/economy';
+import { STARTING_COINS, initialCounts } from '../../src/core/economy';
 import {
   BACKUP_KEY,
   LEGACY_COINS_KEY,
@@ -167,7 +167,7 @@ describe('loadSave / writeSave', () => {
   it('si hay partida v3, ignora la de la v1.1', async () => {
     const store = createMemoryStore({ [LEGACY_COINS_KEY]: '99' });
     await writeSave(store, defaultSave());
-    expect((await loadSave(store)).state.coins).toBe(0);
+    expect((await loadSave(store)).state.coins).toBe(STARTING_COINS);
   });
 });
 
