@@ -133,6 +133,8 @@ En `game/scripts/make-zoo-map.mjs` (líneas ~131–137 y ~365–366):
 
 ## Estado de implementación (2026-11-08)
 
+> Al día el 2026-11-08 (noche): los 7 bloques hechos, y además los cambios tras probarlo David (aviso con la tiendita, 10 🪙 al empezar, comida normal en el tutorial, entrada del parque, libro, farolas de frente y de espaldas, fuente de piedras, farola 7 y estadísticas nuevas). Todo en la rama `feat/plaza-recintos-recorrido`, subida a GitHub y sin fusionar en `main`.
+
 Hecho en `feat/plaza-recintos-recorrido`, sin plan aparte (David pidió hacerlo de noche y decidir lo que hiciera falta):
 
 | Bloque | Estado | Dónde |

@@ -86,8 +86,16 @@ recintos de al menos 14×9 por dentro con el paisaje de cada especie y farolas r
 - **Agua:** es una zona propia del mapa (objetos `agua` con `kind` `agua` o `barro`), no un prop que bloquea: así en
   el risco de la pantera la roca se pisa y la cascada no. `waterAt` dice en qué charca está un punto.
 - **Tienda:** la puerta (2 casillas) está bajo la casilla 4 del edificio, donde el dibujo tiene la puerta; el camino
-  baja de ella y entra en la plaza con un codo. Las **farolas** con el camino a su izquierda llevan `flip` y se
-  dibujan volteadas: el pie queda en la misma casilla de césped y el farol cuelga sobre el camino.
+  baja de ella y entra en la plaza con un codo.
+- **Farolas** (`lampAt` en el generador; las 4 del pack en `docs/superpowers/mockups/2026-11-07-guia-tienda/farolas-del-pack.png`):
+  con el camino a un lado, la de brazo (`lamp`, con `flip` si el camino está a la izquierda), y el farol cuelga sobre
+  él; con el camino debajo, la de frente (`lamp-front`); con el camino encima, la de espaldas (`lamp-back`). Las de
+  la plaza y la entrada van a mano; las demás se reparten solas. Para revisarlas de una en una, la ayuda de pruebas
+  `lookAtTile(x, y)` mueve la cámara a una casilla.
+- **Fuente de la plaza:** la animada del pack con el junco borrado y un montón de piedras encima (opciones `refill`
+  y `overlay` de `art.config.json` para piezas animadas).
+- **Muro de abajo:** los tramos salen pegados a los dos lados del portón.
+- **Tablón:** solo se ve con `VITE_COMMUNITY_URL` (en `.env.production.local`); con `npm run dev` no sale.
 - **Carteles de recinto:** medallón con el animal de frente sobre un poste (`world/Medallion.ts`); los grandes se
   reducen a escala entera y se quedan con la cabeza. Los carteles de zona siguen siendo de texto.
 - **Foto de los caminos** (`tests/unit/data/caminos.json`): si un cambio quita casillas de camino, `caminos.test.ts`
@@ -110,6 +118,10 @@ recintos de al menos 14×9 por dentro con el paisaje de cada especie y farolas r
 - **Monedas de inicio:** una partida nueva empieza con `STARTING_COINS` (`core/economy.ts`), lo justo para comprar
   lo más barato de la tienda al empezar (hoy otra cabra, 10). Se calcula de los precios: si cambian, cambia solo. El
   aviso «Cómpralo en la tienda» lleva la tiendita pixelada en vez del emoji.
+- **Libro:** si no se ha abierto nunca, se abre por la primera hoja aunque se haya comprado algo; luego, cada compra
+  lo deja en la página del animal nuevo, y tras varias compras sin leer, en la primera de ellas (`core/book.ts`).
+- **Matomo:** `mapa | boton-tienda | huellas/apagar/andando` y `comer | pista-arrastrar | …` dicen si se usan estas
+  ayudas; el resumen (`node tools/matomo/resumen.mjs`) tiene apartados de tutorial y de «ayudas sin palabras».
 
 ## Jugadores con IA
 
