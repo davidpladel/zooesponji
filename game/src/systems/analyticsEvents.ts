@@ -124,6 +124,8 @@ export class GameTracker implements AnalyticsHooks {
     });
     on('locked-tap', ({ penId }) => this.send('mapa', 'toca-cerrado', penId));
     on('shop-locked', ({ missing }) => this.send('mapa', 'tienda-cerrada', undefined, missing));
+    on('shop-guide', ({ mode }) => this.send('mapa', 'boton-tienda', mode));
+    on('drag-hint', ({ residentId, foodId }) => this.send('comer', 'pista-arrastrar', part(residentName(residentId), foodId)));
     on('control-used', ({ mode }) => {
       if (this.controls.has(mode)) return;
       this.controls.add(mode);

@@ -169,6 +169,17 @@ describe('GameTracker: mapa', () => {
     expect(t.values.get('mapa | tienda-cerrada')).toBe(14);
     expect(t.sent.filter((k) => k === 'mapa | control | toque')).toHaveLength(1);
   });
+
+  it('botón de la tienda y pista de arrastrar la comida (2026-11-08)', async () => {
+    const t = setup();
+    await t.tracker.start();
+    t.events.emit('shop-guide', { mode: 'huellas' });
+    t.events.emit('shop-guide', { mode: 'andando' });
+    t.events.emit('drag-hint', { residentId: 'gordi', foodId: 'zanahoria' });
+    expect(t.sent).toEqual(expect.arrayContaining([
+      'mapa | boton-tienda | huellas', 'mapa | boton-tienda | andando', 'comer | pista-arrastrar | cabra/gordi/zanahoria',
+    ]));
+  });
 });
 
 describe('GameTracker: tienda', () => {

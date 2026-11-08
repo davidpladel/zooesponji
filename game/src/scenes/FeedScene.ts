@@ -228,6 +228,7 @@ export class FeedScene extends Phaser.Scene {
     if (this.tutorialTeachingDrag()) return;
     const from = this.homes.get(id);
     if (!from) return;
+    bus.emit('drag-hint', { residentId: this.residentId, foodId: id });
     const to = { x: this.animal.x, y: this.animal.y };
     const food = this.foods.get(id);
     const ghost: Food | null =

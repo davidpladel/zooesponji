@@ -126,7 +126,8 @@ export class HudScene extends Phaser.Scene {
   tapShop(): void {
     if (!this.shopButton.visible || !this.scene.isActive('World')) return;
     sfx.play('tap');
-    this.scene.get<WorldScene>('World').guideToShop();
+    const mode = this.scene.get<WorldScene>('World').guideToShop();
+    if (mode) bus.emit('shop-guide', { mode });
   }
 
   /** Mientras hay huellas (o el tutorial lleva a la tienda) y la puerta no se ve, el bocadillo la señala desde el borde. */

@@ -55,6 +55,10 @@ export interface GameEvents {
   /** La cuidadora lleva un rato junto a un recinto. */
   'pen-near': { penId: PenId; locked: boolean };
   'locked-tap': { penId: PenId };
+  /** Botón de la tienda del HUD: qué hizo (sacar las huellas, apagarlas o mandar a la cuidadora andando). */
+  'shop-guide': { mode: 'huellas' | 'apagar' | 'andando' };
+  /** Una comida tocada sin arrastrar: la mano enseña a arrastrarla. */
+  'drag-hint': { residentId: string; foodId: FoodId };
   /** Se ha pisado la puerta de la tienda sin monedas suficientes para abrirla. */
   'shop-locked': { missing: number };
   'control-used': { mode: ControlMode };

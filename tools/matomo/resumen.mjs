@@ -110,6 +110,28 @@ out.push('## Retención por semana de inicio', '', table(
   of('nuevo').sort((a, b) => a.name.localeCompare(b.name)).map((r) => [r.name, r.events, share(n('vuelve-d1', r.name), r.events), share(n('vuelve-d7', r.name), r.events), share(n('vuelve-d30', r.name), r.events)]),
 ), '');
 
+// Tutorial (desde la 2.9.0): se ofrece al empezar; se aprende entonces o luego desde Ajustes.
+const TUTORIAL_STEPS = ['moverse', 'tocar-animal', 'arrastrar-comida', 'monedas', 'tienda'];
+const tutorialStarts = n('tutorial-aprende') + n('tutorial-menu');
+out.push('## Tutorial', '', table(['Dato', 'Valor'], [
+  ['Se ofrece al empezar', n('tutorial-ofrece')],
+  ['Dicen que sí (de los ofrecidos)', share(n('tutorial-aprende'), n('tutorial-ofrece'))],
+  ['Se lo saltan (de los ofrecidos)', share(n('tutorial-salta'), n('tutorial-ofrece'))],
+  ['Lo abren desde Ajustes', n('tutorial-menu')],
+  ['Lo terminan (de los que lo empiezan)', share(n('tutorial-fin'), tutorialStarts)],
+]), '', 'Cada paso: cuántas veces se llega a él y cuántas se deja el tutorial justo ahí.', '', table(
+  ['Paso', 'Llegan', 'Lo dejan aquí'],
+  TUTORIAL_STEPS.map((step) => [step, n('tutorial-paso', step), n('tutorial-deja', step)]),
+), '');
+
+// Ayudas para llegar a la tienda y dar de comer sin leer (2026-11-08): si se usan.
+out.push('## Ayudas sin palabras', '', table(['Dato', 'Valor'], [
+  ['Botón de la tienda: saca las huellas', n('boton-tienda', 'huellas')],
+  ['Botón de la tienda: apaga las huellas', n('boton-tienda', 'apagar')],
+  ['Botón de la tienda: la cuidadora va andando', n('boton-tienda', 'andando')],
+  ['Comida tocada sin arrastrar (la mano lo enseña), por ventana de comer', share(n('pista-arrastrar'), n('ventana'))],
+]), '');
+
 const AD_SLOTS = ['tienda', 'pausa'];
 // Los tramos de `coinsBucket` del juego (src/core/eventCatalog.ts).
 const AD_BALANCES = ['0-19', '20-49', '50-149', '150-399', '400-899', '900-1599', '1600+'];

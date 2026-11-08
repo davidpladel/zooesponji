@@ -195,3 +195,6 @@ Pruebas: unitarias nuevas en `tests/unit/guia.test.ts` (dibujos, bocadillo del b
 6. **Farola de frente** (`lamp-front`, del mismo pack: el farol cuelga delante del poste) donde el camino pasa por
    arriba o por abajo; la de brazo se queda donde el camino va a un lado (así la quiere David). Son las mismas 60
    farolas: 36 de brazo y 24 de frente.
+7. **Estadísticas (Matomo)** de lo nuevo, para saber si se usa:
+   - `mapa | boton-tienda | <huellas|apagar|andando>`: el botón de la tienda y qué hizo.
+   - `comer | pista-arrastrar | <especie/residente/comida>`: se tocó una comida sin arrastrarla y la mano lo enseñó.
