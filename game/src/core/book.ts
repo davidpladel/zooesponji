@@ -38,6 +38,28 @@ function contentOf(chapter: ChapterId): BookPage[] {
   return BOOK_PAGES.filter((p) => p.chapter === chapter && isContentPage(p));
 }
 
+/**
+ * Página por la que se abrirá el libro después de una compra que trae las páginas `fresh` (David, 2026-11-08):
+ * - Si el libro no se ha abierto nunca, no cambia: la primera vez se empieza por la primera hoja.
+ * - Si no, la del animal nuevo. Si ya había otra nueva esperando (comprada y aún sin leer), la que va antes en el
+ *   libro: tras comprar varios, se abre por la primera de todos ellos y se pasa hoja hasta las demás.
+ */
+export function bookPageAfterPurchase(
+  book: { page: string | null; seen: readonly string[]; opened: boolean },
+  fresh: readonly string[],
+): string | null {
+  if (!book.opened || fresh.length === 0) return book.page;
+  const order = (id: string) => BOOK_PAGES.findIndex((p) => p.id === id);
+  const current = BOOK_PAGES.find((p) => p.id === book.page);
+  const waiting = current && isContentPage(current) && !book.seen.includes(current.id) ? [current.id] : [];
+  return [...waiting, ...fresh].sort((a, b) => order(a) - order(b))[0]!;
+}
+
+/** Página por la que se abre el libro: la primera hoja si no se ha abierto nunca; si no, donde se quedó. */
+export function bookStartPage(book: { page: string | null; opened: boolean }): string | null {
+  return book.opened ? book.page : null;
+}
+
 /** Páginas conseguidas de un capítulo y cuántas tiene. */
 export function chapterProgress(state: GameState, chapter: ChapterId): { n: number; total: number } {
   const pages = contentOf(chapter);

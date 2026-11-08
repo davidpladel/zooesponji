@@ -136,6 +136,26 @@ test('libro: se abre desde la estantería y al comprar la pantera aparece Noche'
   expect(await page.evaluate(() => window.__ZOO__!.bookText())).toContain('Noche es negra como el carbón');
 });
 
+test('libro: sin abrirlo nunca, aunque se compre, empieza por la primera hoja', async ({ page }) => {
+  await startGame(page);
+  await page.evaluate(() => window.__ZOO__!.addCoins(60));
+  await page.evaluate(() => window.__ZOO__!.openShop());
+  await page.waitForFunction(() => window.__ZOO__!.shopBookPos() !== null);
+  const box = await canvasBox(page);
+  const bubble = await walkToProduct(page, 'pantera');
+  await page.mouse.click(box.x + bubble.x, box.y + bubble.y);
+  await expect.poll(() => page.evaluate(() => window.__ZOO__!.shopCardStatus('extra-pantera'))).toBe('buy');
+
+  const shelf = (await page.evaluate(() => window.__ZOO__!.shopBookPos()))!;
+  await page.mouse.click(box.x + shelf.x, box.y + shelf.y);
+  await page.waitForFunction(() => window.__ZOO__!.shopBookOut(), undefined, { timeout: 10_000 });
+  await page.waitForTimeout(400);
+  const book = (await page.evaluate(() => window.__ZOO__!.shopBookPos()))!;
+  await page.mouse.click(box.x + book.x, box.y + book.y);
+  await page.waitForFunction(() => window.__ZOO__!.activeScenes().includes('Book'));
+  expect(await page.evaluate(() => window.__ZOO__!.bookPage())).toBe('cover');
+});
+
 test('libro: desde la 3.ª visita se ve parpadeando, y ya siempre', async ({ page }) => {
   await startGame(page);
   await page.evaluate(() => window.__ZOO__!.addCoins(30));

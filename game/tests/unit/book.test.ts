@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import {
   BOOK_NOTICE_VISITS,
+  bookPageAfterPurchase,
+  bookStartPage,
   chapterProgress,
   showBookNotice,
   isBookComplete,
@@ -131,5 +133,32 @@ describe('página de Luna', () => {
     expect(unlockedPageIds(initialState())).not.toContain('luna');
     expect(unlockedPageIds({ ...initialState(), luna: true })).toContain('luna');
     expect(newlyUnlockedPages(initialState(), { ...initialState(), luna: true })).toEqual(['luna']);
+  });
+});
+
+describe('por qué página se abre el libro (David, 2026-11-08)', () => {
+  const never = { page: null, seen: [] as string[], opened: false };
+  const opened = { page: 'story', seen: ['cover', 'story'], opened: true };
+
+  it('sin abrirlo nunca, aunque se compre, empieza por la primera hoja', () => {
+    expect(bookPageAfterPurchase(never, ['noche'])).toBeNull();
+    expect(bookStartPage({ ...never, page: 'noche' })).toBeNull();
+    expect(bookStartPage(never)).toBeNull();
+  });
+
+  it('ya abierto, cada compra lo deja en la página del animal nuevo', () => {
+    expect(bookPageAfterPurchase(opened, ['noche'])).toBe('noche');
+    expect(bookStartPage({ ...opened, page: 'noche' })).toBe('noche');
+    expect(bookPageAfterPurchase(opened, [])).toBe('story');
+  });
+
+  it('tras comprar varios sin leerlos, la primera de todos ellos en el libro', () => {
+    const order = (id: string) => BOOK_PAGES.findIndex((p) => p.id === id);
+    expect(order('noche')).toBeLessThan(order('mochi'));
+    // Panda primero y pantera después, o al revés: siempre la pantera, que va antes.
+    expect(bookPageAfterPurchase({ ...opened, page: 'mochi' }, ['noche'])).toBe('noche');
+    expect(bookPageAfterPurchase({ ...opened, page: 'noche' }, ['mochi'])).toBe('noche');
+    // Una vez leída, la siguiente compra ya lleva a la suya.
+    expect(bookPageAfterPurchase({ ...opened, page: 'noche', seen: [...opened.seen, 'noche'] }, ['mochi'])).toBe('mochi');
   });
 });

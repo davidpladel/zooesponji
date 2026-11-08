@@ -4,7 +4,7 @@ import { pedestalFor } from '../core/interiorLayout';
 import { inJoystickZone } from '../core/joystick';
 import { tileCenter, type Vec } from '../core/movement';
 import { isWalkable, type WalkGrid } from '../core/pathfinding';
-import { newlyUnlockedPages, showBookNotice, unreadPageIds } from '../core/book';
+import { bookPageAfterPurchase, bookStartPage, newlyUnlockedPages, showBookNotice, unreadPageIds } from '../core/book';
 import { shopEntries, shopStock, type ShopEntry, type StockId } from '../core/shopEntries';
 import { shopkeeperLine } from '../core/shopLine';
 import type { PenId } from '../data/pens';
@@ -321,7 +321,7 @@ export class ShopScene extends Phaser.Scene {
     if (this.closing || this.scene.isActive('Book')) return;
     sfx.play('tap');
     this.hint.hide();
-    bus.emit('book-opened', { pageId: getSession().book.page ?? 'cover' });
+    bus.emit('book-opened', { pageId: bookStartPage(getSession().book) ?? 'cover' });
     this.scene.launch('Book');
   }
 
@@ -634,11 +634,12 @@ export class ShopScene extends Phaser.Scene {
       if (entry.kind === 'pet') this.spawnPet(this.keeper.feet);
       this.shopkeeper.hop();
       this.shopkeeper.say(t('shop.thanks'), 1980);
-      // Página nueva: aviso y el libro se abrirá por ella.
-      const fresh = newlyUnlockedPages(before, result.state)[0];
-      if (fresh) {
+      // Página nueva: aviso y el libro se abrirá por ella (o por la primera hoja, si nunca se ha abierto).
+      const fresh = newlyUnlockedPages(before, result.state);
+      if (fresh.length > 0) {
         bus.emit('toast', { text: t('book.newPage') });
-        void getSession().setBookPage(fresh);
+        const page = bookPageAfterPurchase(getSession().book, fresh);
+        if (page) void getSession().setBookPage(page);
       }
     } else if (result.error === 'not-enough-coins') {
       bus.emit('shop-denied', { itemId: entry.id, missing: Math.max(0, entry.cost - getSession().state.coins) });

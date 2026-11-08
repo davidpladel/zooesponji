@@ -188,3 +188,7 @@ Pruebas: unitarias nuevas en `tests/unit/guia.test.ts` (dibujos, bocadillo del b
 4. **Entrada del parque:** los tramos del muro de abajo salen de los dos lados del portón, pegados a él (en la
    rejilla fija de 32 px quedaba un hueco junto al portón). La farola de detrás del portón se quita y van dos, una a
    cada lado del camino nada más entrar, a una casilla de él y con el farol hacia el camino.
+5. **Por qué página se abre el libro** (`core/book.ts`: `bookStartPage`, `bookPageAfterPurchase`): si no se ha
+   abierto nunca, por la primera hoja aunque se haya comprado algo. Ya abierto, cada compra lo deja en la página del
+   animal nuevo; si se compran varios sin leerlos, en la primera de todos ellos (la que va antes en el libro), y se
+   pasa hoja hasta las demás.

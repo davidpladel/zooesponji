@@ -1,6 +1,6 @@
 import * as Phaser from 'phaser';
 import { ART_KEYS, animalKey, companionKey, getArt, idleFrame, lookOr, petKey, propKey } from '../art/art';
-import { chapterProgress, isBookComplete, isContentPage, isPageUnlocked, pagePosition } from '../core/book';
+import { bookStartPage, chapterProgress, isBookComplete, isContentPage, isPageUnlocked, pagePosition } from '../core/book';
 import type { Vec } from '../core/movement';
 import { ANIMALS } from '../data/animals';
 import { BOOK_BACK_ID, BOOK_CHAPTERS, BOOK_PAGES, CHAPTER_PENS, chapterPageId, chapterTitleKey, type BookPage, type ChapterId } from '../data/book';
@@ -55,7 +55,7 @@ export class BookScene extends Phaser.Scene {
     this.pages = bookPages();
     this.content = [];
     const session = getSession();
-    const target = data.page ?? session.book.page;
+    const target = data.page ?? bookStartPage(session.book);
     this.index = Math.max(0, this.pages.findIndex((p) => p.id === target));
   }
 
