@@ -9,10 +9,11 @@ import { t } from '../data/strings';
 import { sfx } from '../systems/audio';
 import { bus } from '../systems/events';
 import { joystickState } from '../systems/joystickState';
+import { getLanguage, isRtl } from '../systems/language';
 import { getSession } from '../systems/session';
 import { textStyle } from '../ui/theme';
 import { addUiText } from '../ui/text';
-import { addShopBubble, setBubbleTail } from '../ui/pixelArt';
+import { addShopBubble, setBubbleTail, shopIconTexture } from '../ui/pixelArt';
 import { makePressable } from '../ui/press';
 import { HUD_COIN, HUD_SHOP, addCoinCounter, addPillButton, type CoinCounter } from '../ui/widgets';
 import type { TutorialScene } from './TutorialScene';
@@ -24,10 +25,15 @@ const GUIDE_SCALE = 2;
 const EDGE_MARGIN = 44;
 /** Esquina de las monedas, el botón de la tienda y la ✕ del tutorial, que el bocadillo del borde no tapa. */
 const HUD_CORNER = { x: 190, y: 220 };
+/** Tiendita del aviso «Cómpralo en la tienda»: 14x11 a x3 (unos 33 px de alto, como el texto). */
+const TOAST_ICON_SCALE = 3;
+const TOAST_ICON_GAP = 10;
 
 export class HudScene extends Phaser.Scene {
   private coins!: CoinCounter;
+  private toast!: Phaser.GameObjects.Container;
   private toastText!: Phaser.GameObjects.Text;
+  private toastIcon!: Phaser.GameObjects.Image;
   private gear!: Phaser.GameObjects.Container;
   /** Botón de la tienda: debajo de las monedas. */
   private shopButton!: Phaser.GameObjects.Container;
@@ -46,10 +52,9 @@ export class HudScene extends Phaser.Scene {
     this.coins = addCoinCounter(this, HUD_COIN.x, HUD_COIN.y);
     this.renderCoins(getSession().state.coins);
 
-    this.toastText = addUiText(this, this.scale.width / 2, 90, '', textStyle(28))
-      .setOrigin(0.5)
-      .setDepth(50)
-      .setVisible(false);
+    this.toastText = addUiText(this, 0, 0, '', textStyle(28)).setOrigin(0.5);
+    this.toastIcon = this.add.image(0, 0, shopIconTexture(this)).setScale(TOAST_ICON_SCALE);
+    this.toast = this.add.container(this.scale.width / 2, 90, [this.toastText, this.toastIcon]).setDepth(50).setVisible(false);
 
     // Menú de ajustes: abajo a la izquierda (a la derecha están los botones de Android).
     this.gear = addPillButton(this, 0, 0, 56, 56, { color: 'blue', icon: 'gear', onTap: () => this.openSettings() });
@@ -64,7 +69,7 @@ export class HudScene extends Phaser.Scene {
 
     const unsubscribe = [
       bus.on('coins-changed', ({ coins }) => this.renderCoins(coins, true)),
-      bus.on('toast', ({ text }) => this.showToast(text)),
+      bus.on('toast', ({ text, icon }) => this.showToast(text, icon)),
       bus.on('shop-unlocked', () => {
         sfx.play('unlock');
         this.showToast(t('toast.shopOpen'));
@@ -164,17 +169,28 @@ export class HudScene extends Phaser.Scene {
     this.coins.set(coins, pop);
   }
 
-  private showToast(text: string): void {
-    this.tweens.killTweensOf(this.toastText);
-    this.toastText.setText(text).setPosition(this.scale.width / 2, 90).setVisible(true).setAlpha(1).setScale(0.6);
-    this.tweens.add({ targets: this.toastText, scale: 1, duration: 200, ease: 'Back.easeOut' });
+  private showToast(text: string, icon?: 'shop'): void {
+    this.tweens.killTweensOf(this.toast);
+    this.toastText.setText(text);
+    // La tiendita va detrás del texto (a la izquierda en árabe, que se lee al revés), y el conjunto centrado.
+    const dir = isRtl(getLanguage()) ? -1 : 1;
+    const iconWidth = icon ? this.toastIcon.displayWidth + TOAST_ICON_GAP : 0;
+    this.toastText.setX((-dir * iconWidth) / 2);
+    this.toastIcon.setVisible(!!icon).setX(dir * (this.toastText.width / 2 + TOAST_ICON_GAP + this.toastIcon.displayWidth / 2 - iconWidth / 2));
+    this.toast.setPosition(this.scale.width / 2, 90).setVisible(true).setAlpha(1).setScale(0.6);
+    this.tweens.add({ targets: this.toast, scale: 1, duration: 200, ease: 'Back.easeOut' });
     this.tweens.add({
-      targets: this.toastText,
+      targets: this.toast,
       alpha: 0,
       delay: 1800,
       duration: 400,
-      onComplete: () => this.toastText.setVisible(false),
+      onComplete: () => this.toast.setVisible(false),
     });
+  }
+
+  /** El aviso de arriba, para las pruebas: texto y si lleva la tiendita. Null si no se ve. */
+  toastShown(): { text: string; shopIcon: boolean } | null {
+    return this.toast.visible ? { text: this.toastText.text, shopIcon: this.toastIcon.visible } : null;
   }
 
   openSettings(): void {
@@ -187,7 +203,7 @@ export class HudScene extends Phaser.Scene {
 
   private layout(): void {
     this.gear.setPosition(16 + 28, this.scale.height - 16 - 28);
-    this.toastText.setX(this.scale.width / 2);
+    this.toast.setX(this.scale.width / 2);
   }
 
   private onPointerDown(pointer: Phaser.Input.Pointer): void {

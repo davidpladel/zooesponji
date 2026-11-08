@@ -62,6 +62,8 @@ export interface ZooTestApi {
   hudShopButtonPos(): Vec | null;
   /** ¿Se ve el bocadillo del borde que señala la tienda? */
   hudShopEdgeVisible(): boolean;
+  /** Aviso de arriba del HUD: texto y si lleva la tiendita. Null si no se ve. */
+  hudToast(): { text: string; shopIcon: boolean } | null;
   /** Casillas con huellas de Luna hasta la tienda. */
   shopTrailTiles(): { x: number; y: number }[];
   /** Ruta que andaría la cuidadora hasta la puerta de la tienda. */
@@ -225,6 +227,7 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
       return hud?.shopButtonVisible() ? hud.shopButtonPos() : null;
     },
     hudShopEdgeVisible: () => activeScene<HudScene>('Hud')?.shopEdgeVisible() ?? false,
+    hudToast: () => activeScene<HudScene>('Hud')?.toastShown() ?? null,
     shopTrailTiles: () => activeScene<WorldScene>('World')?.shopTrailTiles() ?? [],
     shopRoute: () => activeScene<WorldScene>('World')?.shopRoute() ?? [],
     feedDragHint: () => activeScene<FeedScene>('Feed')?.dragHintPos() ?? null,

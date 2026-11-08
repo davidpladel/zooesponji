@@ -114,3 +114,14 @@ test('pantalla pequeña (640x360): botón de la tienda, ✕ del tutorial y engra
   const gearTop = 360 - 16 - 56;
   expect(close.y + 22).toBeLessThan(gearTop);
 });
+
+test('«Cómpralo en la tienda» lleva la tiendita pixelada, no el emoji', async ({ page }) => {
+  await startGame(page);
+  // Al llegar a la puerta de un recinto cerrado (el león ya viene abierto) sale el aviso.
+  const gate = (await page.evaluate(() => window.__ZOO__!.gateApproachTile('pantera')))!;
+  await page.evaluate(([x, y]) => window.__ZOO__!.goToTile(x, y), [gate.x, gate.y] as const);
+  await expect.poll(() => page.evaluate(() => window.__ZOO__!.hudToast()), { timeout: 60_000, intervals: [100] }).toEqual({
+    text: 'Cómpralo en la tienda',
+    shopIcon: true,
+  });
+});

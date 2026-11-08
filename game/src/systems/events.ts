@@ -97,7 +97,8 @@ export interface GameEvents {
   'ad-failed': { slot: AdSlot };
   /** Las reglas dejaban ofrecerlo y no había anuncio listo. */
   'ad-empty': { slot: AdSlot };
-  toast: { text: string };
+  /** Aviso arriba en el centro; `icon: 'shop'` añade la tiendita pixelada detrás del texto. */
+  toast: { text: string; icon?: 'shop' };
   /** Comunidad: llegó (o falló) la respuesta del servidor; el tablón y los carteles se ponen al día. */
   'community-updated': Record<string, never>;
   /** Se abre el tablón. `phase`: la de la votación al abrir. */

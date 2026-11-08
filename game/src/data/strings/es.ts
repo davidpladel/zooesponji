@@ -106,7 +106,7 @@ export const STRINGS_ES = {
   'shop.extra.elefante-asiatico': 'Otro elefante asiático',
   'toast.shopOpen': '¡La tienda está abierta!',
   'toast.shopLocked': 'La tienda abre con {n} monedas',
-  'toast.needShop': 'Cómpralo en la tienda 🏪',
+  'toast.needShop': 'Cómpralo en la tienda',
   'toast.newAnimal': '¡Nuevo animal: {name}!',
   'ad.offer': '¡Mira un anuncio y gana {n} monedas!',
   'ad.thanks': '¡{n} monedas para ti!',

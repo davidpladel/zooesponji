@@ -96,7 +96,7 @@ export const STRINGS_ZH: Record<StringKey, string> = {
   'shop.extra.elefante-asiatico': '再来一头亚洲象',
   'toast.shopOpen': '商店开门啦！',
   'toast.shopLocked': '有 {n} 个金币时商店开门',
-  'toast.needShop': '去商店买吧 🏪',
+  'toast.needShop': '去商店买吧',
   'toast.newAnimal': '新动物：{name}！',
   'ad.offer': '看一个广告，得 {n} 个金币！',
   'ad.thanks': '送你 {n} 个金币！',

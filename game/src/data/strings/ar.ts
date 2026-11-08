@@ -97,7 +97,7 @@ export const STRINGS_AR: Record<StringKey, string> = {
   'shop.extra.elefante-asiatico': 'فيل آسيوي آخر',
   'toast.shopOpen': 'المتجر مفتوح!',
   'toast.shopLocked': 'يفتح المتجر عند {n} عملة',
-  'toast.needShop': 'اشترِه من المتجر 🏪',
+  'toast.needShop': 'اشترِه من المتجر',
   'toast.newAnimal': 'حيوان جديد: {name}!',
   'ad.offer': 'شاهد إعلانًا واحصل على {n} عملة!',
   'ad.thanks': '{n} عملة لك!',

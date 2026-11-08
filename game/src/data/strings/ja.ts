@@ -96,7 +96,7 @@ export const STRINGS_JA: Record<StringKey, string> = {
   'shop.extra.elefante-asiatico': 'もう1とう アジアゾウ',
   'toast.shopOpen': 'おみせが ひらいたよ！',
   'toast.shopLocked': 'コインが {n}まいで おみせが ひらくよ',
-  'toast.needShop': 'おみせで かってね 🏪',
+  'toast.needShop': 'おみせで かってね',
   'toast.newAnimal': 'あたらしい どうぶつ：{name}！',
   'ad.offer': 'こうこくを みて コイン{n}まい もらおう！',
   'ad.thanks': 'コイン{n}まい どうぞ！',

@@ -96,7 +96,7 @@ export const STRINGS_FR: Record<StringKey, string> = {
   'shop.extra.elefante-asiatico': "Un autre éléphant d'Asie",
   'toast.shopOpen': 'La boutique est ouverte !',
   'toast.shopLocked': 'La boutique ouvre à {n} pièces',
-  'toast.needShop': 'Achète-le à la boutique 🏪',
+  'toast.needShop': 'Achète-le à la boutique',
   'toast.newAnimal': 'Nouvel animal : {name} !',
   'ad.offer': 'Regarde une pub et gagne {n} pièces !',
   'ad.thanks': '{n} pièces pour toi !',

@@ -169,7 +169,7 @@ export class WorldScene extends Phaser.Scene {
 
     const tile = worldToTile(this.keeper, TILE_SIZE);
     this.trail.stepOn(tile);
-    if (this.pens.lockedDoorstep(tile, state)) bus.emit('toast', { text: t('toast.needShop') });
+    if (this.pens.lockedDoorstep(tile, state)) bus.emit('toast', { text: t('toast.needShop'), icon: 'shop' });
     const doorEvent = this.shop?.onKeeperTile(tile, state) ?? null;
     if (doorEvent === 'open') this.openShop();
     else if (doorEvent === 'locked') {
@@ -422,7 +422,7 @@ export class WorldScene extends Phaser.Scene {
     const locked = this.pens.lockedPenAt(world, state);
     if (locked) {
       bus.emit('locked-tap', { penId: locked });
-      bus.emit('toast', { text: t('toast.needShop') });
+      bus.emit('toast', { text: t('toast.needShop'), icon: 'shop' });
     }
     this.goTo(world);
   }
