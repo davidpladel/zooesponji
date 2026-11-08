@@ -161,7 +161,7 @@ Pruebas: unitarias nuevas en `tests/unit/guia.test.ts` (dibujos, bocadillo del b
 4. **Huellas de 9×9** (la maqueta), cada 2 casillas, giradas de 90 en 90 según hacia dónde se anda; se apagan al
    pisarlas. Duran 30 s si nadie las sigue.
 5. **Bocadillo del borde** a ×2 (64 px), a 44 px del borde; si cae en la esquina de las monedas, el botón y la X del
-   tutorial, se aparta. En el tutorial, un animal fuera de la pantalla se señala con el mismo bocadillo y una huella
+   tutorial, se aparta (hasta x = 190, para no tapar el número de monedas aunque tenga 4 cifras). En el tutorial, un animal fuera de la pantalla se señala con el mismo bocadillo y una huella
    marrón dentro (la flecha ➡️ ya no existe).
 6. **Botón de la tienda a ×2** (46 px de dibujo, 64 px de toque) en (38, 100); la X del tutorial baja a (38, 162). El
    juego es solo apaisado: se comprobó en 640×360 que no toca el engranaje.

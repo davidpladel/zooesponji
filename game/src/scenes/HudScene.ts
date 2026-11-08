@@ -23,7 +23,7 @@ const GUIDE_SCALE = 2;
 /** Lo que se aparta del borde de la pantalla el bocadillo que señala la tienda. */
 const EDGE_MARGIN = 44;
 /** Esquina de las monedas, el botón de la tienda y la ✕ del tutorial, que el bocadillo del borde no tapa. */
-const HUD_CORNER = { x: 120, y: 220 };
+const HUD_CORNER = { x: 190, y: 220 };
 
 export class HudScene extends Phaser.Scene {
   private coins!: CoinCounter;
