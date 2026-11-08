@@ -87,7 +87,7 @@ recintos de al menos 14×9 por dentro con el paisaje de cada especie y farolas r
   el risco de la pantera la roca se pisa y la cascada no. `waterAt` dice en qué charca está un punto.
 - **Tienda:** la puerta (2 casillas) está bajo la casilla 4 del edificio, donde el dibujo tiene la puerta; el camino
   baja de ella y entra en la plaza con un codo.
-- **Farolas** (`lampAt` en el generador; las 4 del pack en `docs/superpowers/mockups/2026-11-07-guia-tienda/farolas-del-pack.png`):
+- **Farolas** (`lampAt` en el generador; las 4 del pack en `docs/mockups/2026-11-07-guia-tienda/farolas-del-pack.png` del repo privado):
   con el camino a un lado, la de brazo (`lamp`, con `flip` si el camino está a la izquierda), y el farol cuelga sobre
   él; con el camino debajo, la de frente (`lamp-front`); con el camino encima, la de espaldas (`lamp-back`). Las de
   la plaza y la entrada van a mano; las demás se reparten solas. Para revisarlas de una en una, la ayuda de pruebas
