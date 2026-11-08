@@ -640,7 +640,9 @@
       "y": 64,
       "w": 80,
       "h": 64,
-      "animate": { "step": 80, "count": 3, "fps": 4 }
+      "animate": { "step": 80, "count": 3, "fps": 4 },
+      "refill": { "area": [30, 12, 21, 27], "shifts": [16, -16, 20, -20, 12, -12, 24, -24] },
+      "overlay": { "zip": "wooden", "file": "Original/16x16/vectoraith_tileset_buildings_wooden_2.png", "x": 176, "y": 37, "w": 16, "h": 25, "dx": 32, "dy": 13 }
     },
     "log-savannah": {"zip": "biomeB", "file": "16x16/savannah/tilesets/vectoraith_tileset_details_savannah.png", "x": 0, "y": 48, "w": 48, "h": 16},
     "flowers-alpine-red": {"zip": "biomeD", "file": "Original/16x16/alpine/tilesets/vectoraith_tileset_details_alpine.png", "x": 0, "y": 32, "w": 16, "h": 16},

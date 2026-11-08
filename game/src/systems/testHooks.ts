@@ -132,6 +132,8 @@ export interface ZooTestApi {
   artMode(): boolean;
   gateApproachTile(penId: string): { x: number; y: number } | null;
   shopDoorTile(): { x: number; y: number } | null;
+  /** Centra la cámara en una casilla (deja de seguir a la cuidadora). */
+  lookAtTile(x: number, y: number): void;
   spawnTile(): { x: number; y: number } | null;
   /** Monta la publicidad con un proveedor falso. `outcome`: qué pasa al enseñar el anuncio; `ready`: si hay anuncio que cargar. */
   adsFake(outcome: 'visto' | 'cortado' | 'fallo', ready?: boolean): Promise<void>;
@@ -296,6 +298,7 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
     goToTile: (x, y) => activeScene<WorldScene>('World')?.goToTile(x, y) ?? false,
     artMode: () => getArt() !== null,
     gateApproachTile: (penId) => activeScene<WorldScene>('World')?.gateApproachTile(penId) ?? null,
+    lookAtTile: (x, y) => activeScene<WorldScene>('World')?.lookAtTile({ x, y }),
     shopDoorTile: () => activeScene<WorldScene>('World')?.shopDoorTile() ?? null,
     spawnTile: () => activeScene<WorldScene>('World')?.spawnTile() ?? null,
     adsFake: async (outcome, ready = true) => {

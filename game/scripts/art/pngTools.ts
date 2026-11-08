@@ -36,6 +36,60 @@ export function animatedStrip(src: PNG, r: { x: number; y: number; w: number; h:
   return out;
 }
 
+/**
+ * Borra lo que hay en el agua de una zona (el junco de la fuente): cada píxel que no es agua se cambia por el agua
+ * del mismo fotograma, unas casillas a un lado. Así las ondas siguen moviéndose.
+ */
+export interface Refill {
+  /** Zona [x, y, w, h] dentro de cada fotograma. */
+  area: readonly [number, number, number, number];
+  /** Desplazamientos horizontales que se prueban, en orden, para encontrar agua. */
+  shifts: readonly number[];
+}
+
+/** Agua: el azul de las fuentes y charcas del pack (bastante más azul que rojo). */
+const isWater = (png: PNG, x: number, y: number): boolean => {
+  const i = (y * png.width + x) * 4;
+  return png.data[i + 3]! > 0 && png.data[i + 2]! > png.data[i]! + 40 && png.data[i + 2]! > 150;
+};
+
+export function refill(png: PNG, frameWidth: number, r: Refill): PNG {
+  const [ax, ay, aw, ah] = r.area;
+  for (let f = 0; f * frameWidth < png.width; f++) {
+    const fx = f * frameWidth;
+    for (let y = ay; y < ay + ah; y++)
+      for (let x = ax; x < ax + aw; x++) {
+        if (isWater(png, fx + x, y)) continue;
+        const s = r.shifts.find((d) => {
+          const sx = x - d;
+          return sx >= 0 && sx < frameWidth && (sx < ax || sx >= ax + aw) && isWater(png, fx + sx, y);
+        });
+        if (s === undefined) continue;
+        const to = (y * png.width + fx + x) * 4;
+        const from = (y * png.width + fx + x - s) * 4;
+        for (let k = 0; k < 4; k++) png.data[to + k] = png.data[from + k]!;
+      }
+  }
+  return png;
+}
+
+/** Pega `piece` en (dx, dy) de cada fotograma, mezclando por encima (las sombras del pack son semitransparentes). */
+export function overlay(png: PNG, frameWidth: number, piece: PNG, dx: number, dy: number): PNG {
+  for (let f = 0; f * frameWidth < png.width; f++)
+    for (let y = 0; y < piece.height; y++)
+      for (let x = 0; x < piece.width; x++) {
+        const si = (y * piece.width + x) * 4;
+        const a = piece.data[si + 3]! / 255;
+        if (a === 0) continue;
+        const ti = ((dy + y) * png.width + f * frameWidth + dx + x) * 4;
+        const da = png.data[ti + 3]! / 255;
+        const oa = a + da * (1 - a);
+        for (let k = 0; k < 3; k++) png.data[ti + k] = Math.round((piece.data[si + k]! * a + png.data[ti + k]! * da * (1 - a)) / oa);
+        png.data[ti + 3] = Math.round(oa * 255);
+      }
+  return png;
+}
+
 export interface ComposeLayer {
   x: number;
   y: number;

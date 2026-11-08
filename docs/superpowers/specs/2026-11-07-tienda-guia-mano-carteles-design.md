@@ -203,3 +203,9 @@ Pruebas: unitarias nuevas en `tests/unit/guia.test.ts` (dibujos, bocadillo del b
    A. Las dos de abajo de la plaza van en la casilla de al lado de la esquina, mirando a la plaza (D y B). Quedan 38
    de brazo, 14 de frente y 8 de espaldas.
 9. **El tablón** solo se ve con `VITE_COMMUNITY_URL` (en `.env.production.local`): con `npm run dev` no sale.
+10. **Fuente de piedras** (elegida por David entre las del pack): la misma fuente animada, con el junco borrado
+    (`refill`: cada píxel que no es agua se cambia por el agua del mismo fotograma, a un lado) y el montón de piedras
+    de `buildings_wooden_2` encima (`overlay`). Las dos cosas son opciones nuevas de `art.config.json` para las piezas
+    animadas.
+11. **Revisión de las 60 farolas** con capturas una a una (`revision-farolas-1..3.png`; ayuda de pruebas
+    `lookAtTile`, solo en desarrollo): todas miran hacia su camino y ninguna pisa vallas, muros ni otros adornos.

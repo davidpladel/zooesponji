@@ -1,7 +1,7 @@
 // Lectura de la configuración de arte y de las hojas dentro de los zips del repo privado.
 import AdmZip from 'adm-zip';
 import { PNG } from 'pngjs';
-import type { Animate, Compose, SheetEdit } from './pngTools.ts';
+import type { Animate, Compose, Refill, SheetEdit } from './pngTools.ts';
 import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -40,7 +40,7 @@ export interface ArtConfig {
   visitors: (Source & { character: number })[];
   /** Por aspecto: el de la especie (`cabra`) y los de cada animal distinto (`cabra-gordi`). */
   animals: Record<string, LookSource>;
-  props?: Record<string, Source & CropRect & { animate?: Animate; compose?: Compose }>;
+  props?: Record<string, Source & CropRect & { animate?: Animate; compose?: Compose; refill?: Refill; overlay?: Source & CropRect & { dx: number; dy: number } }>;
   foods?: Record<string, (Source & CropRect) | { override: string }>;
   companions?: Record<string, Source>;
   /** Mascotas dibujadas en este repo (`game/art/`), no en el privado. */

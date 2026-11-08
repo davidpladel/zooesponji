@@ -3,7 +3,7 @@
 import { PNG } from 'pngjs';
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { animatedStrip, composedStrip, characterSheet, crop, erase } from './art/pngTools.ts';
+import { animatedStrip, composedStrip, characterSheet, crop, erase, overlay, refill } from './art/pngTools.ts';
 import { buildLook, finished } from './art/looks.ts';
 import { assertPrivateRepo, config, readSource, root } from './art/source.ts';
 
@@ -50,6 +50,8 @@ for (const [name, p] of Object.entries(config.props ?? {})) {
   if (p.animate) {
     // Hoja de fotogramas (agua): cada fotograma del tamaño de la pieza fija.
     const strip = animatedStrip(readSource(p), p, p.animate);
+    if (p.refill) refill(strip, p.w, p.refill);
+    if (p.overlay) overlay(strip, p.w, crop(readSource(p.overlay), p.overlay.x, p.overlay.y, p.overlay.w, p.overlay.h), p.overlay.dx, p.overlay.dy);
     props[name] = { file: save(strip, `prop-${name}.png`), width: p.w, height: p.h, frames: p.animate.count, fps: p.animate.fps ?? 4 };
     continue;
   }

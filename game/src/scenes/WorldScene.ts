@@ -256,6 +256,13 @@ export class WorldScene extends Phaser.Scene {
     return enclosure && gate ? approachTile(gate.tile, enclosure, TILE_SIZE, this.pathGrid) : null;
   }
 
+  /** Solo pruebas: deja de seguir a la cuidadora y centra la cámara en una casilla (para revisar el mapa). */
+  lookAtTile(tile: Point): void {
+    const camera = this.cameras.main;
+    camera.stopFollow();
+    camera.centerOn(tile.x * TILE_SIZE + TILE_SIZE / 2, tile.y * TILE_SIZE + TILE_SIZE / 2);
+  }
+
   shopDoorTile(): Point | null {
     return readShop(this.mapData)?.door ?? null;
   }
