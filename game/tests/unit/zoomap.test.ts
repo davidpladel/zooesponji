@@ -394,7 +394,7 @@ describe('mapa del zoo', () => {
 
   it('hay farolas por todos los caminos, no solo en la plaza', () => {
     const lamps = readProps(map)
-      .filter((p) => p.prop === 'lamp' || p.prop === 'lamp-front')
+      .filter((p) => p.prop.startsWith('lamp'))
       .map((p) => ({ x: Math.floor((p.x - 1) / 16), y: Math.floor((p.y - 1) / 16) }));
     expect(lamps.length).toBeGreaterThan(20);
     const far: string[] = [];
@@ -463,14 +463,18 @@ describe('mapa del zoo', () => {
     }
   });
 
-  it('junto a un camino de arriba o de abajo, la farola es la de frente: en el césped, pegada al camino y sin pisar vallas', () => {
+  it('junto a un camino de arriba o de abajo: de frente si el camino va debajo, de espaldas si va encima', () => {
     const pens = readEnclosures(map);
-    const fronts = readProps(map).filter((q) => q.prop === 'lamp-front');
-    expect(fronts.length).toBeGreaterThan(0);
+    const fronts = readProps(map).filter((q) => q.prop === 'lamp-front' || q.prop === 'lamp-back');
+    expect(fronts.filter((p) => p.prop === 'lamp-front').length).toBeGreaterThan(0);
+    expect(fronts.filter((p) => p.prop === 'lamp-back').length).toBeGreaterThan(0);
     for (const p of fronts) {
       const tx = Math.floor(p.x / 16);
       const ty = Math.floor((p.y - 1) / 16);
-      const where = `farola de frente en (${tx},${ty})`;
+      const where = `${p.prop} en (${tx},${ty})`;
+      const below = [1, 2, 3].find((d) => isWalkable(grid, tx, ty + d)) ?? Infinity;
+      const above = [1, 2, 3].find((d) => isWalkable(grid, tx, ty - d)) ?? Infinity;
+      if (below !== above) expect(p.prop, where).toBe(above < below ? 'lamp-back' : 'lamp-front');
       expect(isWalkable(grid, tx, ty), where).toBe(false);
       // Sin camino a los lados (si lo hubiera, iría la de brazo mirándolo).
       expect(isWalkable(grid, tx - 1, ty) || isWalkable(grid, tx + 1, ty), where).toBe(false);

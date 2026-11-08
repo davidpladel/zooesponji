@@ -198,3 +198,8 @@ Pruebas: unitarias nuevas en `tests/unit/guia.test.ts` (dibujos, bocadillo del b
 7. **Estadísticas (Matomo)** de lo nuevo, para saber si se usa:
    - `mapa | boton-tienda | <huellas|apagar|andando>`: el botón de la tienda y qué hizo.
    - `comer | pista-arrastrar | <especie/residente/comida>`: se tocó una comida sin arrastrarla y la mano lo enseñó.
+8. **Las 4 farolas del pack** (`farolas-del-pack.png`): A de espaldas (`lamp-back`), B y D de brazo (`lamp`,
+   volteada o no) y C de frente (`lamp-front`). Camino a un lado → brazo hacia él; camino debajo → C; camino encima →
+   A. Las dos de abajo de la plaza van en la casilla de al lado de la esquina, mirando a la plaza (D y B). Quedan 38
+   de brazo, 14 de frente y 8 de espaldas.
+9. **El tablón** solo se ve con `VITE_COMMUNITY_URL` (en `.env.production.local`): con `npm run dev` no sale.

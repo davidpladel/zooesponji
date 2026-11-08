@@ -192,13 +192,17 @@ const water = (kind, x0, y0, x1, y1) => {
  * volteada (`flip`): el poste sigue en la misma casilla y el farol cuelga sobre el camino (David, 2026-11-07).
  */
 const isPathTile = (x, y) => x >= 0 && y >= 0 && x < W && y < H && (data[y * W + x] === PATH || data[y * W + x] === GATE);
-// Con el camino a un lado, la farola de brazo con el farol hacia él; si el camino pasa por arriba o por abajo, la
-// de frente (el farol delante del poste): la de brazo colgaba el farol sobre el césped (David, 2026-11-08).
+// Qué farola según dónde va el camino (David, 2026-11-08, con las 4 del pack):
+// - a un lado: la de brazo, con el farol hacia él (D, o B volteada);
+// - por debajo: la de frente (C), el farol hacia el camino;
+// - por encima: la de espaldas (A), el farol hacia atrás, sobre el camino.
 const lampAt = (tx, ty) => {
   const left = isPathTile(tx - 1, ty);
   const right = isPathTile(tx + 1, ty);
-  if (!left && !right) return at('lamp-front', tx, ty);
-  return prop('lamp', (tx + 1) * T, (ty + 1) * T, { flip: left && !right });
+  if (left || right) return prop('lamp', (tx + 1) * T, (ty + 1) * T, { flip: left && !right });
+  const below = [1, 2, 3].find((d) => isPathTile(tx, ty + d)) ?? Infinity;
+  const above = [1, 2, 3].find((d) => isPathTile(tx, ty - d)) ?? Infinity;
+  return at(above < below ? 'lamp-back' : 'lamp-front', tx, ty);
 };
 /** Prop apoyado en la casilla (tx,ty) del mapa: centro horizontal de la casilla, borde inferior. */
 const at = (name, tx, ty, opts) => prop(name, tx * T + T / 2, (ty + 1) * T, opts);
@@ -366,7 +370,11 @@ pprop('fountain', (ISLAND.x0 + ISLAND.x1 + 1) / 2 * T, (ISLAND.y1 + 1) * T, { bl
 // Plaza: una farola en cada esquina recortada y dos bancos a cada lado, en el césped junto al borde.
 // Arriba van en la casilla de debajo de la esquina (también recortada): en la esquina misma la farola, que mide
 // 3 de alto, se montaría sobre la valla de los leones y de las cabras.
-for (const [x, y] of [[PLAZA.x0, PLAZA.y0 + 1], [PLAZA.x1, PLAZA.y0 + 1], [PLAZA.x0, PLAZA.y1], [PLAZA.x1, PLAZA.y1]]) lampAt(x + OX, y + OY);
+for (const [x, y] of [[PLAZA.x0, PLAZA.y0 + 1], [PLAZA.x1, PLAZA.y0 + 1]]) lampAt(x + OX, y + OY);
+// Abajo, en la casilla de al lado de la esquina, con el farol hacia la plaza: la izquierda mira a la derecha (D) y
+// la derecha, volteada, a la izquierda (B) (David, 2026-11-08).
+prop('lamp', (PLAZA.x0 + 1 + OX + 1) * T, (PLAZA.y1 + OY + 1) * T);
+prop('lamp', (PLAZA.x1 - 1 + OX + 1) * T, (PLAZA.y1 + OY + 1) * T, { flip: true });
 for (const [x, y] of [[PLAZA.x0 - 2, PLAZA.y0 + 2], [PLAZA.x0 - 2, PLAZA.y1 - 2], [PLAZA.x1 + 1, PLAZA.y0 + 2], [PLAZA.x1 + 1, PLAZA.y1 - 2]]) {
   pprop('bench', (x + 1) * T, (y + 1) * T);
 }
