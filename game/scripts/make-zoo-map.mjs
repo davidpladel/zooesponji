@@ -469,6 +469,14 @@ prop('lamp', (CX + 2 + OX + 1) * T, (PH + OY + 1) * T, { flip: true });
     }
 }
 
+// La del muro de arriba (esquina del camino del jardín de los cerezos) colgaba el farol sobre el césped: baja 2
+// casillas, al tramo recto (David, 2026-11-08). Se mueve después del reparto para no cambiar las demás.
+{
+  const lamp = objects.find((o) => o.type === 'prop' && o.properties[0].value === 'lamp' && o.x === 51 * T && o.y === 5 * T);
+  if (!lamp) throw new Error('No está la farola de (50,4) que hay que bajar');
+  lamp.y += 2 * T;
+}
+
 // Muro del parque (madera sobre piedra) alrededor de todo, con el portón abajo, donde acaba el camino central.
 const gatePx = (CX + OX) * T;
 for (let x = 0; x < W * T; x += 32) prop('park-wall', x + 16, 2 * T);

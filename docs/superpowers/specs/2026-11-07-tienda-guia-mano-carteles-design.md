@@ -209,3 +209,5 @@ Pruebas: unitarias nuevas en `tests/unit/guia.test.ts` (dibujos, bocadillo del b
     animadas.
 11. **Revisión de las 60 farolas** con capturas una a una (`revision-farolas-1..3.png`; ayuda de pruebas
     `lookAtTile`, solo en desarrollo): todas miran hacia su camino y ninguna pisa vallas, muros ni otros adornos.
+12. **Farola 7** (junto al muro de arriba, esquina del camino del jardín de los cerezos): baja 2 casillas, al tramo
+    recto, para que el farol cuelgue sobre el camino. Se mueve después del reparto automático para no cambiar las demás.
