@@ -13959,9 +13959,9 @@
     },
     {
      "id": 150,
-     "name": "lamp-151",
+     "name": "lamp-front-151",
      "type": "prop",
-     "x": 688,
+     "x": 680,
      "y": 800,
      "width": 0,
      "height": 0,
@@ -13971,7 +13971,7 @@
       {
        "name": "prop",
        "type": "string",
-       "value": "lamp"
+       "value": "lamp-front"
       },
       {
        "name": "blocks",
@@ -13992,9 +13992,9 @@
     },
     {
      "id": 151,
-     "name": "lamp-152",
+     "name": "lamp-front-152",
      "type": "prop",
-     "x": 912,
+     "x": 904,
      "y": 800,
      "width": 0,
      "height": 0,
@@ -14004,7 +14004,7 @@
       {
        "name": "prop",
        "type": "string",
-       "value": "lamp"
+       "value": "lamp-front"
       },
       {
        "name": "blocks",
@@ -17091,9 +17091,9 @@
     },
     {
      "id": 244,
-     "name": "lamp-245",
+     "name": "lamp-front-245",
      "type": "prop",
-     "x": 64,
+     "x": 56,
      "y": 272,
      "width": 0,
      "height": 0,
@@ -17103,7 +17103,7 @@
       {
        "name": "prop",
        "type": "string",
-       "value": "lamp"
+       "value": "lamp-front"
       },
       {
        "name": "blocks",
@@ -17124,9 +17124,9 @@
     },
     {
      "id": 245,
-     "name": "lamp-246",
+     "name": "lamp-front-246",
      "type": "prop",
-     "x": 192,
+     "x": 184,
      "y": 272,
      "width": 0,
      "height": 0,
@@ -17136,7 +17136,7 @@
       {
        "name": "prop",
        "type": "string",
-       "value": "lamp"
+       "value": "lamp-front"
       },
       {
        "name": "blocks",
@@ -17157,9 +17157,9 @@
     },
     {
      "id": 246,
-     "name": "lamp-247",
+     "name": "lamp-front-247",
      "type": "prop",
-     "x": 592,
+     "x": 584,
      "y": 272,
      "width": 0,
      "height": 0,
@@ -17169,7 +17169,7 @@
       {
        "name": "prop",
        "type": "string",
-       "value": "lamp"
+       "value": "lamp-front"
       },
       {
        "name": "blocks",
@@ -17190,9 +17190,9 @@
     },
     {
      "id": 247,
-     "name": "lamp-248",
+     "name": "lamp-front-248",
      "type": "prop",
-     "x": 1120,
+     "x": 1112,
      "y": 272,
      "width": 0,
      "height": 0,
@@ -17202,7 +17202,7 @@
       {
        "name": "prop",
        "type": "string",
-       "value": "lamp"
+       "value": "lamp-front"
       },
       {
        "name": "blocks",
@@ -17223,9 +17223,9 @@
     },
     {
      "id": 248,
-     "name": "lamp-249",
+     "name": "lamp-front-249",
      "type": "prop",
-     "x": 1408,
+     "x": 1400,
      "y": 272,
      "width": 0,
      "height": 0,
@@ -17235,7 +17235,7 @@
       {
        "name": "prop",
        "type": "string",
-       "value": "lamp"
+       "value": "lamp-front"
       },
       {
        "name": "blocks",
@@ -17256,9 +17256,9 @@
     },
     {
      "id": 249,
-     "name": "lamp-250",
+     "name": "lamp-front-250",
      "type": "prop",
-     "x": 1536,
+     "x": 1528,
      "y": 272,
      "width": 0,
      "height": 0,
@@ -17268,7 +17268,7 @@
       {
        "name": "prop",
        "type": "string",
-       "value": "lamp"
+       "value": "lamp-front"
       },
       {
        "name": "blocks",
@@ -17289,9 +17289,9 @@
     },
     {
      "id": 250,
-     "name": "lamp-251",
+     "name": "lamp-front-251",
      "type": "prop",
-     "x": 1664,
+     "x": 1656,
      "y": 272,
      "width": 0,
      "height": 0,
@@ -17301,7 +17301,7 @@
       {
        "name": "prop",
        "type": "string",
-       "value": "lamp"
+       "value": "lamp-front"
       },
       {
        "name": "blocks",
@@ -17322,9 +17322,9 @@
     },
     {
      "id": 251,
-     "name": "lamp-252",
+     "name": "lamp-front-252",
      "type": "prop",
-     "x": 1792,
+     "x": 1784,
      "y": 272,
      "width": 0,
      "height": 0,
@@ -17334,7 +17334,7 @@
       {
        "name": "prop",
        "type": "string",
-       "value": "lamp"
+       "value": "lamp-front"
       },
       {
        "name": "blocks",
@@ -17355,9 +17355,9 @@
     },
     {
      "id": 252,
-     "name": "lamp-253",
+     "name": "lamp-front-253",
      "type": "prop",
-     "x": 320,
+     "x": 312,
      "y": 320,
      "width": 0,
      "height": 0,
@@ -17367,7 +17367,7 @@
       {
        "name": "prop",
        "type": "string",
-       "value": "lamp"
+       "value": "lamp-front"
       },
       {
        "name": "blocks",
@@ -17426,9 +17426,9 @@
     },
     {
      "id": 254,
-     "name": "lamp-255",
+     "name": "lamp-front-255",
      "type": "prop",
-     "x": 944,
+     "x": 936,
      "y": 320,
      "width": 0,
      "height": 0,
@@ -17438,7 +17438,7 @@
       {
        "name": "prop",
        "type": "string",
-       "value": "lamp"
+       "value": "lamp-front"
       },
       {
        "name": "blocks",
@@ -17908,9 +17908,9 @@
     },
     {
      "id": 268,
-     "name": "lamp-269",
+     "name": "lamp-front-269",
      "type": "prop",
-     "x": 224,
+     "x": 216,
      "y": 720,
      "width": 0,
      "height": 0,
@@ -17920,7 +17920,7 @@
       {
        "name": "prop",
        "type": "string",
-       "value": "lamp"
+       "value": "lamp-front"
       },
       {
        "name": "blocks",
@@ -17941,9 +17941,9 @@
     },
     {
      "id": 269,
-     "name": "lamp-270",
+     "name": "lamp-front-270",
      "type": "prop",
-     "x": 352,
+     "x": 344,
      "y": 720,
      "width": 0,
      "height": 0,
@@ -17953,7 +17953,7 @@
       {
        "name": "prop",
        "type": "string",
-       "value": "lamp"
+       "value": "lamp-front"
       },
       {
        "name": "blocks",
@@ -17974,9 +17974,9 @@
     },
     {
      "id": 270,
-     "name": "lamp-271",
+     "name": "lamp-front-271",
      "type": "prop",
-     "x": 1328,
+     "x": 1320,
      "y": 720,
      "width": 0,
      "height": 0,
@@ -17986,7 +17986,7 @@
       {
        "name": "prop",
        "type": "string",
-       "value": "lamp"
+       "value": "lamp-front"
       },
       {
        "name": "blocks",
@@ -18045,9 +18045,9 @@
     },
     {
      "id": 272,
-     "name": "lamp-273",
+     "name": "lamp-front-273",
      "type": "prop",
-     "x": 1584,
+     "x": 1576,
      "y": 720,
      "width": 0,
      "height": 0,
@@ -18057,7 +18057,7 @@
       {
        "name": "prop",
        "type": "string",
-       "value": "lamp"
+       "value": "lamp-front"
       },
       {
        "name": "blocks",
@@ -18078,9 +18078,9 @@
     },
     {
      "id": 273,
-     "name": "lamp-274",
+     "name": "lamp-front-274",
      "type": "prop",
-     "x": 480,
+     "x": 472,
      "y": 736,
      "width": 0,
      "height": 0,
@@ -18090,7 +18090,7 @@
       {
        "name": "prop",
        "type": "string",
-       "value": "lamp"
+       "value": "lamp-front"
       },
       {
        "name": "blocks",
@@ -18555,9 +18555,9 @@
     },
     {
      "id": 287,
-     "name": "lamp-288",
+     "name": "lamp-front-288",
      "type": "prop",
-     "x": 176,
+     "x": 168,
      "y": 1040,
      "width": 0,
      "height": 0,
@@ -18567,7 +18567,7 @@
       {
        "name": "prop",
        "type": "string",
-       "value": "lamp"
+       "value": "lamp-front"
       },
       {
        "name": "blocks",
@@ -18588,9 +18588,9 @@
     },
     {
      "id": 288,
-     "name": "lamp-289",
+     "name": "lamp-front-289",
      "type": "prop",
-     "x": 960,
+     "x": 952,
      "y": 1040,
      "width": 0,
      "height": 0,
@@ -18600,7 +18600,7 @@
       {
        "name": "prop",
        "type": "string",
-       "value": "lamp"
+       "value": "lamp-front"
       },
       {
        "name": "blocks",
@@ -18621,9 +18621,9 @@
     },
     {
      "id": 289,
-     "name": "lamp-290",
+     "name": "lamp-front-290",
      "type": "prop",
-     "x": 1088,
+     "x": 1080,
      "y": 1040,
      "width": 0,
      "height": 0,
@@ -18633,7 +18633,7 @@
       {
        "name": "prop",
        "type": "string",
-       "value": "lamp"
+       "value": "lamp-front"
       },
       {
        "name": "blocks",
@@ -18654,9 +18654,9 @@
     },
     {
      "id": 290,
-     "name": "lamp-291",
+     "name": "lamp-front-291",
      "type": "prop",
-     "x": 1376,
+     "x": 1368,
      "y": 1040,
      "width": 0,
      "height": 0,
@@ -18666,7 +18666,7 @@
       {
        "name": "prop",
        "type": "string",
-       "value": "lamp"
+       "value": "lamp-front"
       },
       {
        "name": "blocks",
@@ -18687,9 +18687,9 @@
     },
     {
      "id": 291,
-     "name": "lamp-292",
+     "name": "lamp-front-292",
      "type": "prop",
-     "x": 1504,
+     "x": 1496,
      "y": 1040,
      "width": 0,
      "height": 0,
@@ -18699,7 +18699,7 @@
       {
        "name": "prop",
        "type": "string",
-       "value": "lamp"
+       "value": "lamp-front"
       },
       {
        "name": "blocks",
@@ -18720,9 +18720,9 @@
     },
     {
      "id": 292,
-     "name": "lamp-293",
+     "name": "lamp-front-293",
      "type": "prop",
-     "x": 1632,
+     "x": 1624,
      "y": 1040,
      "width": 0,
      "height": 0,
@@ -18732,7 +18732,7 @@
       {
        "name": "prop",
        "type": "string",
-       "value": "lamp"
+       "value": "lamp-front"
       },
       {
        "name": "blocks",
@@ -18753,9 +18753,9 @@
     },
     {
      "id": 293,
-     "name": "lamp-294",
+     "name": "lamp-front-294",
      "type": "prop",
-     "x": 544,
+     "x": 536,
      "y": 1088,
      "width": 0,
      "height": 0,
@@ -18765,7 +18765,7 @@
       {
        "name": "prop",
        "type": "string",
-       "value": "lamp"
+       "value": "lamp-front"
       },
       {
        "name": "blocks",

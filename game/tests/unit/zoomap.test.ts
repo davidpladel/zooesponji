@@ -394,7 +394,7 @@ describe('mapa del zoo', () => {
 
   it('hay farolas por todos los caminos, no solo en la plaza', () => {
     const lamps = readProps(map)
-      .filter((p) => p.prop === 'lamp')
+      .filter((p) => p.prop === 'lamp' || p.prop === 'lamp-front')
       .map((p) => ({ x: Math.floor((p.x - 1) / 16), y: Math.floor((p.y - 1) / 16) }));
     expect(lamps.length).toBeGreaterThan(20);
     const far: string[] = [];
@@ -460,6 +460,28 @@ describe('mapa del zoo', () => {
           const c = { x: tx * 16 + 8, y: ty * 16 + 8 };
           expect(pens.some((e) => rectContains(e, c)), `farola de (${p.x},${p.y}) sobre la valla en (${tx},${ty})`).toBe(false);
         }
+    }
+  });
+
+  it('junto a un camino de arriba o de abajo, la farola es la de frente: en el césped, pegada al camino y sin pisar vallas', () => {
+    const pens = readEnclosures(map);
+    const fronts = readProps(map).filter((q) => q.prop === 'lamp-front');
+    expect(fronts.length).toBeGreaterThan(0);
+    for (const p of fronts) {
+      const tx = Math.floor(p.x / 16);
+      const ty = Math.floor((p.y - 1) / 16);
+      const where = `farola de frente en (${tx},${ty})`;
+      expect(isWalkable(grid, tx, ty), where).toBe(false);
+      // Sin camino a los lados (si lo hubiera, iría la de brazo mirándolo).
+      expect(isWalkable(grid, tx - 1, ty) || isWalkable(grid, tx + 1, ty), where).toBe(false);
+      for (let y = ty - 2; y <= ty; y++) expect(pens.some((e) => rectContains(e, { x: tx * 16 + 8, y: y * 16 + 8 })), where).toBe(false);
+    }
+    // Las de brazo tienen el camino a un lado (o, las de la entrada, a 2 casillas).
+    for (const p of readProps(map).filter((q) => q.prop === 'lamp')) {
+      const tx = Math.floor((p.x - 1) / 16);
+      const ty = Math.floor((p.y - 1) / 16);
+      const side = [-2, -1, 1, 2].some((d) => isWalkable(grid, tx + d, ty));
+      expect(side, `farola de brazo en (${tx},${ty})`).toBe(true);
     }
   });
 

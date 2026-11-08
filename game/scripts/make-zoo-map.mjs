@@ -192,7 +192,14 @@ const water = (kind, x0, y0, x1, y1) => {
  * volteada (`flip`): el poste sigue en la misma casilla y el farol cuelga sobre el camino (David, 2026-11-07).
  */
 const isPathTile = (x, y) => x >= 0 && y >= 0 && x < W && y < H && (data[y * W + x] === PATH || data[y * W + x] === GATE);
-const lampAt = (tx, ty) => prop('lamp', (tx + 1) * T, (ty + 1) * T, { flip: isPathTile(tx - 1, ty) && !isPathTile(tx + 1, ty) });
+// Con el camino a un lado, la farola de brazo con el farol hacia él; si el camino pasa por arriba o por abajo, la
+// de frente (el farol delante del poste): la de brazo colgaba el farol sobre el césped (David, 2026-11-08).
+const lampAt = (tx, ty) => {
+  const left = isPathTile(tx - 1, ty);
+  const right = isPathTile(tx + 1, ty);
+  if (!left && !right) return at('lamp-front', tx, ty);
+  return prop('lamp', (tx + 1) * T, (ty + 1) * T, { flip: left && !right });
+};
 /** Prop apoyado en la casilla (tx,ty) del mapa: centro horizontal de la casilla, borde inferior. */
 const at = (name, tx, ty, opts) => prop(name, tx * T + T / 2, (ty + 1) * T, opts);
 /** Lo mismo, en coordenadas del parque de siempre. */
@@ -413,7 +420,7 @@ prop('lamp', (CX + 2 + OX + 1) * T, (PH + OY + 1) * T, { flip: true });
   const isPath = isPathTile;
   const tileOf = (o) => ({ x: Math.floor((o.x - 1) / T), y: Math.floor((o.y - 1) / T) });
   const props = objects.filter((o) => o.type === 'prop').map(tileOf);
-  const lamps = objects.filter((o) => o.type === 'prop' && o.properties[0].value === 'lamp').map(tileOf);
+  const lamps = objects.filter((o) => o.type === 'prop' && o.properties[0].value.startsWith('lamp')).map(tileOf);
   const pens = enclosures.map((e) => ({ x0: e.x, y0: e.y, x1: e.x + e.ew - 1, y1: e.y + e.eh - 1 }));
   const board = objects.find((o) => o.type === 'tablon');
   const boardStand = { x: Math.floor(board.x / T), y: Math.floor(board.y / T) - 1 };
