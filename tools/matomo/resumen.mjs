@@ -130,7 +130,28 @@ out.push('## Ayudas sin palabras', '', table(['Dato', 'Valor'], [
   ['Botón de la tienda: apaga las huellas', n('boton-tienda', 'apagar')],
   ['Botón de la tienda: la cuidadora va andando', n('boton-tienda', 'andando')],
   ['Comida tocada sin arrastrar (la mano lo enseña), por ventana de comer', share(n('pista-arrastrar'), n('ventana'))],
+  ['Botón de la clínica: la cuidadora va andando', n('boton-clinica', 'andando')],
 ]), '');
+
+// Cerdos, limpieza y clínica (2026-11-09). «limpia-deja» lleva el paso al final del nombre: recinto/animal/paso.
+const CLEAN_STEPS = ['cacahuete', 'cepillo', 'jabon', 'agua', 'toalla'];
+const leftAt = (step) => of('limpia-deja').filter((r) => r.name.endsWith(`/${step}`)).reduce((sum, r) => sum + r.events, 0);
+out.push('## Cuidados', '', table(['Dato', 'Valor'], [
+  ['Tienen la clínica (jugadores por día)', n('tiene-extra', 'edificio/clinica')],
+  ['Compras de la clínica', n('compra', 'edificio/clinica')],
+  ['Puerta de la clínica pisada sin tenerla', n('clinica-cerrada')],
+  ['Charcos que se ponen de barro', n('barro')],
+  ['Animales que se manchan', n('mancha')],
+  ['Limpiezas acabadas (de las abiertas)', share(n('limpia'), n('limpia-abre'))],
+  ['Animales que se ponen malitos', n('enferma')],
+  ['«¡Puaj!» (comida a un malito)', n('puaj')],
+  ['Cruz tocada para ir a la clínica', n('cruz')],
+  ['Entradas en la clínica', n('clinica-abre')],
+  ['Curas acabadas (de las abiertas)', share(n('cura'), n('cura-abre'))],
+]), '', 'Limpiezas dejadas a medias, por el paso en que se quedaron: si se atascan siempre en el mismo, es que no se entiende.', '', table(
+  ['Paso', 'Dejadas ahí'],
+  CLEAN_STEPS.map((step) => [step, leftAt(step)]),
+), '');
 
 const AD_SLOTS = ['tienda', 'pausa'];
 // Los tramos de `coinsBucket` del juego (src/core/eventCatalog.ts).

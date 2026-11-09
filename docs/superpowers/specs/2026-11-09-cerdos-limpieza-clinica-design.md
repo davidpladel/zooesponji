@@ -164,6 +164,16 @@ animal va siempre con su recinto delante (`cerdos/rosita`). Nunca textos ni nada
 
 **Botón de la clínica:** `mapa | boton-clinica | andando`, al tocarlo (como `boton-tienda`).
 
+**Revisión del 2026-11-09 (lo que faltaba):**
+- `mapa | clinica-cerrada`: se pisa la puerta de la clínica sin haberla comprado (sale «La clínica se compra en
+  la tienda»). Dice cuántos se interesan por ella antes de tenerla.
+- `tiene | tiene-extra | edificio/clinica` y `tiene | tiene-extra | mascota/luna`: con el estado del día y al
+  comprarlas, como `tiene-recinto`. Así las curas y la clínica se comparan solo entre quienes la tienen.
+- En la tienda, la clínica se nombra `edificio/clinica` también al mirarla (`mira`) y al no llegar
+  (`sin-monedas`), igual que al comprarla (antes salía `clinic`).
+- El «¡puaj!» de un malito cuenta como comida dada en su ventana de comer (igual que un `rechaza`): esa ventana
+  ya no sale como `ventana-vacia`.
+
 **Pantallas:** `limpiar`, `clinica` y `curar`. La clínica cuenta para el alcance de pantallas (`dia-pantalla`,
 `semana-pantalla`, `vida-pantalla`), como la tienda y el libro. El recinto de cerdos y sus animales entran solos
 en `tiene-recinto`, `tiene-animal`, `progreso` y el alcance, como los demás. No hay pasos nuevos en el embudo.

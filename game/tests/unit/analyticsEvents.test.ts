@@ -621,6 +621,50 @@ describe('GameTracker: cuidados (cerdos, limpieza y clínica)', () => {
     expect(t.sent).toContain('alcance | dia-pantalla | clinica');
   });
 
+  it('el «¡puaj!» de un malito cuenta como comida dada: su ventana no sale vacía', async () => {
+    const t = setup();
+    await t.tracker.start();
+    t.events.emit('feed-opened', { residentId: 'tembo' });
+    t.events.emit('sick-refused', { residentId: 'tembo', foodId: 'manzana' });
+    t.events.emit('feed-closed', { residentId: 'tembo' });
+    expect(t.values.get('comer | ventana-fin | elefantes-africanos/tembo')).toBe(1);
+    expect(t.sent).not.toContain('comer | ventana-vacia | elefantes-africanos/tembo');
+  });
+
+  it('mirar la clínica o no tener monedas para ella se nombra igual que al comprarla', async () => {
+    const t = setup();
+    await t.tracker.start();
+    t.events.emit('shop-opened', {});
+    t.events.emit('shop-look', { itemId: 'clinic' });
+    t.events.emit('shop-denied', { itemId: 'clinic', missing: 600 });
+    expect(t.sent).toContain('tienda | mira | edificio/clinica');
+    expect(t.values.get('tienda | sin-monedas | edificio/clinica')).toBe(600);
+  });
+
+  it('pisar la puerta de la clínica sin haberla comprado', async () => {
+    const t = setup();
+    await t.tracker.start();
+    t.events.emit('clinic-locked', {});
+    expect(t.sent).toContain('mapa | clinica-cerrada');
+  });
+
+  it('tiene: la clínica y Luna al empezar el día, para comparar solo entre quienes las tienen', async () => {
+    const t = setup({ state: { ...initialState(), clinic: true, luna: true } });
+    await t.tracker.start();
+    t.tracker.sessionStarted(['dia']);
+    expect(t.sent).toEqual(expect.arrayContaining(['tiene | tiene-extra | edificio/clinica', 'tiene | tiene-extra | mascota/luna']));
+  });
+
+  it('tiene: la clínica y Luna también al comprarlas (el estado del día ya salió)', async () => {
+    const t = setup();
+    await t.tracker.start();
+    t.tracker.sessionStarted(['dia']);
+    expect(t.sent.some((k) => k.startsWith('tiene | tiene-extra'))).toBe(false);
+    t.events.emit('building-bought', { buildingId: 'clinica', cost: 650 });
+    t.events.emit('pet-bought', { petId: 'luna', cost: 300 });
+    expect(t.sent).toEqual(expect.arrayContaining(['tiene | tiene-extra | edificio/clinica', 'tiene | tiene-extra | mascota/luna']));
+  });
+
   it('con la clínica comprada, la partida ya se había jugado', () => {
     const state = { ...initialState(), clinic: true };
     expect(knownSteps(state, defaultBook())).toContain('primer-paso');

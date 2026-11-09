@@ -32,6 +32,8 @@ export interface TrackerDeps {
 /** Menos de esto en una página es pasar la hoja, no leerla. */
 const READ_MS = 1000;
 const REACH_SCREENS: readonly string[] = ['tienda', 'libro', 'ajustes', 'tablon', 'clinica'];
+/** Nombre en Matomo de lo que se compra que no es un animal: el mismo al mirarlo, al no llegar y al comprarlo. */
+const EXTRA_NAMES: Readonly<Record<string, string>> = { clinic: 'edificio/clinica', luna: 'mascota/luna' };
 const SETTING_LABELS = [['music', 'musica'], ['sfx', 'sonidos'], ['joystick', 'joystick']] as const;
 
 function zooComplete(state: GameState): boolean {
@@ -131,6 +133,7 @@ export class GameTracker implements AnalyticsHooks {
     on('shop-locked', ({ missing }) => this.send('mapa', 'tienda-cerrada', undefined, missing));
     on('shop-guide', ({ mode }) => this.send('mapa', 'boton-tienda', mode));
     on('clinic-guide', ({ mode }) => this.send('mapa', 'boton-clinica', mode));
+    on('clinic-locked', () => this.send('mapa', 'clinica-cerrada'));
     on('drag-hint', ({ residentId, foodId }) => this.send('comer', 'pista-arrastrar', part(residentName(residentId), foodId)));
     on('control-used', ({ mode }) => {
       if (this.controls.has(mode)) return;
@@ -147,9 +150,9 @@ export class GameTracker implements AnalyticsHooks {
     on('shop-look', ({ itemId }) => {
       if (this.shop?.looked.has(itemId)) return;
       this.shop?.looked.add(itemId);
-      this.send('tienda', 'mira', itemId);
+      this.send('tienda', 'mira', itemId === 'clinic' ? EXTRA_NAMES.clinic : itemId);
     });
-    on('shop-denied', ({ itemId, missing }) => this.send('tienda', 'sin-monedas', itemId, missing));
+    on('shop-denied', ({ itemId, missing }) => this.send('tienda', 'sin-monedas', itemId === 'clinic' ? EXTRA_NAMES.clinic : itemId, missing));
     on('purchase', ({ itemId, penId, residentId, cost }) => {
       if (this.shop) this.shop.bought += 1;
       this.send('tienda', 'compra', part(penId, residentId), cost);
@@ -175,11 +178,13 @@ export class GameTracker implements AnalyticsHooks {
     on('pet-bought', ({ petId, cost }) => {
       if (this.shop) this.shop.bought += 1;
       this.send('tienda', 'compra', part('mascota', petId), cost);
+      this.send('tiene', 'tiene-extra', part('mascota', petId));
       this.step('primera-compra');
     });
     on('building-bought', ({ buildingId, cost }) => {
       if (this.shop) this.shop.bought += 1;
       this.send('tienda', 'compra', part('edificio', buildingId), cost);
+      this.send('tiene', 'tiene-extra', part('edificio', buildingId));
       this.step('primera-compra');
     });
 
@@ -201,7 +206,11 @@ export class GameTracker implements AnalyticsHooks {
       this.send('cuidados', 'limpia-tiempo', residentName(residentId), seconds);
     });
     on('animal-sick', ({ residentId }) => this.send('cuidados', 'enferma', residentName(residentId)));
-    on('sick-refused', ({ residentId, foodId }) => this.send('cuidados', 'puaj', part(residentName(residentId), foodId)));
+    on('sick-refused', ({ residentId, foodId }) => {
+      // Como un «rechaza»: se le dio comida, así que su ventana no cuenta como vacía.
+      if (this.feedWindow) this.feedWindow.given += 1;
+      this.send('cuidados', 'puaj', part(residentName(residentId), foodId));
+    });
     on('clinic-requested', ({ residentId }) => this.send('cuidados', 'cruz', residentName(residentId)));
     on('clinic-opened', ({ sick }) => this.send('cuidados', 'clinica-abre', undefined, sick));
     on('cure-opened', ({ residentId }) => {
@@ -400,6 +409,8 @@ export class GameTracker implements AnalyticsHooks {
       // Uno por animal: el quinto de un recinto lo tienen menos jugadores que el primero.
       for (const resident of PENS[penId].residents.slice(0, state.counts[penId])) this.send('tiene', 'tiene-animal', part(penId, resident.id));
     }
+    if (state.clinic) this.send('tiene', 'tiene-extra', EXTRA_NAMES.clinic);
+    if (state.luna) this.send('tiene', 'tiene-extra', EXTRA_NAMES.luna);
     this.send('tiene', 'tiene-saldo', coinsBucket(state.coins));
     this.send('tiene', 'tiene-paginas', bookBucket(this.deps.book().seen.length));
     for (const [key, label] of SETTING_LABELS) this.send('tiene', 'tiene-ajuste', `${label}-${settings[key] ? 'on' : 'off'}`);

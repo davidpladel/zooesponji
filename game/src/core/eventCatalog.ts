@@ -17,7 +17,7 @@ export const CATALOG = {
   activo: ['nuevo', 'dia', 'semana', 'mes', 'vuelve-d1', 'vuelve-d7', 'vuelve-d30'],
   progreso: ['recinto', 'animal', 'monedas'],
   comer: ['toca-animal', 'ventana', 'come', 'rechaza', 'especial', 'fuera', 'ventana-fin', 'ventana-tiempo', 'ventana-vacia', 'pista-arrastrar'],
-  mapa: ['cerca', 'cerca-cerrado', 'toca-cerrado', 'tienda-cerrada', 'control', 'boton-tienda', 'boton-clinica'],
+  mapa: ['cerca', 'cerca-cerrado', 'toca-cerrado', 'tienda-cerrada', 'control', 'boton-tienda', 'boton-clinica', 'clinica-cerrada'],
   tienda: ['mira', 'compra', 'sin-monedas', 'tienda-fin', 'tienda-sin-compra'],
   cuidados: [
     'barro', 'mancha', 'charco-limpio', 'limpia-abre', 'limpia', 'limpia-deja', 'limpia-tiempo',
@@ -28,7 +28,7 @@ export const CATALOG = {
   anuncio: ['anuncio-ofrece', 'anuncio-acepta', 'anuncio-no', 'anuncio-visto', 'anuncio-cortado', 'anuncio-fallo', 'anuncio-vacio', 'anuncio-segundos'],
   tablon: ['tablon-abre', 'tablon-aviso', 'tablon-vota', 'tablon-qr', 'tablon-sin-red', 'tablon-aviso-ganadora', 'tablon-pestana', 'tablon-pagina'],
   tutorial: ['tutorial-ofrece', 'tutorial-aprende', 'tutorial-salta', 'tutorial-menu', 'tutorial-paso', 'tutorial-fin', 'tutorial-deja'],
-  tiene: ['tiene-recinto', 'tiene-animal', 'tiene-saldo', 'tiene-paginas', 'tiene-ajuste'],
+  tiene: ['tiene-recinto', 'tiene-animal', 'tiene-extra', 'tiene-saldo', 'tiene-paginas', 'tiene-ajuste'],
   alcance: [
     'dia-animal', 'semana-animal', 'vida-animal',
     'dia-comida', 'semana-comida', 'vida-comida',

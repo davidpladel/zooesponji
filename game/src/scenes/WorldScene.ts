@@ -207,7 +207,10 @@ export class WorldScene extends Phaser.Scene {
     if (this.atClinicDoor) return;
     this.atClinicDoor = true;
     if (state.clinic) this.openClinic();
-    else bus.emit('toast', { text: t('toast.needClinic'), icon: 'shop' });
+    else {
+      bus.emit('toast', { text: t('toast.needClinic'), icon: 'shop' });
+      bus.emit('clinic-locked', {});
+    }
   }
 
   /** Entra en la clínica: el mundo queda en pausa debajo. */

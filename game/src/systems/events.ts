@@ -85,6 +85,8 @@ export interface GameEvents {
   'shop-guide': { mode: 'huellas' | 'apagar' | 'andando' };
   /** El botón de la clínica (debajo del de la tienda): la cuidadora va andando a ella. */
   'clinic-guide': { mode: 'andando' };
+  /** Se pisa la puerta de la clínica sin haberla comprado (sale «La clínica se compra en la tienda»). */
+  'clinic-locked': Record<string, never>;
   /** Una comida tocada sin arrastrar: la mano enseña a arrastrarla. */
   'drag-hint': { residentId: string; foodId: FoodId };
   /** Se ha pisado la puerta de la tienda sin monedas suficientes para abrirla. */
