@@ -136,6 +136,10 @@ encargo de cada jugador: `scripts/ia/instrucciones.md`.
 3. Capturas, diario e informes van al repo privado: `zooesponji-private/docs/jugadores-ia/AAAA-MM-DD/<id>/`, y el
    resumen de la pasada en `resumen.md` de esa carpeta. 30 acciones como mucho por partida.
 4. **Los jugadores se lanzan de uno en uno, nunca en paralelo:** seis navegadores a la vez dejan el PC muy lento.
+5. **Escenarios** (`scripts/ia/escenarios.ts`): `/partida` con `"escenario": "cuidados"` empieza con una partida
+   preparada (cerdos y elefantes llenos, clínica comprada, tres animales manchados, dos malitos y charcos de
+   barro), para que el objetivo `cuidar` no gaste acciones en comprarlo todo. Llevan las estadísticas apagadas: las
+   partidas de IA no cuentan en Matomo. `tests/unit/iaEscenarios.test.ts` comprueba que el juego las lee tal cual.
 
 ## Interfaz
 

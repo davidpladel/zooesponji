@@ -3,7 +3,7 @@
 // una captura. El jugador no ve nada más del juego (ni escenas ni estado): solo las capturas.
 //
 // Uso: npm run build && npm run preview (en otra ventana) y npm run ia:mando
-//   POST /partida   { id }                  → { captura }   partida nueva y limpia
+//   POST /partida   { id, escenario? }      → { captura }   partida nueva: limpia, o la preparada de `escenarios.ts`
 //   POST /tocar     { id, x, y }            → { captura }
 //   POST /arrastrar { id, x0, y0, x1, y1 }  → { captura }
 //   POST /esperar   { id, ms }  (máx. 5000) → { captura }
@@ -14,6 +14,7 @@ import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium, type Browser, type BrowserContext, type Page } from 'playwright';
+import { ESCENARIOS } from './escenarios.ts';
 
 const PORT = 7801;
 const GAME_URL = process.env.IA_GAME_URL ?? 'http://localhost:4173/';
@@ -65,7 +66,7 @@ async function snap(g: Game, accion: string, datos: Record<string, unknown>): Pr
   return file;
 }
 
-async function openGame(id: string): Promise<Game> {
+async function openGame(id: string, escenario: string | null): Promise<Game> {
   browser ??= await chromium.launch({ channel: process.env.CI ? undefined : 'chrome' });
   const old = games.get(id);
   if (old) await old.context.close();
@@ -73,6 +74,13 @@ async function openGame(id: string): Promise<Game> {
   mkdirSync(dir, { recursive: true });
   // Contexto nuevo = partida limpia (sin guardado ni preferencias).
   const context = await browser.newContext({ viewport: SIZE, deviceScaleFactor: 1, locale: 'es-ES', hasTouch: true, isMobile: true });
+  // Con escenario, la partida preparada se deja guardada antes de que arranque el juego.
+  const prepared = escenario ? ESCENARIOS[escenario] : undefined;
+  if (prepared) {
+    await context.addInitScript(([key, value]) => {
+      if (!window.localStorage.getItem(key!)) window.localStorage.setItem(key!, value!);
+    }, [prepared.key, JSON.stringify(prepared.save)]);
+  }
   const page = await context.newPage();
   await page.goto(GAME_URL);
   // En la versión construida no hay ganchos de prueba: se espera al lienzo y a que pase la carga.
@@ -147,7 +155,9 @@ const server = createServer(async (req, res) => {
   const path = (req.url ?? '').split('?')[0]!;
   const run = async (): Promise<Record<string, unknown>> => {
     if (path === '/partida') {
-      const g = await openGame(id);
+      const escenario = body.escenario === undefined ? null : String(body.escenario);
+      if (escenario !== null && !ESCENARIOS[escenario]) return { error: `escenario desconocido; hay: ${Object.keys(ESCENARIOS).join(', ')}` };
+      const g = await openGame(id, escenario);
       return { captura: await snap(g, 'partida', {}) };
     }
     const g = games.get(id);

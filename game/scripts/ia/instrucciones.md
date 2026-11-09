@@ -18,6 +18,9 @@ curl -s -X POST http://127.0.0.1:7801/esperar   -d '{"id":"{ID}","ms":2000}'
 curl -s -X POST http://127.0.0.1:7801/fin       -d '{"id":"{ID}"}'
 ```
 
+- Si tu objetivo dice que empieza con un escenario (por ejemplo `cuidados`), pídelo al abrir la partida:
+  `curl -s -X POST http://127.0.0.1:7801/partida -d '{"id":"{ID}","escenario":"cuidados"}'`. Así empiezas con eso
+  ya conseguido (lo ha jugado otro antes): no lo cuentes como un fallo.
 - Las coordenadas son píxeles de la captura (x de 0 a 640, y de 0 a 360).
 - Tienes **30 acciones como mucho**. Si el mando responde `límite`, termina.
 - Empieza con `/partida`. Termina siempre con `/fin`.

@@ -1,6 +1,6 @@
 # Jugadores con IA: perfiles y objetivos
 
-Cada pasada son **6 jugadores**: los 2 perfiles × los 3 objetivos. Cada uno juega una partida nueva y limpia, **de uno en uno** (en paralelo el PC va muy lento), con 30 acciones como mucho.
+Cada pasada son **8 jugadores**: los 2 perfiles × los 4 objetivos. Cada uno juega una partida nueva y limpia, **de uno en uno** (en paralelo el PC va muy lento), con 30 acciones como mucho.
 
 ## Perfiles
 
@@ -21,7 +21,10 @@ Cada pasada son **6 jugadores**: los 2 perfiles × los 3 objetivos. Cada uno jue
 1. `comer` — **Dar de comer a todos los animales** que pueda.
 2. `tienda` — **Comprar en la tienda**: entrar, mirar qué hay y comprar lo que pueda.
 3. `luna` — **Pasear con Luna y explorar** todo el zoo (si no tiene a Luna, intentar conseguirla).
+4. `cuidar` — **Cuidar a los animales**: limpiar a los que están manchados de barro y curar a los malitos en la
+   clínica. Empieza con el escenario `cuidados` (ya tiene cerdos, elefantes y la clínica; hay tres animales
+   manchados y dos malitos), así no gasta acciones en comprarlo todo.
 
 ## Ids de las partidas
 
-`peque-comer`, `peque-tienda`, `peque-luna`, `mayor-comer`, `mayor-tienda`, `mayor-luna`.
+`peque-comer`, `peque-tienda`, `peque-luna`, `peque-cuidar`, `mayor-comer`, `mayor-tienda`, `mayor-luna`, `mayor-cuidar`.

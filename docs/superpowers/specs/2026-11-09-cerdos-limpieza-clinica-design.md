@@ -130,6 +130,8 @@ Nombres de cerdos, tiempos exactos del charco y las enfermedades, medicinas, ani
 - **Clínica por dentro:** veterinario (médico con espejo frontal) y veterinaria (con cofia) del pack de personajes; dos camillas. Al curar al de la primera, el otro pasa a la primera camilla.
 - **Curar:** 4 medicinas (pastilla, tirita, jarabe, termómetro); 5 dosis en cualquier orden llenan la barra.
 - **Estadísticas:** ver «Estadísticas (Matomo)» más abajo (añadidas el 2026-11-09).
+- **Jugadores con IA:** objetivo nuevo `cuidar` (limpiar y curar), que empieza con el escenario `cuidados`: todo
+  abierto, animales manchados y malitos, para no gastar sus 30 acciones en comprar.
 
 ## Estadísticas (Matomo)
 
