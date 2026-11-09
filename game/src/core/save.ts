@@ -1,5 +1,6 @@
 import { PEN_IDS, isPenId, penCapacity, type PenId } from '../data/pens';
 import { isLanguage, type Language } from '../systems/language';
+import { emptyCare, sanitizeCare, type CareState } from './care';
 import { initialCounts, initialState, type GameState } from './economy';
 
 export interface KeyValueStore {
@@ -58,6 +59,8 @@ export interface SaveData {
   book: BookProgress;
   tutorial: TutorialProgress;
   shop: ShopProgress;
+  /** Animales sucios o malitos y charcos de barro. Sin dato (partidas de antes), todo limpio y sano. */
+  care: CareState;
 }
 
 export const SAVE_KEY = 'zooesponji_v3_save';
@@ -131,6 +134,7 @@ export function defaultSave(): SaveData {
     book: defaultBook(),
     tutorial: { offered: false },
     shop: { visits: 0 },
+    care: emptyCare(),
   };
 }
 
@@ -176,6 +180,7 @@ export function parseSave(value: unknown): SaveData | null {
     book: parseBook(value.book),
     tutorial: parseTutorial(value.tutorial),
     shop: parseShop(value.shop, { luna, counts }),
+    care: sanitizeCare(value.care, counts),
   };
 }
 
@@ -207,6 +212,7 @@ export function migrateLegacy(coinsRaw: string | null, purchasesRaw: string | nu
     book: defaultBook(),
     tutorial: { offered: false },
     shop: { visits: 0 },
+    care: emptyCare(),
   };
 }
 

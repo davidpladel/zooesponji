@@ -263,3 +263,23 @@ describe('Session: Luna', () => {
     expect(bought).not.toHaveBeenCalled();
   });
 });
+
+describe('Session: suciedad y enfermedades', () => {
+  it('empieza todo limpio y sano', async () => {
+    const session = await Session.load(createMemoryStore(), new EventBus<GameEvents>());
+    expect(session.care).toEqual({ dirty: [], sick: [], muddy: [] });
+  });
+
+  it('setCare guarda y avisa con care-changed', async () => {
+    const store = createMemoryStore();
+    const events = new EventBus<GameEvents>();
+    const handler = vi.fn();
+    events.on('care-changed', handler);
+    const session = await Session.load(store, events);
+    await session.update((s) => ({ ...s, counts: { ...s.counts, cerdos: 2 } }));
+    await session.setCare({ dirty: ['rosita'], sick: [], muddy: ['cerdos'] });
+    expect(handler).toHaveBeenCalledTimes(1);
+    const reloaded = await Session.load(store, new EventBus<GameEvents>());
+    expect(reloaded.care).toEqual({ dirty: ['rosita'], sick: [], muddy: ['cerdos'] });
+  });
+});

@@ -61,6 +61,7 @@ describe('parseSave', () => {
       tutorial: { offered: false },
       // Tenía el panda (de compra): ya había entrado en la tienda.
       shop: { visits: 1 },
+      care: { dirty: [], sick: [], muddy: [] },
     });
   });
 
@@ -107,6 +108,7 @@ describe('parseSave', () => {
       book: { ...old.book, opened: true },
       tutorial: { offered: false },
       shop: { visits: 1 },
+      care: { dirty: [], sick: [], muddy: [] },
     });
   });
 });
@@ -309,5 +311,27 @@ describe('guardado de la clínica', () => {
   it.each([['si'], [1], [null]])('un valor que no es sí o no (%s) cuenta como no comprada', (clinic) => {
     const data = defaultSave();
     expect(roundTrip({ ...data, state: { ...data.state, clinic } })!.state.clinic).toBe(false);
+  });
+});
+
+describe('guardado de la suciedad y las enfermedades', () => {
+  const roundTrip = (data: unknown) => parseSave(JSON.parse(JSON.stringify(data)));
+
+  it('una partida sin cuidados guardados carga con todo limpio y sano', () => {
+    const { care: _omit, ...data } = defaultSave();
+    expect(roundTrip(data)!.care).toEqual({ dirty: [], sick: [], muddy: [] });
+    expect(defaultSave().care).toEqual({ dirty: [], sick: [], muddy: [] });
+    expect(migrateLegacy('25', null)!.care).toEqual({ dirty: [], sick: [], muddy: [] });
+  });
+
+  it('ida y vuelta conserva sucios, enfermos y charcos', () => {
+    const data = defaultSave();
+    const full = {
+      ...data,
+      state: { ...data.state, clinic: true, counts: { ...data.state.counts, cerdos: 3, 'elefantes-africanos': 2 } },
+      shop: { visits: 3 },
+      care: { dirty: ['morrito'], sick: ['kali'], muddy: ['cerdos'] },
+    };
+    expect(roundTrip(full)).toEqual(full);
   });
 });

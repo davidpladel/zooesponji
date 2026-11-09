@@ -1,3 +1,4 @@
+import type { CareState } from '../core/care';
 import { addCoins, purchase, type GameState, type PurchaseResult } from '../core/economy';
 import { resolveFeeding, type FeedResult } from '../core/reactions';
 import { loadSave, parseSave, writeSave, type BookProgress, type KeyValueStore, type SaveData, type Settings, type ShopProgress, type TutorialProgress } from '../core/save';
@@ -117,6 +118,19 @@ export class Session {
 
   get shop(): ShopProgress {
     return this.data.shop;
+  }
+
+  /** Animales sucios o malitos y charcos de barro. */
+  get care(): CareState {
+    return this.data.care;
+  }
+
+  /** Cambia la suciedad o las enfermedades: guarda y avisa para repintar el mundo. */
+  async setCare(next: CareState): Promise<void> {
+    if (next === this.data.care) return;
+    this.data = { ...this.data, care: next };
+    this.events.emit('care-changed', {});
+    await writeSave(this.store, this.data);
   }
 
   get tutorial(): TutorialProgress {

@@ -50,6 +50,8 @@ export interface GameEvents {
   'animal-tapped': { residentId: string };
   'feed-opened': { residentId: string };
   'feed-closed': { residentId: string };
+  /** Ha cambiado quién está sucio o malito, o algún charco: el mundo se repinta. */
+  'care-changed': Record<string, never>;
   /** Una comida arrastrada y soltada fuera del animal. */
   'food-missed': { residentId: string; foodId: FoodId };
   /** La cuidadora lleva un rato junto a un recinto. */
