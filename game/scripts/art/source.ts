@@ -42,7 +42,7 @@ export interface ArtConfig {
   vets?: (Source & { character: number })[];
   /** Por aspecto: el de la especie (`cabra`) y los de cada animal distinto (`cabra-gordi`). */
   animals: Record<string, LookSource>;
-  props?: Record<string, Source & CropRect & { animate?: Animate; compose?: Compose; refill?: Refill; overlay?: Overlay[] }>;
+  props?: Record<string, Source & CropRect & { animate?: Animate; compose?: Compose; refill?: Refill; overlay?: Overlay[]; edits?: SheetEdit[] }>;
   foods?: Record<string, (Source & CropRect) | { override: string }>;
   companions?: Record<string, Source>;
   /** Mascotas dibujadas en este repo (`game/art/`), no en el privado. */

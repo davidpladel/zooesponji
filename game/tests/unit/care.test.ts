@@ -11,6 +11,7 @@ import {
   isMudPen,
   isSick,
   makeMuddy,
+  puddleArt,
   randomDelay,
   sanitizeCare,
   sickCandidates,
@@ -39,6 +40,17 @@ describe('cuidados: charcos', () => {
     expect(once.muddy).toEqual(['cerdos']);
     expect(makeMuddy(once, 'cerdos')).toBe(once);
     expect(once.dirty).toEqual([]);
+  });
+
+  it('el charco es la charca animada del pack de su suelo: de hierba en los cerdos, de sabana en los elefantes', () => {
+    expect(puddleArt('cerdos', false)).toBe('pond-grassland');
+    expect(puddleArt('elefantes-africanos', false)).toBe('water-savannah');
+    expect(puddleArt('elefantes-asiaticos', false)).toBe('water-savannah');
+  });
+
+  it('con barro, la misma charca en su versión de barro', () => {
+    expect(puddleArt('cerdos', true)).toBe('pond-grassland-mud');
+    expect(puddleArt('elefantes-africanos', true)).toBe('water-savannah-mud');
   });
 });
 

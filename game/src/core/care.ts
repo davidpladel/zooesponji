@@ -36,6 +36,15 @@ export function isMudPen(id: PenId): id is MudPenId {
   return (MUD_PENS as readonly string[]).includes(id);
 }
 
+/**
+ * El dibujo del charco: la charca animada del pack del suelo del recinto (hierba en los cerdos, sabana en los
+ * elefantes) y, con barro, esa misma charca con los azules cambiados a marrón (`-mud` en art.config.json).
+ */
+export function puddleArt(penId: MudPenId, muddy: boolean): string {
+  const water = penId === 'cerdos' ? 'pond-grassland' : 'water-savannah';
+  return muddy ? `${water}-mud` : water;
+}
+
 export const isDirty = (care: CareState, residentId: string): boolean => care.dirty.includes(residentId);
 export const isSick = (care: CareState, residentId: string): boolean => care.sick.includes(residentId);
 

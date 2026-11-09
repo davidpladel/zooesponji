@@ -3,7 +3,7 @@
 import { PNG } from 'pngjs';
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { animatedStrip, composedStrip, characterSheet, crop, erase, overlay, refill } from './art/pngTools.ts';
+import { animatedStrip, composedStrip, characterSheet, crop, editSheet, erase, overlay, refill } from './art/pngTools.ts';
 import { buildLook, finished } from './art/looks.ts';
 import { assertPrivateRepo, config, readOverlay, readSource, root } from './art/source.ts';
 
@@ -43,7 +43,7 @@ for (const [id, look] of Object.entries(config.animals)) {
 const props: Record<string, { file: string; width: number; height: number; frames?: number; fps?: number }> = {};
 for (const [name, p] of Object.entries(config.props ?? {})) {
   if (p.compose) {
-    const strip = composedStrip(readSource(p), p.w, p.h, p.compose);
+    const strip = editSheet(composedStrip(readSource(p), p.w, p.h, p.compose), p.edits ?? [], p.compose.frames, 1);
     props[name] = { file: save(strip, `prop-${name}.png`), width: p.w, height: p.h, frames: p.compose.frames, fps: p.compose.fps ?? 4 };
     continue;
   }
@@ -52,7 +52,8 @@ for (const [name, p] of Object.entries(config.props ?? {})) {
     const strip = animatedStrip(readSource(p), p, p.animate);
     if (p.refill) refill(strip, p.w, p.refill);
     for (const o of p.overlay ?? []) overlay(strip, p.w, readOverlay(o), o.dx, o.dy);
-    props[name] = { file: save(strip, `prop-${name}.png`), width: p.w, height: p.h, frames: p.animate.count, fps: p.animate.fps ?? 4 };
+    // Retoques de color en todos los fotogramas (el barro: la misma charca con los azules cambiados).
+    props[name] = { file: save(editSheet(strip, p.edits ?? [], p.animate.count, 1), `prop-${name}.png`), width: p.w, height: p.h, frames: p.animate.count, fps: p.animate.fps ?? 4 };
     continue;
   }
   props[name] = image(erase(crop(readSource(p), p.x, p.y, p.w, p.h), p.erase ?? []), `prop-${name}.png`);

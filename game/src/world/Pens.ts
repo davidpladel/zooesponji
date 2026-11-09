@@ -1,7 +1,7 @@
 import * as Phaser from 'phaser';
-import { getArt } from '../art/art';
+import { getArt, propAnimKey, propKey } from '../art/art';
 import { TILE_SIZE } from '../config';
-import { emptyCare, insidePuddle, isDirty, isMudPen, isSick, puddleSpot, type CareState, type MudPenId } from '../core/care';
+import { emptyCare, insidePuddle, isDirty, isMudPen, isSick, puddleArt, puddleSpot, type CareState, type MudPenId } from '../core/care';
 import { penCount, isPenOpen, type GameState } from '../core/economy';
 import { BODY_RADIUS, fleeTarget, followTarget, penSpace, spreadPositions, stepRoamer, type PenSpace, type Roamer } from '../core/flock';
 import { gateAtDoorstep, nearestWithin, rectContains, rectsOverlap, tapDistance, type Rect } from '../core/interaction';
@@ -62,7 +62,10 @@ interface Puddle {
   y: number;
   rx: number;
   ry: number;
-  gfx: Phaser.GameObjects.Graphics;
+  /** Sin arte cargado: el charco dibujado a mano. */
+  gfx: Phaser.GameObjects.Graphics | null;
+  /** Con arte: la charca animada del pack (agua o barro). */
+  sprite: Phaser.GameObjects.Sprite | null;
 }
 
 /** Cada cuánto (ms) se mira quién pisa el barro, y la probabilidad de ensuciarse en cada vistazo. */
@@ -70,6 +73,8 @@ const SOIL_EVERY = 1000;
 const SOIL_CHANCE = 0.3;
 /** Justo encima del suelo y por debajo de animales y adornos. */
 const PUDDLE_DEPTH = 1.5;
+/** Medio ancho del agua de la charca del pack, en proporción al dibujo (la orilla no se pisa). */
+const PUDDLE_WATER = 0.38;
 const WATER = { fill: 0x64b5f6, shine: 0xbbdefb, edge: 0x3e6f9e };
 const MUD = { fill: 0x795548, shine: 0x9c7a6b, edge: 0x4e342e };
 
@@ -217,18 +222,40 @@ export class Pens {
 
   /** Charco del recinto, en el hueco libre más céntrico. */
   private addPuddle(penId: MudPenId, space: PenSpace): void {
+    const water = getArt()?.props[puddleArt(penId, false)];
+    if (water && this.scene.textures.exists(propKey(puddleArt(penId, false)))) {
+      // La charca del pack ocupa su dibujo entero (orilla incluida); se pisa el agua de dentro.
+      const at = puddleSpot(space, water.width / 2, water.height / 2);
+      if (at) {
+        const sprite = this.scene.add.sprite(at.x, at.y, propKey(puddleArt(penId, false))).setDepth(PUDDLE_DEPTH);
+        this.puddles.push({ penId, ...at, rx: water.width * PUDDLE_WATER, ry: water.height * PUDDLE_WATER, gfx: null, sprite });
+        this.drawPuddle(this.puddles[this.puddles.length - 1]!);
+        return;
+      }
+    }
     const rx = Math.max(14, Math.min(32, space.inner.width * 0.16));
     const ry = rx * 0.45;
     const at = puddleSpot(space, rx, ry);
     if (!at) return;
     const gfx = this.scene.add.graphics().setDepth(PUDDLE_DEPTH);
-    this.puddles.push({ penId, ...at, rx, ry, gfx });
+    this.puddles.push({ penId, ...at, rx, ry, gfx, sprite: null });
     this.drawPuddle(this.puddles[this.puddles.length - 1]!);
   }
 
   private drawPuddle(puddle: Puddle): void {
-    const colors = this.care.muddy.includes(puddle.penId) ? MUD : WATER;
-    const { x, y, rx, ry, gfx } = puddle;
+    const muddy = this.care.muddy.includes(puddle.penId);
+    if (puddle.sprite) {
+      const name = puddleArt(puddle.penId, muddy);
+      if (puddle.sprite.texture.key === propKey(name) && puddle.sprite.anims.isPlaying) return;
+      // Agua o barro: la misma charca, y sigue moviéndose desde el mismo fotograma.
+      const frame = puddle.sprite.anims.currentFrame?.index ?? 1;
+      puddle.sprite.setTexture(propKey(name));
+      if (this.scene.anims.exists(propAnimKey(name))) puddle.sprite.play({ key: propAnimKey(name), startFrame: frame - 1 });
+      return;
+    }
+    const colors = muddy ? MUD : WATER;
+    const { x, y, rx, ry } = puddle;
+    const gfx = puddle.gfx!;
     gfx.clear();
     // A píxeles, fila a fila, como el resto del arte: borde oscuro, relleno y un brillo.
     const spans = (cx: number, cy: number, ax: number, ay: number, color: number, alpha = 1): void => {
