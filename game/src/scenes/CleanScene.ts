@@ -8,6 +8,7 @@ import { sfx } from '../systems/audio';
 import { bus } from '../systems/events';
 import { getSession } from '../systems/session';
 import { sceneryTexture } from '../ui/paint';
+import { addTowel } from '../ui/towel';
 import { addEmoji, addUiText, fitText, type UiText } from '../ui/text';
 import { textStyle } from '../ui/theme';
 import { wrapStyle } from '../ui/wrap';
@@ -19,7 +20,8 @@ export interface CleanSceneData {
 }
 
 /** Herramienta de cada paso. */
-const TOOL_EMOJI: Readonly<Record<CleanStep, string>> = { cacahuete: '🥜', cepillo: '🪥', jabon: '🧼', agua: '🚿', toalla: '🧺' };
+/** Herramienta de cada paso. La toalla no tiene emoji: se dibuja a píxeles (`ui/towel.ts`). */
+const TOOL_EMOJI: Readonly<Record<Exclude<CleanStep, 'toalla'>, string>> = { cacahuete: '🥜', cepillo: '🪥', jabon: '🧼', agua: '🚿' };
 /** Lo que sale al pasar la herramienta: miguitas, polvo de barro, burbujas, gotas y brillos. */
 const TRAIL_EMOJI: Readonly<Record<CleanStep, string>> = { cacahuete: '😋', cepillo: '💨', jabon: '🫧', agua: '💧', toalla: '✨' };
 /** Margen (px) alrededor del animal: frotar "casi encima" también cuenta. */
@@ -35,6 +37,9 @@ const MUD_DARK = 0x4e342e;
 const FX_DEPTH = 60;
 
 type Portrait = Phaser.GameObjects.Sprite | Phaser.GameObjects.Text;
+const baseScale = (tool: Phaser.GameObjects.GameObject): number => (tool.getData('base') as number | undefined) ?? 1;
+/** Una herramienta de la bandeja: emoji o, la toalla, imagen a píxeles. */
+type Tool = Phaser.GameObjects.Text | Phaser.GameObjects.Image;
 
 /**
  * La limpieza: como dar de comer, pero con 5 herramientas en orden. Solo se puede usar la del paso que toca
@@ -54,7 +59,7 @@ export class CleanScene extends Phaser.Scene {
   private stepText!: UiText;
   private whyText!: UiText;
   private faceText!: UiText;
-  private readonly tools = new Map<CleanStep, Phaser.GameObjects.Text>();
+  private readonly tools = new Map<CleanStep, Tool>();
   private readonly toolHomes = new Map<CleanStep, Vec>();
   private dragging: { step: CleanStep; last: Vec | null } | null = null;
   /** Marco amarillo de la herramienta que toca. */
@@ -184,14 +189,17 @@ export class CleanScene extends Phaser.Scene {
       if (index === 0) this.glow = this.add.graphics().setDepth(4);
       // El número del paso, para que se vea el orden aunque no se sepa leer.
       addUiText(this, x - tile * 0.36, y - tile * 0.36, String(index + 1), textStyle(Math.round(size * 0.32), '#ffffff', '#4e342e')).setOrigin(0.5).setDepth(5);
-      const tool = addEmoji(this, x, y, TOOL_EMOJI[step], size).setInteractive({ draggable: true, useHandCursor: true }).setDepth(10);
+      const art: Tool = step === 'toalla' ? addTowel(this, x, y, size) : addEmoji(this, x, y, TOOL_EMOJI[step], size);
+      const tool = art.setInteractive({ draggable: true, useHandCursor: true }).setDepth(10);
       tool.setData('step', step);
+      // Su tamaño normal: la toalla es una imagen ampliada, no un emoji de escala 1.
+      tool.setData('base', tool.scale);
       this.tools.set(step, tool);
       this.toolHomes.set(step, { x, y });
     });
   }
 
-  private onDragStart(_pointer: Phaser.Input.Pointer, tool: Phaser.GameObjects.Text): void {
+  private onDragStart(_pointer: Phaser.Input.Pointer, tool: Tool): void {
     const step = tool.getData('step') as CleanStep;
     if (this.finished || !isStepEnabled(this.cleaning, step)) {
       // La que no toca tiembla un poquito: «esta todavía no».
@@ -199,12 +207,12 @@ export class CleanScene extends Phaser.Scene {
       return;
     }
     this.tweens.killTweensOf(tool);
-    tool.setAngle(0).setScale(1.2).setDepth(40);
+    tool.setAngle(0).setScale(baseScale(tool) * 1.2).setDepth(40);
     this.dragging = { step, last: null };
     sfx.play('tap');
   }
 
-  private onDrag(pointer: Phaser.Input.Pointer, tool: Phaser.GameObjects.Text, dragX: number, dragY: number): void {
+  private onDrag(pointer: Phaser.Input.Pointer, tool: Tool, dragX: number, dragY: number): void {
     if (!this.dragging || this.dragging.step !== tool.getData('step')) return;
     // La herramienta va un poco por encima del dedo, para que se vea lo que se frota.
     tool.setPosition(dragX, dragY - tool.displayHeight * 0.3);
@@ -218,13 +226,13 @@ export class CleanScene extends Phaser.Scene {
     if (over) this.rub(Math.min(MAX_RUB_STEP, Math.hypot(at.x - last.x, at.y - last.y)), at);
   }
 
-  private onDragEnd(_pointer: Phaser.Input.Pointer, tool: Phaser.GameObjects.Text): void {
+  private onDragEnd(_pointer: Phaser.Input.Pointer, tool: Tool): void {
     const step = tool.getData('step') as CleanStep;
     if (this.dragging?.step === step) this.dragging = null;
     const home = this.toolHomes.get(step);
     if (!home) return;
     tool.setDepth(10);
-    this.tweens.add({ targets: tool, x: home.x, y: home.y, scale: 1, duration: 250, ease: 'Back.easeOut', onComplete: () => this.refresh() });
+    this.tweens.add({ targets: tool, x: home.x, y: home.y, scale: baseScale(tool), duration: 250, ease: 'Back.easeOut', onComplete: () => this.refresh() });
   }
 
   /** Acaba un paso (o una cara del cepillado): saltito, sonido y, con el cepillo, el animal se gira. */
@@ -249,10 +257,10 @@ export class CleanScene extends Phaser.Scene {
       if (on) tool.clearTint();
       else tool.setTint(0x9e9e9e);
       if (on && !this.dragging && !this.tweens.isTweening(tool)) {
-        this.tweens.add({ targets: tool, scale: 1.12, duration: 420, yoyo: true, repeat: -1, ease: 'Sine.InOut' });
+        this.tweens.add({ targets: tool, scale: baseScale(tool) * 1.12, duration: 420, yoyo: true, repeat: -1, ease: 'Sine.InOut' });
       } else if (!on) {
         this.tweens.killTweensOf(tool);
-        tool.setScale(1).setAngle(0);
+        tool.setScale(baseScale(tool)).setAngle(0);
       }
     }
     this.glow.clear();
