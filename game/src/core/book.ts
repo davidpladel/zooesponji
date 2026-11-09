@@ -1,4 +1,6 @@
+import { ANIMALS } from '../data/animals';
 import { BOOK_PAGES, type BookPage, type ChapterId } from '../data/book';
+import type { FoodId } from '../data/foods';
 import { penCount, type GameState } from './economy';
 
 /** Las páginas que cuentan: todas menos el índice y las portadillas. */
@@ -79,4 +81,24 @@ export const BOOK_NOTICE_VISITS = 3;
 /** ¿El libro tiene que estar a la vista, parpadeando, en vez de escondido en la estantería? (Pedido de David, 2026-11-02: una vez que sale, ya no se esconde.) */
 export function showBookNotice(visits: number, opened: boolean): boolean {
   return visits >= BOOK_NOTICE_VISITS || opened;
+}
+
+/** Monedas que enseña la página de un animal: lo que da por comer (igual que por lavarlo o curarlo) y su especial. */
+export interface PageCoins {
+  come: number;
+  /** Su comida especial y cuánto da de más que la normal. */
+  special?: { foodId: FoodId; extra: number };
+}
+
+/**
+ * Monedas de la página de un animal (David, 2026-11-09): para que el niño vea qué animal da más y decida cuál
+ * desbloquear antes. Solo las páginas de un animal: las portadillas reúnen varios y el resto no come.
+ */
+export function pageCoins(page: BookPage): PageCoins | null {
+  if (page.role || page.picture.kind !== 'animal') return null;
+  const animal = ANIMALS[page.picture.animalId];
+  const food = (Object.entries(animal.reactions) as [FoodId, string][]).find(([, reaction]) => reaction === 'especial')?.[0];
+  const special = animal.coins.especial;
+  if (!food || special === undefined) return { come: animal.coins.come };
+  return { come: animal.coins.come, special: { foodId: food, extra: special - animal.coins.come } };
 }

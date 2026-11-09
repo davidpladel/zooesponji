@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  pageCoins,
   BOOK_NOTICE_VISITS,
   bookPageAfterPurchase,
   bookStartPage,
@@ -13,6 +14,7 @@ import {
   unreadPageIds,
 } from '../../src/core/book';
 import { initialState, type GameState } from '../../src/core/economy';
+import { ANIMALS } from '../../src/data/animals';
 import { BOOK_BACK_ID, BOOK_CHAPTERS, BOOK_PAGES, CHAPTER_PENS, chapterTitleKey } from '../../src/data/book';
 import { PEN_IDS, PENS } from '../../src/data/pens';
 import { STRINGS_ES } from '../../src/data/strings';
@@ -160,5 +162,34 @@ describe('por qué página se abre el libro (David, 2026-11-08)', () => {
     expect(bookPageAfterPurchase({ ...opened, page: 'noche' }, ['mochi'])).toBe('noche');
     // Una vez leída, la siguiente compra ya lleva a la suya.
     expect(bookPageAfterPurchase({ ...opened, page: 'noche', seen: [...opened.seen, 'noche'] }, ['mochi'])).toBe('mochi');
+  });
+});
+
+describe('monedas en la página de cada animal (David, 2026-11-09)', () => {
+  const page = (id: string) => BOOK_PAGES.find((p) => p.id === id)!;
+
+  it('la cabra: 1 moneda por comer y su comida especial, el conejo, da 1 más', () => {
+    expect(pageCoins(page('gordi'))).toEqual({ come: 1, special: { foodId: 'conejo', extra: 1 } });
+  });
+
+  it('la jirafa: 8, y con el plátano 4 más', () => {
+    const giraffe = BOOK_PAGES.find((p) => !p.role && p.picture.kind === 'animal' && p.picture.animalId === 'jirafa')!;
+    expect(pageCoins(giraffe)).toEqual({ come: 8, special: { foodId: 'platano', extra: 4 } });
+  });
+
+  it('sin comida especial, solo la primera línea', () => {
+    expect(pageCoins(page('bills'))).toEqual({ come: 1 });
+  });
+
+  it('cada página de animal lleva las monedas de su especie (las mismas por comer, lavar y curar)', () => {
+    for (const p of BOOK_PAGES) {
+      if (p.role || p.picture.kind !== 'animal') continue;
+      expect(pageCoins(p)?.come, p.id).toBe(ANIMALS[p.picture.animalId].coins.come);
+    }
+  });
+
+  it('las portadillas, el índice, Luna, la cuidadora y el portón no llevan monedas', () => {
+    for (const p of BOOK_PAGES) if (p.picture.kind !== 'animal') expect(pageCoins(p), p.id).toBeNull();
+    for (const p of BOOK_PAGES) if (p.role) expect(pageCoins(p), p.id).toBeNull();
   });
 });

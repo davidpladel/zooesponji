@@ -1,8 +1,9 @@
 import * as Phaser from 'phaser';
-import { ART_KEYS, animalKey, companionKey, getArt, idleFrame, lookOr, petKey, propKey } from '../art/art';
-import { bookStartPage, chapterProgress, isBookComplete, isContentPage, isPageUnlocked, pagePosition } from '../core/book';
+import { ART_KEYS, animalKey, companionKey, foodKey, getArt, idleFrame, lookOr, petKey, propKey } from '../art/art';
+import { bookStartPage, chapterProgress, isBookComplete, isContentPage, isPageUnlocked, pageCoins, pagePosition, type PageCoins } from '../core/book';
 import type { Vec } from '../core/movement';
 import { ANIMALS } from '../data/animals';
+import { FOODS } from '../data/foods';
 import { BOOK_BACK_ID, BOOK_CHAPTERS, BOOK_PAGES, CHAPTER_PENS, chapterPageId, chapterTitleKey, type BookPage, type ChapterId } from '../data/book';
 import { findResident } from '../data/pens';
 import { t, type StringKey } from '../data/strings';
@@ -11,9 +12,9 @@ import { bus, type BookPageKind } from '../systems/events';
 import { getSession } from '../systems/session';
 import { makePressable } from '../ui/press';
 import { textStyle } from '../ui/theme';
-import { addUiText } from '../ui/text';
+import { addEmoji, addUiText } from '../ui/text';
 import { wrapStyle } from '../ui/wrap';
-import { addCloseBadge, addPanel, addPillButton, addRibbonTitle, addVeil, pillImage, restartOnResize, setRibbonText, tileImage } from '../ui/widgets';
+import { addCloseBadge, addPanel, addPillButton, addRibbonTitle, addVeil, coinImage, pillImage, restartOnResize, setRibbonText, tileImage } from '../ui/widgets';
 
 export interface BookSceneData {
   /** Página por la que se abre (id). Sin ella: donde se quedó, o la portada. */
@@ -262,8 +263,11 @@ export class BookScene extends Phaser.Scene {
     // Lomo del libro.
     this.content.push(this.add.rectangle(p.centerX, p.y + p.height * 0.54, Math.max(2, p.width * 0.005), p.height * 0.74, 0xf0d9a8));
 
-    const pictureObjects = this.picture(page, leftX, p.y + p.height * 0.54, p.height * 0.5, unlocked, p.width * 0.36);
+    // Con monedas (páginas de un animal), el dibujo sube y debajo van sus monedas.
+    const coins = pageCoins(page);
+    const pictureObjects = this.picture(page, leftX, p.y + p.height * (coins ? 0.45 : 0.54), p.height * (coins ? 0.44 : 0.5), unlocked, p.width * 0.36);
     this.content.push(...pictureObjects);
+    if (coins) this.coinRows(coins, unlocked, leftX, p.y + p.height * 0.78, p.y + p.height * 0.88, Math.round(size * 0.95));
 
     const heading = addUiText(this, rightX, p.y + p.height * 0.17, title, {
       ...textStyle(Math.round(size * 1.15), '#5d4037'),
@@ -280,6 +284,39 @@ export class BookScene extends Phaser.Scene {
       );
     }
     return pictureObjects[0] as Phaser.GameObjects.Image;
+  }
+
+  /**
+   * Las monedas del animal, sin palabras (cabe en todos los idiomas): «🪙 8» y, si tiene comida especial, su dibujo
+   * y lo que da de más («🐇 +1 🪙»). Bloqueado, la comida va tapada con una estrella: no se desvela qué come.
+   */
+  private coinRows(coins: PageCoins, unlocked: boolean, x: number, y1: number, y2: number, size: number): void {
+    const label = (text: string): Phaser.GameObjects.Text => addUiText(this, 0, 0, text, { ...textStyle(size, '#5d4037'), strokeThickness: 0 }).setOrigin(0.5);
+    this.row(x, y1, size, [coinImage(this, size), label(String(coins.come))]);
+    if (!coins.special) return;
+    const { foodId, extra } = coins.special;
+    const art = getArt()?.foods[foodId];
+    const food: Phaser.GameObjects.Image | Phaser.GameObjects.Text = !unlocked
+      ? addEmoji(this, 0, 0, '⭐', size)
+      : art
+        ? this.add.image(0, 0, foodKey(foodId)).setScale(Math.max(2, Math.round((size * 1.2) / art.height)))
+        : addEmoji(this, 0, 0, FOODS[foodId].emoji, size);
+    // «+1» siempre de izquierda a derecha: en árabe, sin aislarlo, sale «1+». Aislado con LRI…PDI (U+2066, U+2069).
+    const LTR_START = String.fromCodePoint(0x2066);
+    const LTR_END = String.fromCodePoint(0x2069);
+    this.row(x, y2, size, [food, label(`${LTR_START}+${extra}${LTR_END}`), coinImage(this, size)]);
+  }
+
+  /** Pone unas piezas en fila, centradas en `x`, con un hueco entre ellas. */
+  private row(x: number, y: number, size: number, parts: (Phaser.GameObjects.Image | Phaser.GameObjects.Text)[]): void {
+    const gap = size * 0.25;
+    const total = parts.reduce((sum, part) => sum + part.displayWidth, 0) + gap * (parts.length - 1);
+    let left = x - total / 2;
+    for (const part of parts) {
+      part.setPosition(left + part.displayWidth * part.originX, y);
+      left += part.displayWidth + gap;
+      this.content.push(part);
+    }
   }
 
   /** Texto de la página, sin contorno (marrón sobre crema se lee mejor limpio): si no cabe (p. ej. en otro idioma), encoge la letra hasta un mínimo. */
