@@ -133,7 +133,7 @@ En `game/scripts/make-zoo-map.mjs` (líneas ~131–137 y ~365–366):
 
 ## Estado de implementación (2026-11-08)
 
-> Al día el 2026-11-08 (noche): los 7 bloques hechos, y además los cambios tras probarlo David (aviso con la tiendita, 10 🪙 al empezar, comida normal en el tutorial, entrada del parque, libro, farolas de frente y de espaldas, fuente de piedras, farola 7 y estadísticas nuevas). Todo en la rama `feat/plaza-recintos-recorrido`, subida a GitHub y sin fusionar en `main`.
+> Al día el 2026-11-08 (noche): los 7 bloques hechos, y además los cambios tras probarlo David (aviso con la tiendita, 10 🪙 al empezar, comida normal en el tutorial, entrada del parque, libro, farolas de frente y de espaldas, fuente con el león (antes de piedras), farola 7 y estadísticas nuevas). Todo en la rama `feat/plaza-recintos-recorrido`, subida a GitHub y sin fusionar en `main`.
 
 Hecho en `feat/plaza-recintos-recorrido`, sin plan aparte (David pidió hacerlo de noche y decidir lo que hiciera falta):
 
@@ -209,6 +209,10 @@ Pruebas: unitarias nuevas en `tests/unit/guia.test.ts` (dibujos, bocadillo del b
     (`refill`: cada píxel que no es agua se cambia por el agua del mismo fotograma, a un lado) y el montón de piedras
     de `buildings_wooden_2` encima (`overlay`). Las dos cosas son opciones nuevas de `art.config.json` para las piezas
     animadas.
+    **Después (2026-11-09):** en vez del montón de piedras, el león del logo como estatua: la piedra de abajo del
+    montón hace de peana y encima va `game/art/fountain-lion.png` (20×24), sacado del icono grande con
+    `game/art/make_fountain_lion.py` (sin la hierba, 14 colores y contorno oscuro). `overlay` ahora es una lista y
+    cada pieza puede ser del pack o un dibujo propio de `game/art/` (`art`). Captura: `apaisado-13-fuente-leon.png`.
 11. **Revisión de las 60 farolas** con capturas una a una (`revision-farolas-1..3.png`; ayuda de pruebas
     `lookAtTile`, solo en desarrollo): todas miran hacia su camino y ninguna pisa vallas, muros ni otros adornos.
 12. **Farola 7** (junto al muro de arriba, esquina del camino del jardín de los cerezos): baja 2 casillas, al tramo

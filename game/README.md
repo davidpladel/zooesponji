@@ -92,8 +92,9 @@ recintos de al menos 14×9 por dentro con el paisaje de cada especie y farolas r
   él; con el camino debajo, la de frente (`lamp-front`); con el camino encima, la de espaldas (`lamp-back`). Las de
   la plaza y la entrada van a mano; las demás se reparten solas. Para revisarlas de una en una, la ayuda de pruebas
   `lookAtTile(x, y)` mueve la cámara a una casilla.
-- **Fuente de la plaza:** la animada del pack con el junco borrado y un montón de piedras encima (opciones `refill`
-  y `overlay` de `art.config.json` para piezas animadas).
+- **Fuente de la plaza:** la animada del pack con el junco borrado y el león del logo encima, sobre una peana de
+  piedra (opciones `refill` y `overlay` de `art.config.json` para piezas animadas; `overlay` es una lista y admite
+  dibujos propios de `game/art/` con `art`). El león sale de `art/make_fountain_lion.py`.
 - **Muro de abajo:** los tramos salen pegados a los dos lados del portón.
 - **Tablón:** solo se ve con `VITE_COMMUNITY_URL` (en `.env.production.local`); con `npm run dev` no sale.
 - **Carteles de recinto:** medallón con el animal de frente sobre un poste (`world/Medallion.ts`); los grandes se

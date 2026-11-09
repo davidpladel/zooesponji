@@ -1,7 +1,7 @@
 // Lectura de la configuración de arte y de las hojas dentro de los zips del repo privado.
 import AdmZip from 'adm-zip';
 import { PNG } from 'pngjs';
-import type { Animate, Compose, Refill, SheetEdit } from './pngTools.ts';
+import { crop, type Animate, type Compose, type Refill, type SheetEdit } from './pngTools.ts';
 import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -40,7 +40,7 @@ export interface ArtConfig {
   visitors: (Source & { character: number })[];
   /** Por aspecto: el de la especie (`cabra`) y los de cada animal distinto (`cabra-gordi`). */
   animals: Record<string, LookSource>;
-  props?: Record<string, Source & CropRect & { animate?: Animate; compose?: Compose; refill?: Refill; overlay?: Source & CropRect & { dx: number; dy: number } }>;
+  props?: Record<string, Source & CropRect & { animate?: Animate; compose?: Compose; refill?: Refill; overlay?: Overlay[] }>;
   foods?: Record<string, (Source & CropRect) | { override: string }>;
   companions?: Record<string, Source>;
   /** Mascotas dibujadas en este repo (`game/art/`), no en el privado. */
@@ -58,6 +58,14 @@ export function assertPrivateRepo(): void {
     console.error(`No encuentro ${join(privateRepo, 'packs')}. Clona zooesponji-private junto a zooesponji.`);
     process.exit(1);
   }
+}
+
+/** Pieza que se pega encima de una animada: un recorte del pack o un dibujo propio de `game/art/` (`art`). */
+export type Overlay = ((Source & CropRect) | { art: string }) & { dx: number; dy: number };
+
+export function readOverlay(o: Overlay): PNG {
+  if ('art' in o) return PNG.sync.read(readFileSync(join(root, 'art', o.art)));
+  return crop(readSource(o), o.x, o.y, o.w, o.h);
 }
 
 const zipCache = new Map<string, AdmZip>();
