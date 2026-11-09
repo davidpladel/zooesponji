@@ -1,6 +1,6 @@
 # Cerdos, limpieza de animales y clínica — diseño
 
-Fecha: 2026-11-09 · Estado: borrador pendiente de aprobar por David y los niños. Sin código todavía.
+Fecha: 2026-11-09 · Estado: **implementado** en la rama `feat/plaza-recintos-recorrido` (2026-11-09), pendiente de que David y los niños lo prueben. Al final, «Cómo quedó al construirlo».
 
 Las ideas son de los niños de la casa. En este documento, lo marcado como **[decisión mía]** no lo han dicho ellos: es una propuesta para que la cambien si no les gusta.
 
@@ -119,3 +119,14 @@ Es una escena parecida a dar de comer: el animal arriba, las herramientas abajo,
 ## Lo que queda para quien construya
 
 Nombres de cerdos, tiempos exactos del charco y las enfermedades, medicinas, animaciones y sonidos, y cómo se dibuja cada cosa.
+
+## Cómo quedó al construirlo (2026-11-09)
+
+- **Clínica en el mapa:** no dentro de la plaza sino **en el césped junto a ella, como la tienda** (David): a la derecha de la plaza, con la puerta abajo y un tramo corto de camino. El banco de arriba a la derecha de la plaza bajó una casilla y queda junto a la puerta. El edificio está pintado a píxeles (no hay dibujo en los packs): paredes claras, tejado rojo y cruz roja; con candado y precio hasta comprarla.
+- **Cerdos en la granja:** debajo de la avenida, a la derecha del establo. El establo se arrimó 2 casillas a la izquierda para dejar césped entre los recintos. Nombres: Rosita, Morrito, **Trufa** (en vez de «Tocino»), Bellota y Churro. No hay cerdo en los packs: su dibujo es el ternero blanco del pack de granja recoloreado (rosa, rosa claro, melocotón, marrón y negro). Falta un cerdo dibujado de verdad.
+- **Comida del cerdo:** zanahoria y maíz; manzana le encanta; carne y calcetín no. (Sin pan: la bandeja admite 5 comidas.)
+- **Tiempos:** charco de barro entre 2 y 5 minutos de juego; una enfermedad cada 3 a 6 minutos de juego (con la clínica comprada). Quien pisa el barro tiene un 30 % de mancharse cada segundo.
+- **Comer con un malito:** cada comida le da «¡puaj!» sin monedas; tras el primero sale la cruz al lado del animal y el aviso «¡Está malito! Toca la cruz…».
+- **Clínica por dentro:** veterinario (médico con espejo frontal) y veterinaria (con cofia) del pack de personajes; dos camillas. Al curar al de la primera, el otro pasa a la primera camilla.
+- **Curar:** 4 medicinas (pastilla, tirita, jarabe, termómetro); 5 dosis en cualquier orden llenan la barra.
+- **Estadísticas:** los cuidados aún no se mandan a Matomo.
