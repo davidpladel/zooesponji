@@ -161,10 +161,11 @@ export function parseSave(value: unknown): SaveData | null {
   const language = isLanguage(rawSettings.language) ? rawSettings.language : undefined;
 
   const luna = state.luna === true;
+  const clinic = state.clinic === true;
   return {
     version: SAVE_VERSION,
     // Desde el 2026-11-02 la tienda está abierta para todos, también en partidas de antes.
-    state: { coins, counts, shopUnlocked: true, luna },
+    state: { coins, counts, shopUnlocked: true, luna, clinic },
     settings: {
       music: bool('music'),
       sfx: bool('sfx'),
@@ -200,6 +201,7 @@ export function migrateLegacy(coinsRaw: string | null, purchasesRaw: string | nu
       counts: countsFromUnlocked(extra),
       shopUnlocked: true,
       luna: false,
+      clinic: false,
     },
     settings: defaultSettings(),
     book: defaultBook(),

@@ -1,6 +1,6 @@
 import { ANIMALS } from '../data/animals';
 import { PEN_IDS, PENS, nextResident, type PenId } from '../data/pens';
-import { LUNA_COST, LUNA_ITEM_ID, SHOP_ITEMS, SHOP_UNLOCK_COINS, getShopItem, parseExtraItemId } from '../data/shop';
+import { CLINIC_COST, CLINIC_ITEM_ID, LUNA_COST, LUNA_ITEM_ID, SHOP_ITEMS, SHOP_UNLOCK_COINS, getShopItem, parseExtraItemId } from '../data/shop';
 
 export interface GameState {
   readonly coins: number;
@@ -9,6 +9,8 @@ export interface GameState {
   readonly shopUnlocked: boolean;
   /** La perrita de la cuidadora, comprada en la tienda. */
   readonly luna: boolean;
+  /** La clínica de la plaza, comprada en la tienda: desde entonces los animales pueden ponerse malitos. */
+  readonly clinic: boolean;
 }
 
 export type PurchaseError =
@@ -48,7 +50,7 @@ export const STARTING_COINS = cheapestAtStart();
 
 /** La tienda está abierta desde el principio (2026-11-02): así el tutorial puede llevar hasta ella. */
 export function initialState(): GameState {
-  return { coins: STARTING_COINS, counts: initialCounts(), shopUnlocked: true, luna: false };
+  return { coins: STARTING_COINS, counts: initialCounts(), shopUnlocked: true, luna: false, clinic: false };
 }
 
 export function addCoins(state: GameState, amount: number): GameState {
@@ -95,9 +97,18 @@ function buyLuna(state: GameState): PurchaseResult {
   return { ok: true, state: { ...state, coins: state.coins - LUNA_COST, luna: true } };
 }
 
-/** Compra un artículo de la tienda: un recinto (`pantera`), un animal extra (`extra-cabra`) o a Luna. */
+/** La clínica: se compra una vez. */
+function buyClinic(state: GameState): PurchaseResult {
+  if (!state.shopUnlocked) return { ok: false, error: 'shop-locked' };
+  if (state.clinic) return { ok: false, error: 'already-owned' };
+  if (state.coins < CLINIC_COST) return { ok: false, error: 'not-enough-coins' };
+  return { ok: true, state: { ...state, coins: state.coins - CLINIC_COST, clinic: true } };
+}
+
+/** Compra un artículo de la tienda: un recinto (`pantera`), un animal extra (`extra-cabra`), a Luna o la clínica. */
 export function purchase(state: GameState, itemId: string): PurchaseResult {
   if (itemId === LUNA_ITEM_ID) return buyLuna(state);
+  if (itemId === CLINIC_ITEM_ID) return buyClinic(state);
   const extra = parseExtraItemId(itemId);
   if (extra) return buyExtra(state, extra);
   const item = getShopItem(itemId);

@@ -150,6 +150,8 @@ export const STRINGS_FR: Record<StringKey, string> = {
   'shop.about.pantera': 'La panthère est super rapide !',
   'shop.about.panda': 'Les pandas adorent le bambou !',
   'shop.about.luna': 'Lune veut se promener dans le zoo avec toi !',
+  'shop.clinic.name': 'Clinique',
+  'shop.about.clinic': 'À la clinique, on soigne les animaux malades !',
   'shop.about.jirafa': 'La girafe attrape les feuilles tout en haut !',
   'shop.about.cebra': "Deux zèbres n'ont jamais les mêmes rayures !",
   'shop.about.gacela': 'La gazelle fait des bonds de géant !',

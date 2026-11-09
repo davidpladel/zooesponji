@@ -1,6 +1,6 @@
 import { ANIMALS, type AnimalId } from '../data/animals';
 import { PEN_IDS, PENS, nextResident, penCapacity, type PenId } from '../data/pens';
-import { LUNA_COST, LUNA_ITEM_ID, extraItemId, shopItemForPen } from '../data/shop';
+import { CLINIC_COST, CLINIC_ITEM_ID, LUNA_COST, LUNA_ITEM_ID, extraItemId, shopItemForPen } from '../data/shop';
 import { isPenOpen, penCount, type GameState } from './economy';
 
 export type ShopEntryStatus = 'buy' | 'owned' | 'full';
@@ -24,17 +24,25 @@ export type ShopEntry =
       count?: number;
       max?: number;
     })
-  | (EntryBase & { kind: 'pet' });
+  | (EntryBase & { kind: 'pet' })
+  /** La clínica: en la peana, una cruz roja en vez de un animal. */
+  | (EntryBase & { kind: 'clinic' });
 
-/** Lo que puede ir en una peana: un recinto (su artículo) o Luna. */
-export type StockId = PenId | typeof LUNA_ITEM_ID;
+/** Lo que puede ir en una peana: un recinto (su artículo), Luna o la clínica. */
+export type StockId = PenId | typeof LUNA_ITEM_ID | typeof CLINIC_ITEM_ID;
 
 function lunaEntry(state: GameState): ShopEntry {
   return { id: LUNA_ITEM_ID, kind: 'pet', look: 'luna', cost: LUNA_COST, status: state.luna ? 'owned' : 'buy' };
 }
 
+function clinicEntry(state: GameState): ShopEntry {
+  return { id: CLINIC_ITEM_ID, kind: 'clinic', look: 'clinic', cost: CLINIC_COST, status: state.clinic ? 'owned' : 'buy' };
+}
+
 function stockEntry(state: GameState, id: StockId): ShopEntry | null {
-  return id === LUNA_ITEM_ID ? lunaEntry(state) : entryFor(state, id);
+  if (id === LUNA_ITEM_ID) return lunaEntry(state);
+  if (id === CLINIC_ITEM_ID) return clinicEntry(state);
+  return entryFor(state, id);
 }
 
 /** Artículos que se enseñan a la vez: uno por peana. */
@@ -66,15 +74,15 @@ function entryFor(state: GameState, penId: PenId): ShopEntry | null {
  * los huecos, para que la tienda no se quede vacía.
  */
 export function shopStock(state: GameState): StockId[] {
-  const ids: StockId[] = [...PEN_IDS, LUNA_ITEM_ID];
+  const ids: StockId[] = [...PEN_IDS, LUNA_ITEM_ID, CLINIC_ITEM_ID];
   const entries = ids.flatMap((id) => {
     const entry = stockEntry(state, id);
     return entry ? [{ id, entry }] : [];
   });
   // `sort` es estable: a igual precio se queda el orden de los recintos.
   const buyable = entries.filter((e) => e.entry.status === 'buy').sort((a, b) => a.entry.cost - b.entry.cost).slice(0, SHOP_SLOTS);
-  // Luna comprada no rellena huecos: va con la cuidadora, no en una peana con AGOTADO.
-  const done = entries.filter((e) => e.entry.status !== 'buy' && e.entry.kind !== 'pet').slice(0, SHOP_SLOTS - buyable.length);
+  // Luna y la clínica compradas no rellenan huecos: no son animales de una peana con AGOTADO.
+  const done = entries.filter((e) => e.entry.status !== 'buy' && e.entry.kind !== 'pet' && e.entry.kind !== 'clinic').slice(0, SHOP_SLOTS - buyable.length);
   return [...buyable, ...done].map((e) => e.id);
 }
 

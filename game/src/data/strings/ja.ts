@@ -150,6 +150,8 @@ export const STRINGS_JA: Record<StringKey, string> = {
   'shop.about.pantera': 'クロヒョウは とっても はやい！',
   'shop.about.panda': 'パンダは ササが だいすき！',
   'shop.about.luna': 'ツキは きみと いっしょに どうぶつえんを おさんぽしたいよ！',
+  'shop.clinic.name': 'びょういん',
+  'shop.about.clinic': 'びょういんで ぐあいの わるい どうぶつが げんきに なるよ！',
   'shop.about.jirafa': 'キリンは いちばん うえの はっぱに とどく！',
   'shop.about.cebra': 'おなじ しまもようの シマウマは いない！',
   'shop.about.gacela': 'ガゼルは おおきく ジャンプする！',

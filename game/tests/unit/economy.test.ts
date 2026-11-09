@@ -16,6 +16,7 @@ describe('initialState', () => {
       counts: { leon: 1, cabra: 1, pantera: 0, panda: 0, estanque: 0, ovejas: 0, cerdos: 0, establo: 0, pinguinos: 0, sabana: 0, 'elefantes-africanos': 0, 'elefantes-asiaticos': 0 },
       shopUnlocked: true,
       luna: false,
+      clinic: false,
     });
   });
 });
@@ -200,5 +201,27 @@ describe('Luna, la perrita de la cuidadora', () => {
     expect(purchase({ ...open(100), shopUnlocked: false }, 'luna')).toEqual({ ok: false, error: 'shop-locked' });
     expect(purchase(open(66), 'luna')).toEqual({ ok: false, error: 'not-enough-coins' });
     expect(purchase({ ...open(200), luna: true }, 'luna')).toEqual({ ok: false, error: 'already-owned' });
+  });
+});
+
+describe('la clínica', () => {
+  const open = (coins: number): GameState => ({ ...initialState(), coins, shopUnlocked: true });
+
+  it('una partida nueva no la tiene', () => {
+    expect(initialState().clinic).toBe(false);
+  });
+
+  it('cuesta 650 monedas y se queda comprada', () => {
+    expect(purchase(open(650), 'clinic')).toEqual({ ok: true, state: { ...open(0), clinic: true } });
+  });
+
+  it('con pocas monedas, la tienda cerrada o si ya la tienes, no', () => {
+    expect(purchase(open(649), 'clinic')).toEqual({ ok: false, error: 'not-enough-coins' });
+    expect(purchase({ ...open(1000), shopUnlocked: false }, 'clinic')).toEqual({ ok: false, error: 'shop-locked' });
+    expect(purchase({ ...open(1000), clinic: true }, 'clinic')).toEqual({ ok: false, error: 'already-owned' });
+  });
+
+  it('no cambia las monedas del principio', () => {
+    expect(STARTING_COINS).toBe(10);
   });
 });

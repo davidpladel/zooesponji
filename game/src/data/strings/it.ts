@@ -150,6 +150,8 @@ export const STRINGS_IT: Record<StringKey, string> = {
   'shop.about.pantera': 'La pantera è velocissima!',
   'shop.about.panda': 'I panda adorano il bambù!',
   'shop.about.luna': 'Luna vuole passeggiare con te per lo zoo!',
+  'shop.clinic.name': 'Clinica',
+  'shop.about.clinic': 'Alla clinica si curano gli animali malati!',
   'shop.about.jirafa': 'La giraffa arriva alle foglie più alte!',
   'shop.about.cebra': 'Non ci sono due zebre con le stesse strisce!',
   'shop.about.gacela': 'La gazzella fa salti da gigante!',

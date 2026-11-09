@@ -14,5 +14,7 @@ export function shopkeeperLine(entry: ShopEntry, coins: number): ShopLine {
   if (entry.status === 'owned') return { key: 'shop.owned' };
   if (entry.status === 'full') return { key: 'shop.full' };
   if (coins < entry.cost) return { key: 'shop.needCoinsHow', params: { n: entry.cost - coins } };
-  return { key: entry.kind === 'pet' ? 'shop.about.luna' : (`shop.about.${entry.species}` as StringKey) };
+  if (entry.kind === 'pet') return { key: 'shop.about.luna' };
+  if (entry.kind === 'clinic') return { key: 'shop.about.clinic' };
+  return { key: `shop.about.${entry.species}` as StringKey };
 }

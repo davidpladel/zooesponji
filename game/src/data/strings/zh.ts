@@ -150,6 +150,8 @@ export const STRINGS_ZH: Record<StringKey, string> = {
   'shop.about.pantera': '黑豹跑得超级快！',
   'shop.about.panda': '熊猫最爱吃竹子！',
   'shop.about.luna': '月亮想和你一起逛动物园！',
+  'shop.clinic.name': '诊所',
+  'shop.about.clinic': '生病的动物在诊所里会好起来！',
   'shop.about.jirafa': '长颈鹿能够到最高的树叶！',
   'shop.about.cebra': '没有两匹斑马的条纹是一样的！',
   'shop.about.gacela': '瞪羚跳得特别远！',

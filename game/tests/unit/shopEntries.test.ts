@@ -3,11 +3,12 @@ import { initialState, type GameState } from '../../src/core/economy';
 import { SHOP_SLOTS, shopEntries, shopStock } from '../../src/core/shopEntries';
 import { PENS } from '../../src/data/pens';
 
-/** Con Luna ya comprada: así las pruebas de recintos no la tienen en medio (las suyas van al final). */
+/** Con Luna y la clínica ya compradas: así las pruebas de recintos no las tienen en medio (las suyas van al final). */
 const withCounts = (counts: Partial<GameState['counts']>): GameState => ({
   ...initialState(),
   shopUnlocked: true,
   luna: true,
+  clinic: true,
   counts: { ...initialState().counts, ...counts },
 });
 
@@ -93,5 +94,22 @@ describe('Luna en la tienda', () => {
     const done = { cabra: 5, pantera: 2, panda: 3, estanque: 5, ovejas: 5, cerdos: 5, establo: 8, pinguinos: 5, sabana: 8, 'elefantes-africanos': 2, 'elefantes-asiaticos': 1 };
     expect(shopStock(withCounts(done))).not.toContain('luna');
     expect(summary({ ...withCounts(done), luna: false }).slice(0, 2)).toEqual(['luna:buy', 'extra-elefantes-asiaticos:buy']);
+  });
+});
+
+describe('la clínica en la tienda', () => {
+  // Todo lo que cuesta menos de 650 ya está comprado: la clínica entra en las peanas por su precio.
+  const cheapDone = { cabra: 5, pantera: 2, panda: 3, estanque: 5, ovejas: 5, cerdos: 5, establo: 8 };
+
+  it('va en una peana con los demás, por su precio, entre los pingüinos y la sabana', () => {
+    const entries = shopEntries({ ...withCounts(cheapDone), clinic: false });
+    expect(entries.map((e) => `${e.id}:${e.cost}`).slice(0, 3)).toEqual(['pinguinos:600', 'clinic:650', 'sabana:900']);
+    expect(entries.find((e) => e.id === 'clinic')).toMatchObject({ kind: 'clinic', look: 'clinic', cost: 650, status: 'buy' });
+  });
+
+  it('ya comprada no ocupa peana, ni siquiera cuando sobran', () => {
+    const done = { ...cheapDone, pinguinos: 5, sabana: 8, 'elefantes-africanos': 2, 'elefantes-asiaticos': 2 };
+    expect(shopStock(withCounts(done))).not.toContain('clinic');
+    expect(shopStock({ ...withCounts(done), clinic: false })[0]).toBe('clinic');
   });
 });

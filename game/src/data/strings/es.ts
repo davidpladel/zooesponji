@@ -81,6 +81,8 @@ export const STRINGS_ES = {
   'shop.about.pantera': '¡La pantera es rapidísima!',
   'shop.about.panda': '¡Al panda le encanta el bambú!',
   'shop.about.luna': '¡Luna quiere pasear contigo por el zoo!',
+  'shop.clinic.name': 'Clínica',
+  'shop.about.clinic': '¡En la clínica se curan los animales malitos!',
   'shop.about.jirafa': '¡La jirafa llega a las hojas más altas!',
   'shop.about.cebra': '¡No hay dos cebras con las mismas rayas!',
   'shop.about.gacela': '¡La gacela da unos saltos enormes!',

@@ -6,6 +6,7 @@ import { tileCenter, type Vec } from '../core/movement';
 import { isWalkable, type WalkGrid } from '../core/pathfinding';
 import { bookPageAfterPurchase, bookStartPage, newlyUnlockedPages, showBookNotice, unreadPageIds } from '../core/book';
 import { shopEntries, shopStock, type ShopEntry, type StockId } from '../core/shopEntries';
+import { addRedCross } from '../ui/redCross';
 import { shopkeeperLine } from '../core/shopLine';
 import type { PenId } from '../data/pens';
 import { ENTRY_TARGET, approachPoint, hintTarget, onDoorMat, openInteriorGrid, pickShopSpot, productInReach, shopWalkGrid } from '../core/shopWalk';
@@ -56,7 +57,8 @@ interface Product {
   base: Vec;
   /** Zona táctil (pantalla). */
   hit: Vec;
-  animal: Phaser.GameObjects.Sprite | Phaser.GameObjects.Text;
+  /** El animal de la peana (o la cruz de la clínica). */
+  animal: Phaser.GameObjects.Sprite | Phaser.GameObjects.Text | Phaser.GameObjects.Container;
   parts: Phaser.GameObjects.GameObject[];
 }
 
@@ -513,9 +515,7 @@ export class ShopScene extends Phaser.Scene {
     const done = entry.status !== 'buy';
     const affordable = getSession().state.coins >= entry.cost;
 
-    const animal = (entry.kind === 'pet' ? petPortrait(this, entry.look, pos.x, pos.y, 28 * s) : animalPortrait(this, entry.species, pos.x, pos.y, 28 * s, entry.look))
-      .setOrigin(0.5, 1)
-      .setDepth(base.y);
+    const animal = this.productPicture(entry, pos, s).setDepth(base.y);
     if (done) {
       animal.setAlpha(0.5);
       if (animal instanceof Phaser.GameObjects.Sprite) animal.setTint(0x9e9e9e);
@@ -535,6 +535,10 @@ export class ShopScene extends Phaser.Scene {
       const signW = signH * (1.9 + 0.36 * cost.length);
       parts.push(addPillButton(this, pos.x, pos.y + 12 * s + signH / 2, signW, signH, { color: affordable ? 'green' : 'gray', coin: cost }).setDepth(1500));
     }
+    if (entry.kind === 'clinic') {
+      // La cruz sola no dice qué es: su nombre debajo, como la chapita de los extras.
+      parts.push(addUiText(this, pos.x, pos.y + (done ? 4 : 25) * s, t('shop.clinic.name'), textStyle(Math.round(fontSize * 0.7), '#fff8e1', '#4e342e')).setOrigin(0.5, 0).setDepth(1500));
+    }
     if (entry.kind === 'extra') {
       // Cuántos tienes ya, en letra pequeña bajo el precio (o el sello): informa, no pide nada.
       const have = t('shop.have', { n: entry.count ?? 0, max: entry.max ?? 0 });
@@ -548,6 +552,16 @@ export class ShopScene extends Phaser.Scene {
     parts.push(zone);
 
     this.products.set(entry.id, { entry, base, hit, animal, parts });
+  }
+
+  /** Lo que se ve encima de la peana, apoyado en ella: el animal, Luna o la cruz roja de la clínica. */
+  private productPicture(entry: ShopEntry, pos: Vec, s: number): Product['animal'] {
+    if (entry.kind === 'clinic') {
+      const size = 20 * s;
+      return addRedCross(this, pos.x, pos.y - size / 2 - 2 * s, size);
+    }
+    const picture = entry.kind === 'pet' ? petPortrait(this, entry.look, pos.x, pos.y, 28 * s) : animalPortrait(this, entry.species, pos.x, pos.y, 28 * s, entry.look);
+    return picture.setOrigin(0.5, 1);
   }
 
   /** ¿Qué peana tiene a mano la cuidadora? Al cambiar, reacciona el animal y habla el tendero. */

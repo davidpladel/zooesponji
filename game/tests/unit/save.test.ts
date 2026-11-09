@@ -55,7 +55,7 @@ describe('parseSave', () => {
     });
     expect(parsed).toEqual({
       version: 2,
-      state: { coins: 5, counts: { ...initialCounts(), leon: 1, cabra: 1, pantera: 0, panda: 1 }, shopUnlocked: true, luna: false },
+      state: { coins: 5, counts: { ...initialCounts(), leon: 1, cabra: 1, pantera: 0, panda: 1 }, shopUnlocked: true, luna: false, clinic: false },
       settings: { music: true, sfx: false, joystick: false, stats: true },
       book: { seen: [], hinted: false, page: null, opened: false },
       tutorial: { offered: false },
@@ -102,7 +102,7 @@ describe('parseSave', () => {
     };
     expect(parseSave(old)).toEqual({
       ...old,
-      state: { ...old.state, luna: false },
+      state: { ...old.state, luna: false, clinic: false },
       settings: { ...old.settings, stats: true },
       book: { ...old.book, opened: true },
       tutorial: { offered: false },
@@ -118,7 +118,7 @@ describe('migrateLegacy (partidas de la v1.1)', () => {
 
   it('trae monedas y compras', () => {
     const migrated = migrateLegacy('37', JSON.stringify({ shop: true, pantera: true }));
-    expect(migrated?.state).toEqual({ coins: 37, counts: { ...initialCounts(), leon: 1, cabra: 1, pantera: 1, panda: 0 }, shopUnlocked: true, luna: false });
+    expect(migrated?.state).toEqual({ coins: 37, counts: { ...initialCounts(), leon: 1, cabra: 1, pantera: 1, panda: 0 }, shopUnlocked: true, luna: false, clinic: false });
   });
 
   it('abre la tienda si ya había 20 monedas aunque no la comprara', () => {
@@ -127,7 +127,7 @@ describe('migrateLegacy (partidas de la v1.1)', () => {
 
   it('ignora valores corruptos', () => {
     const migrated = migrateLegacy('abc', 'no-es-json');
-    expect(migrated?.state).toEqual({ coins: 0, counts: { ...initialCounts(), leon: 1, cabra: 1, pantera: 0, panda: 0 }, shopUnlocked: true, luna: false });
+    expect(migrated?.state).toEqual({ coins: 0, counts: { ...initialCounts(), leon: 1, cabra: 1, pantera: 0, panda: 0 }, shopUnlocked: true, luna: false, clinic: false });
   });
 
   it('una partida de antes con la tienda cerrada la tiene abierta', () => {
@@ -143,7 +143,7 @@ describe('loadSave / writeSave', () => {
 
   it('lo que se escribe se vuelve a leer igual', async () => {
     const store = createMemoryStore();
-    const data = { ...defaultSave(), state: { coins: 42, counts: { ...initialCounts(), leon: 1, cabra: 3, pantera: 0, panda: 0 }, shopUnlocked: true, luna: false }, shop: { visits: 2 } };
+    const data = { ...defaultSave(), state: { coins: 42, counts: { ...initialCounts(), leon: 1, cabra: 3, pantera: 0, panda: 0 }, shopUnlocked: true, luna: false, clinic: false }, shop: { visits: 2 } };
     await writeSave(store, data);
     expect(await loadSave(store)).toEqual(data);
   });
@@ -287,5 +287,27 @@ describe('guardado de Luna, el tutorial, las visitas a la tienda y el libro', ()
     expect(data.tutorial.offered).toBe(false);
     expect(data.shop.visits).toBe(0);
     expect(data.book.opened).toBe(false);
+  });
+});
+
+describe('guardado de la clínica', () => {
+  const roundTrip = (data: unknown) => parseSave(JSON.parse(JSON.stringify(data)));
+
+  it('una partida sin clínica guardada carga sin ella', () => {
+    const data = defaultSave();
+    const { clinic: _omit, ...state } = data.state;
+    expect(roundTrip({ ...data, state })!.state.clinic).toBe(false);
+    expect(defaultSave().state.clinic).toBe(false);
+    expect(migrateLegacy('25', null)!.state.clinic).toBe(false);
+  });
+
+  it('comprada se conserva', () => {
+    const data = defaultSave();
+    expect(roundTrip({ ...data, state: { ...data.state, clinic: true } })!.state.clinic).toBe(true);
+  });
+
+  it.each([['si'], [1], [null]])('un valor que no es sí o no (%s) cuenta como no comprada', (clinic) => {
+    const data = defaultSave();
+    expect(roundTrip({ ...data, state: { ...data.state, clinic } })!.state.clinic).toBe(false);
   });
 });
