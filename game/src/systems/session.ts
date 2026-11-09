@@ -1,7 +1,7 @@
 import { careReward, clean, cure, isDirty, isMudPen, isSick, type CareState } from '../core/care';
 import { addCoins, purchase, type GameState, type PurchaseResult } from '../core/economy';
 import { resolveFeeding, type FeedResult } from '../core/reactions';
-import { loadSave, parseSave, writeSave, type BookProgress, type KeyValueStore, type SaveData, type Settings, type ShopProgress, type TutorialProgress } from '../core/save';
+import { loadSave, parseSave, writeSave, type BookProgress, type ClinicProgress, type KeyValueStore, type SaveData, type Settings, type ShopProgress, type TutorialProgress } from '../core/save';
 import type { FoodId } from '../data/foods';
 import { CLINIC_ITEM_ID, LUNA_ITEM_ID, parseExtraItemId } from '../data/shop';
 import { PEN_IDS, PENS, findResident, type PenId } from '../data/pens';
@@ -163,6 +163,16 @@ export class Session {
 
   get tutorial(): TutorialProgress {
     return this.data.tutorial;
+  }
+
+  get clinicVisits(): ClinicProgress {
+    return this.data.clinic;
+  }
+
+  /** Una entrada más en la clínica (su botón sale desde la primera). Se cuenta al momento, como la tienda. */
+  async countClinicVisit(): Promise<void> {
+    this.data = { ...this.data, clinic: { visits: this.data.clinic.visits + 1 } };
+    await writeSave(this.store, this.data);
   }
 
   /** Una entrada más en la tienda. Se cuenta al momento (antes de guardar): quien llama la lee ya. */

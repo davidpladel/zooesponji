@@ -110,3 +110,28 @@ test('clínica: comer con un malito da «¡puaj!» y la cruz; en la clínica est
   expect(await page.evaluate(() => window.__ZOO__!.clinicBeds())).toEqual(['rosita', null]);
   expect((await page.evaluate(() => window.__ZOO__!.care())).sick).toEqual(['rosita']);
 });
+
+test('botón de la clínica: sale debajo del de la tienda tras la primera visita y lleva andando hasta ella', async ({ page }) => {
+  await startGame(page);
+  await page.evaluate(() => window.__ZOO__!.giveClinic());
+  // Comprada pero sin haber entrado nunca: no hay botón.
+  await page.waitForTimeout(300);
+  expect(await page.evaluate(() => window.__ZOO__!.hudClinicButtonPos())).toBeNull();
+
+  await page.evaluate(() => window.__ZOO__!.openClinic());
+  await page.waitForFunction(() => window.__ZOO__!.clinicBeds() !== null);
+  await page.evaluate(() => window.__ZOO__!.back());
+  await page.waitForFunction(() => window.__ZOO__!.activeScenes().includes('World') && !window.__ZOO__!.activeScenes().includes('Clinic'));
+
+  // Ya ha entrado una vez: el botón sale debajo del de la tienda.
+  await page.waitForFunction(() => window.__ZOO__!.hudClinicButtonPos() !== null);
+  const shop = (await page.evaluate(() => window.__ZOO__!.hudShopButtonPos()))!;
+  const clinic = (await page.evaluate(() => window.__ZOO__!.hudClinicButtonPos()))!;
+  expect(clinic.x).toBe(shop.x);
+  expect(clinic.y).toBeGreaterThan(shop.y);
+
+  // Tocarlo: la cuidadora va andando sola y entra.
+  const box = (await page.locator('canvas').boundingBox())!;
+  await page.mouse.click(box.x + clinic.x, box.y + clinic.y);
+  await page.waitForFunction(() => window.__ZOO__!.activeScenes().includes('Clinic'), null, { timeout: 90_000 });
+});

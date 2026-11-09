@@ -65,6 +65,8 @@ export interface ZooTestApi {
   tutorialEdgeBubble(): boolean;
   /** Botón de la tienda del HUD: dónde está, si se ve. */
   hudShopButtonPos(): Vec | null;
+  /** Botón de la clínica (debajo del de la tienda), o null si no se ve. */
+  hudClinicButtonPos(): Vec | null;
   /** ¿Se ve el bocadillo del borde que señala la tienda? */
   hudShopEdgeVisible(): boolean;
   /** Aviso de arriba del HUD: texto y si lleva la tiendita. Null si no se ve. */
@@ -266,6 +268,7 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
       const hud = activeScene<HudScene>('Hud');
       return hud?.shopButtonVisible() ? hud.shopButtonPos() : null;
     },
+    hudClinicButtonPos: () => activeScene<HudScene>('Hud')?.clinicButtonPos() ?? null,
     hudShopEdgeVisible: () => activeScene<HudScene>('Hud')?.shopEdgeVisible() ?? false,
     hudToast: () => activeScene<HudScene>('Hud')?.toastShown() ?? null,
     shopTrailTiles: () => activeScene<WorldScene>('World')?.shopTrailTiles() ?? [],

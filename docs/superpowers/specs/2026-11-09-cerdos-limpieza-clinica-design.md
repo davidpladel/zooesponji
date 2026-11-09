@@ -129,6 +129,7 @@ Nombres de cerdos, tiempos exactos del charco y las enfermedades, medicinas, ani
 - **Comer con un malito:** cada comida le da «¡puaj!» sin monedas; tras el primero sale la cruz al lado del animal y el aviso «¡Está malito! Toca la cruz…».
 - **Clínica por dentro:** veterinario (médico con espejo frontal) y veterinaria (con cofia) del pack de personajes; dos camillas. Al curar al de la primera, el otro pasa a la primera camilla.
 - **Curar:** 4 medicinas (pastilla, tirita, jarabe, termómetro); 5 dosis en cualquier orden llenan la barra.
+- **Botón de la clínica (2026-11-09):** debajo del de la tienda, con una cruz roja. Sale desde la primera vez que se entra en la clínica (las visitas se guardan en la partida) y la cuidadora va andando sola hasta la puerta.
 - **Estadísticas:** ver «Estadísticas (Matomo)» más abajo (añadidas el 2026-11-09).
 - **Jugadores con IA:** objetivo nuevo `cuidar` (limpiar y curar), que empieza con el escenario `cuidados`: todo
   abierto, animales manchados y malitos, para no gastar sus 30 acciones en comprar.
@@ -160,6 +161,8 @@ animal va siempre con su recinto delante (`cerdos/rosita`). Nunca textos ni nada
 | `cura` | recinto/animal | monedas | se llena la barra |
 | `cura-deja` | recinto/animal | dosis dadas | se cierra la cura a medias |
 | `cura-tiempo` | recinto/animal | segundos | al cerrar la cura, acabada o no |
+
+**Botón de la clínica:** `mapa | boton-clinica | andando`, al tocarlo (como `boton-tienda`).
 
 **Pantallas:** `limpiar`, `clinica` y `curar`. La clínica cuenta para el alcance de pantallas (`dia-pantalla`,
 `semana-pantalla`, `vida-pantalla`), como la tienda y el libro. El recinto de cerdos y sus animales entran solos

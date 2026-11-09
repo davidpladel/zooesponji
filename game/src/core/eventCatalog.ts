@@ -17,7 +17,7 @@ export const CATALOG = {
   activo: ['nuevo', 'dia', 'semana', 'mes', 'vuelve-d1', 'vuelve-d7', 'vuelve-d30'],
   progreso: ['recinto', 'animal', 'monedas'],
   comer: ['toca-animal', 'ventana', 'come', 'rechaza', 'especial', 'fuera', 'ventana-fin', 'ventana-tiempo', 'ventana-vacia', 'pista-arrastrar'],
-  mapa: ['cerca', 'cerca-cerrado', 'toca-cerrado', 'tienda-cerrada', 'control', 'boton-tienda'],
+  mapa: ['cerca', 'cerca-cerrado', 'toca-cerrado', 'tienda-cerrada', 'control', 'boton-tienda', 'boton-clinica'],
   tienda: ['mira', 'compra', 'sin-monedas', 'tienda-fin', 'tienda-sin-compra'],
   cuidados: [
     'barro', 'mancha', 'charco-limpio', 'limpia-abre', 'limpia', 'limpia-deja', 'limpia-tiempo',

@@ -13,6 +13,7 @@ export interface Escenario {
     book: { seen: string[]; hinted: boolean; page: string | null; opened: boolean };
     tutorial: { offered: boolean };
     shop: { visits: number };
+    clinic: { visits: number };
     care: { dirty: string[]; sick: string[]; muddy: string[] };
   };
 }
@@ -21,7 +22,7 @@ const SAVE_KEY = 'zooesponji_v3_save';
 
 export const ESCENARIOS: Record<string, Escenario> = {
   /**
-   * Cuidar: cerdos y los dos recintos de elefantes llenos, la clínica comprada, tres animales manchados con su
+   * Cuidar: cerdos y los dos recintos de elefantes llenos, la clínica comprada (y visitada: sale su botón), tres animales manchados con su
    * charco de barro y dos malitos de recintos distintos. Ya ha jugado (aviso del tutorial visto, tienda visitada) y
    * tiene monedas. Estadísticas apagadas: las partidas de IA no cuentan en Matomo.
    */
@@ -43,6 +44,8 @@ export const ESCENARIOS: Record<string, Escenario> = {
       book: { seen: [], hinted: true, page: null, opened: false },
       tutorial: { offered: true },
       shop: { visits: 3 },
+      // Ya ha entrado en la clínica: sale su botón debajo del de la tienda.
+      clinic: { visits: 1 },
       care: { dirty: ['rosita', 'trufa', 'tembo'], sick: ['morrito', 'raja'], muddy: ['cerdos', 'elefantes-africanos'] },
     },
   },

@@ -1,6 +1,6 @@
 import * as Phaser from 'phaser';
 import { edgeHint } from '../core/guideArt';
-import { gearVisible } from '../core/hud';
+import { clinicButtonVisible, gearVisible } from '../core/hud';
 import { JOYSTICK_RADIUS, inJoystickZone, joystickVector, knobOffset } from '../core/joystick';
 import type { Vec } from '../core/movement';
 import { ANIMALS } from '../data/animals';
@@ -13,9 +13,9 @@ import { getLanguage, isRtl } from '../systems/language';
 import { getSession } from '../systems/session';
 import { textStyle } from '../ui/theme';
 import { addUiText } from '../ui/text';
-import { addShopBubble, setBubbleTail, shopIconTexture } from '../ui/pixelArt';
+import { addShopBubble, clinicIconTexture, setBubbleTail, shopIconTexture } from '../ui/pixelArt';
 import { makePressable } from '../ui/press';
-import { HUD_COIN, HUD_SHOP, addCoinCounter, addPillButton, type CoinCounter } from '../ui/widgets';
+import { HUD_CLINIC, HUD_COIN, HUD_SHOP, addCoinCounter, addPillButton, type CoinCounter } from '../ui/widgets';
 import type { TutorialScene } from './TutorialScene';
 import type { WorldScene } from './WorldScene';
 
@@ -37,6 +37,8 @@ export class HudScene extends Phaser.Scene {
   private gear!: Phaser.GameObjects.Container;
   /** Botón de la tienda: debajo de las monedas. */
   private shopButton!: Phaser.GameObjects.Container;
+  /** Botón de la clínica: debajo del de la tienda, desde la primera vez que se entra en ella. */
+  private clinicButton!: Phaser.GameObjects.Container;
   /** Bocadillo en el borde de la pantalla con la tiendita, apuntando a la tienda cuando no se ve. */
   private shopEdge!: Phaser.GameObjects.Container;
   private stickBase!: Phaser.GameObjects.Arc;
@@ -61,6 +63,8 @@ export class HudScene extends Phaser.Scene {
     // La tienda está abierta desde el principio: el botón lleva a ella (huellas la primera vez, andando después).
     this.shopButton = addShopBubble(this, GUIDE_SCALE, null).setPosition(HUD_SHOP.x, HUD_SHOP.y).setSize(64, 64);
     makePressable(this.shopButton, () => this.tapShop());
+    this.clinicButton = addShopBubble(this, GUIDE_SCALE, null, clinicIconTexture(this)).setPosition(HUD_CLINIC.x, HUD_CLINIC.y).setSize(64, 64);
+    makePressable(this.clinicButton, () => this.tapClinic());
     this.shopEdge = addShopBubble(this, GUIDE_SCALE, 'up').setVisible(false);
     this.layout();
 
@@ -116,9 +120,11 @@ export class HudScene extends Phaser.Scene {
       const finger = this.input.manager.pointers.find((p) => p.id === this.stickPointerId);
       if (!finger || !finger.isDown) this.onPointerUp({ id: this.stickPointerId } as Phaser.Input.Pointer);
     }
-    const inZoo = gearVisible(this.scene.manager.getScenes(true).map((scene) => scene.scene.key));
+    const active = this.scene.manager.getScenes(true).map((scene) => scene.scene.key);
+    const inZoo = gearVisible(active);
     this.gear.setVisible(inZoo);
     this.shopButton.setVisible(inZoo);
+    this.clinicButton.setVisible(clinicButtonVisible(active, getSession().clinicVisits));
     this.updateShopEdge(inZoo);
   }
 
@@ -128,6 +134,13 @@ export class HudScene extends Phaser.Scene {
     sfx.play('tap');
     const mode = this.scene.get<WorldScene>('World').guideToShop();
     if (mode) bus.emit('shop-guide', { mode });
+  }
+
+  /** Toque en el botón de la clínica: la cuidadora va andando sola hasta su puerta (y al pisarla, entra). */
+  tapClinic(): void {
+    if (!this.clinicButton.visible || !this.scene.isActive('World')) return;
+    sfx.play('tap');
+    if (this.scene.get<WorldScene>('World').walkToClinic()) bus.emit('clinic-guide', { mode: 'andando' });
   }
 
   /** Mientras hay huellas (o el tutorial lleva a la tienda) y la puerta no se ve, el bocadillo la señala desde el borde. */
@@ -151,7 +164,7 @@ export class HudScene extends Phaser.Scene {
 
   /** ¿El toque cae en un botón del HUD? Entonces el mapa no lo toma como «ve ahí». */
   coversPoint(x: number, y: number): boolean {
-    return [this.shopButton, this.gear].some((b) => b.visible && b.getBounds().contains(x, y));
+    return [this.shopButton, this.clinicButton, this.gear].some((b) => b.visible && b.getBounds().contains(x, y));
   }
 
   shopButtonPos(): { x: number; y: number } {
@@ -160,6 +173,10 @@ export class HudScene extends Phaser.Scene {
 
   shopButtonVisible(): boolean {
     return this.shopButton.visible;
+  }
+
+  clinicButtonPos(): { x: number; y: number } | null {
+    return this.clinicButton.visible ? { x: this.clinicButton.x, y: this.clinicButton.y } : null;
   }
 
   shopEdgeVisible(): boolean {
@@ -214,6 +231,7 @@ export class HudScene extends Phaser.Scene {
     const point = { x: pointer.x, y: pointer.y };
     if (this.gear.visible && this.gear.getBounds().contains(point.x, point.y)) return; // la rueda no arranca el joystick
     if (this.shopButton.visible && this.shopButton.getBounds().contains(point.x, point.y)) return;
+    if (this.clinicButton.visible && this.clinicButton.getBounds().contains(point.x, point.y)) return;
     if (!inJoystickZone(point, this.scale.width, this.scale.height)) return;
     this.stickPointerId = pointer.id;
     this.stickOrigin = point;

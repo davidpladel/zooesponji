@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import { BUBBLE_SIZE, PAW, SHOP_ICON, bubbleRows, edgeHint, pixelsOf } from '../../src/core/guideArt';
+import { BUBBLE_SIZE, CLINIC_ICON, PAW, SHOP_ICON, bubbleRows, edgeHint, pixelsOf } from '../../src/core/guideArt';
 import { MEDALLION, inCircle, medallionAnimal, opaqueBounds, shrinkFactor, type Pixels } from '../../src/core/medallion';
 import { findPath } from '../../src/core/pathfinding';
 import { pawRows, pawSteps, rotateRows } from '../../src/core/pawTrail';
@@ -12,6 +12,13 @@ describe('dibujos de la guía a la tienda', () => {
     for (const rows of [SHOP_ICON, PAW, bubbleRows(null), bubbleRows('up'), bubbleRows('left')]) {
       expect(() => pixelsOf(rows)).not.toThrow();
     }
+  });
+
+  it('la cruz del botón de la clínica: colores de la paleta, roja por dentro y del alto de la tiendita', () => {
+    expect(() => pixelsOf(CLINIC_ICON)).not.toThrow();
+    expect(CLINIC_ICON).toHaveLength(SHOP_ICON.length);
+    const middle = CLINIC_ICON[Math.floor(CLINIC_ICON.length / 2)]!;
+    expect(middle[Math.floor(middle.length / 2)]).toBe('l');
   });
 
   it('el bocadillo sin colita es un círculo; con colita llega al borde de su lado', () => {

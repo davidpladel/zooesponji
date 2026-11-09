@@ -212,6 +212,8 @@ export class WorldScene extends Phaser.Scene {
 
   /** Entra en la clínica: el mundo queda en pausa debajo. */
   openClinic(): void {
+    // Desde la primera entrada sale su botón debajo del de la tienda.
+    void getSession().countClinicVisit();
     this.stopWalking();
     this.trail.hide();
     this.scene.pause();

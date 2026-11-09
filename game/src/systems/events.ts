@@ -83,6 +83,8 @@ export interface GameEvents {
   'locked-tap': { penId: PenId };
   /** Botón de la tienda del HUD: qué hizo (sacar las huellas, apagarlas o mandar a la cuidadora andando). */
   'shop-guide': { mode: 'huellas' | 'apagar' | 'andando' };
+  /** El botón de la clínica (debajo del de la tienda): la cuidadora va andando a ella. */
+  'clinic-guide': { mode: 'andando' };
   /** Una comida tocada sin arrastrar: la mano enseña a arrastrarla. */
   'drag-hint': { residentId: string; foodId: FoodId };
   /** Se ha pisado la puerta de la tienda sin monedas suficientes para abrirla. */

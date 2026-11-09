@@ -52,6 +52,22 @@ export function shopVisited(shop: ShopProgress): boolean {
   return shop.visits > 0;
 }
 
+/** Veces que se ha entrado en la clínica: con alguna, sale su botón debajo del de la tienda. */
+export interface ClinicProgress {
+  visits: number;
+}
+
+/** ¿Ha entrado alguna vez en la clínica? */
+export function clinicVisited(clinic: ClinicProgress): boolean {
+  return clinic.visits > 0;
+}
+
+/** Sin dato (partidas de antes) o roto, ninguna visita. */
+function parseClinic(raw: unknown): ClinicProgress {
+  const visits = isObject(raw) ? raw.visits : undefined;
+  return { visits: typeof visits === 'number' && Number.isInteger(visits) && visits >= 0 ? visits : 0 };
+}
+
 export interface SaveData {
   version: typeof SAVE_VERSION;
   state: GameState;
@@ -59,6 +75,7 @@ export interface SaveData {
   book: BookProgress;
   tutorial: TutorialProgress;
   shop: ShopProgress;
+  clinic: ClinicProgress;
   /** Animales sucios o malitos y charcos de barro. Sin dato (partidas de antes), todo limpio y sano. */
   care: CareState;
 }
@@ -134,6 +151,7 @@ export function defaultSave(): SaveData {
     book: defaultBook(),
     tutorial: { offered: false },
     shop: { visits: 0 },
+    clinic: { visits: 0 },
     care: emptyCare(),
   };
 }
@@ -180,6 +198,7 @@ export function parseSave(value: unknown): SaveData | null {
     book: parseBook(value.book),
     tutorial: parseTutorial(value.tutorial),
     shop: parseShop(value.shop, { luna, counts }),
+    clinic: parseClinic(value.clinic),
     care: sanitizeCare(value.care, counts),
   };
 }
@@ -212,6 +231,7 @@ export function migrateLegacy(coinsRaw: string | null, purchasesRaw: string | nu
     book: defaultBook(),
     tutorial: { offered: false },
     shop: { visits: 0 },
+    clinic: { visits: 0 },
     care: emptyCare(),
   };
 }

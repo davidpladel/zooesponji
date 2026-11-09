@@ -35,6 +35,21 @@ export const SHOP_ICON: readonly string[] = [
   '.ffffffffffff.',
 ];
 
+/** La cruz roja del botón de la clínica, con borde claro y contorno (11x11, del alto de la tiendita). */
+export const CLINIC_ICON: readonly string[] = [
+  '..fffffff..',
+  '..fhhhhhf..',
+  'fffhlllhfff',
+  'fhhhlllhhhf',
+  'fhlllllllhf',
+  'fhlllllllhf',
+  'fhlllllllhf',
+  'fhhhlllhhhf',
+  'fffhlllhfff',
+  '..fhhhhhf..',
+  '..fffffff..',
+];
+
 /** Huella de perro: cuatro dedos en arco y almohadilla (9x9), apuntando hacia arriba. */
 export const PAW: readonly string[] = [
   '..pp.pp..',

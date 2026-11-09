@@ -10,6 +10,7 @@ import {
   loadSave,
   migrateLegacy,
   parseSave,
+  clinicVisited,
   shopVisited,
   writeSave,
 } from '../../src/core/save';
@@ -61,6 +62,7 @@ describe('parseSave', () => {
       tutorial: { offered: false },
       // Tenía el panda (de compra): ya había entrado en la tienda.
       shop: { visits: 1 },
+      clinic: { visits: 0 },
       care: { dirty: [], sick: [], muddy: [] },
     });
   });
@@ -108,6 +110,7 @@ describe('parseSave', () => {
       book: { ...old.book, opened: true },
       tutorial: { offered: false },
       shop: { visits: 1 },
+      clinic: { visits: 0 },
       care: { dirty: [], sick: [], muddy: [] },
     });
   });
@@ -235,9 +238,22 @@ describe('guardado de Luna, el tutorial, las visitas a la tienda y el libro', ()
     expect(data.book.opened).toBe(false);
   });
 
+  it('la clínica: una partida nueva no ha entrado nunca; las de antes de contarlo, tampoco', () => {
+    expect(defaultSave().clinic).toEqual({ visits: 0 });
+    expect(clinicVisited(defaultSave().clinic)).toBe(false);
+    const { clinic: _none, ...old } = defaultSave();
+    expect(roundTrip(old)!.clinic).toEqual({ visits: 0 });
+  });
+
+  it('la clínica: guarda cuántas veces se ha entrado; un dato roto cuenta como ninguna', () => {
+    expect(roundTrip({ ...defaultSave(), clinic: { visits: 3 } })!.clinic).toEqual({ visits: 3 });
+    expect(clinicVisited({ visits: 3 })).toBe(true);
+    for (const visits of [-1, 1.5, '2', null]) expect(roundTrip({ ...defaultSave(), clinic: { visits } })!.clinic).toEqual({ visits: 0 });
+  });
+
   it('ida y vuelta conserva todo', () => {
     const data = defaultSave();
-    const full = { ...data, state: { ...data.state, luna: true }, tutorial: { offered: true }, shop: { visits: 4 }, book: { ...data.book, opened: true } };
+    const full = { ...data, state: { ...data.state, luna: true }, tutorial: { offered: true }, shop: { visits: 4 }, clinic: { visits: 2 }, book: { ...data.book, opened: true } };
     expect(roundTrip(full)).toEqual(full);
   });
 

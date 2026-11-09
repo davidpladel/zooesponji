@@ -232,6 +232,15 @@ describe('Session: tienda, libro y tutorial', () => {
     expect((await Session.load(store, new EventBus<GameEvents>())).shop.visits).toBe(2);
   });
 
+  it('countClinicVisit cuenta cada entrada en la clínica al momento y la guarda', async () => {
+    const store = createMemoryStore();
+    const session = await Session.load(store, new EventBus<GameEvents>());
+    void session.countClinicVisit();
+    expect(session.clinicVisits.visits).toBe(1);
+    await session.countClinicVisit();
+    expect((await Session.load(store, new EventBus<GameEvents>())).clinicVisits.visits).toBe(2);
+  });
+
   it('markBookOpened y markTutorialOffered se guardan y la segunda vez no escriben', async () => {
     const store = createMemoryStore();
     const session = await Session.load(store, new EventBus<GameEvents>());

@@ -12,6 +12,8 @@ type Tap = (pointer: Phaser.Input.Pointer) => void;
 export const HUD_COIN: Vec = { x: 38, y: 38 };
 /** Centro del botón de la tienda: debajo del contador, en su misma columna. */
 export const HUD_SHOP: Vec = { x: 38, y: 100 };
+/** Botón de la clínica: justo debajo del de la tienda. */
+export const HUD_CLINIC: Vec = { x: 38, y: 172 };
 
 /** Las texturas llevan la sombra por debajo: el origen se sube para que (x, y) sea el centro del cuerpo. */
 function centered(image: Phaser.GameObjects.Image, bodyH: number): Phaser.GameObjects.Image {

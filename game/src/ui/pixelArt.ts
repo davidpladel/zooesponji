@@ -1,5 +1,5 @@
 import type * as Phaser from 'phaser';
-import { PAW, SHOP_ICON, bubbleRows, pixelsOf, type BubbleSide } from '../core/guideArt';
+import { CLINIC_ICON, PAW, SHOP_ICON, bubbleRows, pixelsOf, type BubbleSide } from '../core/guideArt';
 
 /** Textura hecha con un dibujo en filas (un píxel por letra). Se crea una sola vez por clave. */
 export function pixelTexture(scene: Phaser.Scene, key: string, rows: readonly string[]): string {
@@ -17,6 +17,7 @@ export function pixelTexture(scene: Phaser.Scene, key: string, rows: readonly st
 }
 
 export const shopIconTexture = (scene: Phaser.Scene): string => pixelTexture(scene, 'guide-shop-icon', SHOP_ICON);
+export const clinicIconTexture = (scene: Phaser.Scene): string => pixelTexture(scene, 'guide-clinic-icon', CLINIC_ICON);
 export const pawTexture = (scene: Phaser.Scene): string => pixelTexture(scene, 'guide-paw', PAW);
 export const bubbleTexture = (scene: Phaser.Scene, tail: BubbleSide | null): string =>
   pixelTexture(scene, `guide-bubble-${tail ?? 'none'}`, bubbleRows(tail));
