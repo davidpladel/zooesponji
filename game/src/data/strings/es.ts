@@ -65,6 +65,7 @@ export const STRINGS_ES = {
   'feed.yum': '¡Ñam!',
   'feed.yuck': '¡Puaj!',
   'feed.wow': '¡Guau!',
+  'feed.sick': '¡Está malito! Toca la cruz para llevarlo a la clínica.',
   'clean.why.cacahuete': '¡PRIMERO, CREMA DE CACAHUETE: ASÍ SE QUEDA QUIETO MIENTRAS LO LIMPIAS!',
   'clean.step.cacahuete': 'Dale crema de cacahuete',
   'clean.step.cepillo': 'Cepilla el barro',

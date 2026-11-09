@@ -71,6 +71,7 @@ export const STRINGS_RU: Record<StringKey, string> = {
   'feed.yum': 'Ням!',
   'feed.yuck': 'Фу!',
   'feed.wow': 'Ух ты!',
+  'feed.sick': 'Он заболел! Нажми на крестик, чтобы отвести его в клинику.',
   'clean.why.cacahuete': 'СНАЧАЛА АРАХИСОВАЯ ПАСТА: ТАК ОН ПОСИДИТ СМИРНО, ПОКА ТЫ ЕГО МОЕШЬ!',
   'clean.step.cacahuete': 'Дай арахисовую пасту',
   'clean.step.cepillo': 'Счисти грязь щёткой',

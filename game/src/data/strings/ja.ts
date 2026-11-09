@@ -71,6 +71,7 @@ export const STRINGS_JA: Record<StringKey, string> = {
   'feed.yum': 'おいしい！',
   'feed.yuck': 'うえー！',
   'feed.wow': 'わあ！',
+  'feed.sick': 'ぐあいが わるいみたい！ じゅうじを タッチして びょういんへ つれていこう。',
   'clean.why.cacahuete': 'さいしょは ピーナッツバター！ そうすれば あらうあいだ じっと してるよ！',
   'clean.step.cacahuete': 'ピーナッツバターを あげよう',
   'clean.step.cepillo': 'ブラシで どろを おとそう',

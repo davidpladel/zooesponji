@@ -8,6 +8,7 @@ import {
   readProps,
   readEnclosures,
   readGates,
+  readClinic,
   readShop,
   readSpawn,
   type TiledMap,
@@ -85,6 +86,21 @@ describe('readSpawn', () => {
 
   it('readShop devuelve null si el mapa no tiene tienda', () => {
     expect(readShop(tinyMap([1, 1, 1]))).toBeNull();
+  });
+
+  it('readClinic lee el edificio de la clínica y su puerta; sin ellos, null', () => {
+    expect(readClinic(tinyMap([1, 1, 1]))).toBeNull();
+    const map = tinyMap([1, 1, 1], [
+      {
+        type: 'objectgroup',
+        name: 'objetos',
+        objects: [
+          { id: 1, name: 'clinica', type: 'clinica', x: 64, y: 32, width: 80, height: 64 },
+          { id: 2, name: 'puertaClinica', type: 'puertaClinica', x: 96, y: 96, width: 32, height: 16 },
+        ],
+      },
+    ]);
+    expect(readClinic(map)).toEqual({ x: 64, y: 32, width: 80, height: 64, door: { x: 6, y: 6 }, doorWidth: 2 });
   });
 });
 

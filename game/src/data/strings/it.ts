@@ -71,6 +71,7 @@ export const STRINGS_IT: Record<StringKey, string> = {
   'feed.yum': 'Gnam!',
   'feed.yuck': 'Bleah!',
   'feed.wow': 'Wow!',
+  'feed.sick': 'Sta male! Tocca la croce per portarlo alla clinica.',
   'clean.why.cacahuete': 'PRIMA LA CREMA DI ARACHIDI: COSÌ RESTA FERMO MENTRE LO LAVI!',
   'clean.step.cacahuete': 'Dagli la crema di arachidi',
   'clean.step.cepillo': 'Spazzola via il fango',

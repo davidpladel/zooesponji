@@ -93,6 +93,10 @@ export interface ZooTestApi {
   careMarks(residentId: string): { mud: boolean; sick: boolean } | null;
   /** El charco de un recinto en el mundo. */
   puddleOf(penId: PenId): { x: number; y: number; rx: number; ry: number; muddy: boolean } | null;
+  /** En la comida de un animal malito: dónde está la cruz (null si aún no ha salido). */
+  feedCrossPos(): Vec | null;
+  /** Puerta de la clínica en el mapa. */
+  clinicDoorTile(): { x: number; y: number } | null;
   /** Abre la limpieza de un animal sin andar hasta él. */
   openClean(residentId: string): void;
   /** Paso de la limpieza abierta (null si no lo está). */
@@ -275,6 +279,8 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
     },
     careMarks: (residentId) => game.scene.getScene<WorldScene>('World').careMarks(residentId),
     puddleOf: (penId) => game.scene.getScene<WorldScene>('World').puddleOf(penId),
+    feedCrossPos: () => activeScene<FeedScene>('Feed')?.crossScreenPos() ?? null,
+    clinicDoorTile: () => game.scene.getScene<WorldScene>('World').clinicDoorTile(),
     openClean: (residentId) => {
       if (game.scene.isActive('World')) game.scene.pause('World');
       game.scene.start('Clean', { residentId });

@@ -71,6 +71,7 @@ export const STRINGS_ZH: Record<StringKey, string> = {
   'feed.yum': '好吃！',
   'feed.yuck': '呸！',
   'feed.wow': '哇！',
+  'feed.sick': '它生病了！点一下十字，带它去诊所。',
   'clean.why.cacahuete': '先给花生酱：这样洗澡时它就会乖乖不动！',
   'clean.step.cacahuete': '喂它花生酱',
   'clean.step.cepillo': '刷掉泥巴',

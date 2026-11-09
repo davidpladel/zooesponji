@@ -1,4 +1,5 @@
 import * as Phaser from 'phaser';
+import { feedOutcome } from '../core/care';
 import { isDropOnTarget, type Rect } from '../core/interaction';
 import type { Vec } from '../core/movement';
 import type { FeedResult } from '../core/reactions';
@@ -15,7 +16,8 @@ import { addHand } from '../ui/hand';
 import type { TutorialScene } from './TutorialScene';
 import { sceneryTexture } from '../ui/paint';
 import { textStyle } from '../ui/theme';
-import { addUiText, type UiText } from '../ui/text';
+import { addRedCross } from '../ui/redCross';
+import { addUiText, fitText, type UiText } from '../ui/text';
 import { HUD_COIN, addCloseBadge, addPanel, addRibbonTitle, addTile, addVeil, restartOnResize } from '../ui/widgets';
 
 /** Un arrastre más corto que esto es un toque sin querer, no una comida soltada fuera. */
@@ -60,6 +62,9 @@ export class FeedScene extends Phaser.Scene {
   private hint: Phaser.GameObjects.Image | Phaser.GameObjects.Text | null = null;
   /** Copia transparente de la comida que lleva la mano. */
   private hintFood: Food | null = null;
+  /** Malito: no come, y tras el «¡puaj!» sale la cruz que lleva a la clínica. */
+  private sick = false;
+  private cross: Phaser.GameObjects.Container | null = null;
 
   constructor() {
     super('Feed');
@@ -79,6 +84,8 @@ export class FeedScene extends Phaser.Scene {
     this.pool = [];
     this.hint = null;
     this.hintFood = null;
+    this.sick = feedOutcome(getSession().care, data.residentId) === 'sick-refuse';
+    this.cross = null;
   }
 
   create(): void {
@@ -102,6 +109,12 @@ export class FeedScene extends Phaser.Scene {
       .setDepth(REACTION_DEPTH)
       .setVisible(false);
 
+    if (this.sick) {
+      // Se ve que está malito: carita encima, aunque aún no se le haya dado nada.
+      addUiText(this, this.animal.x + this.animal.displayWidth * 0.45, this.animal.y - this.animal.displayHeight * 0.45, '🤒', textStyle(Math.round(height * 0.07)))
+        .setOrigin(0.5)
+        .setDepth(REACTION_DEPTH - 1);
+    }
     this.createTray(width, height, panelW);
     const badge = Phaser.Math.Clamp(height * 0.13, 44, 64);
     addCloseBadge(this, width / 2 + panelW / 2 - badge * 0.35, top + badge * 0.35, () => this.close(), badge);
@@ -273,6 +286,10 @@ export class FeedScene extends Phaser.Scene {
   }
 
   private async feed(id: FoodId, food: Food): Promise<void> {
+    if (this.sick) {
+      this.refuseSick(id, food);
+      return;
+    }
     this.busy = true;
     this.tweens.add({ targets: food, x: this.animal.x, y: this.animal.y, scale: 0, duration: 180, ease: 'Quad.easeIn' });
     const result = await getSession().feed(this.residentId, id);
@@ -281,6 +298,54 @@ export class FeedScene extends Phaser.Scene {
       this.returnHome(id, food, true);
       this.busy = false;
     });
+  }
+
+  /** Malito: cualquier comida le da «¡puaj!», no paga, y sale (o vuelve a botar) la cruz de la clínica. */
+  private refuseSick(id: FoodId, food: Food): void {
+    this.busy = true;
+    this.tweens.add({ targets: food, x: this.animal.x, y: this.animal.y, scale: 0, duration: 180, ease: 'Quad.easeIn' });
+    this.playReaction({ reaction: 'rechaza', coins: 0 }, id);
+    this.time.delayedCall(700, () => this.showCross());
+    this.time.delayedCall(1000, () => {
+      this.returnHome(id, food, true);
+      this.busy = false;
+    });
+  }
+
+  /** La cruz grande encima del animal. Tocarla cierra la comida y la cuidadora va andando a la clínica. */
+  private showCross(): void {
+    if (this.cross) {
+      this.tweens.add({ targets: this.cross, y: this.cross.y - 12, duration: 140, yoyo: true, repeat: 1 });
+      return;
+    }
+    const { width, height } = this.scale;
+    const size = Phaser.Math.Clamp(height * 0.14, 56, 110);
+    const at = { x: this.animal.x, y: this.animal.y - this.animal.displayHeight * 0.55 - size * 0.4 };
+    const cross = addRedCross(this, at.x, at.y, size).setDepth(REACTION_DEPTH).setScale(0);
+    cross.setInteractive(new Phaser.Geom.Rectangle(-size, -size, size * 2, size * 2), Phaser.Geom.Rectangle.Contains);
+    cross.input!.cursor = 'pointer';
+    cross.on('pointerup', () => this.goToClinic());
+    this.tweens.add({ targets: cross, scale: 1, duration: 260, ease: 'Back.easeOut' });
+    this.tweens.add({ targets: cross, angle: { from: -6, to: 6 }, duration: 500, yoyo: true, repeat: -1, ease: 'Sine.InOut', delay: 260 });
+    const hint = addUiText(this, width / 2, height * 0.66, t('feed.sick'), textStyle(Math.round(Phaser.Math.Clamp(height * 0.045, 15, 26)), '#ffffff', '#4e342e'))
+      .setOrigin(0.5)
+      .setDepth(REACTION_DEPTH);
+    fitText(hint, width * 0.8);
+    this.cross = cross;
+  }
+
+  /** Dónde está la cruz de la clínica (para pruebas). */
+  crossScreenPos(): Vec | null {
+    return this.cross ? { x: this.cross.x, y: this.cross.y } : null;
+  }
+
+  private goToClinic(): void {
+    if (!this.scene.isActive()) return;
+    sfx.play('tap');
+    bus.emit('clinic-requested', { residentId: this.residentId });
+    bus.emit('feed-closed', { residentId: this.residentId });
+    this.scene.stop();
+    this.scene.resume('World', { from: 'feed', clinic: true });
   }
 
   private returnHome(id: FoodId, food: Food, fromZero = false): void {

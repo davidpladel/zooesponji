@@ -14,7 +14,7 @@ import { shopVisited } from '../core/save';
 import { tourWaypoints } from '../core/tour';
 import { followTrail, recordTrail } from '../core/petFollow';
 import { noPen, stepNear, type NearState } from '../core/penNear';
-import { buildWalkGrid, readBoard, readEnclosures, readGates, readProps, readWater, readShop, readSpawn, withSolidProps, type TiledMap } from '../core/tiledmap';
+import { buildWalkGrid, readBoard, readClinic, readEnclosures, readGates, readProps, readWater, readShop, readSpawn, withSolidProps, type TiledMap } from '../core/tiledmap';
 import { PEN_IDS, findResident, residentsIn, type PenId } from '../data/pens';
 import { SHOP_UNLOCK_COINS } from '../data/shop';
 import { t } from '../data/strings';
@@ -315,6 +315,19 @@ export class WorldScene extends Phaser.Scene {
     return readShop(this.mapData)?.door ?? null;
   }
 
+  clinicDoorTile(): Point | null {
+    return readClinic(this.mapData)?.door ?? null;
+  }
+
+  /** La cuidadora va andando sola a la clínica (como a la tienda). False si el mapa no tiene clínica o no hay camino. */
+  walkToClinic(): boolean {
+    const door = this.clinicDoorTile();
+    if (!door) return false;
+    this.cancelFeedTarget();
+    this.trail.hide();
+    return this.goToTile(door.x, door.y);
+  }
+
   /** Centro de la puerta de la tienda, en pantalla (las 2 casillas). */
   shopDoorScreenPos(): Vec | null {
     const shop = readShop(this.mapData);
@@ -557,11 +570,16 @@ export class WorldScene extends Phaser.Scene {
     this.syncPet();
   }
 
-  private onResume(_sys: Phaser.Scenes.Systems, data?: { from?: string }): void {
+  private onResume(_sys: Phaser.Scenes.Systems, data?: { from?: string; clinic?: boolean }): void {
     if (data?.from === 'shop') this.leaveShop();
     this.refresh();
     // Lo visto en el tablón apaga la estrellita.
     this.board?.sync();
+    if (data?.clinic) {
+      // Desde la cruz de un animal malito: a la clínica, sin anuncios ni avisos por medio.
+      this.walkToClinic();
+      return;
+    }
     // Una pausa natural: se vuelve de dar de comer o de la tienda. De Ajustes, del libro o de «¿Salir?», no.
     if (data?.from === 'shop' || data?.from === 'feed' || data?.from === 'clean') this.time.delayedCall(AD_OFFER_MS, () => this.offerAd());
     if (data?.from !== 'notice' && data?.from !== 'board') this.time.delayedCall(NOTICE_MS, () => this.maybeNotice());

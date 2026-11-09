@@ -71,6 +71,7 @@ export const STRINGS_HI: Record<StringKey, string> = {
   'feed.yum': 'वाह, मज़ेदार!',
   'feed.yuck': 'छी!',
   'feed.wow': 'वाह!',
+  'feed.sick': 'यह बीमार है! इसे क्लिनिक ले जाने के लिए क्रॉस छुओ।',
   'clean.why.cacahuete': 'पहले मूँगफली का मक्खन: इससे वह नहलाते समय शांत रहता है!',
   'clean.step.cacahuete': 'मूँगफली का मक्खन दो',
   'clean.step.cepillo': 'ब्रश से कीचड़ हटाओ',

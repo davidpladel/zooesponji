@@ -183,9 +183,20 @@ export function isShopDoor(shop: ShopInfo, tile: Point): boolean {
 }
 
 export function readShop(map: TiledMap): ShopInfo | null {
+  return readBuilding(map, 'tienda', 'puertaTienda');
+}
+
+/** La clínica de la plaza: un edificio con puerta, como la tienda. */
+export type ClinicInfo = ShopInfo;
+
+export function readClinic(map: TiledMap): ClinicInfo | null {
+  return readBuilding(map, 'clinica', 'puertaClinica');
+}
+
+function readBuilding(map: TiledMap, kind: string, doorKind: string): ShopInfo | null {
   const objects = objectsOf(map);
-  const building = objects.find((o) => objectKind(o) === 'tienda');
-  const door = objects.find((o) => objectKind(o) === 'puertaTienda');
+  const building = objects.find((o) => objectKind(o) === kind);
+  const door = objects.find((o) => objectKind(o) === doorKind);
   if (!building || !door) return null;
   return {
     x: building.x,

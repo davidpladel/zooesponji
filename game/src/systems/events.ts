@@ -63,6 +63,8 @@ export interface GameEvents {
   'puddle-muddy': { penId: PenId };
   /** El último sucio del recinto ya está limpio: el charco vuelve a agua. */
   'puddle-clean': { penId: PenId };
+  /** Con un animal malito, se ha tocado la cruz: la cuidadora va andando a la clínica. */
+  'clinic-requested': { residentId: string };
   /** Un animal se ha puesto malito. */
   'animal-sick': { penId: PenId; residentId: string };
   /** Una comida arrastrada y soltada fuera del animal. */

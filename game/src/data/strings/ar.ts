@@ -72,6 +72,7 @@ export const STRINGS_AR: Record<StringKey, string> = {
   'feed.yum': 'لذيذ!',
   'feed.yuck': 'يع!',
   'feed.wow': 'واو!',
+  'feed.sick': 'إنه مريض! المس علامة العيادة لتأخذه إليها.',
   'clean.why.cacahuete': 'أولًا زبدة الفول السوداني: هكذا يبقى هادئًا وأنت تنظّفه!',
   'clean.step.cacahuete': 'أعطه زبدة الفول السوداني',
   'clean.step.cepillo': 'أزل الطين بالفرشاة',
