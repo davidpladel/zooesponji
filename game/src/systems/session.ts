@@ -138,8 +138,10 @@ export class Session {
     const found = findResident(residentId);
     if (!found || !isMudPen(found.penId) || !isDirty(this.data.care, residentId)) return 0;
     const coins = careReward(found.resident.species);
+    const wasMuddy = this.data.care.muddy.includes(found.penId);
     await this.setCare(clean(this.data.care, found.penId, residentId));
     this.events.emit('animal-cleaned', { penId: found.penId, residentId, coins });
+    if (wasMuddy && !this.data.care.muddy.includes(found.penId)) this.events.emit('puddle-clean', { penId: found.penId });
     await this.earnCoins(coins);
     return coins;
   }

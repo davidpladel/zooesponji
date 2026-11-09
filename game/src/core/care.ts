@@ -1,6 +1,7 @@
 import { ANIMALS, type AnimalId } from '../data/animals';
 import { PEN_IDS, findResident, residentsIn, type PenId } from '../data/pens';
 import { isPenOpen, penCount, type GameState } from './economy';
+import type { PenSpace } from './flock';
 
 /**
  * Suciedad y enfermedades (diseño del 2026-11-09). Todo puro e inmutable: quien llama guarda el resultado.
@@ -115,4 +116,48 @@ export function sanitizeCare(raw: unknown, counts: Readonly<Record<PenId, number
   });
   const muddy = ids(loose.muddy).filter((id): id is MudPenId => (MUD_PENS as readonly string[]).includes(id) && (counts[id as MudPenId] ?? 0) > 0);
   return { dirty, sick, muddy };
+}
+
+/** ¿Está el punto dentro del charco (una elipse)? */
+export function insidePuddle(point: { x: number; y: number }, puddle: { x: number; y: number; rx: number; ry: number }): boolean {
+  const dx = (point.x - puddle.x) / puddle.rx;
+  const dy = (point.y - puddle.y) / puddle.ry;
+  return dx * dx + dy * dy <= 1;
+}
+
+/** Qué se abre al tocar un animal: un enfermo va a la comida (ahí sale el «¡puaj!»), un sucio a la limpieza. */
+export function pickTapScene(care: CareState, residentId: string): 'clean' | 'feed' {
+  return !isSick(care, residentId) && isDirty(care, residentId) ? 'clean' : 'feed';
+}
+
+/** Un animal malito no come: cualquier comida le da «¡puaj!» y sale la cruz de la clínica. */
+export function feedOutcome(care: CareState, residentId: string): 'normal' | 'sick-refuse' {
+  return isSick(care, residentId) ? 'sick-refuse' : 'normal';
+}
+
+/**
+ * Centro del charco (elipse de radios `rx`, `ry`) dentro del recinto, sin pisar adornos: el sitio libre más
+ * cercano al centro, que es por donde más pasean los animales. Null si no cabe.
+ */
+export function puddleSpot(space: PenSpace, rx: number, ry: number, step = 4): { x: number; y: number } | null {
+  const { inner, obstacles } = space;
+  const center = { x: inner.x + inner.width / 2, y: inner.y + inner.height / 2 };
+  let best: { x: number; y: number } | null = null;
+  let bestDistance = Infinity;
+  // Rejilla que pasa por el centro, para que en un recinto vacío salga justo ahí.
+  const reachX = Math.floor((inner.width / 2 - rx) / step);
+  const reachY = Math.floor((inner.height / 2 - ry) / step);
+  for (let j = -reachY; j <= reachY; j++) {
+    for (let i = -reachX; i <= reachX; i++) {
+      const x = center.x + i * step;
+      const y = center.y + j * step;
+      const hit = obstacles.some((o) => x - rx < o.x + o.width && o.x < x + rx && y - ry < o.y + o.height && o.y < y + ry);
+      const distance = Math.hypot(x - center.x, y - center.y);
+      if (!hit && distance < bestDistance) {
+        best = { x, y };
+        bestDistance = distance;
+      }
+    }
+  }
+  return best;
 }

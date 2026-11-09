@@ -57,6 +57,14 @@ export interface GameEvents {
   'clean-closed': { residentId: string; done: boolean };
   /** Un animal ha quedado limpio: monedas como al darle de comer. */
   'animal-cleaned': { penId: PenId; residentId: string; coins: number };
+  /** Un animal ha pisado el charco de barro y se ha manchado. */
+  'animal-soiled': { penId: PenId; residentId: string };
+  /** El charco de un recinto se ha puesto de barro. */
+  'puddle-muddy': { penId: PenId };
+  /** El último sucio del recinto ya está limpio: el charco vuelve a agua. */
+  'puddle-clean': { penId: PenId };
+  /** Un animal se ha puesto malito. */
+  'animal-sick': { penId: PenId; residentId: string };
   /** Una comida arrastrada y soltada fuera del animal. */
   'food-missed': { residentId: string; foodId: FoodId };
   /** La cuidadora lleva un rato junto a un recinto. */

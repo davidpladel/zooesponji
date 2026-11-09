@@ -1,6 +1,8 @@
 import * as Phaser from 'phaser';
 import { getArt } from '../art/art';
 import { KEEPER_SPEED, MAPS, TEXTURES, TILE_SIZE } from '../config';
+import { fallSick, makeMuddy, pickTapScene, soil } from '../core/care';
+import { CareDirector } from '../core/careDirector';
 import { isPenOpen, type GameState } from '../core/economy';
 import { facingFromDelta } from '../core/facing';
 import { approachTile } from '../core/interaction';
@@ -13,7 +15,7 @@ import { tourWaypoints } from '../core/tour';
 import { followTrail, recordTrail } from '../core/petFollow';
 import { noPen, stepNear, type NearState } from '../core/penNear';
 import { buildWalkGrid, readBoard, readEnclosures, readGates, readProps, readWater, readShop, readSpawn, withSolidProps, type TiledMap } from '../core/tiledmap';
-import { PEN_IDS, residentsIn, type PenId } from '../data/pens';
+import { PEN_IDS, findResident, residentsIn, type PenId } from '../data/pens';
 import { SHOP_UNLOCK_COINS } from '../data/shop';
 import { t } from '../data/strings';
 import { getAds } from '../systems/ads';
@@ -32,6 +34,7 @@ import { TerrainArt } from '../world/TerrainArt';
 import { PawTrail } from '../world/PawTrail';
 import { VisitorCrowd } from '../world/VisitorCrowd';
 import type { AdOfferSceneData } from './AdOfferScene';
+import type { CleanSceneData } from './CleanScene';
 import type { FeedSceneData } from './FeedScene';
 import type { HudScene } from './HudScene';
 
@@ -59,6 +62,8 @@ export class WorldScene extends Phaser.Scene {
   private pathGrid!: WalkGrid;
   /** Residente hacia el que va la cuidadora para darle de comer. */
   private feedTarget: string | null = null;
+  /** Relojes del charco y de las enfermedades: solo cuentan con el mundo en marcha. */
+  private care = new CareDirector();
   private near: NearState<PenId> = noPen();
   /** Formas de moverse ya avisadas desde que se montó el mapa. */
   private readonly controlsUsed = new Set<ControlMode>();
@@ -141,6 +146,9 @@ export class WorldScene extends Phaser.Scene {
       this.time.delayedCall(NOTICE_MS, () => this.maybeNotice());
     });
     const offFed = bus.on('animal-fed', ({ residentId, reaction }) => this.pens.celebrate(residentId, reaction));
+    this.care = new CareDirector();
+    this.pens.setCare(getSession().care);
+    const offCare = bus.on('care-changed', () => this.pens.setCare(getSession().care));
     this.events.on(Phaser.Scenes.Events.RESUME, this.onResume, this);
 
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
@@ -149,6 +157,7 @@ export class WorldScene extends Phaser.Scene {
       this.events.off(Phaser.Scenes.Events.RESUME, this.onResume, this);
       offShopUnlocked();
       offFed();
+      offCare();
       offCommunity();
     });
     this.time.delayedCall(NOTICE_MS, () => {
@@ -159,6 +168,7 @@ export class WorldScene extends Phaser.Scene {
   update(time: number, delta: number): void {
     this.visitors.update(delta);
     this.pens.update(time, delta, this.cameras.main.worldView, { keeper: this.keeperPosition(), ...this.visitors.people() });
+    this.tickCare(delta);
     this.moveKeeper(delta);
     this.updatePet(delta);
     const pos = this.keeperPosition();
@@ -177,6 +187,34 @@ export class WorldScene extends Phaser.Scene {
       bus.emit('toast', { text: t('toast.shopLocked', { n: SHOP_UNLOCK_COINS }) });
     }
     if (this.board?.onKeeperTile(tile)) this.openBoard();
+  }
+
+  /**
+   * El tiempo de juego para el charco y las enfermedades. `update` no corre con el mundo en pausa (tienda,
+   * comida, limpieza, clínica, menús) ni con la app en segundo plano: ahí el reloj se para solo. Un salto
+   * grande (vuelta de segundo plano) se recorta para no adelantar minutos de golpe.
+   */
+  private tickCare(delta: number): void {
+    const step = Math.min(delta, 1000);
+    const session = getSession();
+    let care = session.care;
+    for (const event of this.care.update(step, session.state, care)) {
+      if (event.type === 'muddy') {
+        care = makeMuddy(care, event.penId);
+        bus.emit('puddle-muddy', { penId: event.penId });
+      } else {
+        care = fallSick(care, event.residentId);
+        const penId = findResident(event.residentId)?.penId;
+        if (penId) bus.emit('animal-sick', { penId, residentId: event.residentId });
+      }
+    }
+    for (const { penId, residentId } of this.pens.puddleSteps(step)) {
+      const next = soil(care, penId, residentId);
+      if (next === care) continue;
+      care = next;
+      bus.emit('animal-soiled', { penId, residentId });
+    }
+    if (care !== session.care) void session.setCare(care);
   }
 
   /** Avisa cuando la cuidadora lleva un rato junto a un recinto: es una visita, no un ir de paso. */
@@ -200,7 +238,7 @@ export class WorldScene extends Phaser.Scene {
     if (!this.feedTarget) return false;
     const at = this.pens.positionOf(this.feedTarget);
     if (at && Math.hypot(at.x - pos.x, at.y - pos.y) <= FEED_REACH) {
-      this.openFeed(this.feedTarget);
+      this.openAnimal(this.feedTarget);
       return true;
     }
     // No hay camino hasta él: se deja de esperar.
@@ -221,6 +259,16 @@ export class WorldScene extends Phaser.Scene {
     this.pens.hold(residentId);
     this.goTo(at);
     return true;
+  }
+
+  /** ¿Se ven las manchas o la carita de enfermo de un animal? (para pruebas) */
+  careMarks(residentId: string): { mud: boolean; sick: boolean } | null {
+    return this.pens ? this.pens.careMarks(residentId) : null;
+  }
+
+  /** El charco de un recinto (para pruebas). */
+  puddleOf(penId: PenId): { x: number; y: number; rx: number; ry: number; muddy: boolean } | null {
+    return this.pens?.puddleOf(penId) ?? null;
   }
 
   residentScreenPos(residentId: string): Vec | null {
@@ -434,6 +482,22 @@ export class WorldScene extends Phaser.Scene {
     this.goTo(world);
   }
 
+  /** Al llegar junto a un animal: si está sucio, a limpiarlo; si no (o si está malito), a darle de comer. */
+  private openAnimal(residentId: string): void {
+    if (pickTapScene(getSession().care, residentId) === 'clean') this.openClean(residentId);
+    else this.openFeed(residentId);
+  }
+
+  private openClean(residentId: string): void {
+    this.stopWalking();
+    this.feedTarget = null;
+    this.pens.hold(residentId);
+    sfx.play('tap');
+    this.scene.pause();
+    const data: CleanSceneData = { residentId };
+    this.scene.launch('Clean', data);
+  }
+
   private openFeed(residentId: string): void {
     this.stopWalking();
     this.feedTarget = null;
@@ -499,7 +563,7 @@ export class WorldScene extends Phaser.Scene {
     // Lo visto en el tablón apaga la estrellita.
     this.board?.sync();
     // Una pausa natural: se vuelve de dar de comer o de la tienda. De Ajustes, del libro o de «¿Salir?», no.
-    if (data?.from === 'shop' || data?.from === 'feed') this.time.delayedCall(AD_OFFER_MS, () => this.offerAd());
+    if (data?.from === 'shop' || data?.from === 'feed' || data?.from === 'clean') this.time.delayedCall(AD_OFFER_MS, () => this.offerAd());
     if (data?.from !== 'notice' && data?.from !== 'board') this.time.delayedCall(NOTICE_MS, () => this.maybeNotice());
   }
 

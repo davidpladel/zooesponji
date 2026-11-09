@@ -305,11 +305,16 @@ describe('Session: limpiar', () => {
     expect(cleaned).toHaveBeenCalledWith({ penId: 'cerdos', residentId: 'rosita', coins: 4 });
   });
 
-  it('el último sucio deja el charco limpio, y limpiar a uno limpio no paga dos veces', async () => {
-    const { session } = await dirtyPig();
+  it('el último sucio deja el charco limpio (avisa con puddle-clean), y limpiar a uno limpio no paga dos veces', async () => {
+    const events = new EventBus<GameEvents>();
+    const clear = vi.fn();
+    events.on('puddle-clean', clear);
+    const { session } = await dirtyPig(events);
     await session.cleanAnimal('rosita');
+    expect(clear).not.toHaveBeenCalled();
     await session.cleanAnimal('morrito');
     expect(session.care.muddy).toEqual([]);
+    expect(clear).toHaveBeenCalledWith({ penId: 'cerdos' });
     const coins = session.state.coins;
     expect(await session.cleanAnimal('morrito')).toBe(0);
     expect(session.state.coins).toBe(coins);

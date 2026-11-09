@@ -24,11 +24,14 @@ const TOOL_EMOJI: Readonly<Record<CleanStep, string>> = { cacahuete: '🥜', cep
 const TRAIL_EMOJI: Readonly<Record<CleanStep, string>> = { cacahuete: '😋', cepillo: '💨', jabon: '🫧', agua: '💧', toalla: '✨' };
 /** Margen (px) alrededor del animal: frotar "casi encima" también cuenta. */
 const RUB_MARGIN = 24;
+/** Lo más que cuenta un solo movimiento del dedo (px). */
+const MAX_RUB_STEP = 40;
 /** Cada cuánto recorrido sale un adorno del rastro. */
 const TRAIL_EVERY = 28;
 /** Herramientas apagadas: se ven, pero claramente que no toca. */
 const OFF_ALPHA = 0.3;
-const MUD = 0x6d4c41;
+const MUD = 0x795548;
+const MUD_DARK = 0x4e342e;
 const FX_DEPTH = 60;
 
 type Portrait = Phaser.GameObjects.Sprite | Phaser.GameObjects.Text;
@@ -54,6 +57,9 @@ export class CleanScene extends Phaser.Scene {
   private readonly tools = new Map<CleanStep, Phaser.GameObjects.Text>();
   private readonly toolHomes = new Map<CleanStep, Vec>();
   private dragging: { step: CleanStep; last: Vec | null } | null = null;
+  /** Marco amarillo de la herramienta que toca. */
+  private glow!: Phaser.GameObjects.Graphics;
+  private tileSize = 0;
   private trail = 0;
   private finished = false;
   private fx: Phaser.GameObjects.Text[] = [];
@@ -169,11 +175,13 @@ export class CleanScene extends Phaser.Scene {
   private createTools(width: number, height: number, panelW: number): void {
     const size = Phaser.Math.Clamp(Math.round(height * 0.1), 44, 80);
     const tile = Math.round(size * 1.4);
+    this.tileSize = tile;
     const y = height * 0.82;
     const gap = Math.min((panelW * 0.9) / CLEAN_STEPS.length, tile * 1.15);
     CLEAN_STEPS.forEach((step, index) => {
       const x = width / 2 + (index - (CLEAN_STEPS.length - 1) / 2) * gap;
       addTile(this, x, y, tile, tile);
+      if (index === 0) this.glow = this.add.graphics().setDepth(4);
       // El número del paso, para que se vea el orden aunque no se sepa leer.
       addUiText(this, x - tile * 0.36, y - tile * 0.36, String(index + 1), textStyle(Math.round(size * 0.32), '#ffffff', '#4e342e')).setOrigin(0.5).setDepth(5);
       const tool = addEmoji(this, x, y, TOOL_EMOJI[step], size).setInteractive({ draggable: true, useHandCursor: true }).setDepth(10);
@@ -204,9 +212,10 @@ export class CleanScene extends Phaser.Scene {
     const bounds = this.animal.getBounds();
     const over =
       at.x >= bounds.x - RUB_MARGIN && at.x <= bounds.right + RUB_MARGIN && at.y >= bounds.y - RUB_MARGIN && at.y <= bounds.bottom + RUB_MARGIN;
-    const last = this.dragging.last;
-    this.dragging.last = over ? at : null;
-    if (over && last) this.rub(Math.hypot(at.x - last.x, at.y - last.y), at);
+    // Cuenta cada tramo que acaba encima del animal, con tope: con pocos eventos (o un salto) no se llena de golpe.
+    const last = this.dragging.last ?? { x: tool.input?.dragStartX ?? at.x, y: tool.input?.dragStartY ?? at.y };
+    this.dragging.last = at;
+    if (over) this.rub(Math.min(MAX_RUB_STEP, Math.hypot(at.x - last.x, at.y - last.y)), at);
   }
 
   private onDragEnd(_pointer: Phaser.Input.Pointer, tool: Phaser.GameObjects.Text): void {
@@ -235,13 +244,22 @@ export class CleanScene extends Phaser.Scene {
     const { step, face, progress } = this.cleaning;
     for (const [id, tool] of this.tools) {
       const on = isStepEnabled(this.cleaning, id);
+      // Apagadas: transparentes y en gris, para que se vea bien cuál toca.
       tool.setAlpha(on ? 1 : OFF_ALPHA);
+      if (on) tool.clearTint();
+      else tool.setTint(0x9e9e9e);
       if (on && !this.dragging && !this.tweens.isTweening(tool)) {
         this.tweens.add({ targets: tool, scale: 1.12, duration: 420, yoyo: true, repeat: -1, ease: 'Sine.InOut' });
       } else if (!on) {
         this.tweens.killTweensOf(tool);
         tool.setScale(1).setAngle(0);
       }
+    }
+    this.glow.clear();
+    const active = step === 'hecho' ? undefined : this.toolHomes.get(step);
+    if (active) {
+      const t2 = this.tileSize;
+      this.glow.lineStyle(Math.max(3, t2 * 0.06), 0xffd54f, 1).strokeRoundedRect(active.x - t2 / 2 - 3, active.y - t2 / 2 - 3, t2 + 6, t2 + 6, t2 * 0.18);
     }
     this.whyText.setVisible(step === 'cacahuete');
     this.stepText.setText(step === 'hecho' ? t('clean.done') : t(`clean.step.${step}` as StringKey));
@@ -278,22 +296,39 @@ export class CleanScene extends Phaser.Scene {
     if (amount <= 0) return;
     const w = this.animal.displayWidth;
     const h = this.animal.displayHeight;
+    // A píxeles del retrato (que se pinta a escala entera), para que parezcan del mismo dibujo.
+    const px = this.animal instanceof Phaser.GameObjects.Sprite ? this.baseScale : Math.max(2, Math.round(h / 24));
     let seed = [...this.residentId].reduce((s, c) => s + c.charCodeAt(0), 0);
     const rand = () => (seed = (seed * 9301 + 49297) % 233280) / 233280;
-    this.spots.fillStyle(MUD, 0.85 * amount);
-    for (let i = 0; i < 6; i++) {
-      const r = (0.07 + rand() * 0.07) * Math.min(w, h) * (0.4 + 0.6 * amount);
-      this.spots.fillCircle((rand() - 0.5) * w * 0.6, (rand() - 0.35) * h * 0.5, r);
+    const snap = (v: number) => Math.round(v / px) * px;
+    for (let i = 0; i < 7; i++) {
+      const x = snap((rand() - 0.5) * w * 0.4);
+      const y = snap((rand() - 0.4) * h * 0.35);
+      // Se encogen con el cepillo: de 3 píxeles a 1.
+      const s = px * Math.max(1, Math.round((1 + rand() * 2) * amount));
+      this.spots.fillStyle(i % 2 === 0 ? MUD : MUD_DARK, 0.95);
+      this.spots.fillRect(x - s, y - Math.ceil(s / 2 / px) * px, s * 2, Math.max(px, s));
+      this.spots.fillRect(x - Math.ceil(s / 2 / px) * px, y - s, Math.max(px, s), s * 2);
     }
   }
 
   private drawPool(): void {
-    const w = this.animal.displayWidth * 1.5;
+    const rx = this.animal.displayWidth * 0.75;
     const y = this.home.y + this.animal.displayHeight * 0.35;
+    // A píxeles del retrato, fila a fila, como el charco del mundo.
+    const px = Math.max(2, this.animal instanceof Phaser.GameObjects.Sprite ? this.baseScale : 3);
+    const spans = (cx: number, cy: number, ax: number, ay: number, color: number): void => {
+      this.pool.fillStyle(color, 1);
+      const rows = Math.max(1, Math.round(ay / px));
+      for (let j = -rows; j <= rows; j++) {
+        const half = Math.round((ax / px) * Math.sqrt(Math.max(0, 1 - (j / (rows + 0.5)) ** 2))) * px;
+        if (half > 0) this.pool.fillRect(Math.round(cx / px) * px - half, Math.round(cy / px) * px + j * px, half * 2, px);
+      }
+    };
     this.pool.clear();
-    this.pool.fillStyle(0x4e342e, 1).fillEllipse(this.home.x, y, w + 10, w * 0.38 + 10);
-    this.pool.fillStyle(0x4fc3f7, 1).fillEllipse(this.home.x, y, w, w * 0.38);
-    this.pool.fillStyle(0xb3e5fc, 1).fillEllipse(this.home.x - w * 0.15, y - w * 0.05, w * 0.4, w * 0.1);
+    spans(this.home.x, y, rx + px * 2, rx * 0.38 + px * 2, 0x3e6f9e);
+    spans(this.home.x, y, rx, rx * 0.38, 0x4fc3f7);
+    spans(this.home.x - rx * 0.35, y - rx * 0.12, rx * 0.3, rx * 0.06, 0xb3e5fc);
   }
 
   /** Un adorno que sube y se desvanece donde se frota. */

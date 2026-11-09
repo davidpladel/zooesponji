@@ -1,6 +1,7 @@
 import * as Phaser from 'phaser';
 import { getArt } from '../art/art';
 import { TILE_SIZE } from '../config';
+import { emptyCare, insidePuddle, isDirty, isMudPen, isSick, puddleSpot, type CareState, type MudPenId } from '../core/care';
 import { penCount, isPenOpen, type GameState } from '../core/economy';
 import { BODY_RADIUS, fleeTarget, followTarget, penSpace, spreadPositions, stepRoamer, type PenSpace, type Roamer } from '../core/flock';
 import { gateAtDoorstep, nearestWithin, rectContains, rectsOverlap, tapDistance, type Rect } from '../core/interaction';
@@ -53,6 +54,24 @@ interface Pen {
   followLeft: number;
   shown: boolean;
 }
+
+/** El charco de un recinto de barro: agua o barro según el estado. */
+interface Puddle {
+  penId: MudPenId;
+  x: number;
+  y: number;
+  rx: number;
+  ry: number;
+  gfx: Phaser.GameObjects.Graphics;
+}
+
+/** Cada cuánto (ms) se mira quién pisa el barro, y la probabilidad de ensuciarse en cada vistazo. */
+const SOIL_EVERY = 1000;
+const SOIL_CHANCE = 0.3;
+/** Justo encima del suelo y por debajo de animales y adornos. */
+const PUDDLE_DEPTH = 1.5;
+const WATER = { fill: 0x64b5f6, shine: 0xbbdefb, edge: 0x3e6f9e };
+const MUD = { fill: 0x795548, shine: 0x9c7a6b, edge: 0x4e342e };
 
 /** Por encima de cualquier cosa del mundo ordenada por Y. */
 const UI_DEPTH = 10000;
@@ -112,6 +131,13 @@ export class Pens {
   private zoom: number;
   /** Veces que han salido corazones entre un visitante y un animal (para pruebas). */
   heartsShown = 0;
+  private readonly puddles: Puddle[] = [];
+  private care: CareState = emptyCare();
+  /** Manchas de barro de cada animal sucio, que van con él. */
+  private readonly mudMarks = new Map<string, Phaser.GameObjects.Graphics>();
+  /** Carita de enfermo encima de cada animal malito, hasta que se cura. */
+  private readonly sickIcons = new Map<string, Phaser.GameObjects.Text>();
+  private soilClock = 0;
 
   constructor(
     private readonly scene: Phaser.Scene,
@@ -158,6 +184,7 @@ export class Pens {
       const companion = companionWalker ? wanderer(companionWalker, def.companion?.id ?? null, null, radiusOf(lead), 500 + Math.random() * 1500) : null;
       for (const w of [...animals, ...(companion ? [companion] : [])]) w.walker.object.setAlpha(unlocked ? 1 : LOCKED_ALPHA);
 
+      if (isMudPen(id)) this.addPuddle(id, space);
       this.pens.push({ id, rect, space, gate: gate.tile, home, animals, companion, lock, lockAt: { x: home.x, y: home.y + 14 }, lockPrice: price, petting: def.visitors === true, keeperInside: false, followLeft: 0, shown: unlocked });
     }
   }
@@ -185,6 +212,139 @@ export class Pens {
           );
       }
     }
+    this.followCare();
+  }
+
+  /** Charco del recinto, en el hueco libre más céntrico. */
+  private addPuddle(penId: MudPenId, space: PenSpace): void {
+    const rx = Math.max(14, Math.min(32, space.inner.width * 0.16));
+    const ry = rx * 0.45;
+    const at = puddleSpot(space, rx, ry);
+    if (!at) return;
+    const gfx = this.scene.add.graphics().setDepth(PUDDLE_DEPTH);
+    this.puddles.push({ penId, ...at, rx, ry, gfx });
+    this.drawPuddle(this.puddles[this.puddles.length - 1]!);
+  }
+
+  private drawPuddle(puddle: Puddle): void {
+    const colors = this.care.muddy.includes(puddle.penId) ? MUD : WATER;
+    const { x, y, rx, ry, gfx } = puddle;
+    gfx.clear();
+    // A píxeles, fila a fila, como el resto del arte: borde oscuro, relleno y un brillo.
+    const spans = (cx: number, cy: number, ax: number, ay: number, color: number, alpha = 1): void => {
+      gfx.fillStyle(color, alpha);
+      const rows = Math.round(ay);
+      for (let j = -rows; j <= rows; j++) {
+        const half = Math.round(ax * Math.sqrt(Math.max(0, 1 - (j / (rows + 0.5)) ** 2)));
+        if (half > 0) gfx.fillRect(Math.round(cx) - half, Math.round(cy) + j, half * 2, 1);
+      }
+    };
+    spans(x, y, rx + 1, ry + 1, colors.edge);
+    spans(x, y, rx, ry, colors.fill);
+    spans(x - rx * 0.35, y - ry * 0.35, rx * 0.3, ry * 0.2, colors.shine, 0.9);
+    spans(x + rx * 0.3, y + ry * 0.3, rx * 0.12, 0.5, colors.shine, 0.7);
+  }
+
+  /** Repinta charcos, manchas y caritas de enfermo con el estado nuevo. */
+  setCare(care: CareState): void {
+    this.care = care;
+    for (const puddle of this.puddles) this.drawPuddle(puddle);
+    for (const [id, mark] of this.mudMarks) {
+      if (isDirty(care, id)) continue;
+      mark.destroy();
+      this.mudMarks.delete(id);
+    }
+    for (const id of care.dirty) {
+      const w = this.find(id);
+      if (w && !this.mudMarks.has(id)) this.mudMarks.set(id, this.drawMudMarks(w));
+    }
+    for (const [id, icon] of this.sickIcons) {
+      if (isSick(care, id)) continue;
+      this.scene.tweens.killTweensOf(icon);
+      icon.destroy();
+      this.sickIcons.delete(id);
+    }
+    for (const id of care.sick) {
+      if (this.find(id) && !this.sickIcons.has(id)) {
+        const icon = this.scene.add.text(0, 0, '🤒', { fontSize: '11px' }).setOrigin(0.5, 1).setResolution(4).setDepth(UI_DEPTH - 1);
+        this.scene.tweens.add({ targets: icon, scale: 1.15, duration: 600, yoyo: true, repeat: -1, ease: 'Sine.InOut' });
+        this.sickIcons.set(id, icon);
+      }
+    }
+    this.followCare();
+  }
+
+  /** Manchas marrones a píxeles, siempre las mismas para cada animal, dentro de su cuerpo. */
+  private drawMudMarks(w: Wanderer): Phaser.GameObjects.Graphics {
+    const gfx = this.scene.add.graphics();
+    let seed = [...(w.residentId ?? 'x')].reduce((s, c) => s + c.charCodeAt(0), 0);
+    const rand = () => (seed = (seed * 9301 + 49297) % 233280) / 233280;
+    const object = w.walker.object;
+    const dw = object.width;
+    const dh = object.height;
+    // Centro del cuerpo respecto al punto del animal (los sprites apoyan los pies; el emoji va centrado).
+    const cy = (0.5 - object.originY) * dh;
+    const count = 5 + Math.floor(rand() * 2);
+    const big = Math.max(1, Math.round(dw / 16));
+    for (let i = 0; i < count; i++) {
+      const x = Math.round((rand() - 0.5) * dw * 0.45);
+      const y = Math.round(cy + (rand() - 0.5) * dh * 0.35);
+      const s = big + Math.round(rand());
+      gfx.fillStyle(i % 2 === 0 ? MUD.fill : MUD.edge, 0.95);
+      gfx.fillRect(x - s, y - Math.ceil(s / 2), s * 2, s);
+      gfx.fillRect(x - Math.ceil(s / 2), y - s, s, s * 2);
+    }
+    return gfx;
+  }
+
+  /** Manchas y caritas van con su animal. */
+  private followCare(): void {
+    for (const [id, mark] of this.mudMarks) {
+      const w = this.find(id);
+      if (!w) continue;
+      const object = w.walker.object;
+      // Sin dibujarlas mientras el animal aparece (crece desde 0) o se ve en fantasma.
+      const shown = object.visible && object.alpha > 0.5 && object.scaleX > 0.9;
+      mark.setPosition(Math.round(w.walker.x), Math.round(w.walker.y)).setDepth(object.depth + 0.01).setVisible(shown).setScale(object.flipX ? -1 : 1, 1);
+    }
+    for (const [id, icon] of this.sickIcons) {
+      const at = this.anchorOf(id);
+      if (at) icon.setPosition(at.x, at.y);
+    }
+  }
+
+  /**
+   * Quién ha pisado el barro: cada segundo, cada animal dentro de un charco de barro tiene su probabilidad de
+   * ensuciarse. Devuelve a quiénes hay que ensuciar; los aplica quien llama.
+   */
+  puddleSteps(delta: number, rng: () => number = Math.random): { penId: MudPenId; residentId: string }[] {
+    this.soilClock += Math.max(0, delta);
+    const steps: { penId: MudPenId; residentId: string }[] = [];
+    while (this.soilClock >= SOIL_EVERY) {
+      this.soilClock -= SOIL_EVERY;
+      for (const puddle of this.puddles) {
+        if (!this.care.muddy.includes(puddle.penId)) continue;
+        const pen = this.pen(puddle.penId);
+        if (!pen.shown) continue;
+        for (const w of pen.animals) {
+          const id = w.residentId;
+          if (!id || isDirty(this.care, id) || isSick(this.care, id) || steps.some((s) => s.residentId === id)) continue;
+          if (insidePuddle({ x: w.walker.x, y: w.walker.y }, puddle) && rng() < SOIL_CHANCE) steps.push({ penId: puddle.penId, residentId: id });
+        }
+      }
+    }
+    return steps;
+  }
+
+  /** El charco de un recinto (para pruebas y para llevar a un animal hasta él). */
+  puddleOf(penId: PenId): { x: number; y: number; rx: number; ry: number; muddy: boolean } | null {
+    const p = this.puddles.find((q) => q.penId === penId);
+    return p ? { x: p.x, y: p.y, rx: p.rx, ry: p.ry, muddy: this.care.muddy.includes(p.penId) } : null;
+  }
+
+  /** ¿Se ven las manchas o la carita de enfermo de un animal? (para pruebas) */
+  careMarks(residentId: string): { mud: boolean; sick: boolean } {
+    return { mud: this.mudMarks.has(residentId), sick: this.sickIcons.has(residentId) };
   }
 
   private members(pen: Pen): Wanderer[] {

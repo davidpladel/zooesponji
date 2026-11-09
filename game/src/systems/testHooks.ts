@@ -2,14 +2,17 @@ import type * as Phaser from 'phaser';
 import { getArt } from '../art/art';
 import { AD_SLOTS } from '../core/adPacing';
 import { COMMUNITY_KEY } from '../core/community';
+import { fallSick, makeMuddy, soil, isMudPen, type CareState } from '../core/care';
+import type { CleaningState } from '../core/cleaning';
 import { openPens } from '../core/economy';
 import type { Vec } from '../core/movement';
 import type { Settings, ToggleKey } from '../core/save';
 import { BOOK_CHAPTERS } from '../data/book';
 import type { FoodId } from '../data/foods';
-import type { PenId } from '../data/pens';
+import { findResident, type PenId } from '../data/pens';
 import type { AdOfferScene } from '../scenes/AdOfferScene';
 import type { BoardScene, BoardZone, PollView } from '../scenes/BoardScene';
+import type { CleanScene } from '../scenes/CleanScene';
 import type { FeedScene } from '../scenes/FeedScene';
 import { PollNoticeScene } from '../scenes/PollNoticeScene';
 import type { HudScene } from '../scenes/HudScene';
@@ -78,6 +81,24 @@ export interface ZooTestApi {
   hudGearVisible(): boolean;
   openFeed(residentId: string): void;
   feedTargets(): { animal: Vec; foods: Partial<Record<FoodId, Vec>> } | null;
+  /** Suciedad, enfermedades y charcos tal como están guardados. */
+  care(): CareState;
+  /** Pone de barro el charco de un recinto (sin esperar sus minutos). */
+  forceMuddy(penId: PenId): Promise<void>;
+  /** Mancha a un animal como si hubiera pisado el barro (pone el charco de barro si no lo estaba). */
+  forceSoil(residentId: string): Promise<void>;
+  /** Pone malito a un animal (sin esperar al azar). */
+  forceSick(residentId: string): Promise<void>;
+  /** ¿Se ven en el mundo las manchas o la carita de enfermo de un animal? */
+  careMarks(residentId: string): { mud: boolean; sick: boolean } | null;
+  /** El charco de un recinto en el mundo. */
+  puddleOf(penId: PenId): { x: number; y: number; rx: number; ry: number; muddy: boolean } | null;
+  /** Abre la limpieza de un animal sin andar hasta él. */
+  openClean(residentId: string): void;
+  /** Paso de la limpieza abierta (null si no lo está). */
+  cleanState(): CleaningState | null;
+  /** Dónde están el animal y la herramienta que toca en la limpieza. */
+  cleanTargets(): { animal: Vec; tool: Vec | null } | null;
   isFeedBusy(): boolean;
   feedFoodsHome(): boolean;
   openShop(): void;
@@ -240,6 +261,26 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
       game.scene.start('Feed', { residentId });
     },
     feedTargets: () => activeScene<FeedScene>('Feed')?.targetsOnScreen() ?? null,
+    care: () => getSession().care,
+    forceMuddy: async (penId) => {
+      if (isMudPen(penId)) await getSession().setCare(makeMuddy(getSession().care, penId));
+    },
+    forceSoil: async (residentId) => {
+      const penId = findResident(residentId)?.penId;
+      if (!penId || !isMudPen(penId)) return;
+      await getSession().setCare(soil(makeMuddy(getSession().care, penId), penId, residentId));
+    },
+    forceSick: async (residentId) => {
+      await getSession().setCare(fallSick(getSession().care, residentId));
+    },
+    careMarks: (residentId) => game.scene.getScene<WorldScene>('World').careMarks(residentId),
+    puddleOf: (penId) => game.scene.getScene<WorldScene>('World').puddleOf(penId),
+    openClean: (residentId) => {
+      if (game.scene.isActive('World')) game.scene.pause('World');
+      game.scene.start('Clean', { residentId });
+    },
+    cleanState: () => activeScene<CleanScene>('Clean')?.state() ?? null,
+    cleanTargets: () => activeScene<CleanScene>('Clean')?.targetsOnScreen() ?? null,
     isFeedBusy: () => activeScene<FeedScene>('Feed')?.isBusy() ?? false,
     feedFoodsHome: () => activeScene<FeedScene>('Feed')?.foodsAtHome() ?? false,
     openShop: () => {
