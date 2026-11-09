@@ -105,7 +105,11 @@ const enclosures = [
   // derecho para el camino; es más alto que sus vecinos: arriba le cabe un lago de verdad.
   { penId: 'ovejas', biome: 'grassland', x: RING_R + 4, y: MID - 12, ew: 16, eh: 11, gateX: RING_R + 11, gateRow: MID - 2, link: [MID - 1, MID - 1] },
   { penId: 'estanque', biome: 'grassland', x: RING_R + 21, y: MID - 14, ew: 16, eh: 13, gateX: RING_R + 28, gateRow: MID - 2, link: [MID - 1, MID - 1] },
-  { penId: 'establo', biome: 'grassland', x: RING_R + 6, y: MID + 3, ew: 16, eh: 11, gateX: RING_R + 13, gateRow: MID + 3, link: [MID + 2, MID + 2] },
+  // Debajo de la avenida, el establo y, a su derecha, los cerdos (2026-11-09): el establo se arrimó 2 casillas a
+  // la izquierda para dejar una de césped entre los dos recintos y otra junto al camino derecho.
+  { penId: 'establo', biome: 'grassland', x: RING_R + 4, y: MID + 3, ew: 16, eh: 11, gateX: RING_R + 11, gateRow: MID + 3, link: [MID + 2, MID + 2] },
+  // Va el último para no mover los índices de los de arriba (`enclosures[2]`, `enclosures[9]`).
+  { penId: 'cerdos', biome: 'grassland', x: RING_R + 21, y: MID + 3, ew: 16, eh: 11, gateX: RING_R + 28, gateRow: MID + 3, link: [MID + 2, MID + 2] },
 ];
 for (const e of enclosures) {
   const EW = e.ew;
@@ -141,6 +145,17 @@ pfill(SHOP_DOOR_X, SHOP.y + 6, SHOP_DOOR_X + 1, PLAZA.y0 - 1, PATH);
 pfill(SHOP_DOOR_X - 2, PLAZA.y0 - 2, SHOP_DOOR_X - 1, PLAZA.y0 - 1, PATH);
 objects.push({ id: nextId++, name: 'tienda', type: 'tienda', x: (SHOP.x + OX) * T, y: (SHOP.y + OY) * T, width: 5 * T, height: 5 * T, rotation: 0, visible: true });
 objects.push({ id: nextId++, name: 'puerta-tienda', type: 'puertaTienda', x: (SHOP_DOOR_X + OX) * T, y: (SHOP.y + 5 + OY) * T, width: 2 * T, height: T, rotation: 0, visible: true });
+
+// Clínica (2026-11-09): como la tienda, en el césped junto a la plaza y no dentro de ella (David). Va a la derecha
+// de la plaza, entre ella y el camino de las cabras, encima del camino de la derecha: 5x4 casillas con la puerta
+// (2) debajo y un tramo corto de camino que baja al camino de la derecha, nada más salir de la plaza.
+const CLINIC = { x: PLAZA.x1 + 2, y: 16 };
+const CLINIC_DOOR_X = CLINIC.x + 1;
+pfill(CLINIC.x, CLINIC.y, CLINIC.x + 4, CLINIC.y + 3, BUILDING);
+pfill(CLINIC_DOOR_X, CLINIC.y + 4, CLINIC_DOOR_X + 1, CLINIC.y + 4, GATE);
+pfill(CLINIC_DOOR_X, CLINIC.y + 5, CLINIC_DOOR_X + 1, CY - 2, PATH);
+objects.push({ id: nextId++, name: 'clinica', type: 'clinica', x: (CLINIC.x + OX) * T, y: (CLINIC.y + OY) * T, width: 5 * T, height: 4 * T, rotation: 0, visible: true });
+objects.push({ id: nextId++, name: 'puerta-clinica', type: 'puertaClinica', x: (CLINIC_DOOR_X + OX) * T, y: (CLINIC.y + 4 + OY) * T, width: 2 * T, height: T, rotation: 0, visible: true });
 
 // Tablón de la comunidad: en la esquina de arriba a la izquierda de la plaza, junto al recorte. El objeto marca
 // la casilla del camino que se pisa para abrirlo; el tablón se dibuja en el césped de encima.
@@ -225,7 +240,7 @@ const inPen = (e) => (name, cx, cy, opts = {}) => {
   at(name, e.x + 1 + cx, e.y + 1 + cy, solid ? { ...opts, block: [BASE_W[name], T] } : opts);
 };
 
-const [leon, cabra, pantera, panda, sabana, africanos, asiaticos, pinguinos, ovejas, estanque, establo] = enclosures.map(inPen);
+const [leon, cabra, pantera, panda, sabana, africanos, asiaticos, pinguinos, ovejas, estanque, establo, cerdos] = enclosures.map(inPen);
 /**
  * Charca de 48x48 (pieza plana y animada) con su zona de agua de 3x3 casillas, en coordenadas del interior.
  * `rows`: alto del agua en casillas (la cascada de hielo mide 5).
@@ -234,7 +249,7 @@ const pondIn = (e, place) => (name, cx, cy, rows = 3) => {
   place(name, cx, cy, { flat: true });
   water('agua', e.x + 1 + cx - 1, e.y + 1 + cy - rows + 1, e.x + 1 + cx + 1, e.y + 1 + cy);
 };
-const pond = Object.fromEntries(enclosures.map((e, i) => [e.penId, pondIn(e, [leon, cabra, pantera, panda, sabana, africanos, asiaticos, pinguinos, ovejas, estanque, establo][i])]));
+const pond = Object.fromEntries(enclosures.map((e, i) => [e.penId, pondIn(e, [leon, cabra, pantera, panda, sabana, africanos, asiaticos, pinguinos, ovejas, estanque, establo, cerdos][i])]));
 
 // Paisaje de cada especie (2026-11-06). Interior de 14x9 casillas salvo la sabana (20x10), la pantera
 // (14x10) y el estanque (14x11). Criterios: sombra (árbol) en una esquina del fondo, un sitio alto (rocas,
@@ -362,6 +377,16 @@ establo('scarecrow', 2, 4);
 establo('bush', 0, 1);
 establo('sunflowers', 13, 2);
 for (const [cx, cy] of [[4, 3], [10, 3]]) establo('flowers', cx, cy);
+// 🐷 Cerdos (puerta arriba, columnas 6-7): granja con caseta al fondo, comedero, barril y calabazas. El centro
+// queda libre: ahí pone el juego el charco que se vuelve de barro (lo dibuja el juego, no es una pieza).
+cerdos('shelter', 11, 8);
+cerdos('trough', 2, 7);
+cerdos('barrel', 13, 3);
+cerdos('pumpkin', 1, 8);
+cerdos('pumpkin', 4, 8);
+cerdos('bush', 0, 1);
+cerdos('sunflowers', 13, 0);
+for (const [cx, cy] of [[3, 2], [10, 2]]) cerdos('flowers', cx, cy);
 
 // Parque.
 // La fuente animada en el centro de la plaza (80x64): su isla de césped es del mismo tamaño, así que su bloqueo
@@ -375,7 +400,8 @@ for (const [x, y] of [[PLAZA.x0, PLAZA.y0 + 1], [PLAZA.x1, PLAZA.y0 + 1]]) lampA
 // la derecha, volteada, a la izquierda (B) (David, 2026-11-08).
 prop('lamp', (PLAZA.x0 + 1 + OX + 1) * T, (PLAZA.y1 + OY + 1) * T);
 prop('lamp', (PLAZA.x1 - 1 + OX + 1) * T, (PLAZA.y1 + OY + 1) * T, { flip: true });
-for (const [x, y] of [[PLAZA.x0 - 2, PLAZA.y0 + 2], [PLAZA.x0 - 2, PLAZA.y1 - 2], [PLAZA.x1 + 1, PLAZA.y0 + 2], [PLAZA.x1 + 1, PLAZA.y1 - 2]]) {
+// El de arriba a la derecha quedaba bajo la clínica: baja 1 casilla y se queda junto a su puerta.
+for (const [x, y] of [[PLAZA.x0 - 2, PLAZA.y0 + 2], [PLAZA.x0 - 2, PLAZA.y1 - 2], [PLAZA.x1 + 1, PLAZA.y0 + 3], [PLAZA.x1 + 1, PLAZA.y1 - 2]]) {
   pprop('bench', (x + 1) * T, (y + 1) * T);
 }
 for (const [x, y] of [
@@ -401,7 +427,8 @@ at('sign-zone', RING_R + 2, MID - 1, { zone: 'granja' });
 for (const [x, y] of [
   [10, 6], [10, 12], [36, 6], [36, 12], [51, 9], [88, 6], [88, 12], [32, 20], [64, 20], [8, 20], [95, 20],
   [7, 24], [23, 33], [8, 47], [16, 50], [22, 55], [7, 57], [14, 62],
-  [78, 50], [99, 50], [86, 60], [97, 60], [82, 25],
+  // (el de 99,50 bajó a 101,59 al llegar los cerdos)
+  [78, 50], [101, 59], [86, 60], [97, 60], [82, 25],
 ]) {
   at('tree', x, y);
 }

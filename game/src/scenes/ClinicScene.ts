@@ -105,7 +105,16 @@ export class ClinicScene extends Phaser.Scene {
     this.keeper = new ShopKeeperWalker(this, this.interior, this.grid, start);
     this.armed = !onDoorMat(start, this.interior.spots.door);
     this.interior.doorMat(() => this.onDoorTap());
-    addCloseBadge(this, width - 16 - 32, 16 + 32, () => this.close(), 56).setDepth(4000);
+    const badge = addCloseBadge(this, width - 16 - 32, 16 + 32, () => this.close(), 56).setDepth(4000);
+    // Con la cura encima, una sola X: la de la cura.
+    const hideBadge = (): void => void badge.setVisible(false);
+    const showBadge = (): void => void badge.setVisible(true);
+    this.events.on(Phaser.Scenes.Events.PAUSE, hideBadge);
+    this.events.on(Phaser.Scenes.Events.RESUME, showBadge);
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+      this.events.off(Phaser.Scenes.Events.PAUSE, hideBadge);
+      this.events.off(Phaser.Scenes.Events.RESUME, showBadge);
+    });
 
     const keyboard = this.input.keyboard;
     if (keyboard) {

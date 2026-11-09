@@ -29,6 +29,7 @@ import { createKeeper, createPet, type Walker } from '../world/Actors';
 import { Board } from '../world/Board';
 import { Pens } from '../world/Pens';
 import { ShopBuilding } from '../world/ShopBuilding';
+import { ClinicBuilding } from '../world/ClinicBuilding';
 import { Decor, getWalkPieces } from '../world/Decor';
 import { TerrainArt } from '../world/TerrainArt';
 import { PawTrail } from '../world/PawTrail';
@@ -77,6 +78,7 @@ export class WorldScene extends Phaser.Scene {
   private wasd?: WasdKeys;
   private pens!: Pens;
   private shop: ShopBuilding | null = null;
+  private clinic: ClinicBuilding | null = null;
   private board: Board | null = null;
   private visitors!: VisitorCrowd;
   /** Luna, si se ha comprado: sigue el rastro de la cuidadora. */
@@ -112,6 +114,8 @@ export class WorldScene extends Phaser.Scene {
     this.grid = withPenInteriors(this.pathGrid, this.pens.openSpaces(state), TILE_SIZE);
     const shopInfo = readShop(mapData);
     this.shop = shopInfo ? new ShopBuilding(this, shopInfo, state) : null;
+    const clinicInfo = readClinic(mapData);
+    this.clinic = clinicInfo ? new ClinicBuilding(this, clinicInfo, state, computeZoom(this.scale.width, this.scale.height)) : null;
     const boardInfo = readBoard(mapData);
     this.board = boardInfo ? new Board(this, boardInfo) : null;
     this.visitors = new VisitorCrowd(this, this.pathGrid);
@@ -592,6 +596,7 @@ export class WorldScene extends Phaser.Scene {
     this.grid = withPenInteriors(this.pathGrid, this.pens.openSpaces(state), TILE_SIZE);
     this.syncVisitors(state);
     this.shop?.sync(state);
+    this.clinic?.sync(state);
     this.syncPet();
   }
 

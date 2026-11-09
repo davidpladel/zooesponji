@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { PEN_IDS } from '../../src/data/pens';
 import { approachTile } from '../../src/core/interaction';
 import { findPath, isWalkable } from '../../src/core/pathfinding';
-import { buildWalkGrid, isShopDoor, readEnclosures, readBoard, readGates, readProps, readShop, readSpawn, readWater, withSolidProps, type TiledMap } from '../../src/core/tiledmap';
+import { buildWalkGrid, isShopDoor, readClinic, readEnclosures, readBoard, readGates, readProps, readShop, readSpawn, readWater, withSolidProps, type TiledMap } from '../../src/core/tiledmap';
 import { penSpace } from '../../src/core/flock';
 import { rectContains } from '../../src/core/interaction';
 import { withPenInteriors } from '../../src/core/penGrid';
@@ -20,7 +20,7 @@ const config = JSON.parse(readFileSync(fileURLToPath(new URL('../../art/art.conf
 /** Recintos que tiene que haber en el mapa. */
 const MAP_PENS = [
   'leon', 'cabra', 'pantera', 'panda',
-  'sabana', 'elefantes-africanos', 'elefantes-asiaticos', 'pinguinos', 'ovejas', 'estanque', 'establo',
+  'sabana', 'elefantes-africanos', 'elefantes-asiaticos', 'pinguinos', 'ovejas', 'estanque', 'establo', 'cerdos',
 ];
 const enclosure = (id: string) => readEnclosures(map).find((e) => e.penId === id)!;
 
@@ -140,8 +140,7 @@ describe('mapa del zoo', () => {
     }
   });
 
-  // TODO tarea 9: el recinto de cerdos aún no está en el mapa.
-  it.skip('los recintos del mapa son los del juego', () => {
+  it('los recintos del mapa son los del juego', () => {
     expect([...MAP_PENS].sort()).toEqual([...PEN_IDS].sort());
   });
 
@@ -149,7 +148,7 @@ describe('mapa del zoo', () => {
     const biome = (id: string) => enclosure(id).biome;
     expect(MAP_PENS.map(biome)).toEqual([
       'savannah', 'alpine', 'rainforest', 'bamboo',
-      'savannah', 'savannah', 'savannah', 'tundra', 'grassland', 'grassland', 'grassland',
+      'savannah', 'savannah', 'savannah', 'tundra', 'grassland', 'grassland', 'grassland', 'grassland',
     ]);
   });
 
@@ -391,6 +390,22 @@ describe('mapa del zoo', () => {
     expect(seen.has(`${shop.door.x},${shop.door.y}`), 'puerta de la tienda').toBe(true);
     const board = readBoard(map)!;
     expect(seen.has(`${board.tile.x},${board.tile.y}`), 'tablón').toBe(true);
+  });
+
+  it('la clínica está junto a la plaza, en el césped como la tienda, con un camino corto desde la plaza hasta su puerta', () => {
+    const clinic = readClinic(map);
+    expect(clinic).not.toBeNull();
+    const box = { x0: clinic!.x / 16, y0: clinic!.y / 16, x1: (clinic!.x + clinic!.width) / 16 - 1, y1: (clinic!.y + clinic!.height) / 16 - 1 };
+    // Fuera de la plaza (la fuente con su vuelta de 4 casillas y una más: 15x13).
+    const plaza = { x0: island.x0 - 5, x1: island.x1 + 5, y0: island.y0 - 4, y1: island.y1 + 5 };
+    const inPlaza = box.x0 <= plaza.x1 && plaza.x0 <= box.x1 && box.y0 <= plaza.y1 && plaza.y0 <= box.y1;
+    expect(inPlaza, 'fuera de la plaza').toBe(false);
+    for (let y = box.y0; y <= box.y1; y++) for (let x = box.x0; x <= box.x1; x++) expect(isWalkable(grid, x, y), `edificio (${x},${y})`).toBe(false);
+    const solid = withSolidProps(grid, readProps(map), 16);
+    expect(reachable(solid, spawn).has(`${clinic!.door.x},${clinic!.door.y}`), 'puerta de la clínica').toBe(true);
+    // Cerca: de la puerta al borde de la plaza hay pocos pasos.
+    const edge = { x: plaza.x1, y: clinic!.door.y + 2 };
+    expect(findPath(solid, clinic!.door, edge)!.length).toBeLessThanOrEqual(8);
   });
 
   it('hay farolas por todos los caminos, no solo en la plaza', () => {

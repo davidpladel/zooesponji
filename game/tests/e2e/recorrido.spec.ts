@@ -8,7 +8,7 @@ test.setTimeout(30 * 60_000);
 test.use({ viewport: { width: 1280, height: 630 }, screenshot: 'only-on-failure' });
 
 const PEN_IDS = [
-  'leon', 'cabra', 'pantera', 'panda', 'sabana', 'elefantes-africanos', 'elefantes-asiaticos', 'pinguinos', 'ovejas', 'estanque', 'establo',
+  'leon', 'cabra', 'pantera', 'panda', 'sabana', 'elefantes-africanos', 'elefantes-asiaticos', 'pinguinos', 'ovejas', 'estanque', 'establo', 'cerdos',
 ];
 
 async function startGame(page: Page): Promise<void> {

@@ -320,7 +320,8 @@ export class FeedScene extends Phaser.Scene {
     }
     const { width, height } = this.scale;
     const size = Phaser.Math.Clamp(height * 0.14, 56, 110);
-    const at = { x: this.animal.x, y: this.animal.y - this.animal.displayHeight * 0.55 - size * 0.4 };
+    // Al lado del animal, a la altura de su cabeza: arriba tapaba el título.
+    const at = { x: Math.min(width * 0.82, this.animal.x + this.animal.displayWidth * 0.5 + size * 0.75), y: this.animal.y - this.animal.displayHeight * 0.1 };
     const cross = addRedCross(this, at.x, at.y, size).setDepth(REACTION_DEPTH).setScale(0);
     cross.setInteractive(new Phaser.Geom.Rectangle(-size, -size, size * 2, size * 2), Phaser.Geom.Rectangle.Contains);
     cross.input!.cursor = 'pointer';
