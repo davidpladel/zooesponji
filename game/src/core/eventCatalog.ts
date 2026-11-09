@@ -19,6 +19,10 @@ export const CATALOG = {
   comer: ['toca-animal', 'ventana', 'come', 'rechaza', 'especial', 'fuera', 'ventana-fin', 'ventana-tiempo', 'ventana-vacia', 'pista-arrastrar'],
   mapa: ['cerca', 'cerca-cerrado', 'toca-cerrado', 'tienda-cerrada', 'control', 'boton-tienda'],
   tienda: ['mira', 'compra', 'sin-monedas', 'tienda-fin', 'tienda-sin-compra'],
+  cuidados: [
+    'barro', 'mancha', 'charco-limpio', 'limpia-abre', 'limpia', 'limpia-deja', 'limpia-tiempo',
+    'enferma', 'puaj', 'cruz', 'clinica-abre', 'cura-abre', 'cura', 'cura-deja', 'cura-tiempo',
+  ],
   libro: ['abre', 'lee', 'hojea', 'bloqueada', 'indice', 'libro-fin'],
   ajustes: ['musica', 'sonidos', 'joystick', 'idioma', 'privacidad', 'salir-pregunta', 'salir-si', 'salir-no'],
   anuncio: ['anuncio-ofrece', 'anuncio-acepta', 'anuncio-no', 'anuncio-visto', 'anuncio-cortado', 'anuncio-fallo', 'anuncio-vacio', 'anuncio-segundos'],

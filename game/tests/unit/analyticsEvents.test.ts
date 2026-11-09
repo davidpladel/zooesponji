@@ -537,3 +537,92 @@ describe('GameTracker: tablón', () => {
     expect(t.sent).toEqual(['alcance | dia-pantalla | tablon', 'alcance | semana-pantalla | tablon', 'alcance | vida-pantalla | tablon']);
   });
 });
+
+describe('GameTracker: cuidados (cerdos, limpieza y clínica)', () => {
+  it('comprar la clínica se cuenta como compra de edificio y da la primera compra', async () => {
+    const t = setup();
+    await t.tracker.start();
+    t.events.emit('shop-opened', {});
+    t.events.emit('building-bought', { buildingId: 'clinica', cost: 650 });
+    t.events.emit('shop-closed', {});
+    expect(t.values.get('tienda | compra | edificio/clinica')).toBe(650);
+    expect(t.sent).toContain('embudo | primera-compra');
+    expect(t.sent).not.toContain('tienda | tienda-sin-compra');
+  });
+
+  it('el charco y la suciedad: barro, mancha y charco limpio, con el animal tras su recinto', async () => {
+    const t = setup();
+    await t.tracker.start();
+    t.events.emit('puddle-muddy', { penId: 'cerdos' });
+    t.events.emit('animal-soiled', { penId: 'cerdos', residentId: 'rosita' });
+    t.events.emit('puddle-clean', { penId: 'cerdos' });
+    expect(t.sent).toEqual(expect.arrayContaining(['cuidados | barro | cerdos', 'cuidados | mancha | cerdos/rosita', 'cuidados | charco-limpio | cerdos']));
+  });
+
+  it('una limpieza acabada: abre, limpia con sus monedas y su tiempo; no cuenta como dejada', async () => {
+    const t = setup();
+    await t.tracker.start();
+    t.events.emit('clean-opened', { residentId: 'rosita' });
+    t.clock.time += 40_000;
+    t.events.emit('animal-cleaned', { penId: 'cerdos', residentId: 'rosita', coins: 4 });
+    t.events.emit('clean-closed', { residentId: 'rosita', done: true, step: 'hecho' });
+    expect(t.sent).toContain('cuidados | limpia-abre | cerdos/rosita');
+    expect(t.values.get('cuidados | limpia | cerdos/rosita')).toBe(4);
+    expect(t.values.get('cuidados | limpia-tiempo | cerdos/rosita')).toBe(40);
+    expect(t.sent.some((k) => k.startsWith('cuidados | limpia-deja'))).toBe(false);
+  });
+
+  it('una limpieza dejada a medias dice en qué paso se quedó', async () => {
+    const t = setup();
+    await t.tracker.start();
+    t.events.emit('clean-opened', { residentId: 'tembo' });
+    t.clock.time += 9_000;
+    t.events.emit('clean-closed', { residentId: 'tembo', done: false, step: 'cepillo' });
+    expect(t.values.get('cuidados | limpia-deja | elefantes-africanos/tembo/cepillo')).toBe(9);
+    expect(t.values.get('cuidados | limpia-tiempo | elefantes-africanos/tembo')).toBe(9);
+  });
+
+  it('enfermar, «¡puaj!», la cruz y la clínica con cuántos malitos hay', async () => {
+    const t = setup();
+    await t.tracker.start();
+    t.events.emit('animal-sick', { penId: 'elefantes-africanos', residentId: 'tembo' });
+    t.events.emit('sick-refused', { residentId: 'tembo', foodId: 'manzana' });
+    t.events.emit('clinic-requested', { residentId: 'tembo' });
+    t.events.emit('clinic-opened', { sick: 2 });
+    expect(t.sent).toEqual(expect.arrayContaining([
+      'cuidados | enferma | elefantes-africanos/tembo',
+      'cuidados | puaj | elefantes-africanos/tembo/manzana',
+      'cuidados | cruz | elefantes-africanos/tembo',
+      'cuidados | clinica-abre',
+    ]));
+    expect(t.values.get('cuidados | clinica-abre')).toBe(2);
+  });
+
+  it('la cura: acabada con monedas y tiempo; dejada, con las dosis que se dieron', async () => {
+    const t = setup();
+    await t.tracker.start();
+    t.events.emit('cure-opened', { residentId: 'tembo' });
+    t.clock.time += 12_000;
+    t.events.emit('animal-cured', { penId: 'elefantes-africanos', residentId: 'tembo', coins: 10 });
+    t.events.emit('cure-closed', { residentId: 'tembo', done: true, doses: 5 });
+    t.events.emit('cure-opened', { residentId: 'rosita' });
+    t.events.emit('cure-closed', { residentId: 'rosita', done: false, doses: 2 });
+    expect(t.sent).toContain('cuidados | cura-abre | elefantes-africanos/tembo');
+    expect(t.values.get('cuidados | cura | elefantes-africanos/tembo')).toBe(10);
+    expect(t.values.get('cuidados | cura-tiempo | elefantes-africanos/tembo')).toBe(12);
+    expect(t.values.get('cuidados | cura-deja | cerdos/rosita')).toBe(2);
+    expect(t.sent.some((k) => k === 'cuidados | cura-deja | elefantes-africanos/tembo')).toBe(false);
+  });
+
+  it('la clínica cuenta para el alcance de pantallas, como la tienda', async () => {
+    const t = setup();
+    await t.tracker.start();
+    t.tracker.screenShown('clinica');
+    expect(t.sent).toContain('alcance | dia-pantalla | clinica');
+  });
+
+  it('con la clínica comprada, la partida ya se había jugado', () => {
+    const state = { ...initialState(), clinic: true };
+    expect(knownSteps(state, defaultBook())).toContain('primer-paso');
+  });
+});

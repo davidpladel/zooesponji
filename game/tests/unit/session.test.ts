@@ -321,6 +321,21 @@ describe('Session: limpiar', () => {
   });
 });
 
+describe('Session: comprar la clínica', () => {
+  it('avisa con building-bought y no con purchase', async () => {
+    const events = new EventBus<GameEvents>();
+    const building = vi.fn();
+    const purchase = vi.fn();
+    events.on('building-bought', building);
+    events.on('purchase', purchase);
+    const session = await Session.load(createMemoryStore(), events);
+    await session.earnCoins(700);
+    expect((await session.buy('clinic')).ok).toBe(true);
+    expect(building).toHaveBeenCalledWith({ buildingId: 'clinica', cost: 650 });
+    expect(purchase).not.toHaveBeenCalled();
+  });
+});
+
 describe('Session: curar', () => {
   it('curar paga lo que da comer, lo quita de enfermos y avisa con animal-cured; el otro sigue malito', async () => {
     const events = new EventBus<GameEvents>();

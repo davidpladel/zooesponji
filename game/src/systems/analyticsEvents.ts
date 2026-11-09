@@ -31,7 +31,7 @@ export interface TrackerDeps {
 
 /** Menos de esto en una página es pasar la hoja, no leerla. */
 const READ_MS = 1000;
-const REACH_SCREENS: readonly string[] = ['tienda', 'libro', 'ajustes', 'tablon'];
+const REACH_SCREENS: readonly string[] = ['tienda', 'libro', 'ajustes', 'tablon', 'clinica'];
 const SETTING_LABELS = [['music', 'musica'], ['sfx', 'sonidos'], ['joystick', 'joystick']] as const;
 
 function zooComplete(state: GameState): boolean {
@@ -44,7 +44,7 @@ export function knownSteps(state: GameState, book: BookProgress): Step[] {
   const bought = PEN_IDS.some((id) => state.counts[id] > initial[id]);
   const steps: Step[] = [];
   // Desde el 2026-11-08 se empieza con STARTING_COINS: tener otras monedas (más o menos) es que ya se ha jugado.
-  const played = state.coins !== STARTING_COINS || bought || state.luna;
+  const played = state.coins !== STARTING_COINS || bought || state.luna || state.clinic;
   if (played) steps.push('primer-paso', 'primer-toque-animal', 'primera-ventana', 'primera-comida');
   // Desde el 2026-11-02 la tienda está abierta de inicio: el paso «tienda-abierta» ya no se da (se marca como dado).
   steps.push('tienda-abierta');
@@ -80,6 +80,9 @@ export class GameTracker implements AnalyticsHooks {
   private shop: { at: number; bought: number; looked: Set<string> } | null = null;
   /** Cuándo empezó el tutorial en marcha (ms), o null. */
   private tutorialAt: number | null = null;
+  /** Limpieza o cura abiertas: de quién y desde cuándo (para su tiempo). */
+  private cleaning: { residentId: string; at: number } | null = null;
+  private curing: { residentId: string; at: number } | null = null;
   private reading: { at: number; read: Set<string>; page: { id: string; kind: BookPageKind; at: number } | null } | null = null;
 
   constructor(private readonly deps: TrackerDeps) {}
@@ -98,6 +101,8 @@ export class GameTracker implements AnalyticsHooks {
             this.feedWindow = null;
             this.shop = null;
             this.reading = null;
+            this.cleaning = null;
+            this.curing = null;
             return;
           }
           handler(payload);
@@ -171,6 +176,45 @@ export class GameTracker implements AnalyticsHooks {
       this.send('tienda', 'compra', part('mascota', petId), cost);
       this.step('primera-compra');
     });
+    on('building-bought', ({ buildingId, cost }) => {
+      if (this.shop) this.shop.bought += 1;
+      this.send('tienda', 'compra', part('edificio', buildingId), cost);
+      this.step('primera-compra');
+    });
+
+    // Cuidados: el animal con su recinto delante, como al comer.
+    on('puddle-muddy', ({ penId }) => this.send('cuidados', 'barro', penId));
+    on('animal-soiled', ({ residentId }) => this.send('cuidados', 'mancha', residentName(residentId)));
+    on('puddle-clean', ({ penId }) => this.send('cuidados', 'charco-limpio', penId));
+    on('clean-opened', ({ residentId }) => {
+      this.cleaning = { residentId, at: this.time() };
+      this.send('cuidados', 'limpia-abre', residentName(residentId));
+    });
+    on('animal-cleaned', ({ residentId, coins }) => this.send('cuidados', 'limpia', residentName(residentId), coins));
+    on('clean-closed', ({ residentId, done, step }) => {
+      const open = this.cleaning;
+      this.cleaning = null;
+      const seconds = open ? this.secondsSince(open.at) : 0;
+      // A medias, en qué paso se quedó: si se atascan siempre en el mismo, es que no se entiende.
+      if (!done) this.send('cuidados', 'limpia-deja', part(residentName(residentId), step), seconds);
+      this.send('cuidados', 'limpia-tiempo', residentName(residentId), seconds);
+    });
+    on('animal-sick', ({ residentId }) => this.send('cuidados', 'enferma', residentName(residentId)));
+    on('sick-refused', ({ residentId, foodId }) => this.send('cuidados', 'puaj', part(residentName(residentId), foodId)));
+    on('clinic-requested', ({ residentId }) => this.send('cuidados', 'cruz', residentName(residentId)));
+    on('clinic-opened', ({ sick }) => this.send('cuidados', 'clinica-abre', undefined, sick));
+    on('cure-opened', ({ residentId }) => {
+      this.curing = { residentId, at: this.time() };
+      this.send('cuidados', 'cura-abre', residentName(residentId));
+    });
+    on('animal-cured', ({ residentId, coins }) => this.send('cuidados', 'cura', residentName(residentId), coins));
+    on('cure-closed', ({ residentId, done, doses }) => {
+      const open = this.curing;
+      this.curing = null;
+      if (!done) this.send('cuidados', 'cura-deja', residentName(residentId), doses);
+      this.send('cuidados', 'cura-tiempo', residentName(residentId), open ? this.secondsSince(open.at) : 0);
+    });
+
     on('shop-closed', () => {
       const shop = this.shop;
       this.shop = null;
@@ -282,6 +326,8 @@ export class GameTracker implements AnalyticsHooks {
     if (away <= 0) return;
     if (this.feedWindow) this.feedWindow.at += away;
     if (this.shop) this.shop.at += away;
+    if (this.cleaning) this.cleaning.at += away;
+    if (this.curing) this.curing.at += away;
     if (this.reading) {
       this.reading.at += away;
       if (this.reading.page) this.reading.page.at += away;

@@ -131,7 +131,7 @@ export class CleanScene extends Phaser.Scene {
 
   close(): void {
     if (!this.scene.isActive()) return;
-    bus.emit('clean-closed', { residentId: this.residentId, done: isDone(this.cleaning) });
+    bus.emit('clean-closed', { residentId: this.residentId, done: isDone(this.cleaning), step: this.cleaning.step });
     this.scene.stop();
     this.scene.resume('World', { from: 'clean' });
   }

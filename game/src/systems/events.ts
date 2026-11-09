@@ -54,7 +54,7 @@ export interface GameEvents {
   'care-changed': Record<string, never>;
   'clean-opened': { residentId: string };
   /** Se cierra la limpieza (acabada o no). */
-  'clean-closed': { residentId: string; done: boolean };
+  'clean-closed': { residentId: string; done: boolean; step: string };
   /** Un animal ha quedado limpio: monedas como al darle de comer. */
   'animal-cleaned': { penId: PenId; residentId: string; coins: number };
   /** Un animal ha pisado el charco de barro y se ha manchado. */
@@ -65,10 +65,13 @@ export interface GameEvents {
   'puddle-clean': { penId: PenId };
   /** Con un animal malito, se ha tocado la cruz: la cuidadora va andando a la clínica. */
   'clinic-requested': { residentId: string };
-  'clinic-opened': Record<string, never>;
+  /** Se entra en la clínica, con cuántos malitos hay dentro. */
+  'clinic-opened': { sick: number };
   'clinic-closed': Record<string, never>;
   'cure-opened': { residentId: string };
-  'cure-closed': { residentId: string; done: boolean };
+  'cure-closed': { residentId: string; done: boolean; doses: number };
+  /** Se le ha dado comida a un animal malito: «¡puaj!». */
+  'sick-refused': { residentId: string; foodId: FoodId };
   /** Un animal malito ya está curado: monedas como al darle de comer. */
   'animal-cured': { penId: PenId; residentId: string; coins: number };
   /** Un animal se ha puesto malito. */
@@ -91,6 +94,8 @@ export interface GameEvents {
   'purchase': { itemId: string; penId: PenId; residentId: string; cost: number };
   /** Compra de Luna (no es un animal de un recinto). */
   'pet-bought': { petId: 'luna'; cost: number };
+  /** Un edificio suelto comprado en la tienda (la clínica). */
+  'building-bought': { buildingId: 'clinica'; cost: number };
   /** Tutorial: sale el aviso, se contesta, empieza (desde el aviso o el menú), llega a un paso y acaba (terminado o dejado con la ✕). */
   'tutorial-offered': Record<string, never>;
   'tutorial-answered': { learn: boolean };

@@ -3,7 +3,7 @@ import { addCoins, purchase, type GameState, type PurchaseResult } from '../core
 import { resolveFeeding, type FeedResult } from '../core/reactions';
 import { loadSave, parseSave, writeSave, type BookProgress, type KeyValueStore, type SaveData, type Settings, type ShopProgress, type TutorialProgress } from '../core/save';
 import type { FoodId } from '../data/foods';
-import { LUNA_ITEM_ID, parseExtraItemId } from '../data/shop';
+import { CLINIC_ITEM_ID, LUNA_ITEM_ID, parseExtraItemId } from '../data/shop';
 import { PEN_IDS, PENS, findResident, type PenId } from '../data/pens';
 import { bus, type EventBus, type GameEvents } from './events';
 
@@ -80,6 +80,10 @@ export class Session {
     await this.update(() => result.state);
     if (itemId === LUNA_ITEM_ID) {
       this.events.emit('pet-bought', { petId: 'luna', cost: before.coins - result.state.coins });
+      return result;
+    }
+    if (itemId === CLINIC_ITEM_ID) {
+      this.events.emit('building-bought', { buildingId: 'clinica', cost: before.coins - result.state.coins });
       return result;
     }
     const penId = parseExtraItemId(itemId) ?? (itemId as PenId);

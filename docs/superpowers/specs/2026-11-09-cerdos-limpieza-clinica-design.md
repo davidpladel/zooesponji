@@ -129,4 +129,36 @@ Nombres de cerdos, tiempos exactos del charco y las enfermedades, medicinas, ani
 - **Comer con un malito:** cada comida le da «¡puaj!» sin monedas; tras el primero sale la cruz al lado del animal y el aviso «¡Está malito! Toca la cruz…».
 - **Clínica por dentro:** veterinario (médico con espejo frontal) y veterinaria (con cofia) del pack de personajes; dos camillas. Al curar al de la primera, el otro pasa a la primera camilla.
 - **Curar:** 4 medicinas (pastilla, tirita, jarabe, termómetro); 5 dosis en cualquier orden llenan la barra.
-- **Estadísticas:** los cuidados aún no se mandan a Matomo.
+- **Estadísticas:** ver «Estadísticas (Matomo)» más abajo (añadidas el 2026-11-09).
+
+## Estadísticas (Matomo)
+
+Con la misma forma que el resto (spec de analítica detallada): cada acción es única en todo el catálogo y el
+animal va siempre con su recinto delante (`cerdos/rosita`). Nunca textos ni nada que identifique a nadie.
+
+**Compra de la clínica:** `tienda | compra | edificio/clinica`, con el precio como valor (como Luna,
+`mascota/luna`). Cuenta para el paso `primera-compra` del embudo y para «compró algo» al salir de la tienda.
+
+**Categoría `cuidados`:**
+
+| Acción | Nombre | Valor | Cuándo |
+|---|---|---|---|
+| `barro` | recinto | — | el charco se pone de barro |
+| `mancha` | recinto/animal | — | un animal pisa el barro y se mancha |
+| `charco-limpio` | recinto | — | el último sucio del recinto queda limpio y el charco vuelve a agua |
+| `limpia-abre` | recinto/animal | — | se abre la limpieza |
+| `limpia` | recinto/animal | monedas | se acaban los 5 pasos |
+| `limpia-deja` | recinto/animal/paso | segundos | se cierra a medias: en qué paso se quedó |
+| `limpia-tiempo` | recinto/animal | segundos | al cerrar la limpieza, acabada o no |
+| `enferma` | recinto/animal | — | un animal se pone malito |
+| `puaj` | recinto/animal/comida | — | se le da comida a un malito |
+| `cruz` | recinto/animal | — | se toca la cruz para ir a la clínica |
+| `clinica-abre` | — | malitos dentro | se entra en la clínica |
+| `cura-abre` | recinto/animal | — | se abre la cura |
+| `cura` | recinto/animal | monedas | se llena la barra |
+| `cura-deja` | recinto/animal | dosis dadas | se cierra la cura a medias |
+| `cura-tiempo` | recinto/animal | segundos | al cerrar la cura, acabada o no |
+
+**Pantallas:** `limpiar`, `clinica` y `curar`. La clínica cuenta para el alcance de pantallas (`dia-pantalla`,
+`semana-pantalla`, `vida-pantalla`), como la tienda y el libro. El recinto de cerdos y sus animales entran solos
+en `tiene-recinto`, `tiene-animal`, `progreso` y el alcance, como los demás. No hay pasos nuevos en el embudo.

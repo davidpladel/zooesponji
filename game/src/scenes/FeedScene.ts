@@ -303,6 +303,7 @@ export class FeedScene extends Phaser.Scene {
   /** Malito: cualquier comida le da «¡puaj!», no paga, y sale (o vuelve a botar) la cruz de la clínica. */
   private refuseSick(id: FoodId, food: Food): void {
     this.busy = true;
+    bus.emit('sick-refused', { residentId: this.residentId, foodId: id });
     this.tweens.add({ targets: food, x: this.animal.x, y: this.animal.y, scale: 0, duration: 180, ease: 'Quad.easeIn' });
     this.playReaction({ reaction: 'rechaza', coins: 0 }, id);
     this.time.delayedCall(700, () => this.showCross());

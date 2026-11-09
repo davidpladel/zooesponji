@@ -98,7 +98,7 @@ export class CureScene extends Phaser.Scene {
 
   close(): void {
     if (!this.scene.isActive()) return;
-    bus.emit('cure-closed', { residentId: this.residentId, done: this.done });
+    bus.emit('cure-closed', { residentId: this.residentId, done: this.done, doses: this.doses });
     this.scene.stop();
     this.scene.resume('Clinic', { from: 'cure' });
   }

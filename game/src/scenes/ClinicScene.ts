@@ -163,8 +163,8 @@ export class ClinicScene extends Phaser.Scene {
     const door = tileCenter(this.interior.spots.doorTile, 16);
     this.keeper.walkIn({ x: door.x, y: door.y + 22 }, [door, ENTRY_TARGET]);
     this.entering = true;
-    bus.emit('clinic-opened', {});
     const anySick = this.beds.some((b) => b.residentId);
+    bus.emit('clinic-opened', { sick: this.beds.filter((b) => b.residentId).length });
     this.vets[0]?.wave();
     this.vets[0]?.say(t(anySick ? 'clinic.hello' : 'clinic.none'), 2800);
   }
