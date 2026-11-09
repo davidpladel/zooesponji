@@ -81,6 +81,8 @@ export interface ZooTestApi {
   petPosition(): Vec | null;
   /** Dónde está Luna dentro de la tienda (px del interior). */
   shopPetPosition(): Vec | null;
+  /** Dónde está Luna dentro de la clínica, o null. */
+  clinicPetPosition(): Vec | null;
   /** El engranaje de ajustes se ve (solo andando por el zoo). */
   hudGearVisible(): boolean;
   openFeed(residentId: string): void;
@@ -251,6 +253,7 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
     },
     petPosition: () => (game.scene.isActive('World') || game.scene.isPaused('World') ? game.scene.getScene<WorldScene>('World').petPosition() : null),
     shopPetPosition: () => activeScene<ShopScene>('Shop')?.petPosition() ?? null,
+    clinicPetPosition: () => activeScene<ClinicScene>('Clinic')?.petPosition() ?? null,
     tutorialOfferPos: (which) => {
       const offer = activeScene<TutorialOfferScene>('TutorialOffer');
       return (which === 'learn' ? offer?.learnPos() : offer?.skipPos()) ?? null;

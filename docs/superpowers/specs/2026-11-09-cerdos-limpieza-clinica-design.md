@@ -129,6 +129,7 @@ Nombres de cerdos, tiempos exactos del charco y las enfermedades, medicinas, ani
 - **Comer con un malito:** cada comida le da «¡puaj!» sin monedas; tras el primero sale la cruz al lado del animal y el aviso «¡Está malito! Toca la cruz…».
 - **Clínica por dentro:** veterinario (médico con espejo frontal) y veterinaria (con cofia) del pack de personajes; dos camillas. Al curar al de la primera, el otro pasa a la primera camilla.
 - **Curar:** 4 medicinas (pastilla, tirita, jarabe, termómetro); 5 dosis en cualquier orden llenan la barra.
+- **Luna en la clínica (2026-11-09):** si se ha comprado, entra detrás de la cuidadora y curiosea como en la tienda (las camillas y los veterinarios), y sale con ella.
 - **Botón de la clínica (2026-11-09):** debajo del de la tienda, con una cruz roja. Sale desde la primera vez que se entra en la clínica (las visitas se guardan en la partida) y la cuidadora va andando sola hasta la puerta.
 - **Estadísticas:** ver «Estadísticas (Matomo)» más abajo (añadidas el 2026-11-09).
 - **Jugadores con IA:** objetivo nuevo `cuidar` (limpiar y curar), que empieza con el escenario `cuidados`: todo

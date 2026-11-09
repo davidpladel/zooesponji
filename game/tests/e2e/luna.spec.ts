@@ -65,3 +65,32 @@ test('en la tienda Luna curiosea a su aire y al salir vuelve con la cuidadora', 
   await page.waitForFunction(() => !window.__ZOO__?.activeScenes().includes('Shop'));
   await expect.poll(() => gap(page)).toBeLessThan(40);
 });
+
+test('Luna entra en la clínica detrás de la cuidadora, curiosea y sale con ella; sin Luna, no hay perrita', async ({ page }) => {
+  await startGame(page);
+  await page.evaluate(() => window.__ZOO__!.giveClinic());
+  // Sin Luna comprada, en la clínica no hay perrita.
+  await page.evaluate(() => window.__ZOO__!.openClinic());
+  await page.waitForFunction(() => window.__ZOO__!.clinicBeds() !== null);
+  await page.waitForTimeout(600);
+  expect(await page.evaluate(() => window.__ZOO__!.clinicPetPosition())).toBeNull();
+  await page.evaluate(() => window.__ZOO__!.back());
+  await page.waitForFunction(() => !window.__ZOO__?.activeScenes().includes('Clinic'));
+
+  await buyLuna(page);
+  await page.evaluate(() => window.__ZOO__!.openClinic());
+  await page.waitForFunction(() => window.__ZOO__!.clinicBeds() !== null);
+  await expect.poll(() => page.evaluate(() => window.__ZOO__!.clinicPetPosition())).not.toBeNull();
+  // Curiosea: no se queda quieta en un sitio.
+  await page.waitForTimeout(1500);
+  const seen = new Set<string>();
+  for (let i = 0; i < 12; i++) {
+    const p = await page.evaluate(() => window.__ZOO__!.clinicPetPosition());
+    seen.add(`${Math.round(p!.x)},${Math.round(p!.y)}`);
+    await page.waitForTimeout(500);
+  }
+  expect(seen.size).toBeGreaterThan(1);
+  await page.keyboard.press('Escape');
+  await page.waitForFunction(() => !window.__ZOO__?.activeScenes().includes('Clinic'));
+  await expect.poll(() => gap(page)).toBeLessThan(40);
+});

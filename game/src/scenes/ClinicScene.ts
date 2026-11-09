@@ -5,7 +5,7 @@ import { clinicSlots } from '../core/care';
 import { inJoystickZone } from '../core/joystick';
 import { tileCenter, type Vec } from '../core/movement';
 import type { Point, WalkGrid } from '../core/pathfinding';
-import { ENTRY_TARGET, approachPoint, onDoorMat, openInteriorGrid, productInReach, shopWalkGrid } from '../core/shopWalk';
+import { ENTRY_TARGET, approachPoint, onDoorMat, openInteriorGrid, pickShopSpot, productInReach, shopWalkGrid } from '../core/shopWalk';
 import { buildWalkGrid, type TiledMap } from '../core/tiledmap';
 import { findResident } from '../data/pens';
 import { t } from '../data/strings';
@@ -19,6 +19,7 @@ import { addCloseBadge, restartOnResize } from '../ui/widgets';
 import { animalPortrait } from '../world/Actors';
 import { ShopInterior } from '../world/ShopInterior';
 import { ShopKeeperWalker } from '../world/ShopKeeperWalker';
+import { ShopPet } from '../world/ShopPet';
 import { Shopkeeper } from '../world/Shopkeeper';
 import type { CureSceneData } from './CureScene';
 
@@ -69,6 +70,10 @@ export class ClinicScene extends Phaser.Scene {
   private entering = false;
   private armed = false;
   private closing = false;
+  /** Luna, si se ha comprado: entra detrás de la cuidadora y curiosea, como en la tienda. */
+  private pet: ShopPet | null = null;
+  /** Dónde está el segundo veterinario (px del interior): a Luna también le interesa. */
+  private secondVet: Vec = { x: 0, y: 0 };
   /** Camilla hacia la que va la cuidadora para curar (se abre la cura al llegar). */
   private target: number | null = null;
 
@@ -84,6 +89,7 @@ export class ClinicScene extends Phaser.Scene {
     this.armed = false;
     this.closing = false;
     this.target = null;
+    this.pet = null;
   }
 
   create(): void {
@@ -95,6 +101,7 @@ export class ClinicScene extends Phaser.Scene {
     this.baseGrid = map ? buildWalkGrid(map) : openInteriorGrid();
     const vets = getArt()?.vets ?? [];
     const second = mapPoint(map, 'veterinaria') ?? { x: this.interior.spots.shopkeeper.x + 28, y: this.interior.spots.shopkeeper.y };
+    this.secondVet = second;
     this.vets = [
       new Shopkeeper(this, this.interior, { texture: vets[0] ? vetKey(0) : undefined, emoji: '🧑‍⚕️' }),
       new Shopkeeper(this, this.interior, { at: second, texture: vets[1] ? vetKey(1) : undefined, emoji: '👩‍⚕️' }),
@@ -104,6 +111,7 @@ export class ClinicScene extends Phaser.Scene {
     const start = this.restored ?? tileCenter(this.interior.spots.doorTile, 16);
     this.keeper = new ShopKeeperWalker(this, this.interior, this.grid, start);
     this.armed = !onDoorMat(start, this.interior.spots.door);
+    if (getSession().state.luna) this.spawnPet(this.restored ? 'anywhere' : 'door');
     this.interior.doorMat(() => this.onDoorTap());
     const badge = addCloseBadge(this, width - 16 - 32, 16 + 32, () => this.close(), 56).setDepth(4000);
     // Con la cura encima, una sola X: la de la cura.
@@ -141,6 +149,7 @@ export class ClinicScene extends Phaser.Scene {
       this.target = null;
     }
     this.keeper.update(delta, direction);
+    this.pet?.update(delta, this.petInterests());
     if (this.entering && !this.keeper.hasRoute) {
       this.entering = false;
       this.keeper.face('down');
@@ -184,6 +193,27 @@ export class ClinicScene extends Phaser.Scene {
   private onResume(): void {
     this.renderBeds();
     this.keeper.setGrid(this.grid);
+    this.pet?.setGrid(this.grid);
+  }
+
+  // --- Luna ---
+
+  /** `door`: entra detrás de la cuidadora; `anywhere`: en un sitio libre (al girar el móvil). */
+  private spawnPet(start: 'door' | 'anywhere'): void {
+    const door = tileCenter(this.interior.spots.doorTile, 16);
+    const at = start === 'door' ? { x: door.x, y: door.y + 22 } : (pickShopSpot(this.grid, [], Math.random) ?? door);
+    this.pet = new ShopPet(this, this.interior, this.grid, at);
+    if (start === 'door') this.pet.walkIn(at, [door, { x: ENTRY_TARGET.x - 24, y: ENTRY_TARGET.y }]);
+  }
+
+  /** Lo que le llama la atención a Luna: los animales de las camillas y los veterinarios. */
+  private petInterests(): Vec[] {
+    return [...this.beds.map((b) => b.base), this.interior.spots.shopkeeper, this.secondVet];
+  }
+
+  /** Dónde está Luna en la clínica (px del interior), o null si no está (para pruebas). */
+  petPosition(): Vec | null {
+    return this.pet?.feet ?? null;
   }
 
   private openCure(residentId: string): void {
