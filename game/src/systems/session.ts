@@ -1,4 +1,4 @@
-import type { CareState } from '../core/care';
+import { careReward, clean, isDirty, isMudPen, type CareState } from '../core/care';
 import { addCoins, purchase, type GameState, type PurchaseResult } from '../core/economy';
 import { resolveFeeding, type FeedResult } from '../core/reactions';
 import { loadSave, parseSave, writeSave, type BookProgress, type KeyValueStore, type SaveData, type Settings, type ShopProgress, type TutorialProgress } from '../core/save';
@@ -131,6 +131,17 @@ export class Session {
     this.data = { ...this.data, care: next };
     this.events.emit('care-changed', {});
     await writeSave(this.store, this.data);
+  }
+
+  /** Termina la limpieza: lo deja limpio y paga lo mismo que darle de comer. Si ya estaba limpio, nada (0). */
+  async cleanAnimal(residentId: string): Promise<number> {
+    const found = findResident(residentId);
+    if (!found || !isMudPen(found.penId) || !isDirty(this.data.care, residentId)) return 0;
+    const coins = careReward(found.resident.species);
+    await this.setCare(clean(this.data.care, found.penId, residentId));
+    this.events.emit('animal-cleaned', { penId: found.penId, residentId, coins });
+    await this.earnCoins(coins);
+    return coins;
   }
 
   get tutorial(): TutorialProgress {

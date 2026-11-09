@@ -283,3 +283,35 @@ describe('Session: suciedad y enfermedades', () => {
     expect(reloaded.care).toEqual({ dirty: ['rosita'], sick: [], muddy: ['cerdos'] });
   });
 });
+
+describe('Session: limpiar', () => {
+  async function dirtyPig(events = new EventBus<GameEvents>()) {
+    const store = createMemoryStore();
+    const session = await Session.load(store, events);
+    await session.update((s) => ({ ...s, counts: { ...s.counts, cerdos: 2 } }));
+    await session.setCare({ dirty: ['rosita', 'morrito'], sick: [], muddy: ['cerdos'] });
+    return { session, store };
+  }
+
+  it('limpiar paga lo que da comer, lo deja limpio y avisa con animal-cleaned', async () => {
+    const events = new EventBus<GameEvents>();
+    const cleaned = vi.fn();
+    events.on('animal-cleaned', cleaned);
+    const { session } = await dirtyPig(events);
+    const before = session.state.coins;
+    expect(await session.cleanAnimal('rosita')).toBe(4);
+    expect(session.state.coins).toBe(before + 4);
+    expect(session.care).toEqual({ dirty: ['morrito'], sick: [], muddy: ['cerdos'] });
+    expect(cleaned).toHaveBeenCalledWith({ penId: 'cerdos', residentId: 'rosita', coins: 4 });
+  });
+
+  it('el último sucio deja el charco limpio, y limpiar a uno limpio no paga dos veces', async () => {
+    const { session } = await dirtyPig();
+    await session.cleanAnimal('rosita');
+    await session.cleanAnimal('morrito');
+    expect(session.care.muddy).toEqual([]);
+    const coins = session.state.coins;
+    expect(await session.cleanAnimal('morrito')).toBe(0);
+    expect(session.state.coins).toBe(coins);
+  });
+});

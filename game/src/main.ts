@@ -3,6 +3,7 @@ import { AdOfferScene } from './scenes/AdOfferScene';
 import { PollNoticeScene } from './scenes/PollNoticeScene';
 import { BootScene } from './scenes/BootScene';
 import { FeedScene } from './scenes/FeedScene';
+import { CleanScene } from './scenes/CleanScene';
 import { HudScene } from './scenes/HudScene';
 import { PreloadScene } from './scenes/PreloadScene';
 import { QuitScene } from './scenes/QuitScene';
@@ -29,7 +30,7 @@ const game = new Phaser.Game({
   roundPixels: true,
   scale: { mode: Phaser.Scale.RESIZE, width: window.innerWidth, height: window.innerHeight },
   // El orden importa: Hud se dibuja encima de Feed/Shop; el panel del anuncio, ajustes, salir y girar, encima de todo.
-  scene: [BootScene, PreloadScene, TitleScene, WorldScene, FeedScene, ShopScene, BookScene, BoardScene, HudScene, AdOfferScene, PollNoticeScene, TutorialOfferScene, TutorialScene, SettingsScene, QuitScene, RotateScene],
+  scene: [BootScene, PreloadScene, TitleScene, WorldScene, FeedScene, CleanScene, ShopScene, BookScene, BoardScene, HudScene, AdOfferScene, PollNoticeScene, TutorialOfferScene, TutorialScene, SettingsScene, QuitScene, RotateScene],
 });
 
 const platform = new Platform(game);

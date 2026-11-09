@@ -52,6 +52,11 @@ export interface GameEvents {
   'feed-closed': { residentId: string };
   /** Ha cambiado quién está sucio o malito, o algún charco: el mundo se repinta. */
   'care-changed': Record<string, never>;
+  'clean-opened': { residentId: string };
+  /** Se cierra la limpieza (acabada o no). */
+  'clean-closed': { residentId: string; done: boolean };
+  /** Un animal ha quedado limpio: monedas como al darle de comer. */
+  'animal-cleaned': { penId: PenId; residentId: string; coins: number };
   /** Una comida arrastrada y soltada fuera del animal. */
   'food-missed': { residentId: string; foodId: FoodId };
   /** La cuidadora lleva un rato junto a un recinto. */
