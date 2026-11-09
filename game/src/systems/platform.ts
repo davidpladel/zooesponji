@@ -6,6 +6,8 @@ import type { AdOfferScene } from '../scenes/AdOfferScene';
 import type { PollNoticeScene } from '../scenes/PollNoticeScene';
 import type { TutorialOfferScene } from '../scenes/TutorialOfferScene';
 import type { CleanScene } from '../scenes/CleanScene';
+import type { ClinicScene } from '../scenes/ClinicScene';
+import type { CureScene } from '../scenes/CureScene';
 import type { FeedScene } from '../scenes/FeedScene';
 import type { QuitScene, QuitSceneData } from '../scenes/QuitScene';
 import type { BoardScene } from '../scenes/BoardScene';
@@ -86,7 +88,7 @@ export class Platform {
     return decideBack({
       quitDialogOpen: this.active('Quit'),
       settingsOpen: this.active('Settings') || this.active('Book'),
-      overlayOpen: this.active('Feed') || this.active('Clean') || this.active('Shop') || this.active('Board'),
+      overlayOpen: this.active('Feed') || this.active('Clean') || this.active('Shop') || this.active('Board') || this.active('Clinic') || this.active('Cure'),
       adOfferOpen: this.active('AdOffer') || this.active('PollNotice') || this.active('TutorialOffer'),
       screen,
     });
@@ -113,6 +115,9 @@ export class Platform {
       case 'close-overlay':
         if (this.active('Feed')) scene<FeedScene>('Feed').close();
         if (this.active('Clean')) scene<CleanScene>('Clean').close();
+        // La cura va encima de la clínica: atrás cierra solo la cura.
+        if (this.active('Cure')) scene<CureScene>('Cure').close();
+        else if (this.active('Clinic')) scene<ClinicScene>('Clinic').close();
         if (this.active('Shop')) scene<ShopScene>('Shop').close();
         if (this.active('Board')) scene<BoardScene>('Board').close();
         break;

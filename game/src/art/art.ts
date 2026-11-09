@@ -20,6 +20,7 @@ export function setArt(manifest: ArtManifest | null): void {
 export const ART_KEYS = { terrain: 'art-terrain', keeper: 'art-keeper', shopkeeper: 'art-shopkeeper' } as const;
 export const animalKey = (look: string): string => `art-animal-${look}`;
 export const visitorKey = (index: number): string => `art-visitor-${index}`;
+export const vetKey = (index: number): string => `art-vet-${index}`;
 export const decorKey = (kind: DecorKind): string => `art-decor-${kind}`;
 export const propKey = (name: string): string => `art-prop-${name}`;
 export const interiorKey = (piece: string): string => `art-interior-${piece}`;
@@ -69,6 +70,7 @@ export function queueArt(scene: Phaser.Scene, m: ArtManifest): void {
     if (companion) sheet(companionKey(id), companion);
   }
   for (const [id, s] of Object.entries(m.pets)) sheet(petKey(id), s);
+  m.vets.forEach((v, i) => sheet(vetKey(i), v));
   for (const [piece, img] of Object.entries(m.interior)) scene.load.image(interiorKey(piece), url(img.file));
 }
 

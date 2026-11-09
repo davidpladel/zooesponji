@@ -14,7 +14,7 @@ import { shopVisited } from '../core/save';
 import { tourWaypoints } from '../core/tour';
 import { followTrail, recordTrail } from '../core/petFollow';
 import { noPen, stepNear, type NearState } from '../core/penNear';
-import { buildWalkGrid, readBoard, readClinic, readEnclosures, readGates, readProps, readWater, readShop, readSpawn, withSolidProps, type TiledMap } from '../core/tiledmap';
+import { buildWalkGrid, isShopDoor, readBoard, readClinic, readEnclosures, readGates, readProps, readWater, readShop, readSpawn, withSolidProps, type TiledMap } from '../core/tiledmap';
 import { PEN_IDS, findResident, residentsIn, type PenId } from '../data/pens';
 import { SHOP_UNLOCK_COINS } from '../data/shop';
 import { t } from '../data/strings';
@@ -62,6 +62,8 @@ export class WorldScene extends Phaser.Scene {
   private pathGrid!: WalkGrid;
   /** Residente hacia el que va la cuidadora para darle de comer. */
   private feedTarget: string | null = null;
+  /** La cuidadora está en la puerta de la clínica (para no reabrirla a cada paso). */
+  private atClinicDoor = false;
   /** Relojes del charco y de las enfermedades: solo cuentan con el mundo en marcha. */
   private care = new CareDirector();
   private near: NearState<PenId> = noPen();
@@ -187,6 +189,29 @@ export class WorldScene extends Phaser.Scene {
       bus.emit('toast', { text: t('toast.shopLocked', { n: SHOP_UNLOCK_COINS }) });
     }
     if (this.board?.onKeeperTile(tile)) this.openBoard();
+    this.watchClinicDoor(tile, state);
+  }
+
+  /** Pisar la puerta de la clínica: comprada, se entra; si no, aviso de que se compra en la tienda. */
+  private watchClinicDoor(tile: Point, state: GameState): void {
+    const clinic = readClinic(this.mapData);
+    const onDoor = clinic !== null && isShopDoor(clinic, tile);
+    if (!onDoor) {
+      this.atClinicDoor = false;
+      return;
+    }
+    if (this.atClinicDoor) return;
+    this.atClinicDoor = true;
+    if (state.clinic) this.openClinic();
+    else bus.emit('toast', { text: t('toast.needClinic'), icon: 'shop' });
+  }
+
+  /** Entra en la clínica: el mundo queda en pausa debajo. */
+  openClinic(): void {
+    this.stopWalking();
+    this.trail.hide();
+    this.scene.pause();
+    this.scene.launch('Clinic', {});
   }
 
   /**
@@ -572,6 +597,7 @@ export class WorldScene extends Phaser.Scene {
 
   private onResume(_sys: Phaser.Scenes.Systems, data?: { from?: string; clinic?: boolean }): void {
     if (data?.from === 'shop') this.leaveShop();
+    if (data?.from === 'clinic') this.leaveClinic();
     this.refresh();
     // Lo visto en el tablón apaga la estrellita.
     this.board?.sync();
@@ -652,7 +678,16 @@ export class WorldScene extends Phaser.Scene {
 
   /** Al salir de la tienda la cuidadora aparece delante de la puerta, mirando hacia abajo (y no vuelve a entrar). */
   private leaveShop(): void {
-    const shop = readShop(this.mapData);
+    this.stepOutOf(readShop(this.mapData));
+  }
+
+  private leaveClinic(): void {
+    this.atClinicDoor = false;
+    this.stepOutOf(readClinic(this.mapData));
+  }
+
+  /** Al salir de un edificio, la cuidadora aparece justo debajo de su puerta, mirando hacia abajo. */
+  private stepOutOf(shop: ReturnType<typeof readShop>): void {
     if (!shop) return;
     const below = { x: shop.door.x, y: shop.door.y + 1 };
     if (!isWalkable(this.grid, below.x, below.y)) return;

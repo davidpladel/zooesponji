@@ -65,6 +65,12 @@ export interface GameEvents {
   'puddle-clean': { penId: PenId };
   /** Con un animal malito, se ha tocado la cruz: la cuidadora va andando a la clínica. */
   'clinic-requested': { residentId: string };
+  'clinic-opened': Record<string, never>;
+  'clinic-closed': Record<string, never>;
+  'cure-opened': { residentId: string };
+  'cure-closed': { residentId: string; done: boolean };
+  /** Un animal malito ya está curado: monedas como al darle de comer. */
+  'animal-cured': { penId: PenId; residentId: string; coins: number };
   /** Un animal se ha puesto malito. */
   'animal-sick': { penId: PenId; residentId: string };
   /** Una comida arrastrada y soltada fuera del animal. */

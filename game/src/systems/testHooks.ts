@@ -2,7 +2,7 @@ import type * as Phaser from 'phaser';
 import { getArt } from '../art/art';
 import { AD_SLOTS } from '../core/adPacing';
 import { COMMUNITY_KEY } from '../core/community';
-import { fallSick, makeMuddy, soil, isMudPen, type CareState } from '../core/care';
+import { fallSick, makeMuddy, soil, isMudPen, type CareState, type MedicineId } from '../core/care';
 import type { CleaningState } from '../core/cleaning';
 import { openPens } from '../core/economy';
 import type { Vec } from '../core/movement';
@@ -13,6 +13,8 @@ import { findResident, type PenId } from '../data/pens';
 import type { AdOfferScene } from '../scenes/AdOfferScene';
 import type { BoardScene, BoardZone, PollView } from '../scenes/BoardScene';
 import type { CleanScene } from '../scenes/CleanScene';
+import type { ClinicScene } from '../scenes/ClinicScene';
+import type { CureScene } from '../scenes/CureScene';
 import type { FeedScene } from '../scenes/FeedScene';
 import { PollNoticeScene } from '../scenes/PollNoticeScene';
 import type { HudScene } from '../scenes/HudScene';
@@ -97,6 +99,17 @@ export interface ZooTestApi {
   feedCrossPos(): Vec | null;
   /** Puerta de la clínica en el mapa. */
   clinicDoorTile(): { x: number; y: number } | null;
+  /** Da la clínica como comprada (sin pasar por la tienda ni pagar). */
+  giveClinic(): Promise<void>;
+  /** Entra en la clínica sin andar hasta su puerta. */
+  openClinic(): void;
+  /** Quién hay en cada camilla de la clínica abierta. */
+  clinicBeds(): (string | null)[] | null;
+  /** Dónde tocar una camilla de la clínica abierta. */
+  clinicBedPos(index: number): Vec | null;
+  /** En la cura abierta: dosis dadas, y dónde están el animal y las medicinas. */
+  cureDoses(): number | null;
+  cureTargets(): { animal: Vec; medicines: Partial<Record<MedicineId, Vec>> } | null;
   /** Abre la limpieza de un animal sin andar hasta él. */
   openClean(residentId: string): void;
   /** Paso de la limpieza abierta (null si no lo está). */
@@ -281,6 +294,14 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
     puddleOf: (penId) => game.scene.getScene<WorldScene>('World').puddleOf(penId),
     feedCrossPos: () => activeScene<FeedScene>('Feed')?.crossScreenPos() ?? null,
     clinicDoorTile: () => game.scene.getScene<WorldScene>('World').clinicDoorTile(),
+    giveClinic: async () => {
+      await getSession().update((s) => ({ ...s, clinic: true }));
+    },
+    openClinic: () => game.scene.getScene<WorldScene>('World').openClinic(),
+    clinicBeds: () => activeScene<ClinicScene>('Clinic')?.bedResidents() ?? null,
+    clinicBedPos: (index) => activeScene<ClinicScene>('Clinic')?.bedScreenPos(index) ?? null,
+    cureDoses: () => activeScene<CureScene>('Cure')?.dosesGiven() ?? null,
+    cureTargets: () => activeScene<CureScene>('Cure')?.targetsOnScreen() ?? null,
     openClean: (residentId) => {
       if (game.scene.isActive('World')) game.scene.pause('World');
       game.scene.start('Clean', { residentId });

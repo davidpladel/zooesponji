@@ -38,6 +38,8 @@ export interface ArtConfig {
   keeper: Source & { character: number };
   shopkeeper: Source & { character: number };
   visitors: (Source & { character: number })[];
+  /** Veterinario y veterinaria de la clínica. */
+  vets?: (Source & { character: number })[];
   /** Por aspecto: el de la especie (`cabra`) y los de cada animal distinto (`cabra-gordi`). */
   animals: Record<string, LookSource>;
   props?: Record<string, Source & CropRect & { animate?: Animate; compose?: Compose; refill?: Refill; overlay?: Overlay[] }>;

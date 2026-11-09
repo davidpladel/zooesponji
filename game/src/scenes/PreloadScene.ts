@@ -47,6 +47,7 @@ export class PreloadScene extends Phaser.Scene {
     this.load.on(Phaser.Loader.Events.PROGRESS, (value: number) => this.showProgress(this.phase === 0 ? value * 0.4 : 0.4 + value * 0.6));
     this.load.tilemapTiledJSON(MAPS.zoo, withVersion('assets/maps/zoo.tmj'));
     this.load.tilemapTiledJSON(MAPS.shop, withVersion('assets/maps/tienda.tmj'));
+    this.load.tilemapTiledJSON(MAPS.clinic, withVersion('assets/maps/clinica.tmj'));
     this.load.image('logo', withVersion('logo.png'));
     this.load.image('qr-ideas', withVersion('assets/ui/qr-ideas.png'));
     this.load.image('qr-ideas-en', withVersion('assets/ui/qr-ideas-en.png'));

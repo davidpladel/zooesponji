@@ -161,3 +161,15 @@ export function puddleSpot(space: PenSpace, rx: number, ry: number, step = 4): {
   }
   return best;
 }
+
+/** Camillas de la clínica. */
+export const CLINIC_SPOTS = 2;
+
+/** Qué enfermo hay en cada camilla: por orden de enfermar; las que sobran, vacías (null). */
+export function clinicSlots(care: CareState): (string | null)[] {
+  return Array.from({ length: CLINIC_SPOTS }, (_, i) => care.sick[i] ?? null);
+}
+
+/** Lo que hay en la bandeja de curar. Da igual el orden: cada una que se le da es una dosis. */
+export const MEDICINES = ['pastilla', 'vendaje', 'jarabe', 'termometro'] as const;
+export type MedicineId = (typeof MEDICINES)[number];

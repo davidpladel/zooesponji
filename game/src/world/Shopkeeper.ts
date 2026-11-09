@@ -23,14 +23,17 @@ export class Shopkeeper {
   constructor(
     private readonly scene: Phaser.Scene,
     private readonly interior: ShopInterior,
+    /** Otro sitio u otro dibujo (los veterinarios de la clínica): pies en px de interior, hoja de sprites y emoji sin arte. */
+    look: { at?: Point; texture?: string; emoji?: string } = {},
   ) {
     const s = interior.layout.scale;
-    this.feet = interior.screen(interior.spots.shopkeeper);
+    const at = look.at ?? interior.spots.shopkeeper;
+    this.feet = interior.screen(at);
     // Algo más grande que el mobiliario: es el personaje que atiende y tiene que verse bien tras el mostrador.
     this.sprite = getArt()
-      ? scene.add.sprite(this.feet.x, this.feet.y, ART_KEYS.shopkeeper, idleFrame('down')).setOrigin(0.5, 1).setScale(Math.round(s * 1.6))
-      : scene.add.text(this.feet.x, this.feet.y, '🧑‍🌾', { fontSize: `${Math.round(34 * s)}px` }).setOrigin(0.5, 1);
-    this.sprite.setDepth(interior.spots.shopkeeper.y);
+      ? scene.add.sprite(this.feet.x, this.feet.y, look.texture ?? ART_KEYS.shopkeeper, idleFrame('down')).setOrigin(0.5, 1).setScale(Math.round(s * 1.6))
+      : scene.add.text(this.feet.x, this.feet.y, look.emoji ?? '🧑‍🌾', { fontSize: `${Math.round(34 * s)}px` }).setOrigin(0.5, 1);
+    this.sprite.setDepth(at.y);
     // Respira: sube y baja un pelín.
     scene.tweens.add({ targets: this.sprite, scaleY: this.sprite.scaleY * 1.04, duration: 900, yoyo: true, repeat: -1, ease: 'Sine.InOut' });
   }

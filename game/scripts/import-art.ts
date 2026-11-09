@@ -82,6 +82,11 @@ for (const [id, p] of Object.entries(config.pets ?? {})) {
   pets[id] = { file: save(png, `pet-${id}.png`), ...sheet(png) };
 }
 
+const vets = (config.vets ?? []).map((v, i) => {
+  const png = characterSheet(readSource(v), v.character);
+  return { file: save(png, `vet-${i}.png`), ...sheet(png) };
+});
+
 const interior: Record<string, { file: string; width: number; height: number }> = {};
 for (const [name, p] of Object.entries(config.interior ?? {})) {
   interior[name] = image(crop(readSource(p), p.x, p.y, p.w, p.h), `interior-${name}.png`);
@@ -99,6 +104,7 @@ const manifest = {
   foods,
   companions,
   pets,
+  vets,
   interior,
 };
 writeFileSync(join(outDir, 'manifest.json'), JSON.stringify(manifest, null, 2));

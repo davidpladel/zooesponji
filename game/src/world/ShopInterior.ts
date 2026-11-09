@@ -42,7 +42,13 @@ function textureFor(piece: string): string | null {
   return prop && !prop.frames ? propKey(piece) : null;
 }
 
-/** El interior de la tienda: suelo, pared, muebles y ambiente (luz de ventanas, velas, polvo). */
+/** Lo que cambia de un interior a otro: la tienda o la clínica. */
+export interface InteriorOptions {
+  /** Texto del cartel de madera de la pared (por defecto, el de la tienda). */
+  sign?: string;
+}
+
+/** El interior de la tienda (o de la clínica): suelo, pared, muebles y ambiente (luz de ventanas, velas, polvo). */
 export class ShopInterior {
   readonly spots: InteriorSpots;
   readonly layout: InteriorLayout;
@@ -53,6 +59,7 @@ export class ShopInterior {
   constructor(
     private readonly scene: Phaser.Scene,
     map: TiledMap | null,
+    private readonly options: InteriorOptions = {},
   ) {
     const spots = map ? readInteriorSpots(map) : null;
     if (!spots) console.warn('tienda.tmj no disponible o incompleto: tienda con peanas en fila');
@@ -240,7 +247,7 @@ export class ShopInterior {
     const s = this.s;
     const c = this.screen({ x: 160, y: 11 });
     const text = this.scene.add
-      .text(0, 0, `🏪 ${t('shop.title')}`, textStyle(Math.round(Math.max(18, 8.5 * s)), '#fff8e1', '#4e342e'))
+      .text(0, 0, this.options.sign ?? `🏪 ${t('shop.title')}`, textStyle(Math.round(Math.max(18, 8.5 * s)), '#fff8e1', '#4e342e'))
       .setOrigin(0.5);
     const w = text.width + 12 * s;
     const h = text.height + 4 * s;

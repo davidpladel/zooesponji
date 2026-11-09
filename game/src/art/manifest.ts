@@ -39,6 +39,8 @@ export interface ArtManifest {
   companions: Partial<Record<AnimalId, SheetInfo>>;
   /** Mascotas de la cuidadora (`luna`); vacío en manifiestos de antes. */
   pets: Record<string, SheetInfo>;
+  /** Veterinario y veterinaria de la clínica; vacío en manifiestos de antes. */
+  vets: SheetInfo[];
   /** Piezas del interior de la tienda (suelo, pared, muebles); vacío = tienda con colores. */
   interior: Record<string, ImageInfo>;
 }
@@ -119,6 +121,15 @@ export function parseManifest(value: unknown): ArtManifest | null {
     }
   }
 
+  const vets: SheetInfo[] = [];
+  if (value.vets !== undefined) {
+    if (!Array.isArray(value.vets)) return null;
+    for (const raw of value.vets) {
+      const s = asSheet(raw);
+      if (!s) return null;
+      vets.push(s);
+    }
+  }
   const pets: Record<string, SheetInfo> = {};
   if (value.pets !== undefined) {
     if (!isObject(value.pets)) return null;
@@ -145,6 +156,7 @@ export function parseManifest(value: unknown): ArtManifest | null {
     foods,
     companions,
     pets,
+    vets,
     version: 1,
     terrain: { file: terrain.file, columns: terrain.columns },
     keeper,

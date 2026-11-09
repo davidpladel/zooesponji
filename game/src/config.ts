@@ -13,4 +13,5 @@ export const MAPS = {
   test: 'test-map',
   zoo: 'zoo-map',
   shop: 'shop-map',
+  clinic: 'clinic-map',
 } as const;

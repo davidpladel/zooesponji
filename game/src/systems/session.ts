@@ -1,4 +1,4 @@
-import { careReward, clean, isDirty, isMudPen, type CareState } from '../core/care';
+import { careReward, clean, cure, isDirty, isMudPen, isSick, type CareState } from '../core/care';
 import { addCoins, purchase, type GameState, type PurchaseResult } from '../core/economy';
 import { resolveFeeding, type FeedResult } from '../core/reactions';
 import { loadSave, parseSave, writeSave, type BookProgress, type KeyValueStore, type SaveData, type Settings, type ShopProgress, type TutorialProgress } from '../core/save';
@@ -142,6 +142,17 @@ export class Session {
     await this.setCare(clean(this.data.care, found.penId, residentId));
     this.events.emit('animal-cleaned', { penId: found.penId, residentId, coins });
     if (wasMuddy && !this.data.care.muddy.includes(found.penId)) this.events.emit('puddle-clean', { penId: found.penId });
+    await this.earnCoins(coins);
+    return coins;
+  }
+
+  /** Termina la cura: ya no está malito y paga lo mismo que darle de comer. Si no estaba malito, nada (0). */
+  async cureAnimal(residentId: string): Promise<number> {
+    const found = findResident(residentId);
+    if (!found || !isSick(this.data.care, residentId)) return 0;
+    const coins = careReward(found.resident.species);
+    await this.setCare(cure(this.data.care, residentId));
+    this.events.emit('animal-cured', { penId: found.penId, residentId, coins });
     await this.earnCoins(coins);
     return coins;
   }

@@ -40,6 +40,13 @@ describe('parseManifest', () => {
     expect(parseManifest({ ...valid(), pets: { luna: { file: 'luna.png' } } })).toBeNull();
   });
 
+  it('veterinarios: opcionales (manifiestos de antes) y, si están, bien formados', () => {
+    expect(parseManifest(valid())?.vets).toEqual([]);
+    expect(parseManifest({ ...valid(), vets: [sheet(16, 16), sheet(16, 16)] })?.vets).toHaveLength(2);
+    expect(parseManifest({ ...valid(), vets: [{ file: 'vet.png' }] })).toBeNull();
+    expect(parseManifest({ ...valid(), vets: 'no' })).toBeNull();
+  });
+
   it('sin props ni comidas sigue siendo válido', () => {
     const m = parseManifest(valid());
     expect(m?.props).toEqual({});

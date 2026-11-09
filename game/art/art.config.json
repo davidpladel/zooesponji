@@ -104,6 +104,10 @@
       "character": 7
     }
   ],
+  "vets": [
+    { "zip": "npc", "file": "Original/16x16/_default_tint/generic_jobs_02.png", "character": 5 },
+    { "zip": "npc", "file": "Original/16x16/_default_tint/generic_jobs_02.png", "character": 2 }
+  ],
   "animals": {
     "leon": {
       "zip": "wild",

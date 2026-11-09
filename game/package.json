@@ -19,6 +19,7 @@
     "art:import": "node scripts/import-art.ts",
     "make:zoo-map": "node scripts/make-zoo-map.mjs",
     "make:shop-map": "node scripts/make-shop-map.mjs",
+    "make:clinic-map": "node scripts/make-clinic-map.mjs",
     "make:campanita": "node scripts/make-campanita.mjs",
     "make:paso": "node scripts/make-paso.mjs",
     "make:calcetin": "node scripts/make-calcetin.ts",

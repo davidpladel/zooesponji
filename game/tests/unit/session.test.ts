@@ -320,3 +320,21 @@ describe('Session: limpiar', () => {
     expect(session.state.coins).toBe(coins);
   });
 });
+
+describe('Session: curar', () => {
+  it('curar paga lo que da comer, lo quita de enfermos y avisa con animal-cured; el otro sigue malito', async () => {
+    const events = new EventBus<GameEvents>();
+    const cured = vi.fn();
+    events.on('animal-cured', cured);
+    const session = await Session.load(createMemoryStore(), events);
+    await session.update((s) => ({ ...s, clinic: true, counts: { ...s.counts, cerdos: 1, 'elefantes-africanos': 1 } }));
+    await session.setCare({ dirty: [], sick: ['tembo', 'rosita'], muddy: [] });
+    const before = session.state.coins;
+    expect(await session.cureAnimal('tembo')).toBe(10);
+    expect(session.state.coins).toBe(before + 10);
+    expect(session.care.sick).toEqual(['rosita']);
+    expect(cured).toHaveBeenCalledWith({ penId: 'elefantes-africanos', residentId: 'tembo', coins: 10 });
+    expect(await session.cureAnimal('tembo')).toBe(0);
+    expect(session.state.coins).toBe(before + 10);
+  });
+});
