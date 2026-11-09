@@ -23,8 +23,8 @@ const withCounts = (counts: Partial<GameState['counts']>): GameState => ({
 });
 
 describe('libro del zoo', () => {
-  it('tiene 51 páginas que cuentan: 4 de inicio (con Luna) y una por cada animal', () => {
-    expect(BOOK_PAGES.filter(isContentPage)).toHaveLength(51);
+  it('tiene 56 páginas que cuentan: 4 de inicio (con Luna) y una por cada animal', () => {
+    expect(BOOK_PAGES.filter(isContentPage)).toHaveLength(56);
   });
 
   it('empieza por la portada y el índice, y cada capítulo con animales abre con su portadilla', () => {
@@ -79,7 +79,7 @@ describe('libro del zoo', () => {
   it('progreso por capítulo', () => {
     expect(chapterProgress(initialState(), 'inicio')).toEqual({ n: 3, total: 4 });
     expect(chapterProgress(initialState(), 'centro')).toEqual({ n: 2, total: 7 });
-    expect(chapterProgress(withCounts({ establo: 3 }), 'granja')).toEqual({ n: 3, total: 18 });
+    expect(chapterProgress(withCounts({ establo: 3 }), 'granja')).toEqual({ n: 3, total: 23 });
   });
 
   it('cada página se numera dentro de su capítulo', () => {

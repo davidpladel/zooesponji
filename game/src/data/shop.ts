@@ -27,6 +27,10 @@ export function shopItemForPen(penId: PenId): ShopItemDef | undefined {
 export const LUNA_ITEM_ID = 'luna';
 export const LUNA_COST = 67;
 
+/** La clínica de la plaza: un edificio suelto, sin recinto. */
+export const CLINIC_ITEM_ID = 'clinic';
+export const CLINIC_COST = 650;
+
 const EXTRA_PREFIX = 'extra-';
 
 /** Id del artículo "otro animal" de un recinto. */

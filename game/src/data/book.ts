@@ -11,7 +11,7 @@ export const CHAPTER_PENS: Record<ChapterId, readonly PenId[]> = {
   inicio: [],
   centro: ['leon', 'pantera', 'panda'],
   montana: ['cabra'],
-  granja: ['estanque', 'ovejas', 'establo'],
+  granja: ['estanque', 'ovejas', 'cerdos', 'establo'],
   polo: ['pinguinos'],
   sabana: ['sabana', 'elefantes-africanos', 'elefantes-asiaticos'],
 };

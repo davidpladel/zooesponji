@@ -8,16 +8,16 @@ describe('recintos', () => {
   it('son los 4 de siempre, con los mismos ids que el guardado, y los 7 nuevos en el orden de la tienda', () => {
     expect([...PEN_IDS]).toEqual([
       'leon', 'cabra', 'pantera', 'panda',
-      'estanque', 'ovejas', 'establo', 'pinguinos', 'sabana', 'elefantes-africanos', 'elefantes-asiaticos',
+      'estanque', 'ovejas', 'cerdos', 'establo', 'pinguinos', 'sabana', 'elefantes-africanos', 'elefantes-asiaticos',
     ]);
   });
 
   it('cabe en cada recinto lo que dice el diseño', () => {
-    expect(PEN_IDS.map(penCapacity)).toEqual([1, 5, 2, 3, 5, 5, 8, 5, 8, 2, 2]);
+    expect(PEN_IDS.map(penCapacity)).toEqual([1, 5, 2, 3, 5, 5, 5, 8, 5, 8, 2, 2]);
   });
 
   it('león y cabra vienen de inicio; el resto se compra, cada vez más caro', () => {
-    expect(PEN_IDS.map((id) => PENS[id].cost)).toEqual([undefined, undefined, 50, 100, 120, 120, 400, 600, 900, 1300, 1600]);
+    expect(PEN_IDS.map((id) => PENS[id].cost)).toEqual([undefined, undefined, 50, 100, 120, 120, 150, 400, 600, 900, 1300, 1600]);
   });
 
   it('Jose es la cría de panda, la tercera del recinto, con su aspecto propio', () => {
@@ -28,7 +28,7 @@ describe('recintos', () => {
   it('cada residente tiene id único, especie conocida y nombre', () => {
     const ids = PEN_IDS.flatMap((id) => PENS[id].residents.map((r) => r.id));
     expect(new Set(ids).size).toBe(ids.length);
-    expect(ids).toHaveLength(46);
+    expect(ids).toHaveLength(51);
     for (const penId of PEN_IDS) {
       for (const r of PENS[penId].residents) {
         expect(ANIMALS[r.species], r.id).toBeDefined();
@@ -117,6 +117,14 @@ describe('recintos', () => {
     expect(new Set(looks).size).toBe(looks.length);
     for (const species of ANIMAL_IDS) expect(looks).toContain(species);
     for (const penId of PEN_IDS) for (const r of PENS[penId].residents) expect(looks).toContain(r.look);
+  });
+
+  it('los cinco cerdos: el recinto cuesta 150 con el primero, cada uno su aspecto', () => {
+    expect(PENS.cerdos.cost).toBe(150);
+    expect(penCapacity('cerdos')).toBe(5);
+    expect(PENS.cerdos.residents.every((r) => r.species === 'cerdo')).toBe(true);
+    expect(PENS.cerdos.residents[0]!.look).toBe('cerdo');
+    expect(PEN_IDS.indexOf('cerdos')).toBe(PEN_IDS.indexOf('ovejas') + 1);
   });
 
   it('las cinco cabras tienen cada una su aspecto', () => {

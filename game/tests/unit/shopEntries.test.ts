@@ -41,7 +41,7 @@ describe('shopEntries', () => {
   });
 
   it('cuando quedan menos de 5 cosas que comprar, lo completo rellena los huecos como AGOTADO', () => {
-    const done = { cabra: 5, pantera: 2, panda: 3, estanque: 5, ovejas: 5, establo: 8, pinguinos: 5, sabana: 8, 'elefantes-africanos': 2, 'elefantes-asiaticos': 1 };
+    const done = { cabra: 5, pantera: 2, panda: 3, estanque: 5, ovejas: 5, cerdos: 5, establo: 8, pinguinos: 5, sabana: 8, 'elefantes-africanos': 2, 'elefantes-asiaticos': 1 };
     expect(summary(withCounts(done))).toEqual(['extra-elefantes-asiaticos:buy', 'extra-cabra:full', 'extra-pantera:full', 'extra-panda:full', 'extra-estanque:full']);
     const cabra = shopEntries(withCounts(done)).find((e) => e.id === 'extra-cabra');
     expect(cabra).toMatchObject({ status: 'full', count: 5, max: 5, cost: 10 });
@@ -59,7 +59,7 @@ describe('shopEntries', () => {
     const after = withCounts({ pantera: 2 });
     expect(summary2(after, stock)).toEqual(['extra-cabra:buy', 'extra-pantera:full', 'panda:buy', 'estanque:buy', 'ovejas:buy']);
     // Al volver a entrar, la pantera completa ya no ocupa peana y sale lo siguiente.
-    expect(summary(after)).toEqual(['extra-cabra:buy', 'panda:buy', 'estanque:buy', 'ovejas:buy', 'establo:buy']);
+    expect(summary(after)).toEqual(['extra-cabra:buy', 'panda:buy', 'estanque:buy', 'ovejas:buy', 'cerdos:buy']);
   });
 
   it('el "otro animal" de un recinto mixto es el siguiente de su lista, con el precio de su especie', () => {
@@ -90,7 +90,7 @@ describe('Luna en la tienda', () => {
   });
 
   it('ya comprada no ocupa peana, ni siquiera cuando sobran', () => {
-    const done = { cabra: 5, pantera: 2, panda: 3, estanque: 5, ovejas: 5, establo: 8, pinguinos: 5, sabana: 8, 'elefantes-africanos': 2, 'elefantes-asiaticos': 1 };
+    const done = { cabra: 5, pantera: 2, panda: 3, estanque: 5, ovejas: 5, cerdos: 5, establo: 8, pinguinos: 5, sabana: 8, 'elefantes-africanos': 2, 'elefantes-asiaticos': 1 };
     expect(shopStock(withCounts(done))).not.toContain('luna');
     expect(summary({ ...withCounts(done), luna: false }).slice(0, 2)).toEqual(['luna:buy', 'extra-elefantes-asiaticos:buy']);
   });

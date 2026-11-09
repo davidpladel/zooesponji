@@ -4,7 +4,7 @@ import type { StringKey } from './strings';
 export const PEN_IDS = [
   'leon', 'cabra', 'pantera', 'panda',
   // En el orden en que se ofrecen en la tienda.
-  'estanque', 'ovejas', 'establo', 'pinguinos', 'sabana', 'elefantes-africanos', 'elefantes-asiaticos',
+  'estanque', 'ovejas', 'cerdos', 'establo', 'pinguinos', 'sabana', 'elefantes-africanos', 'elefantes-asiaticos',
 ] as const;
 export type PenId = (typeof PEN_IDS)[number];
 
@@ -62,6 +62,12 @@ export const PENS: Record<PenId, PenDef> = {
     cost: 120,
     visitors: true,
     residents: [one('lana', 'oveja'), one('bolita', 'oveja', 'bolita'), one('trueno', 'oveja', 'trueno'), one('algodon', 'oveja', 'algodon'), one('rizos', 'oveja', 'rizos')],
+  },
+  cerdos: {
+    id: 'cerdos',
+    nameKey: 'pen.cerdos',
+    cost: 150,
+    residents: [one('rosita', 'cerdo'), one('morrito', 'cerdo', 'morrito'), one('trufa', 'cerdo', 'trufa'), one('bellota', 'cerdo', 'bellota'), one('churro', 'cerdo', 'churro')],
   },
   establo: {
     id: 'establo',

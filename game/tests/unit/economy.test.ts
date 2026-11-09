@@ -13,7 +13,7 @@ describe('initialState', () => {
     expect(purchase(initialState(), 'extra-cabra').ok).toBe(true);
     expect(initialState()).toEqual({
       coins: STARTING_COINS,
-      counts: { leon: 1, cabra: 1, pantera: 0, panda: 0, estanque: 0, ovejas: 0, establo: 0, pinguinos: 0, sabana: 0, 'elefantes-africanos': 0, 'elefantes-asiaticos': 0 },
+      counts: { leon: 1, cabra: 1, pantera: 0, panda: 0, estanque: 0, ovejas: 0, cerdos: 0, establo: 0, pinguinos: 0, sabana: 0, 'elefantes-africanos': 0, 'elefantes-asiaticos': 0 },
       shopUnlocked: true,
       luna: false,
     });

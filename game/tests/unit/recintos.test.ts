@@ -24,6 +24,7 @@ const PAISAJE: Record<PenId, RegExp[]> = {
   panda: [/^bamboo-big$/, /^bamboo-mid$/, /^bamboo-small$/, /^(log|stump)/, /^rock-moss/, /^pond/],
   estanque: [/^lake-grassland$/, /^lilypad/, /^(cattails|reeds)$/, /^rock-wetland$/],
   ovejas: [/^daisies$/, /^sunflowers$/, /^rock-grassland/, /^tree-grassland$/],
+  cerdos: [/^trough$/, /^barrel$/, /^(hay|pumpkin)/],
   establo: [/^shelter$/, /^trough$/, /^barrel$/, /^pumpkin$/, /^scarecrow$/],
   pinguinos: [/^pond-tundra$/, /^ice-floe$/, /^ice-waterfall$/, /^rock-snow/, /^pine-snow/],
   sabana: [/^acacia$/, /^water-savannah$/, /^grass-tall-dry/, /^rock-savannah/],
@@ -52,13 +53,16 @@ function seeded(seed: number): () => number {
   return () => (s = (s * 9301 + 49297) % 233280) / 233280;
 }
 
+// TODO tarea 9: el recinto de cerdos aún no está en el mapa; quitar este filtro al dibujarlo.
+const EN_MAPA = PEN_IDS.filter((id) => id !== 'cerdos');
+
 describe('recintos', () => {
-  it.each(PEN_IDS)('%s tiene su paisaje', (id) => {
+  it.each(EN_MAPA)('%s tiene su paisaje', (id) => {
     const names = propsIn(id).map((p) => p.prop);
     for (const re of PAISAJE[id]) expect(names.some((n) => re.test(n)), `${id}: falta ${re}`).toBe(true);
   });
 
-  it.each(PEN_IDS)('%s: la puerta y las casillas de dentro junto a ella quedan libres', (id) => {
+  it.each(EN_MAPA)('%s: la puerta y las casillas de dentro junto a ella quedan libres', (id) => {
     const { inside } = gateFront(id);
     const grid = penGridFor(map, id);
     for (const t of inside) {
@@ -68,7 +72,7 @@ describe('recintos', () => {
     }
   });
 
-  it.each(PEN_IDS)('%s: desde la puerta se llega a todo el interior que no es agua ni obstáculo', (id) => {
+  it.each(EN_MAPA)('%s: desde la puerta se llega a todo el interior que no es agua ni obstáculo', (id) => {
     const space = penSpace(enclosure(id), props, T, waters);
     const grid = penGridFor(map, id);
     const start = gateFront(id).inside[0]!;
@@ -95,13 +99,13 @@ describe('recintos', () => {
     expect(lost, `${id}: casillas a las que no se llega`).toEqual([]);
   });
 
-  it.each(PEN_IDS)('%s: caben todos sus animales separados', (id) => {
+  it.each(EN_MAPA)('%s: caben todos sus animales separados', (id) => {
     const space = penSpace(enclosure(id), props, T, waters);
     const n = penCapacity(id) + (PENS[id].companion ? 1 : 0);
     expect(spreadPositions(space, n, seeded(7), 8, 24).length).toBe(n);
   });
 
-  it.each(PEN_IDS)('%s: ningún adorno se sale del recinto ni pisa la valla', (id) => {
+  it.each(EN_MAPA)('%s: ningún adorno se sale del recinto ni pisa la valla', (id) => {
     const inner = innerOf(id);
     for (const p of propsIn(id)) {
       const info = art.props[p.prop]!;

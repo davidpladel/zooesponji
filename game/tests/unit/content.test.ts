@@ -2,15 +2,15 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { ANIMAL_IDS, ANIMALS, isAnimalId, trayFoods } from '../../src/data/animals';
 import { FOOD_IDS, FOODS, type FoodId } from '../../src/data/foods';
 import { PEN_IDS, PENS } from '../../src/data/pens';
-import { SHOP_ITEMS, SHOP_UNLOCK_COINS, getShopItem, shopItemForPen } from '../../src/data/shop';
+import { CLINIC_COST, CLINIC_ITEM_ID, SHOP_ITEMS, SHOP_UNLOCK_COINS, getShopItem, shopItemForPen } from '../../src/data/shop';
 import { STRINGS_ES, t } from '../../src/data/strings';
 import { setLanguage } from '../../src/systems/language';
 
 describe('contenido: animales', () => {
-  it('están las 4 especies de siempre y las 11 nuevas', () => {
+  it('están las 4 especies de siempre, las 11 del zoo grande y el cerdo', () => {
     expect([...ANIMAL_IDS]).toEqual([
       'leon', 'cabra', 'pantera', 'panda',
-      'jirafa', 'cebra', 'gacela', 'pinguino', 'oveja', 'caballo', 'gallina', 'gallo', 'pato', 'elefante-africano', 'elefante-asiatico',
+      'jirafa', 'cebra', 'gacela', 'pinguino', 'oveja', 'caballo', 'gallina', 'gallo', 'pato', 'elefante-africano', 'elefante-asiatico', 'cerdo',
     ]);
   });
 
@@ -27,6 +27,7 @@ describe('contenido: animales', () => {
     ['pato', ['lechuga', 'maiz'], ['pescado'], ['piedra', 'pan']],
     ['elefante-africano', ['lechuga', 'manzana'], ['platano'], ['carne', 'calcetin']],
     ['elefante-asiatico', ['lechuga', 'platano'], ['manzana'], ['piedra', 'pescado']],
+    ['cerdo', ['zanahoria', 'maiz'], ['manzana'], ['carne', 'calcetin']],
   ];
   it.each(TRAYS)('%s: come, especial y rechaza lo que dice el diseño', (id, come, especial, rechaza) => {
     if (!isAnimalId(id)) throw new Error(`Especie desconocida: ${id}`);
@@ -41,6 +42,7 @@ describe('contenido: animales', () => {
     ['pato', 3, 5, 30], ['oveja', 4, 6, 40], ['caballo', 5, 8, 60], ['gallina', 3, 5, 30], ['gallo', 3, undefined, 30],
     ['pinguino', 6, 9, 80], ['jirafa', 8, 12, 150], ['cebra', 6, 9, 120], ['gacela', 5, 8, 100],
     ['elefante-africano', 10, 15, 200], ['elefante-asiatico', 10, 15, 200],
+    ['cerdo', 4, 6, 50],
   ];
   it.each(COINS)('%s paga %i (especial %s) y otro igual cuesta %i', (id, come, especial, extra) => {
     if (!isAnimalId(id)) throw new Error(`Especie desconocida: ${id}`);
@@ -103,6 +105,11 @@ describe('contenido: animales', () => {
     const wrong = trayFoods(id).filter((food) => ANIMALS[id].reactions[food] === 'rechaza' && eatenByOthers(food));
     expect(wrong.length).toBeGreaterThanOrEqual(1);
   });
+});
+
+it('la clínica cuesta 650', () => {
+  expect(CLINIC_COST).toBe(650);
+  expect(CLINIC_ITEM_ID).toBe('clinic');
 });
 
 describe('contenido: comidas', () => {

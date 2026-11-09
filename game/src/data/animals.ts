@@ -3,7 +3,7 @@ import type { StringKey } from './strings';
 
 export const ANIMAL_IDS = [
   'leon', 'cabra', 'pantera', 'panda',
-  'jirafa', 'cebra', 'gacela', 'pinguino', 'oveja', 'caballo', 'gallina', 'gallo', 'pato', 'elefante-africano', 'elefante-asiatico',
+  'jirafa', 'cebra', 'gacela', 'pinguino', 'oveja', 'caballo', 'gallina', 'gallo', 'pato', 'elefante-africano', 'elefante-asiatico', 'cerdo',
 ] as const;
 export type AnimalId = (typeof ANIMAL_IDS)[number];
 
@@ -162,6 +162,16 @@ export const ANIMALS: Record<AnimalId, AnimalDef> = {
     extraCost: 200,
     extraNameKey: 'shop.extra.elefante-asiatico',
     radius: 18,
+  },
+  cerdo: {
+    id: 'cerdo',
+    nameKey: 'animal.cerdo',
+    emoji: '🐷',
+    reactions: { zanahoria: 'come', maiz: 'come', manzana: 'especial', carne: 'rechaza', calcetin: 'rechaza' },
+    coins: { come: 4, especial: 6 },
+    extraCost: 50,
+    extraNameKey: 'shop.extra.cerdo',
+    radius: 9,
   },
 };
 
