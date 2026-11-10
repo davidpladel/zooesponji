@@ -2,7 +2,7 @@
 
 Creado por y para Daniela y Adrián, con la ayuda de su padre y de Claude + OpenCode + DeepSeek + ChatGPT.
 
-**Versión actual: 2.9.0** (2026-11-02, en `main`, versionCode 12; AAB compilado, pendiente de subir a Play) · Juega en la web: https://davidpladel.com/zoo/ (aún con una versión anterior) · Android: **publicado en Google Play** (producción) con la 2.8.1 (versionCode 11, desde el 2026-10-29)
+**Versión actual: 2.10.0** (2026-11-11, en la rama `feat/plaza-recintos-recorrido`, sin fusionar en `main`; versionCode 13, enviada a revisión de Google en prueba cerrada y producción el 2026-11-11) · Juega en la web: https://davidpladel.com/zoo/ (aún con una versión anterior) · Android: **publicado en Google Play** (producción) con la 2.8.1 (versionCode 11, desde el 2026-10-29)
 
 ## La idea
 
@@ -35,6 +35,7 @@ Pensado para niños de 6 a 9 años: sin textos largos y sin perder. En Android h
 
 | Versión | Fecha | Qué trajo |
 |---|---|---|
+| **2.10.0** | 2026-11-11 | Cerdos (Rosita, Morrito, Trufa, Bellota y Churro), barro y baño de cerdos y elefantes, clínica para curar a los malitos, tutoriales de bañar y curar con huellas en el suelo, zoo más grande con plaza y fuente del león, paisaje y cartel en cada recinto, camino automático a la tienda y la clínica, monedas de cada animal en el libro y sonidos nuevos al comer, bañar y curar (CC0). Notas en `game/store/notas-version-2.10.0.txt`. |
 | **2.9.0** | 2026-11-02 | Luna (la perrita de la cuidadora, 67 🪙, sigue a la cuidadora y curiosea en la tienda; con página en el libro), Jose (cría de panda), atajos y jardín de cerezos en la U, tutorial visual sin leer (con estadísticas en Matomo), tienda abierta desde el principio, libro siempre a la vista desde la 3.ª visita, estanque y ovejas a 120 🪙, arreglo del joystick que se quedaba empujando solo. Lleva también R8 (la 2.8.2, que no se llegó a subir): el código Android baja de 16,4 a 4,9 MB. |
 | **2.8.1** | 2026-10-23 | La 2.8.0 se subió a Play con un AAB anterior a los últimos arreglos (el libro se desbordaba en chino y japonés). Esta lleva todo lo de la 2.8.0, sin cambios de código. |
 | **2.8.0** | 2026-10-21 | El juego en 11 idiomas (submenú de idioma en Ajustes), también los titulares del tablón; el libro ya no se desborda en chino y japonés; las reacciones y monedas al dar de comer salen por delante del título y de la X, y la lluvia de monedas de la tienda por encima de todo. |

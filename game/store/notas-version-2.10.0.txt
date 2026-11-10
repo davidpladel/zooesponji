@@ -1,0 +1,143 @@
+<es-ES>
+¡Novedades en Zoo Esponji!
+• Llegan los cerdos: Rosita, Morrito, Trufa, Bellota y Churro.
+• Cerdos y elefantes se manchan de barro: ¡báñalos!
+• Nueva clínica para curar a los animales que enferman.
+• Tutoriales para aprender a bañar y a curar.
+• Un zoo más grande, con plaza y fuente con nuestro león.
+• Cada recinto tiene su paisaje y su cartel.
+• Mayor facilidad para llegar a la tienda y clínica de forma automática.
+• El libro enseña cuántas monedas ganas por cada animal.
+</es-ES>
+<es-419>
+¡Novedades en Zoo Esponji!
+• Llegan los cerdos: Rosita, Morrito, Trufa, Bellota y Churro.
+• Cerdos y elefantes se manchan de lodo: ¡báñalos!
+• Nueva clínica para curar a los animales que enferman.
+• Tutoriales para aprender a bañar y a curar.
+• Un zoo más grande, con plaza y fuente con nuestro león.
+• Cada recinto tiene su paisaje y su cartel.
+• Mayor facilidad para llegar a la tienda y clínica de forma automática.
+• El libro enseña cuántas monedas ganas por cada animal.
+</es-419>
+<en-US>
+What's new in Zoo Esponji!
+• The pigs are here: Rosita, Morrito, Trufa, Bellota and Churro.
+• Pigs and elephants get muddy: give them a bath!
+• A new clinic to cure animals when they get sick.
+• Tutorials to learn how to bathe and cure them.
+• A bigger zoo, with a square and a fountain with our lion.
+• Every enclosure has its own scenery and sign.
+• Getting to the shop and the clinic is now easier and automatic.
+• The book shows how many coins you earn from each animal.
+</en-US>
+<en-GB>
+What's new in Zoo Esponji!
+• The pigs are here: Rosita, Morrito, Trufa, Bellota and Churro.
+• Pigs and elephants get muddy: give them a bath!
+• A new clinic to cure animals when they get ill.
+• Tutorials to learn how to bathe and cure them.
+• A bigger zoo, with a square and a fountain with our lion.
+• Every enclosure has its own scenery and sign.
+• Getting to the shop and the clinic is now easier and automatic.
+• The book shows how many coins you earn from each animal.
+</en-GB>
+<fr-FR>
+Du nouveau dans Zoo Esponji !
+• Voici les cochons : Rosita, Morrito, Trufa, Bellota et Churro.
+• Cochons et éléphants pleins de boue : lave-les !
+• Une nouvelle clinique pour soigner les animaux malades.
+• Des tutoriels pour apprendre à laver et soigner.
+• Un zoo plus grand : une place et la fontaine de notre lion.
+• Chaque enclos a son paysage et son panneau.
+• Aller à la boutique et à la clinique est plus facile et automatique.
+• Le livre montre combien de pièces tu gagnes par animal.
+</fr-FR>
+<it-IT>
+Novità in Zoo Esponji!
+• Arrivano i maiali: Rosita, Morrito, Trufa, Bellota e Churro.
+• Maiali ed elefanti si sporcano di fango: lavali!
+• Una nuova clinica per curare gli animali che si ammalano.
+• Tutorial per imparare a lavare e a curare.
+• Uno zoo più grande, con piazza e fontana con il nostro leone.
+• Ogni recinto ha il suo paesaggio e il suo cartello.
+• Arrivare al negozio e alla clinica è più facile e automatico.
+• Il libro mostra quante monete guadagni con ogni animale.
+</it-IT>
+<pt-BR>
+Novidades no Zoo Esponji!
+• Chegaram os porquinhos: Rosita, Morrito, Trufa, Bellota e Churro.
+• Porcos e elefantes se sujam de lama: dê banho neles!
+• Nova clínica para curar os animais que ficam doentes.
+• Tutoriais para aprender a dar banho e a curar.
+• Um zoo maior, com praça e fonte com o nosso leão.
+• Cada recinto tem sua paisagem e sua placa.
+• Ficou mais fácil chegar à loja e à clínica, de forma automática.
+• O livro mostra quantas moedas você ganha com cada animal.
+</pt-BR>
+<pt-PT>
+Novidades no Zoo Esponji!
+• Chegaram os porquinhos: Rosita, Morrito, Trufa, Bellota e Churro.
+• Porcos e elefantes sujam-se de lama: dá-lhes banho!
+• Nova clínica para curar os animais que ficam doentes.
+• Tutoriais para aprender a dar banho e a curar.
+• Um zoo maior, com praça e fonte com o nosso leão.
+• Cada recinto tem a sua paisagem e a sua placa.
+• Ficou mais fácil chegar à loja e à clínica, de forma automática.
+• O livro mostra quantas moedas ganhas com cada animal.
+</pt-PT>
+<ru-RU>
+Новое в Zoo Esponji!
+• Пришли свинки: Rosita, Morrito, Trufa, Bellota и Churro.
+• Свинки и слоны пачкаются в грязи: искупай их!
+• Новая клиника, чтобы лечить заболевших животных.
+• Обучение: как купать и как лечить.
+• Зоопарк стал больше: площадь и фонтан с нашим львом.
+• У каждого вольера свой пейзаж и своя табличка.
+• До магазина и клиники теперь легко добраться автоматически.
+• Книга показывает, сколько монет приносит каждое животное.
+</ru-RU>
+<ar>
+جديد في Zoo Esponji!
+• وصلت الخنازير: Rosita وMorrito وTrufa وBellota وChurro.
+• الخنازير والفيلة تتّسخ بالطين: حمّمها!
+• عيادة جديدة لعلاج الحيوانات التي تمرض.
+• دروس لتتعلّم كيف تحمّم الحيوانات وتعالجها.
+• حديقة أكبر، فيها ساحة ونافورة مع أسدنا.
+• لكل حظيرة منظرها ولافتتها.
+• صار الوصول إلى المتجر والعيادة أسهل وتلقائيًا.
+• الكتاب يبيّن كم قطعة نقدية تربح من كل حيوان.
+</ar>
+<hi-IN>
+Zoo Esponji में नया क्या है!
+• सूअर आ गए: Rosita, Morrito, Trufa, Bellota और Churro।
+• सूअर और हाथी कीचड़ में गंदे हो जाते हैं: उन्हें नहलाओ!
+• बीमार जानवरों के इलाज के लिए नया क्लिनिक।
+• नहलाना और इलाज करना सीखने के लिए ट्यूटोरियल।
+• बड़ा चिड़ियाघर, चौक और हमारे शेर वाले फव्वारे के साथ।
+• हर बाड़े का अपना नज़ारा और अपना बोर्ड।
+• दुकान और क्लिनिक तक पहुँचना अब आसान है, अपने आप।
+• किताब बताती है कि हर जानवर से कितने सिक्के मिलते हैं।
+</hi-IN>
+<ja-JP>
+Zoo Esponji の新しいこと！
+• ブタがやってきた：Rosita、Morrito、Trufa、Bellota、Churro。
+• ブタとゾウはどろんこになるよ：おふろに入れてあげよう！
+• 病気になった動物をなおす、新しい病院。
+• おふろと治りょうのやり方を覚えるチュートリアル。
+• 動物園が広くなりました。広場と、ライオンのふん水も。
+• どの囲いにも、それぞれの景色とかんばん。
+• お店と病院へ、自動で行きやすくなりました。
+• 本で、動物ごとにもらえるコインがわかります。
+</ja-JP>
+<zh-CN>
+Zoo Esponji 新内容！
+• 小猪来啦：Rosita、Morrito、Trufa、Bellota 和 Churro。
+• 小猪和大象会沾上泥巴：给它们洗个澡吧！
+• 新诊所，治好生病的动物。
+• 教你洗澡和治病的教程。
+• 动物园更大了，有广场和我们的狮子喷泉。
+• 每个围栏都有自己的风景和招牌。
+• 去商店和诊所更容易了，会自动带路。
+• 图鉴会告诉你每种动物能赚多少金币。
+</zh-CN>
