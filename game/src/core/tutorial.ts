@@ -1,5 +1,6 @@
 import { trayFoods, ANIMALS, type AnimalId } from '../data/animals';
 import type { FoodId } from '../data/foods';
+import type { CleanStep } from './cleaning';
 
 /** Las lecciones: la de inicio (aprender a jugar), la de la limpieza y la de la clínica. */
 export type LessonId = 'inicio' | 'limpieza' | 'clinica';
@@ -56,4 +57,77 @@ export function goodFood(species: AnimalId): FoodId {
     foods.find((f) => reaction(f) !== 'rechaza') ??
     foods[0]!
   );
+}
+
+/** Lección de limpieza: tocar al animal sucio y, dentro, cada herramienta en su orden. */
+export const CLEAN_LESSON_STEPS = ['tap-dirty', 'cacahuete', 'cepillo', 'jabon', 'agua', 'toalla'] as const;
+export type CleanLessonStep = (typeof CLEAN_LESSON_STEPS)[number];
+
+/**
+ * Lección de clínica: tocar al enfermo, darle comida (sale el «¡puaj!» y la cruz), tocar la cruz, tocar su cama
+ * en la clínica y curarlo. `back-to-clinic`: salió de la clínica sin curarlo, la mano señala el botón para volver.
+ */
+export const CLINIC_LESSON_STEPS = ['tap-sick', 'drag-food', 'cross', 'bed', 'back-to-clinic', 'cure'] as const;
+export type ClinicLessonStep = (typeof CLINIC_LESSON_STEPS)[number];
+
+export type LessonEvent =
+  | { type: 'clean-opened' }
+  | { type: 'clean-step'; step: CleanStep | 'hecho' }
+  | { type: 'clean-closed'; done: boolean }
+  | { type: 'feed-opened' }
+  | { type: 'feed-closed' }
+  | { type: 'sick-refused' }
+  | { type: 'clinic-requested' }
+  | { type: 'clinic-opened' }
+  | { type: 'clinic-closed' }
+  | { type: 'cure-opened' }
+  | { type: 'cure-closed'; done: boolean };
+
+/** Cada paso de la limpieza avanza cuando ese paso se completa; si cierra a medias, vuelve a tocar al animal. */
+export function advanceClean(step: CleanLessonStep, event: LessonEvent): CleanLessonStep | 'done' {
+  if (step === 'tap-dirty') return event.type === 'clean-opened' ? 'cacahuete' : step;
+  if (event.type === 'clean-step') return event.step === 'hecho' ? 'done' : event.step;
+  if (event.type === 'clean-closed') return event.done ? 'done' : 'tap-dirty';
+  return step;
+}
+
+export function advanceClinic(step: ClinicLessonStep, event: LessonEvent): ClinicLessonStep | 'done' {
+  switch (step) {
+    case 'tap-sick':
+      return event.type === 'feed-opened' ? 'drag-food' : step;
+    case 'drag-food':
+      if (event.type === 'sick-refused') return 'cross';
+      return event.type === 'feed-closed' ? 'tap-sick' : step;
+    case 'cross':
+      if (event.type === 'clinic-requested') return 'bed';
+      return event.type === 'feed-closed' ? 'tap-sick' : step;
+    case 'bed':
+      if (event.type === 'cure-opened') return 'cure';
+      return event.type === 'clinic-closed' ? 'back-to-clinic' : step;
+    case 'back-to-clinic':
+      return event.type === 'clinic-opened' ? 'bed' : step;
+    case 'cure':
+      if (event.type === 'cure-closed') return event.done ? 'done' : 'bed';
+      return step;
+  }
+}
+
+/** Nombre de cada paso del tutorial de inicio en Matomo (en español, como el resto de nombres). */
+const START_STEP_NAMES: Record<string, string> = {
+  move: 'moverse', 'tap-animal': 'tocar-animal', 'drag-food': 'arrastrar-comida', coins: 'monedas', shop: 'tienda',
+};
+const CLINIC_STEP_NAMES: Record<string, string> = {
+  'tap-sick': 'tocar-animal', 'drag-food': 'comida', cross: 'cruz', bed: 'cama', 'back-to-clinic': 'volver', cure: 'curar',
+};
+
+/** Los de inicio conservan sus nombres de siempre; los nuevos llevan delante su lección (`limpieza/cepillo`). */
+export function lessonStepName(lesson: LessonId, step: string): string {
+  switch (lesson) {
+    case 'inicio':
+      return START_STEP_NAMES[step] ?? step;
+    case 'limpieza':
+      return `limpieza/${step === 'tap-dirty' ? 'tocar-animal' : step}`;
+    case 'clinica':
+      return `clinica/${CLINIC_STEP_NAMES[step] ?? step}`;
+  }
 }
