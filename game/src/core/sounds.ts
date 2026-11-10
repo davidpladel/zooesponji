@@ -10,6 +10,7 @@ export const CARE_SOUND_IDS = [
   'comer-crujiente',
   'comer-blanda',
   'limpiar-cacahuete',
+  'limpiar-cepillo',
   'limpiar-jabon',
   'limpiar-agua',
   'limpiar-toalla',
@@ -29,10 +30,10 @@ export function eatSound(food: FoodId): CareSoundId {
   return CRUNCHY.has(food) ? 'comer-crujiente' : 'comer-blanda';
 }
 
-/** Lo que suena mientras se frota con cada herramienta. El cepillo, sin sonido hasta que David elija uno. */
+/** Lo que suena mientras se frota con cada herramienta. */
 const TOOL_SOUND: Readonly<Record<CleanStep, CareSoundId | null>> = {
   cacahuete: 'limpiar-cacahuete',
-  cepillo: null,
+  cepillo: 'limpiar-cepillo',
   jabon: 'limpiar-jabon',
   agua: 'limpiar-agua',
   toalla: 'limpiar-toalla',
@@ -45,7 +46,7 @@ export function toolSound(step: CleanStep): CareSoundId | null {
 /** Al frotar, cada cuánto vuelve a sonar la herramienta (más o menos lo que dura su sonido, para que no se pisen). */
 export const RUB_SOUND_GAP_MS: Readonly<Record<CleanStep, number>> = {
   cacahuete: 280,
-  cepillo: 300,
+  cepillo: 380,
   jabon: 420,
   agua: 780,
   toalla: 220,

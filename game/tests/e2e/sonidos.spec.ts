@@ -43,7 +43,7 @@ test('comer: la carne se traga', async ({ page }) => {
   expect(await sounds(page)).not.toContain('comer-crujiente');
 });
 
-test('limpiar: cada herramienta suena al frotar (el cepillo, aún sin sonido)', async ({ page }) => {
+test('limpiar: cada herramienta suena al frotar', async ({ page }) => {
   await startGame(page);
   await page.evaluate(async () => {
     await window.__ZOO__!.addCoins(500);
@@ -74,7 +74,7 @@ test('limpiar: cada herramienta suena al frotar (el cepillo, aún sin sonido)', 
   expect(heard.toalla).toContain('limpiar-toalla');
   // Cada herramienta, solo su sonido: el del agua no suena con el jabón.
   expect(heard.jabon).not.toContain('limpiar-agua');
-  expect(heard.cepillo?.some((id) => id.startsWith('limpiar-')) ?? false).toBe(false);
+  expect(heard.cepillo).toContain('limpiar-cepillo');
 });
 
 test('curar: cada medicina suena distinto', async ({ page }) => {

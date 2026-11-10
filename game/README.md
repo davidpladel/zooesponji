@@ -228,7 +228,7 @@ Ganchos disponibles: `addCoins(n)`, `openFeed('leon')`, `openShop()`, `openSetti
 
 En `public/audio/` (CC0, créditos en `CREDITS.md`): un `.ogg` por efecto de interfaz (`tap`, `come`, `rechaza`, `especial`, `coin`, `buy`, `unlock`), `music.ogg`/`music.mp3`, y `.wav` para la campanita, el paso y los cuidados.
 
-- **Cuidados (2026-11-10, votados por David entre sonidos CC0 de OpenGameArt):** qué suena con cada comida (crujiente o blanda), herramienta y medicina está en `core/sounds.ts`. Al frotar, la herramienta suena cada `RUB_SOUND_GAP_MS`; el **cepillo**, sin sonido hasta que se elija uno. `barro` y `malito` suenan solo si el animal está en pantalla. Los nuevos se recortan al trozo que suena, en mono a 32 kHz y con el volumen igualado.
+- **Cuidados (2026-11-10, votados por David entre sonidos CC0 de OpenGameArt):** qué suena con cada comida (crujiente o blanda), herramienta y medicina está en `core/sounds.ts`. Al frotar, la herramienta suena cada `RUB_SOUND_GAP_MS` (el cepillo es un trozo de 0,4 s de una grabación continua de BigSoundBank). `barro` y `malito` suenan solo si el animal está en pantalla. Los nuevos se recortan al trozo que suena, en mono a 32 kHz y con el volumen igualado.
 - **Cada `SoundId` necesita su archivo:** `tests/unit/sounds.test.ts` lo comprueba. En `npm run dev` un archivo que falta no se queda en silencio: Vite devuelve la página, no se puede decodificar y sale la pantalla «¡Ups!» (pasó el 2026-11-10 con `curar-vendaje.wav`).
 - **Qué ha sonado:** `__ZOO__.soundsPlayed()` y `clearSounds()` en las pruebas de juego (`tests/e2e/sonidos.spec.ts`).
 

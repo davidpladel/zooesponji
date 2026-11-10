@@ -17,15 +17,15 @@ describe('sonidos de comer, limpiar y curar', () => {
     for (const food of FOOD_IDS) expect(SOUND_IDS).toContain(eatSound(food));
   });
 
-  it('cada herramienta suena al frotar, menos el cepillo, que aún no tiene sonido elegido', () => {
+  it('cada herramienta suena al frotar', () => {
     expect(toolSound('cacahuete')).toBe('limpiar-cacahuete');
     expect(toolSound('jabon')).toBe('limpiar-jabon');
     expect(toolSound('agua')).toBe('limpiar-agua');
     expect(toolSound('toalla')).toBe('limpiar-toalla');
-    expect(toolSound('cepillo')).toBeNull();
+    expect(toolSound('cepillo')).toBe('limpiar-cepillo');
     for (const step of CLEAN_STEPS) {
-      const id = toolSound(step);
-      if (id) expect(RUB_SOUND_GAP_MS[step]).toBeGreaterThanOrEqual(100);
+      expect(toolSound(step)).not.toBeNull();
+      expect(RUB_SOUND_GAP_MS[step]).toBeGreaterThanOrEqual(100);
     }
   });
 
