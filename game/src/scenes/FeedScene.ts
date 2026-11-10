@@ -8,6 +8,7 @@ import { FOODS, type FoodId } from '../data/foods';
 import { findResident } from '../data/pens';
 import { t, type StringKey } from '../data/strings';
 import { sfx } from '../systems/audio';
+import { eatSound } from '../core/sounds';
 import { bus } from '../systems/events';
 import { getSession } from '../systems/session';
 import { foodKey, getArt } from '../art/art';
@@ -364,7 +365,7 @@ export class FeedScene extends Phaser.Scene {
     animal.setScale(this.baseScale).setAngle(0).setX(baseX);
 
     if (result.reaction === 'come') {
-      sfx.play('come');
+      sfx.play(eatSound(foodId));
       this.say(`${t('feed.yum')} 😋`);
       this.tweens.add({ targets: animal, scaleY: this.baseScale * 0.85, duration: 120, yoyo: true, repeat: 2 });
     } else if (result.reaction === 'rechaza') {

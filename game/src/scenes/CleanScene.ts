@@ -5,6 +5,7 @@ import type { Vec } from '../core/movement';
 import { findResident } from '../data/pens';
 import { t, type StringKey } from '../data/strings';
 import { sfx } from '../systems/audio';
+import { RUB_SOUND_GAP_MS, toolSound } from '../core/sounds';
 import { bus } from '../systems/events';
 import { getSession } from '../systems/session';
 import { sceneryTexture } from '../ui/paint';
@@ -66,6 +67,8 @@ export class CleanScene extends Phaser.Scene {
   private glow!: Phaser.GameObjects.Graphics;
   private tileSize = 0;
   private trail = 0;
+  /** Cuándo sonó la herramienta por última vez al frotar (ms del reloj de la escena). */
+  private lastRubSound = -Infinity;
   private finished = false;
   private fx: Phaser.GameObjects.Text[] = [];
 
@@ -167,6 +170,7 @@ export class CleanScene extends Phaser.Scene {
     const before = this.cleaning;
     this.cleaning = stroke(before, distance);
     if (this.cleaning === before) return;
+    this.rubSound(before.step);
     this.trail += distance;
     while (this.trail >= TRAIL_EVERY) {
       this.trail -= TRAIL_EVERY;
@@ -175,6 +179,15 @@ export class CleanScene extends Phaser.Scene {
     if (this.cleaning.step !== before.step || this.cleaning.face !== before.face) this.stepDone(before);
     this.refresh();
     if (isDone(this.cleaning)) void this.finish();
+  }
+
+  /** Mientras se frota, la herramienta suena; cada una, a su ritmo para que el sonido no se pise. */
+  private rubSound(step: CleaningState['step']): void {
+    if (step === 'hecho') return;
+    const id = toolSound(step);
+    if (!id || this.time.now - this.lastRubSound < RUB_SOUND_GAP_MS[step]) return;
+    this.lastRubSound = this.time.now;
+    sfx.play(id);
   }
 
   private createTools(width: number, height: number, panelW: number): void {

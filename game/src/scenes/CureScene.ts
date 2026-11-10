@@ -5,6 +5,7 @@ import type { Vec } from '../core/movement';
 import { findResident } from '../data/pens';
 import { t, type StringKey } from '../data/strings';
 import { sfx } from '../systems/audio';
+import { medicineSound } from '../core/sounds';
 import { bus } from '../systems/events';
 import { getSession } from '../systems/session';
 import { sceneryTexture } from '../ui/paint';
@@ -119,7 +120,7 @@ export class CureScene extends Phaser.Scene {
   give(id: MedicineId): void {
     if (this.done) return;
     this.doses = Math.min(CURE_DOSES, this.doses + 1);
-    sfx.play('come');
+    sfx.play(medicineSound(id));
     const item = this.pooled(MEDICINE_EMOJI[id], Math.round(this.scale.height * 0.06)).setPosition(this.animal.x, this.animal.y);
     this.tweens.add({ targets: item, y: item.y - 60, alpha: 0, duration: 700, onComplete: () => item.setVisible(false) });
     this.tweens.add({ targets: this.animal, y: this.animal.y - 10, duration: 120, yoyo: true });

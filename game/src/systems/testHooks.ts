@@ -32,6 +32,7 @@ import { startAds } from './adsInstall';
 import { getCommunity } from './community';
 import { startCommunity } from './communityInstall';
 import { bus, type GameEvents } from './events';
+import { sfx } from './audio';
 import { getLanguage, isLanguage } from './language';
 import type { Platform } from './platform';
 import { getSession } from './session';
@@ -102,10 +103,16 @@ export interface ZooTestApi {
   care(): CareState;
   /** Pone de barro el charco de un recinto (sin esperar sus minutos). */
   forceMuddy(penId: PenId): Promise<void>;
-  /** Mancha a un animal como si hubiera pisado el barro (pone el charco de barro si no lo estaba). */
-  forceSoil(residentId: string): Promise<void>;
-  /** Pone malito a un animal (sin esperar al azar). */
-  forceSick(residentId: string): Promise<void>;
+  /**
+   * Mancha a un animal como si hubiera pisado el barro (pone el charco de barro si no lo estaba). Con `natural`,
+   * avisa también como cuando pasa jugando (sonido, estadísticas).
+   */
+  forceSoil(residentId: string, natural?: boolean): Promise<void>;
+  /** Pone malito a un animal (sin esperar al azar). Con `natural`, avisa como cuando pasa jugando. */
+  forceSick(residentId: string, natural?: boolean): Promise<void>;
+  /** Los últimos efectos de sonido que ha pedido el juego, y vaciarlos. */
+  soundsPlayed(): string[];
+  clearSounds(): void;
   /** ¿Se ven en el mundo las manchas o la carita de enfermo de un animal? */
   careMarks(residentId: string): { mud: boolean; sick: boolean } | null;
   /** El charco de un recinto en el mundo. */
@@ -304,13 +311,20 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
     forceMuddy: async (penId) => {
       if (isMudPen(penId)) await getSession().setCare(makeMuddy(getSession().care, penId));
     },
-    forceSoil: async (residentId) => {
+    forceSoil: async (residentId, natural) => {
       const penId = findResident(residentId)?.penId;
       if (!penId || !isMudPen(penId)) return;
       await getSession().setCare(soil(makeMuddy(getSession().care, penId), penId, residentId));
+      if (natural) bus.emit('animal-soiled', { penId, residentId });
     },
-    forceSick: async (residentId) => {
+    forceSick: async (residentId, natural) => {
       await getSession().setCare(fallSick(getSession().care, residentId));
+      const penId = findResident(residentId)?.penId;
+      if (natural && penId) bus.emit('animal-sick', { penId, residentId });
+    },
+    soundsPlayed: () => [...sfx.recent],
+    clearSounds: () => {
+      sfx.recent.length = 0;
     },
     careMarks: (residentId) => game.scene.getScene<WorldScene>('World').careMarks(residentId),
     puddleOf: (penId) => game.scene.getScene<WorldScene>('World').puddleOf(penId),

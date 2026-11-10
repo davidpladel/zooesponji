@@ -55,6 +55,8 @@ const NOTICE_MS = AD_OFFER_MS + 250;
 const PET_REST_MS = 200;
 /** Lo que duran las huellas hasta la tienda si nadie las sigue (ms). */
 const TRAIL_MS = 30_000;
+/** Entre dos sonidos de barro o de malito, como poco (si se manchan varios a la vez, suena uno). */
+const CARE_SOUND_GAP_MS = 800;
 
 type WasdKeys = Record<'W' | 'A' | 'S' | 'D', Phaser.Input.Keyboard.Key>;
 
@@ -99,6 +101,8 @@ export class WorldScene extends Phaser.Scene {
   private trail!: PawTrail;
   /** Para qué son las huellas: la tienda (botón) o el animal que señala el tutorial. */
   private trailFor: 'shop' | 'resident' | null = null;
+  /** Cuándo sonó por última vez el barro o el malito. */
+  private lastCareSound = -Infinity;
 
   constructor() {
     super('World');
@@ -166,6 +170,9 @@ export class WorldScene extends Phaser.Scene {
     this.care = new CareDirector();
     this.pens.setCare(getSession().care);
     const offCare = bus.on('care-changed', () => this.pens.setCare(getSession().care));
+    // Se mancha de barro o se pone malito: suena solo si se ve (lejos no se sabría qué ha pasado).
+    const offSoiled = bus.on('animal-soiled', ({ residentId }) => this.careSound('barro', residentId));
+    const offSick = bus.on('animal-sick', ({ residentId }) => this.careSound('malito', residentId));
     // Al acabar o dejar una lección (o saltar su aviso), el siguiente aviso que falte: el de la clínica tras el de la limpieza.
     const nextLessonOffer = () => this.time.delayedCall(NOTICE_MS, () => this.maybeLessonOffer());
     // Al empezar la partida, si se salta uno (o se deja a medias con la ✕), el siguiente espera un rato; al salir de la
@@ -187,6 +194,8 @@ export class WorldScene extends Phaser.Scene {
       offShopUnlocked();
       offFed();
       offCare();
+      offSoiled();
+      offSick();
       offLessonEnded();
       offLessonAnswered();
       offCommunity();
@@ -333,6 +342,16 @@ export class WorldScene extends Phaser.Scene {
   /** El charco de un recinto (para pruebas). */
   puddleOf(penId: PenId): { x: number; y: number; rx: number; ry: number; muddy: boolean } | null {
     return this.pens?.puddleOf(penId) ?? null;
+  }
+
+  /** Suena `id` si el animal está en la pantalla, y como mucho uno cada poco (varios cerdos a la vez en el charco). */
+  private careSound(id: 'barro' | 'malito', residentId: string): void {
+    if (!this.scene.isActive()) return;
+    const at = this.residentScreenPos(residentId);
+    if (!at || at.x < 0 || at.y < 0 || at.x > this.scale.width || at.y > this.scale.height) return;
+    if (this.time.now - this.lastCareSound < CARE_SOUND_GAP_MS) return;
+    this.lastCareSound = this.time.now;
+    sfx.play(id);
   }
 
   residentScreenPos(residentId: string): Vec | null {

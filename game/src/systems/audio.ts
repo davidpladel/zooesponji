@@ -2,17 +2,22 @@ import type * as Phaser from 'phaser';
 import type { Settings } from '../core/save';
 import { withVersion } from '../core/cacheBust';
 import { getSession } from './session';
+import { CARE_SOUND_IDS, type CareSoundId } from '../core/sounds';
 
-export type SoundId = 'come' | 'rechaza' | 'especial' | 'coin' | 'buy' | 'unlock' | 'tap' | 'campanita' | 'paso';
-export const SOUND_IDS: readonly SoundId[] = ['come', 'rechaza', 'especial', 'coin', 'buy', 'unlock', 'tap', 'campanita', 'paso'];
+const BASE_SOUNDS = ['come', 'rechaza', 'especial', 'coin', 'buy', 'unlock', 'tap', 'campanita', 'paso'] as const;
+export type SoundId = (typeof BASE_SOUNDS)[number] | CareSoundId;
+export const SOUND_IDS: readonly SoundId[] = [...BASE_SOUNDS, ...CARE_SOUND_IDS];
 
-/** La campanita y el paso se sintetizan con scripts/make-*.mjs (wav); el resto son ogg de Kenney. */
-export const soundFile = (id: SoundId): string => `audio/${id}.${id === 'campanita' || id === 'paso' ? 'wav' : 'ogg'}`;
+const WAV: ReadonlySet<SoundId> = new Set<SoundId>(['campanita', 'paso', ...CARE_SOUND_IDS]);
+
+/** La campanita y el paso se sintetizan con scripts/make-*.mjs y los de cuidados vienen de CREDITS.md (wav); el resto son ogg de Kenney. */
+export const soundFile = (id: SoundId): string => `audio/${id}.${WAV.has(id) ? 'wav' : 'ogg'}`;
 
 export const soundKey = (id: SoundId): string => `sfx-${id}`;
 export const MUSIC_KEY = 'music';
 
 const SFX_VOLUME = 0.6;
+const RECENT_MAX = 60;
 const MUSIC_VOLUME = 0.25;
 
 /** Motivos por los que la música se para: menú de ajustes, app en segundo plano, móvil en vertical, anuncio en pantalla. */
@@ -47,8 +52,14 @@ export class AudioSystem {
     this.syncMusic();
   }
 
+  /** Los últimos efectos que ha pedido el juego (para las pruebas: qué suena en cada acción). */
+  readonly recent: SoundId[] = [];
+
   play(id: SoundId): void {
-    if (this.settings()?.sfx === false || !this.backend) return;
+    if (this.settings()?.sfx === false) return;
+    this.recent.push(id);
+    if (this.recent.length > RECENT_MAX) this.recent.shift();
+    if (!this.backend) return;
     const key = soundKey(id);
     try {
       if (this.backend.has(key)) this.backend.play(key, SFX_VOLUME);
