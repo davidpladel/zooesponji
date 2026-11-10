@@ -155,3 +155,26 @@ test('la ✕ del tutorial no tapa el botón de la clínica', async ({ page }) =>
   const gearTop = 360 - 16 - 56;
   expect(close.y + 22).toBeLessThan(gearTop);
 });
+
+test('clínica: tras dar la pastilla, la tirita también cuenta (el navegador no cancela el arrastre)', async ({ page }) => {
+  // 2026-11-10: Chrome cancelaba el puntero (pointercancel) al pulsar la tirita justo después de la pastilla, y no
+  // contaba. Se arregló con user-select: none en la página.
+  await startGame(page);
+  await page.evaluate(async () => {
+    await window.__ZOO__!.addCoins(500);
+    await window.__ZOO__!.buy('cerdos');
+    await window.__ZOO__!.giveClinic();
+    await window.__ZOO__!.forceSick('rosita');
+  });
+  await page.evaluate(() => window.__ZOO__!.openClinic());
+  await page.waitForFunction(() => window.__ZOO__!.clinicBeds() !== null);
+  const bed = (await page.evaluate(() => window.__ZOO__!.clinicBedPos(0)))!;
+  const box = (await page.locator('canvas').boundingBox())!;
+  await page.mouse.click(box.x + bed.x, box.y + bed.y);
+  await page.waitForFunction(() => window.__ZOO__!.cureDoses() !== null, null, { timeout: 20_000 });
+  const cure = (await page.evaluate(() => window.__ZOO__!.cureTargets()))!;
+  await drag(page, cure.medicines.pastilla!, cure.animal);
+  await expect.poll(() => page.evaluate(() => window.__ZOO__!.cureDoses())).toBe(1);
+  await drag(page, cure.medicines.vendaje!, cure.animal);
+  await expect.poll(() => page.evaluate(() => window.__ZOO__!.cureDoses())).toBe(2);
+});

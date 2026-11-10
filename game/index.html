@@ -16,6 +16,14 @@
         overflow: hidden;
         background: #58b0f0;
         touch-action: none;
+        /* Sin selección ni arrastre del navegador: al pulsar una medicina tras dar otra, Chrome cancelaba el
+           puntero (pointercancel) y la medicina se quedaba sin soltar (2026-11-10). */
+        user-select: none;
+        -webkit-user-select: none;
+        -webkit-touch-callout: none;
+      }
+      canvas {
+        -webkit-user-drag: none;
       }
       #game {
         position: fixed;
