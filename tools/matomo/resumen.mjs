@@ -110,18 +110,30 @@ out.push('## Retención por semana de inicio', '', table(
   of('nuevo').sort((a, b) => a.name.localeCompare(b.name)).map((r) => [r.name, r.events, share(n('vuelve-d1', r.name), r.events), share(n('vuelve-d7', r.name), r.events), share(n('vuelve-d30', r.name), r.events)]),
 ), '');
 
-// Tutorial (desde la 2.9.0): se ofrece al empezar; se aprende entonces o luego desde Ajustes.
-const TUTORIAL_STEPS = ['moverse', 'tocar-animal', 'arrastrar-comida', 'monedas', 'tienda'];
-const tutorialStarts = n('tutorial-aprende') + n('tutorial-menu');
-out.push('## Tutorial', '', table(['Dato', 'Valor'], [
-  ['Se ofrece al empezar', n('tutorial-ofrece')],
-  ['Dicen que sí (de los ofrecidos)', share(n('tutorial-aprende'), n('tutorial-ofrece'))],
-  ['Se lo saltan (de los ofrecidos)', share(n('tutorial-salta'), n('tutorial-ofrece'))],
-  ['Lo abren desde Ajustes', n('tutorial-menu')],
-  ['Lo terminan (de los que lo empiezan)', share(n('tutorial-fin'), tutorialStarts)],
-]), '', 'Cada paso: cuántas veces se llega a él y cuántas se deja el tutorial justo ahí.', '', table(
+// Tutorial (desde la 2.9.0): se ofrece al empezar; se aprende entonces o luego desde Ajustes. Desde el 2026-11-10 hay
+// tres lecciones (inicio, limpieza, clínica): cada evento lleva la lección en el nombre; los de antes, sin nombre, son de inicio.
+const LESSONS = ['inicio', 'limpieza', 'clinica'];
+const byLesson = (action, lesson) => (lesson === 'inicio' ? n(action) - n(action, 'limpieza') - n(action, 'clinica') : n(action, lesson));
+const LESSON_STEPS = {
+  inicio: ['moverse', 'tocar-animal', 'arrastrar-comida', 'monedas', 'tienda'],
+  limpieza: ['limpieza/tocar-animal', 'limpieza/cacahuete', 'limpieza/cepillo', 'limpieza/jabon', 'limpieza/agua', 'limpieza/toalla'],
+  clinica: ['clinica/tocar-animal', 'clinica/comida', 'clinica/cruz', 'clinica/cama', 'clinica/volver', 'clinica/curar'],
+};
+out.push('## Tutorial', '', 'Por lección (inicio, limpieza, clínica). El aviso de inicio sale al empezar; los otros dos, al salir de la tienda con el recinto de barro o la clínica.', '', table(
+  ['Dato', ...LESSONS],
+  [
+    ['Se ofrece', ...LESSONS.map((l) => byLesson('tutorial-ofrece', l))],
+    ['Dicen que sí (de los ofrecidos)', ...LESSONS.map((l) => share(byLesson('tutorial-aprende', l), byLesson('tutorial-ofrece', l)))],
+    ['Se lo saltan (de los ofrecidos)', ...LESSONS.map((l) => share(byLesson('tutorial-salta', l), byLesson('tutorial-ofrece', l)))],
+    ['Desde Ajustes', ...LESSONS.map((l) => byLesson('tutorial-menu', l))],
+    ['Lo terminan (de los que lo empiezan)', ...LESSONS.map((l) => share(byLesson('tutorial-fin', l), byLesson('tutorial-aprende', l) + byLesson('tutorial-menu', l)))],
+  ],
+), '', 'Cada paso: cuántas veces se llega a él y cuántas se deja la lección justo ahí.', '', table(
   ['Paso', 'Llegan', 'Lo dejan aquí'],
-  TUTORIAL_STEPS.map((step) => [step, n('tutorial-paso', step), n('tutorial-deja', step)]),
+  LESSONS.flatMap((l) => LESSON_STEPS[l]).map((step) => [step, n('tutorial-paso', step), n('tutorial-deja', step)]),
+), '', 'Para practicar: animal ensuciado o puesto malito por la lección, o ya lo estaba («ya-estaba»).', '', table(
+  ['Lección', 'Preparado', 'Ya estaba'],
+  ['limpieza', 'clinica'].map((l) => [l, of('tutorial-prepara').filter((r) => r.name.startsWith(`${l}/`)).reduce((s, r) => s + r.events, 0) - n('tutorial-prepara', `${l}/ya-estaba`), n('tutorial-prepara', `${l}/ya-estaba`)]),
 ), '');
 
 // Ayudas para llegar a la tienda y dar de comer sin leer (2026-11-08): si se usan.
