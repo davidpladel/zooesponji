@@ -1,6 +1,6 @@
 # Cerdos, limpieza de animales y clínica — diseño
 
-Fecha: 2026-11-09 · Estado: **implementado** en la rama `feat/plaza-recintos-recorrido` (2026-11-09), pendiente de que David y los niños lo prueben. Al final, «Cómo quedó al construirlo».
+Fecha: 2026-11-09 · Estado: **implementado** en la rama `feat/plaza-recintos-recorrido` (2026-11-09); David lo probó el 2026-11-09 («parece que va bien todo»). Sin fusionar en `main` ni subir a Play. Al final, «Cómo quedó al construirlo».
 
 Las ideas son de los niños de la casa. En este documento, lo marcado como **[decisión mía]** no lo han dicho ellos: es una propuesta para que la cambien si no les gusta.
 
@@ -128,7 +128,8 @@ Nombres de cerdos, tiempos exactos del charco y las enfermedades, medicinas, ani
 - **Tiempos:** charco de barro entre 2 y 5 minutos de juego; una enfermedad cada 3 a 6 minutos de juego (con la clínica comprada). Quien pisa el barro tiene un 30 % de mancharse cada segundo.
 - **Comer con un malito:** cada comida le da «¡puaj!» sin monedas; tras el primero sale la cruz al lado del animal y el aviso «¡Está malito! Toca la cruz…».
 - **Clínica por dentro:** veterinario (médico con espejo frontal) y veterinaria (con cofia) del pack de personajes; dos camillas. Al curar al de la primera, el otro pasa a la primera camilla.
-- **Curar:** 4 medicinas (pastilla, tirita, jarabe, termómetro); 5 dosis en cualquier orden llenan la barra.
+- **Limpiar:** el último paso es una **toalla** para secarlo (David, 2026-11-09), dibujada a píxeles porque no hay emoji de toalla (`ui/towelArt.ts`); antes salía una cesta.
+- **Curar:** 4 medicinas (pastilla, tirita, jarabe, termómetro); 5 dosis en cualquier orden llenan la barra. Se queda así a propósito: sin orden y sin tener que usar las cuatro (David, 2026-11-09).
 - **Luna en la clínica (2026-11-09):** si se ha comprado, entra detrás de la cuidadora y curiosea como en la tienda (las camillas y los veterinarios), y sale con ella.
 - **Botón de la clínica (2026-11-09):** debajo del de la tienda, con una cruz roja. Sale desde la primera vez que se entra en la clínica (las visitas se guardan en la partida) y la cuidadora va andando sola hasta la puerta.
 - **Estadísticas:** ver «Estadísticas (Matomo)» más abajo (añadidas el 2026-11-09).

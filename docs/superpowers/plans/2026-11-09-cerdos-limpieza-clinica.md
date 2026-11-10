@@ -1,5 +1,7 @@
 # Cerdos, limpieza y clínica — Plan de implementación
 
+> **Estado (2026-11-10):** hecho entero en la rama `feat/plaza-recintos-recorrido` y probado por David. Lo que se cambió después de este plan (dibujo de los cerdos, charco animado, toalla, botón de la clínica, Luna en la clínica, revisión de estadísticas) está en «Cómo quedó al construirlo» de la spec.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking. Nota de David: en este proyecto se trabaja inline, sin subagentes (`executing-plans`).
 
 **Goal:** Añadir el recinto de cerdos, el charco de barro con limpieza de 5 pasos (cerdos y los dos tipos de elefante) y la clínica donde se curan los animales enfermos.

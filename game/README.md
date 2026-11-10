@@ -10,7 +10,7 @@ Spec: `docs/superpowers/specs/2026-09-27-motor-phaser-v3-design.md`
 npm install          # dependencias
 npm run dev          # juego en http://localhost:5173
 npm test             # tests de lógica (Vitest)
-npm run test:e2e     # 30 pruebas de juego (29 corren solas; la de capturas en inglés, solo a mano con CAPTURAS=1) en el navegador (Playwright; en local usa el Chrome instalado; si alguna falla por tiempo, --workers=1)
+npm run test:e2e     # pruebas de juego en el navegador (Playwright; en local usa el Chrome instalado; la de capturas en inglés, solo a mano con CAPTURAS=1; si alguna falla por tiempo, --workers=1). Ver «Pruebas de juego» abajo
 npm run build        # build de producción en dist/
 npm run check:manifest # comprueba el manifiesto fusionado de Android (sin identificador de publicidad, con el de AdMob); con `-- --publicar` exige el identificador real. Compilar antes con Gradle
 npm run check:aab      # comprueba que el AAB de publicación salió de R8 (con `r8.json` y el archivo de desofuscación, sin reglas que lo apaguen) y enseña lo que pesa el código Android. Compilar antes con Gradle
@@ -27,6 +27,17 @@ npx cap open android # abre Android Studio (▶ Run para probar en el móvil)
 
 Icono y ficha de Play (desde `game/store/`, Python + Pillow + numpy): `python make_icon.py` dibuja el león y genera el icono 512, los iconos de Android y los splash; con el juego en marcha (`npm run dev`), `node store/shots.mjs` saca las capturas a `store/out/` (varias tomas de cada recinto, para elegir); `node store/shots-tablon.mjs` saca el muro del tablón con las ideas reales, en español e inglés; después `python make.py` compone el gráfico de funciones 1024×500 y copia las capturas a `play/`. El splash usa la letra `store/fonts/Baloo2.ttf` sobre el azul cielo `#58B0F0`. Los textos de la ficha, en todos los idiomas, están en `store/ficha-play-traducciones.txt` y se suben siempre juntos (ver «Idiomas de la ficha de Play» en el README principal).
 
+### Pruebas de juego
+
+- **Usan el servidor del 5173.** Si ya hay un `npm run dev` abierto, las pruebas lo reutilizan; si no, arrancan uno
+  propio y lo cierran al acabar. **No pares ni reinicies el `npm run dev` mientras corren:** las páginas que estén
+  cargando fallan con `ERR_CONNECTION_REFUSED`. Eso no es un fallo del juego: se vuelven a lanzar (pasó el
+  2026-11-09).
+- **De una en una** (`--workers=1`) si el PC está cargado o hay jugadores con IA en marcha.
+- **Capturas para revisar a ojo:** un `.spec.ts` temporal en `tests/e2e/` que hace `page.screenshot` a una carpeta
+  fuera del repo y se borra al acabar. En idiomas de derecha a izquierda, el lienzo se busca con
+  `page.locator('canvas').first()`: en árabe hay más de un `canvas` en la página.
+
 Tráiler (43 s, español e inglés): guion, pasos y piezas en [`trailer/README.md`](trailer/README.md).
 
 ## Arte
@@ -42,10 +53,20 @@ Sin `public/art/` el juego funciona con arte provisional (emojis y colores plano
 - **Qué se extrae de cada pack:** `art/art.config.json`.
 - **Terreno:** formato RPG Maker A2 (`src/core/autotile.ts` compone cada tile con 4 cuartos de 8 px según sus vecinos).
 - **Decoración:** piezas ("props") recortadas de los packs en `art/art.config.json` (`props`, `foods`, `companions`). Para catalogar: `npm run art:grid -- <zip> "<hoja>" <salida.png>` (rejilla ampliada) y `npm run art:props-sheet -- <salida.png>` (tablón de todas las piezas). Las salidas van fuera del repo.
-- **Agua animada:** una pieza con `animate: { step, count, area?, fps? }` en `art.config.json` se importa como hoja de fotogramas (`step` = distancia entre fotogramas en la hoja del pack; `area` = zona que cambia).
+- **Agua animada:** una pieza con `animate: { step, count, area?, fps? }` en `art.config.json` se importa como hoja de fotogramas (`step` = distancia entre fotogramas en la hoja del pack; `area` = zona que cambia). Las piezas (animadas o compuestas) aceptan también `edits` con `swap` de colores, como los animales: así salen las charcas de barro (`pond-grassland-mud`, `water-savannah-mud`), la misma charca con los azules del agua cambiados a marrón.
+- **Dibujos propios de un animal (de los niños o hechos con ChatGPT).** Protocolo (2026-11-09, cerdos):
+  1. **Revisar antes de usarlo:** hoja de 48×64 (3 columnas × 4 filas de 16×16), fondo transparente sin
+     semitransparencias (solo píxeles opacos o vacíos), contorno `#414040` como el pack, filas en orden de frente,
+     izquierda, derecha y de espaldas, patas tocando el borde de abajo (si no, flota sobre la sombra) y la columna
+     del medio distinta (paso de andar). Si son varios del mismo recinto, cada uno con algo propio además del color,
+     y los colores que diga su página del libro (cambiarlos obliga a reescribirla en 11 idiomas).
+  2. **Dónde va:** `zooesponji-private/art-work/terminados/<especie>-<nombre>.png`, nunca en este repo.
+  3. **Engancharlo:** `"override": "<archivo>.png"` en su aspecto de `art.config.json`, dejando el `zip`/`file` y
+     los `edits` del pack como reserva: sin el repo privado, el juego usa el dibujo del pack recoloreado.
+  4. `npm run art:import` (dice «usando el dibujo de los niños») y una captura del recinto y de su página del libro.
 - **Carne:** cuando exista `zooesponji-private/art-work/terminados/carne.png`, `art:import` la usa en la bandeja (mientras, emoji 🥩).
 - **Mapa:** `npm run make:zoo-map` regenera `public/assets/maps/zoo.tmj` (mapa lógico de 96×60; el arte lo pone el juego). El parque de siempre queda en el centro y de sus caminos salen tres zonas, cada una con su cartel: sabana y elefantes al norte, polo al oeste y granja al este. Desde el 2026-11-01 hay atajos por los bordes y a las esquinas del cuadrado central, y una «U» arriba con un jardín de flores dentro. `npm run map:preview -- --antes <tmj>` dibuja el mapa lógico en PNG con lo nuevo en rojo (por defecto en `docs/superpowers/mockups/`).
-- **Tienda por dentro:** `npm run make:shop-map` regenera `public/assets/maps/tienda.tmj` (20×12: suelo, pared, muebles, tendero, 5 peanas, felpudo y decoración). `art:import` recorta los muebles del *Interior Tileset Pack – Essentials* (`interior` en `art.config.json`, salen como `interior-*.png`); sin ellos la tienda se pinta con colores. `npm run make:campanita` y `npm run make:paso` vuelven a sintetizar `public/audio/campanita.wav` y `paso.wav`. Dentro, la cuidadora anda por la rejilla de `tienda.tmj` con las peanas bloqueadas (`core/shopWalk.ts`: alcance, punto de aproximación, pista y felpudo). Tienda: enseña como mucho 5 artículos, los más baratos que se pueden comprar (recintos por abrir y "otro animal" de los abiertos, mezclados y de menor a mayor precio; `core/shopEntries.ts`). Las peanas se deciden al entrar y no cambian mientras se está dentro: si un animal se completa, su peana se queda con el sello AGOTADO y lo siguiente sale en la próxima visita. En la estantería hay un **libro secreto** (`BookScene`, `core/book.ts`, `data/book.ts`): 51 páginas (la historia, Luna, Mary y cada animal con nombre) repartidas en capítulos por zona, con un índice tocable y una portadilla por capítulo que no cuentan. Las páginas salen de los recintos de `data/pens.ts`; se guardan los ids leídos en `book` del guardado. Desde la 3.ª visita a la tienda (`shop.visits` del guardado), si el libro no se ha abierto nunca (`book.opened`), se ve parpadeando encima de la estantería (`showBookNotice`). En la página de cada animal, debajo del dibujo, van sus monedas sin palabras (`pageCoins`, 2026-11-09): «🪙 n» por comer (lo mismo que por lavarlo o curarlo) y, si tiene comida especial, su dibujo y lo que da de más («🐇 +1 🪙»). Bloqueada, también, con una estrella en vez de la comida; las portadillas no llevan.
+- **Tienda por dentro:** `npm run make:shop-map` regenera `public/assets/maps/tienda.tmj` (20×12: suelo, pared, muebles, tendero, 5 peanas, felpudo y decoración). `art:import` recorta los muebles del *Interior Tileset Pack – Essentials* (`interior` en `art.config.json`, salen como `interior-*.png`); sin ellos la tienda se pinta con colores. `npm run make:campanita` y `npm run make:paso` vuelven a sintetizar `public/audio/campanita.wav` y `paso.wav`. Dentro, la cuidadora anda por la rejilla de `tienda.tmj` con las peanas bloqueadas (`core/shopWalk.ts`: alcance, punto de aproximación, pista y felpudo). Tienda: enseña como mucho 5 artículos, los más baratos que se pueden comprar (recintos por abrir y "otro animal" de los abiertos, mezclados y de menor a mayor precio; `core/shopEntries.ts`). Las peanas se deciden al entrar y no cambian mientras se está dentro: si un animal se completa, su peana se queda con el sello AGOTADO y lo siguiente sale en la próxima visita. En la estantería hay un **libro secreto** (`BookScene`, `core/book.ts`, `data/book.ts`): 56 páginas (la historia, Luna, Mary y cada animal con nombre) repartidas en capítulos por zona, con un índice tocable y una portadilla por capítulo que no cuentan. Las páginas salen de los recintos de `data/pens.ts`; se guardan los ids leídos en `book` del guardado. Desde la 3.ª visita a la tienda (`shop.visits` del guardado), si el libro no se ha abierto nunca (`book.opened`), se ve parpadeando encima de la estantería (`showBookNotice`). En la página de cada animal, debajo del dibujo, van sus monedas sin palabras (`pageCoins`, 2026-11-09): «🪙 n» por comer (lo mismo que por lavarlo o curarlo) y, si tiene comida especial, su dibujo y lo que da de más («🐇 +1 🪙»). Bloqueada, también, con una estrella en vez de la comida; las portadillas no llevan.
 
 ### Animales distintos dentro de un recinto
 
@@ -125,6 +146,23 @@ recintos de al menos 14×9 por dentro con el paisaje de cada especie y farolas r
 - **Matomo:** `mapa | boton-tienda | huellas/apagar/andando` y `comer | pista-arrastrar | …` dicen si se usan estas
   ayudas; el resumen (`node tools/matomo/resumen.mjs`) tiene apartados de tutorial y de «ayudas sin palabras».
 
+## Estadísticas: qué hacer con cada cosa nueva
+
+Protocolo (revisado el 2026-11-09 con los cuidados). Cada novedad que el niño pueda tocar o que le pase:
+
+1. **Un aviso en el bus** (`systems/events.ts`) desde la escena, con lo justo: ids, nunca textos.
+2. **Su traducción en `GameTracker`** (`systems/analyticsEvents.ts`), con una prueba en
+   `tests/unit/analyticsEvents.test.ts`. Los animales van con su recinto delante (`residentName`: `cerdos/rosita`) y
+   lo comprado se nombra igual al mirarlo, al no llegar y al comprarlo (`edificio/clinica`, `mascota/luna`).
+3. **La acción en `CATALOG`** (`core/eventCatalog.ts`): única en todo el catálogo.
+4. **Escrita en su spec**, en una tabla «Estadísticas (Matomo)»: `eventCatalog.test.ts` falla si una acción no sale
+   en ninguna de las specs que lista (al crear una spec nueva con eventos, se añade a esa lista).
+5. **Lo que se tiene** (un recinto, la clínica, Luna) va también en `tiene` al empezar el día y al comprarlo, para
+   comparar solo entre quienes lo tienen.
+6. **Su apartado en `tools/matomo/resumen.mjs`** y `node tools/matomo/resumen.mjs` con los datos que haya, para ver
+   que sale sin errores.
+7. Las partidas de los jugadores con IA llevan las estadísticas apagadas (`settings.stats: false` en su escenario).
+
 ## Jugadores con IA
 
 Niños simulados (5 años sin leer y 10 años que lee) juegan a la versión construida solo con capturas, tocando,
@@ -136,7 +174,8 @@ encargo de cada jugador: `scripts/ia/instrucciones.md`.
 3. Capturas, diario e informes van al repo privado: `zooesponji-private/docs/jugadores-ia/AAAA-MM-DD/<id>/`, y el
    resumen de la pasada en `resumen.md` de esa carpeta. 30 acciones como mucho por partida.
 4. **Los jugadores se lanzan de uno en uno, nunca en paralelo:** seis navegadores a la vez dejan el PC muy lento.
-5. **Escenarios** (`scripts/ia/escenarios.ts`): `/partida` con `"escenario": "cuidados"` empieza con una partida
+5. **Escenarios** (`scripts/ia/escenarios.ts`; al añadir un dato al guardado, se añade también a cada escenario o
+   falla `iaEscenarios.test.ts`): `/partida` con `"escenario": "cuidados"` empieza con una partida
    preparada (cerdos y elefantes llenos, clínica comprada, tres animales manchados, dos malitos y charcos de
    barro), para que el objetivo `cuidar` no gaste acciones en comprarlo todo. Llevan las estadísticas apagadas: las
    partidas de IA no cuentan en Matomo. `tests/unit/iaEscenarios.test.ts` comprueba que el juego las lee tal cual.
@@ -144,6 +183,15 @@ encargo de cada jugador: `scripts/ia/instrucciones.md`.
 ## Interfaz
 
 Las piezas de los menús (píldoras, paneles, carteles, chapa de cerrar, monedas) están en `src/ui/`. Se pintan con Canvas 2D en texturas porque el juego usa `pixelArt: true`. Todo botón pasa por `makePressable` (`src/ui/press.ts`), que le da el efecto al pulsar, y todo texto de la interfaz se crea con `addUiText` (`src/ui/text.ts`) para que no tiemble al cambiar de tamaño. Los bocetos de referencia están en `docs/superpowers/mockups/`.
+
+- **Sin palabras cuando se pueda:** iconos, números y el dibujo del juego (la moneda de `coinImage`, la comida de
+  la bandeja, la tiendita o la cruz de `core/guideArt.ts`) en lugar de texto. Así cabe en los 11 idiomas sin
+  traducir y lo entienden los niños que no leen (botón de la tienda y de la clínica, monedas del libro).
+- **Árabe (derecha a izquierda):** un número con signo («+1») sale al revés («1+»). Se aísla con
+  `String.fromCodePoint(0x2066)` delante y `0x2069` detrás, como en las monedas del libro. Nunca se pegan esos
+  caracteres tal cual en el código: no se ven al leerlo.
+- **Sin emoji para algo:** se dibuja a píxeles en una tabla de letras (la toalla en `ui/towelArt.ts`, la tiendita y
+  la cruz en `core/guideArt.ts`) con su prueba de medidas y colores.
 
 ## Estructura
 
