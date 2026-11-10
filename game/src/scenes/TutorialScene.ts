@@ -24,7 +24,7 @@ import { addHand } from '../ui/hand';
 import { addIcon } from '../ui/icons';
 import { addShopBubble, pawTexture, setBubbleTail } from '../ui/pixelArt';
 import { addEmoji } from '../ui/text';
-import { HUD_COIN, HUD_SHOP, addCloseBadge } from '../ui/widgets';
+import { HUD_CLINIC, HUD_COIN, HUD_SHOP, addCloseBadge } from '../ui/widgets';
 import type { CleanScene } from './CleanScene';
 import type { ClinicScene } from './ClinicScene';
 import type { CureScene } from './CureScene';
@@ -43,8 +43,11 @@ const DRAG_MS = 1800;
 const RUB_MS = 2400;
 /** Si la cuidadora no ha llegado a la clínica en este rato (se ha ido a otro sitio), la mano señala su botón. Largo: los peques tardan en hacer caso (David, 2026-11-10). */
 const CLINIC_WAIT_MS = 15_000;
-/** Dónde va la ✕ que cierra el tutorial: debajo del botón de la tienda, en la columna de las monedas. */
-export const CLOSE_AT: Vec = { x: HUD_SHOP.x, y: HUD_SHOP.y + 62 };
+/**
+ * Dónde va la ✕ que cierra el tutorial: en la columna de las monedas, debajo del hueco del botón de la clínica (aunque
+ * aún no se vea), para no taparlo (David, 2026-11-10). Arriba a la derecha no: ahí está la ✕ de la tienda y la clínica.
+ */
+export const CLOSE_AT: Vec = { x: HUD_CLINIC.x, y: HUD_CLINIC.y + (HUD_CLINIC.y - HUD_SHOP.y) - 10 };
 
 /**
  * Desde dónde se abre (el aviso o el botón Aprender del menú, para Matomo) y qué lecciones hace, seguidas y sin

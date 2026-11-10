@@ -135,3 +135,23 @@ test('botón de la clínica: sale debajo del de la tienda tras la primera visita
   await page.mouse.click(box.x + clinic.x, box.y + clinic.y);
   await page.waitForFunction(() => window.__ZOO__!.activeScenes().includes('Clinic'), null, { timeout: 90_000 });
 });
+
+test('la ✕ del tutorial no tapa el botón de la clínica', async ({ page }) => {
+  // Apaisado y bajo, como el móvil: la ✕ tiene que caber entre la clínica y el engranaje.
+  await page.setViewportSize({ width: 640, height: 360 });
+  await startGame(page);
+  await page.evaluate(() => window.__ZOO__!.giveClinic());
+  await page.evaluate(() => window.__ZOO__!.openClinic());
+  await page.waitForFunction(() => window.__ZOO__!.clinicBeds() !== null);
+  await page.evaluate(() => window.__ZOO__!.back());
+  await page.waitForFunction(() => window.__ZOO__!.hudClinicButtonPos() !== null);
+
+  await page.evaluate(() => window.__ZOO__!.openTutorial());
+  await page.waitForFunction(() => window.__ZOO__!.tutorialClosePos() !== null);
+  const clinic = (await page.evaluate(() => window.__ZOO__!.hudClinicButtonPos()))!;
+  const close = (await page.evaluate(() => window.__ZOO__!.tutorialClosePos()))!;
+  // Botón de 64 px y ✕ de 44: sus centros, a más de 32 + 22.
+  expect(Math.abs(close.y - clinic.y)).toBeGreaterThan(54);
+  const gearTop = 360 - 16 - 56;
+  expect(close.y + 22).toBeLessThan(gearTop);
+});

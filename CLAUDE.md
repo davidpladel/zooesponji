@@ -68,8 +68,12 @@ dominio y correo.
    spec dice por qué.
 4. **Textos en 11 idiomas** y, si es un animal, su página del libro (`game/README.md` › Añadir un animal). Los
    dibujos propios siguen el protocolo de `game/README.md` › Arte.
-5. **Pruebas:** unitarias y de juego (Playwright) de lo nuevo. Al empezar la tarea se pregunta a David si las lanza
-   Claude o él. Las pesadas van de una en una (`--workers=1`), nunca varios navegadores o jugadores con IA a la vez.
+5. **Pruebas de cada cosa, en todos sus casos.** Cada acción, evento o cosa que pase en el juego lleva su prueba
+   (unitaria y, si se ve o se toca, de juego con Playwright), una por cada caso de uso posible: el normal, el que se
+   salta o cancela, el que ya lo tenía de antes, el de la partida vieja, el que no lee, pantalla baja apaisada… Y
+   **cada fallo que aparezca** (lo encuentre David jugando o salga en una revisión) lleva primero una prueba que lo
+   reproduzca y falle; después se arregla y se ve pasar. Al empezar la tarea se pregunta a David si las lanza Claude o
+   él. Las pesadas van de una en una (`--workers=1`), nunca varios navegadores o jugadores con IA a la vez.
 6. **Lo visual lo valida David** jugando o con capturas: no se da por terminado sin su prueba.
 7. **Documentación al día al cerrar cada bloque:** README raíz (estado y hoja de ruta), `game/README.md`, el apartado
    «Cómo quedó» o «Estado» de la spec y las casillas del plan.

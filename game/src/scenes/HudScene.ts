@@ -23,8 +23,8 @@ import type { WorldScene } from './WorldScene';
 const GUIDE_SCALE = 2;
 /** Lo que se aparta del borde de la pantalla el bocadillo que señala la tienda. */
 const EDGE_MARGIN = 44;
-/** Esquina de las monedas, el botón de la tienda y la ✕ del tutorial, que el bocadillo del borde no tapa. */
-const HUD_CORNER = { x: 190, y: 220 };
+/** Esquina de las monedas, los botones de la tienda y la clínica y la ✕ del tutorial, que el bocadillo del borde no tapa. */
+const HUD_CORNER = { x: 190, y: 270 };
 /** Tiendita del aviso «Cómpralo en la tienda»: 14x11 a x3 (unos 33 px de alto, como el texto). */
 const TOAST_ICON_SCALE = 3;
 const TOAST_ICON_GAP = 10;
@@ -153,7 +153,7 @@ export class HudScene extends Phaser.Scene {
     const door = world.shopDoorScreenPos();
     const hint = door ? edgeHint(door, this.scale.width, this.scale.height, EDGE_MARGIN) : null;
     if (!hint) return;
-    // Arriba a la izquierda están las monedas y el botón de la tienda: el bocadillo se aparta de ellos.
+    // Arriba a la izquierda están las monedas, los botones y la ✕ del tutorial: el bocadillo se aparta de ellos.
     if (hint.x < HUD_CORNER.x && hint.y < HUD_CORNER.y) {
       if (hint.side === 'up') hint.x = HUD_CORNER.x;
       else hint.y = HUD_CORNER.y;
