@@ -16,6 +16,8 @@ export const STRINGS_JA: Record<StringKey, string> = {
   'settings.learn': 'あそびかた',
   'tutorial.learn': 'ならう',
   'tutorial.skip': 'とばす',
+  'lesson.clean.offer': 'どうぶつが どろんこに なるよ！ あらいかたを おぼえよう？',
+  'lesson.clinic.offer': 'びょういんが できたよ！ なおしかたを おぼえよう？',
   'settings.quit': 'やめる',
   'legal.close': 'とじる',
   'legal.error': 'ページを ひらけませんでした。もういちど ためしてね。',

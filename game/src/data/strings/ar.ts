@@ -17,6 +17,8 @@ export const STRINGS_AR: Record<StringKey, string> = {
   'settings.learn': 'تعلّم اللعب',
   'tutorial.learn': 'تعلّم',
   'tutorial.skip': 'تخطَّ',
+  'lesson.clean.offer': 'حيواناتك تتّسخ بالطين! هل نتعلّم كيف نحمّمها؟',
+  'lesson.clinic.offer': 'صار عندك عيادة! هل نتعلّم كيف نعالج؟',
   'settings.quit': 'خروج',
   'legal.close': 'إغلاق',
   'legal.error': 'تعذّر فتح الصفحة. حاول مرة أخرى.',

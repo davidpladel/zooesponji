@@ -16,6 +16,8 @@ export const STRINGS_ZH: Record<StringKey, string> = {
   'settings.learn': '学习玩法',
   'tutorial.learn': '学一学',
   'tutorial.skip': '跳过',
+  'lesson.clean.offer': '你的动物会沾上泥巴！我们来学怎么给它们洗澡吧？',
+  'lesson.clinic.offer': '你有诊所啦！我们来学怎么治病吧？',
   'settings.quit': '退出',
   'legal.close': '关闭',
   'legal.error': '页面打不开。请再试一次。',

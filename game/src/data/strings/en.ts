@@ -16,6 +16,8 @@ export const STRINGS_EN: Record<StringKey, string> = {
   'settings.learn': 'Learn to play',
   'tutorial.learn': 'Learn',
   'tutorial.skip': 'Skip',
+  'lesson.clean.offer': 'YOUR ANIMALS GET MUDDY! SHALL WE LEARN TO WASH THEM?',
+  'lesson.clinic.offer': 'YOU HAVE A CLINIC NOW! SHALL WE LEARN TO HEAL?',
   'settings.quit': 'Quit',
   'legal.close': 'Close',
   'legal.error': 'The page could not be opened. Please try again.',

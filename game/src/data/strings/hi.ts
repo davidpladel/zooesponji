@@ -16,6 +16,8 @@ export const STRINGS_HI: Record<StringKey, string> = {
   'settings.learn': 'खेलना सीखो',
   'tutorial.learn': 'सीखो',
   'tutorial.skip': 'छोड़ो',
+  'lesson.clean.offer': 'तुम्हारे जानवर कीचड़ में गंदे हो जाते हैं! क्या उन्हें नहलाना सीखें?',
+  'lesson.clinic.offer': 'अब तुम्हारे पास क्लिनिक है! क्या इलाज करना सीखें?',
   'settings.quit': 'बाहर जाओ',
   'legal.close': 'बंद करो',
   'legal.error': 'पेज नहीं खुल पाया। फिर से कोशिश करो।',

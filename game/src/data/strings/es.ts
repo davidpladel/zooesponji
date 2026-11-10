@@ -10,6 +10,9 @@ export const STRINGS_ES = {
   'settings.learn': 'Aprender',
   'tutorial.learn': 'Aprender',
   'tutorial.skip': 'Saltar',
+  // Avisos de las lecciones de limpieza y de clínica: en MAYÚSCULAS, así las leen mejor los niños.
+  'lesson.clean.offer': '¡TUS ANIMALES SE MANCHAN DE BARRO! ¿APRENDEMOS A BAÑARLOS?',
+  'lesson.clinic.offer': '¡YA TIENES CLÍNICA! ¿APRENDEMOS A CURAR?',
   'settings.quit': 'Salir',
   'legal.close': 'Cerrar',
   'legal.error': 'No se ha podido abrir la página. Inténtalo otra vez.',
