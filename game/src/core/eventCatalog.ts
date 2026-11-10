@@ -27,7 +27,7 @@ export const CATALOG = {
   ajustes: ['musica', 'sonidos', 'joystick', 'idioma', 'privacidad', 'salir-pregunta', 'salir-si', 'salir-no'],
   anuncio: ['anuncio-ofrece', 'anuncio-acepta', 'anuncio-no', 'anuncio-visto', 'anuncio-cortado', 'anuncio-fallo', 'anuncio-vacio', 'anuncio-segundos'],
   tablon: ['tablon-abre', 'tablon-aviso', 'tablon-vota', 'tablon-qr', 'tablon-sin-red', 'tablon-aviso-ganadora', 'tablon-pestana', 'tablon-pagina'],
-  tutorial: ['tutorial-ofrece', 'tutorial-aprende', 'tutorial-salta', 'tutorial-menu', 'tutorial-paso', 'tutorial-fin', 'tutorial-deja'],
+  tutorial: ['tutorial-ofrece', 'tutorial-aprende', 'tutorial-salta', 'tutorial-menu', 'tutorial-paso', 'tutorial-fin', 'tutorial-deja', 'tutorial-prepara'],
   tiene: ['tiene-recinto', 'tiene-animal', 'tiene-extra', 'tiene-saldo', 'tiene-paginas', 'tiene-ajuste'],
   alcance: [
     'dia-animal', 'semana-animal', 'vida-animal',

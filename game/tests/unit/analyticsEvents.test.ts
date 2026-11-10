@@ -6,6 +6,7 @@ import { defaultBook, defaultSettings, type KeyValueStore } from '../../src/core
 import { GameTracker, knownSteps } from '../../src/systems/analyticsEvents';
 import { EventBus, type GameEvents } from '../../src/systems/events';
 import { createMemoryStore } from '../../src/systems/storage';
+import { residentsIn } from '../../src/data/pens';
 
 function setup(opts: { state?: GameState; store?: KeyValueStore; active?: boolean; throwing?: boolean } = {}) {
   const events = new EventBus<GameEvents>();
@@ -212,28 +213,46 @@ describe('GameTracker: tienda', () => {
   it('tutorial: aviso, cómo se abre, cada paso con sus segundos, y si se termina o se deja', async () => {
     const t = setup();
     await t.tracker.start();
-    t.events.emit('tutorial-offered', {});
-    t.events.emit('tutorial-answered', { learn: true });
-    t.events.emit('tutorial-started', { from: 'aviso' });
-    t.events.emit('tutorial-step', { step: 'move' });
+    t.events.emit('tutorial-offered', { lesson: 'inicio' });
+    t.events.emit('tutorial-answered', { lesson: 'inicio', learn: true });
+    t.events.emit('tutorial-started', { from: 'aviso', lesson: 'inicio' });
+    t.events.emit('tutorial-step', { lesson: 'inicio', step: 'move' });
     t.clock.time += 12_000;
-    t.events.emit('tutorial-step', { step: 'tap-animal' });
+    t.events.emit('tutorial-step', { lesson: 'inicio', step: 'tap-animal' });
     t.clock.time += 30_000;
-    t.events.emit('tutorial-ended', { done: true, step: 'shop' });
+    t.events.emit('tutorial-ended', { lesson: 'inicio', done: true, step: 'shop' });
     expect(t.sent).toEqual(expect.arrayContaining([
-      'tutorial | tutorial-ofrece', 'tutorial | tutorial-aprende',
-      'tutorial | tutorial-paso | moverse', 'tutorial | tutorial-paso | tocar-animal', 'tutorial | tutorial-fin',
+      'tutorial | tutorial-ofrece | inicio', 'tutorial | tutorial-aprende | inicio',
+      'tutorial | tutorial-paso | moverse', 'tutorial | tutorial-paso | tocar-animal', 'tutorial | tutorial-fin | inicio',
     ]));
     expect(t.values.get('tutorial | tutorial-paso | tocar-animal')).toBe(12);
-    expect(t.values.get('tutorial | tutorial-fin')).toBe(42);
+    expect(t.values.get('tutorial | tutorial-fin | inicio')).toBe(42);
 
-    t.events.emit('tutorial-answered', { learn: false });
-    t.events.emit('tutorial-started', { from: 'menu' });
-    t.events.emit('tutorial-step', { step: 'move' });
+    t.events.emit('tutorial-answered', { lesson: 'inicio', learn: false });
+    t.events.emit('tutorial-started', { from: 'menu', lesson: 'inicio' });
+    t.events.emit('tutorial-step', { lesson: 'inicio', step: 'move' });
     t.clock.time += 5_000;
-    t.events.emit('tutorial-ended', { done: false, step: 'move' });
-    expect(t.sent).toEqual(expect.arrayContaining(['tutorial | tutorial-salta', 'tutorial | tutorial-menu', 'tutorial | tutorial-deja | moverse']));
+    t.events.emit('tutorial-ended', { lesson: 'inicio', done: false, step: 'move' });
+    expect(t.sent).toEqual(expect.arrayContaining(['tutorial | tutorial-salta | inicio', 'tutorial | tutorial-menu | inicio', 'tutorial | tutorial-deja | moverse']));
     expect(t.values.get('tutorial | tutorial-deja | moverse')).toBe(5);
+  });
+
+  it('lección de limpieza: pasos con su lección delante, segundos de la lección, y qué se prepara', async () => {
+    const t = setup();
+    await t.tracker.start();
+    const pig = residentsIn('cerdos', 1)[0]!.id;
+    t.events.emit('tutorial-started', { from: 'aviso', lesson: 'limpieza' });
+    t.clock.time += 5_000;
+    t.events.emit('tutorial-step', { lesson: 'limpieza', step: 'cepillo' });
+    t.events.emit('tutorial-prepared', { lesson: 'limpieza', residentId: pig, already: false });
+    t.events.emit('tutorial-prepared', { lesson: 'clinica', residentId: pig, already: true });
+    t.clock.time += 3_000;
+    t.events.emit('tutorial-ended', { lesson: 'limpieza', done: false, step: 'jabon' });
+    expect(t.values.get('tutorial | tutorial-paso | limpieza/cepillo')).toBe(5);
+    expect(t.sent).toEqual(expect.arrayContaining([
+      `tutorial | tutorial-prepara | limpieza/cerdos/${pig}`, 'tutorial | tutorial-prepara | clinica/ya-estaba',
+    ]));
+    expect(t.values.get('tutorial | tutorial-deja | limpieza/jabon')).toBe(8);
   });
 
   it('comprar a Luna se cuenta como compra de mascota', async () => {

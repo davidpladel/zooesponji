@@ -47,7 +47,7 @@ export class TutorialOfferScene extends Phaser.Scene {
     const y = cy + panelH * 0.3;
     this.learn = addPillButton(this, cx - w / 2 - 10, y, w, button, { color: 'green', icon: 'play', label: t('tutorial.learn'), onTap: () => this.start() });
     this.skipButton = addPillButton(this, cx + w / 2 + 10, y, w, button, { color: 'red', icon: 'close', label: t('tutorial.skip'), onTap: () => this.skip() });
-    if (!this.counted) bus.emit('tutorial-offered', {});
+    if (!this.counted) bus.emit('tutorial-offered', { lesson: 'inicio' });
     this.counted = true;
     sfx.play('coin');
     this.scale.once(Phaser.Scale.Events.RESIZE, this.onResize, this);
@@ -71,7 +71,7 @@ export class TutorialOfferScene extends Phaser.Scene {
     this.done = true;
     sfx.play('tap');
     void getSession().markLessonOffered('inicio');
-    bus.emit('tutorial-answered', { learn });
+    bus.emit('tutorial-answered', { lesson: 'inicio', learn });
     this.counted = false;
     this.scene.stop();
     this.scene.resume('World', { from: 'notice' });

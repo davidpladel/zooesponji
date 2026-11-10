@@ -7,6 +7,7 @@ import {
   type ActionOf, type Category, type ReachKind, type Step,
 } from '../core/eventCatalog';
 import { REACH_KEY, addPlay, emptyReach, markEver, markReach, markStep, parseReach, seedSteps, type ReachState } from '../core/reach';
+import { lessonStepName } from '../core/tutorial';
 import type { BookProgress, KeyValueStore, Settings } from '../core/save';
 import { BOOK_BACK_ID } from '../data/book';
 import { PEN_IDS, PENS, findResident, penCapacity } from '../data/pens';
@@ -62,12 +63,6 @@ export function knownSteps(state: GameState, book: BookProgress): Step[] {
  * hacen falta para ello: la ventana de comer abierta, la visita a la tienda, la lectura del libro,
  * el rato de juego y el alcance guardado en el dispositivo.
  */
-/** Nombre de cada paso del tutorial en Matomo (en español, como el resto de nombres). */
-const TUTORIAL_STEP_NAMES: Record<string, string> = {
-  move: 'moverse', 'tap-animal': 'tocar-animal', 'drag-food': 'arrastrar-comida', coins: 'monedas', shop: 'tienda',
-};
-export const tutorialStepName = (step: string): string => TUTORIAL_STEP_NAMES[step] ?? step;
-
 export class GameTracker implements AnalyticsHooks {
   /** `null` si el almacén ha fallado: sin él no se sabe qué es «primera vez» y no se cuenta. */
   private reach: ReachState | null = null;
@@ -162,19 +157,24 @@ export class GameTracker implements AnalyticsHooks {
       this.step('primera-compra');
       if (zooComplete(this.deps.state())) this.step('zoo-completo');
     });
-    on('tutorial-offered', () => this.send('tutorial', 'tutorial-ofrece'));
-    on('tutorial-answered', ({ learn }) => this.send('tutorial', learn ? 'tutorial-aprende' : 'tutorial-salta'));
-    on('tutorial-started', ({ from }) => {
+    // Cada evento lleva su lección (`inicio`, `limpieza`, `clinica`); los de antes, sin nombre, eran de `inicio`.
+    on('tutorial-offered', ({ lesson }) => this.send('tutorial', 'tutorial-ofrece', lesson));
+    on('tutorial-answered', ({ lesson, learn }) => this.send('tutorial', learn ? 'tutorial-aprende' : 'tutorial-salta', lesson));
+    on('tutorial-started', ({ from, lesson }) => {
+      // Los segundos son de esa lección, no de todo el encadenado del menú.
       this.tutorialAt = this.time();
-      if (from === 'menu') this.send('tutorial', 'tutorial-menu');
+      if (from === 'menu') this.send('tutorial', 'tutorial-menu', lesson);
     });
     // Cada paso al que se llega, con los segundos desde el principio: donde se corta la cuenta, ahí se atascan.
-    on('tutorial-step', ({ step }) => this.send('tutorial', 'tutorial-paso', tutorialStepName(step), this.tutorialSeconds()));
-    on('tutorial-ended', ({ done, step }) => {
-      if (done) this.send('tutorial', 'tutorial-fin', undefined, this.tutorialSeconds());
-      else this.send('tutorial', 'tutorial-deja', tutorialStepName(step), this.tutorialSeconds());
+    on('tutorial-step', ({ lesson, step }) => this.send('tutorial', 'tutorial-paso', lessonStepName(lesson, step), this.tutorialSeconds()));
+    on('tutorial-ended', ({ lesson, done, step }) => {
+      if (done) this.send('tutorial', 'tutorial-fin', lesson, this.tutorialSeconds());
+      else this.send('tutorial', 'tutorial-deja', lessonStepName(lesson, step), this.tutorialSeconds());
       this.tutorialAt = null;
     });
+    on('tutorial-prepared', ({ lesson, residentId, already }) =>
+      this.send('tutorial', 'tutorial-prepara', part(lesson, already ? 'ya-estaba' : residentName(residentId))),
+    );
     on('pet-bought', ({ petId, cost }) => {
       if (this.shop) this.shop.bought += 1;
       this.send('tienda', 'compra', part('mascota', petId), cost);

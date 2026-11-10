@@ -1,5 +1,6 @@
 import type { AdSlot } from '../core/adPacing';
 import type { Settings } from '../core/save';
+import type { LessonId } from '../core/tutorial';
 import type { Reaction } from '../data/animals';
 import type { FoodId } from '../data/foods';
 import type { PenId } from '../data/pens';
@@ -101,11 +102,13 @@ export interface GameEvents {
   /** Un edificio suelto comprado en la tienda (la clínica). */
   'building-bought': { buildingId: 'clinica'; cost: number };
   /** Tutorial: sale el aviso, se contesta, empieza (desde el aviso o el menú), llega a un paso y acaba (terminado o dejado con la ✕). */
-  'tutorial-offered': Record<string, never>;
-  'tutorial-answered': { learn: boolean };
-  'tutorial-started': { from: 'aviso' | 'menu' };
-  'tutorial-step': { step: string };
-  'tutorial-ended': { done: boolean; step: string };
+  'tutorial-offered': { lesson: LessonId };
+  'tutorial-answered': { lesson: LessonId; learn: boolean };
+  'tutorial-started': { from: 'aviso' | 'menu'; lesson: LessonId };
+  'tutorial-step': { lesson: LessonId; step: string };
+  'tutorial-ended': { lesson: LessonId; done: boolean; step: string };
+  /** Se ha ensuciado o puesto malito a un animal para practicar (o ya lo estaba: `already`). */
+  'tutorial-prepared': { lesson: 'limpieza' | 'clinica'; residentId: string; already: boolean };
   'shop-closed': Record<string, never>;
   'book-opened': { pageId: string };
   'book-page-shown': { pageId: string; kind: BookPageKind };

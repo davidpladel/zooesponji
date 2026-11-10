@@ -86,8 +86,8 @@ export class TutorialScene extends Phaser.Scene {
       bus.on('shop-opened', () => this.on({ type: 'shop-opened' })),
     ];
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => offs.forEach((off) => off()));
-    bus.emit('tutorial-started', { from: this.from });
-    bus.emit('tutorial-step', { step: this.step });
+    bus.emit('tutorial-started', { from: this.from, lesson: 'inicio' });
+    bus.emit('tutorial-step', { lesson: 'inicio', step: this.step });
   }
 
   private on(event: TutorialEvent): void {
@@ -98,7 +98,7 @@ export class TutorialScene extends Phaser.Scene {
       return;
     }
     this.step = next;
-    bus.emit('tutorial-step', { step: next });
+    bus.emit('tutorial-step', { lesson: 'inicio', step: next });
     this.clock = 0;
     this.moveFrom = null;
     if (next === 'coins') this.coinsTimer = this.time.delayedCall(COINS_SHOW_MS, () => this.on({ type: 'coins-shown' }));
@@ -107,7 +107,7 @@ export class TutorialScene extends Phaser.Scene {
   /** Termina (`done`) o se deja a medias con la ✕: no vuelve a salir solo; queda el botón Aprender del menú. */
   finish(done = false): void {
     if (!this.scene.isActive()) return;
-    bus.emit('tutorial-ended', { done, step: this.step });
+    bus.emit('tutorial-ended', { lesson: 'inicio', done, step: this.step });
     this.coinsTimer?.remove();
     if (this.scene.isActive()) this.scene.stop();
   }

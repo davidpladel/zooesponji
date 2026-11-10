@@ -16,10 +16,14 @@ describe('catálogo de eventos', () => {
   });
 
   it('toda acción está escrita en alguna de las specs que definen eventos', () => {
-    const specs = ['2026-10-07-analitica-anonima-matomo-design.md', '2026-10-07-analitica-detallada-design.md', '2026-10-12-publicidad-design.md', '2026-10-12-comunidad-design.md', '2026-11-01-luna-jose-caminos-tutorial-design.md', '2026-11-07-tienda-guia-mano-carteles-design.md', '2026-11-09-cerdos-limpieza-clinica-design.md']
+    const specs = ['2026-10-07-analitica-anonima-matomo-design.md', '2026-10-07-analitica-detallada-design.md', '2026-10-12-publicidad-design.md', '2026-10-12-comunidad-design.md', '2026-11-01-luna-jose-caminos-tutorial-design.md', '2026-11-07-tienda-guia-mano-carteles-design.md', '2026-11-09-cerdos-limpieza-clinica-design.md', '2026-11-10-tutorial-limpieza-clinica-design.md']
       .map((name) => readFileSync(new URL(`../../../docs/superpowers/specs/${name}`, import.meta.url), 'utf8'))
       .join('\n');
     for (const action of Object.values(CATALOG).flat()) expect(specs.includes(action), action).toBe(true);
+  });
+
+  it('el tutorial cuenta también qué se prepara para practicar', () => {
+    expect(CATALOG.tutorial).toContain('tutorial-prepara');
   });
 
   it('el embudo del catálogo son los pasos, en orden', () => {
