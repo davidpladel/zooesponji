@@ -41,8 +41,8 @@ const TAP_MS = 1200;
 const DRAG_MS = 1800;
 /** Arrastre que frota (herramientas de la limpieza): más largo, para que se vea el vaivén encima del animal. */
 const RUB_MS = 2400;
-/** Si la cuidadora no ha llegado a la clínica en este rato (se ha ido a otro sitio), la mano señala su botón. */
-const CLINIC_WAIT_MS = 6000;
+/** Si la cuidadora no ha llegado a la clínica en este rato (se ha ido a otro sitio), la mano señala su botón. Largo: los peques tardan en hacer caso (David, 2026-11-10). */
+const CLINIC_WAIT_MS = 15_000;
 /** Dónde va la ✕ que cierra el tutorial: debajo del botón de la tienda, en la columna de las monedas. */
 export const CLOSE_AT: Vec = { x: HUD_SHOP.x, y: HUD_SHOP.y + 62 };
 

@@ -195,3 +195,27 @@ test('Aprender del menú con cerdos y clínica: inicio, limpieza y clínica segu
   await canvasClick(page, (await page.evaluate(() => window.__ZOO__!.tutorialClosePos()))!);
   await page.waitForFunction(() => window.__ZOO__!.tutorialLesson() === null);
 });
+
+test('quien ya lo tenía todo y no entra en la tienda: al empezar la partida, un aviso y, si lo salta, el otro al rato', async ({ page }) => {
+  await startGame(page);
+  await buy(page, 'elefantes-asiaticos', 'clinic');
+  expect(await offerLesson(page)).toBeNull();
+  // Otra partida otro día (`lecciones=rapido`: espera 1 s en vez de los minutos de verdad).
+  await page.goto('/?sin-tutorial&lecciones=rapido');
+  await page.waitForFunction(() => window.__ZOO__?.activeScenes().includes('Title'));
+  const box = (await page.locator('canvas').boundingBox())!;
+  await page.mouse.click(box.x + box.width / 2, box.y + box.height * 0.62);
+  await page.waitForFunction(() => window.__ZOO__?.activeScenes().includes('World'));
+  await page.waitForFunction(() => window.__ZOO__!.tutorialOfferLesson() === 'limpieza', null, { timeout: 15_000 });
+  await tapOffer(page, 'skip');
+  // No sale seguido: espera su rato.
+  await page.waitForFunction(() => window.__ZOO__!.tutorialOfferLesson() === null);
+  await page.waitForTimeout(300);
+  expect(await offerLesson(page)).toBeNull();
+  await page.waitForFunction(() => window.__ZOO__!.tutorialOfferLesson() === 'clinica', null, { timeout: 15_000 });
+  await tapOffer(page, 'skip');
+  // Saltados los dos, ya no vuelven.
+  await page.waitForTimeout(3000);
+  expect(await offerLesson(page)).toBeNull();
+  expect(await page.evaluate(() => window.__ZOO__!.activeScenes())).not.toContain('TutorialOffer');
+});

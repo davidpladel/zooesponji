@@ -74,3 +74,11 @@ export function sickPractice(care: CareState, state: GameState): Practice | null
   if (!residentId || !penId) return null;
   return { target: { residentId, penId, already: false }, care: fallSick(care, residentId) };
 }
+
+/**
+ * Quien ya lo tenía desbloqueado y no vuelve a la tienda (David, 2026-11-10): al empezar la partida, si le falta algún
+ * aviso, sale tras este rato de juego, cuando ya está jugando.
+ */
+export const LESSON_START_MS = 20_000;
+/** En ese caso, si se salta un aviso, el siguiente espera este rato (al salir de la tienda sale seguido). */
+export const LESSON_SKIP_WAIT_MS = 60_000;

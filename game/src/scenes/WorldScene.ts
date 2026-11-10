@@ -24,7 +24,7 @@ import { getCommunity } from '../systems/community';
 import { bus, type ControlMode } from '../systems/events';
 import { joystickState } from '../systems/joystickState';
 import { getSession } from '../systems/session';
-import { pendingLessonOffers } from '../core/lessons';
+import { LESSON_SKIP_WAIT_MS, LESSON_START_MS, pendingLessonOffers } from '../core/lessons';
 import type { TutorialOfferSceneData } from './TutorialOfferScene';
 import { computeZoom } from '../systems/viewport';
 import { createKeeper, createPet, type Walker } from '../world/Actors';
@@ -67,8 +67,13 @@ export class WorldScene extends Phaser.Scene {
   private feedTarget: string | null = null;
   /** La cuidadora está en la puerta de la clínica (para no reabrirla a cada paso). */
   private atClinicDoor = false;
-  /** Se ha salido de la tienda: tocan los avisos de la limpieza y de la clínica que falten (uno detrás de otro). */
-  private lessonOffersArmed = false;
+  /**
+   * Tocan los avisos de la limpieza y de la clínica que falten, uno detrás de otro: al salir de la tienda (`shop`) o,
+   * a quien ya lo tenía todo y quizá no vuelve a la tienda, al empezar la partida (`start`). Null: ahora no.
+   */
+  private lessonOffers: 'shop' | 'start' | null = null;
+  /** Se está esperando para el siguiente aviso (al empezar, o tras saltar uno al empezar la partida). */
+  private lessonOfferWaiting = false;
   /** Relojes del charco y de las enfermedades: solo cuentan con el mundo en marcha. */
   private care = new CareDirector();
   private near: NearState<PenId> = noPen();
@@ -161,9 +166,15 @@ export class WorldScene extends Phaser.Scene {
     const offCare = bus.on('care-changed', () => this.pens.setCare(getSession().care));
     // Al acabar o dejar una lección (o saltar su aviso), el siguiente aviso que falte: el de la clínica tras el de la limpieza.
     const nextLessonOffer = () => this.time.delayedCall(NOTICE_MS, () => this.maybeLessonOffer());
-    const offLessonEnded = bus.on('tutorial-ended', nextLessonOffer);
+    // Al empezar la partida, si se salta uno (o se deja a medias con la ✕), el siguiente espera un rato; al salir de la
+    // tienda, o al terminar la lección, sale seguido.
+    const afterLesson = (skipped: boolean) => {
+      if (skipped && this.lessonOffers === 'start') this.waitForLessonOffer(this.lessonDelay(LESSON_SKIP_WAIT_MS));
+      else nextLessonOffer();
+    };
+    const offLessonEnded = bus.on('tutorial-ended', ({ done }) => afterLesson(!done));
     const offLessonAnswered = bus.on('tutorial-answered', ({ learn }) => {
-      if (!learn) nextLessonOffer();
+      if (!learn) afterLesson(true);
     });
     this.events.on(Phaser.Scenes.Events.RESUME, this.onResume, this);
 
@@ -181,6 +192,11 @@ export class WorldScene extends Phaser.Scene {
     this.time.delayedCall(NOTICE_MS, () => {
       if (!this.maybeTutorialOffer()) this.maybeNotice();
     });
+    // Quien ya tenía recintos de barro o la clínica y nunca vio sus avisos: le salen al rato de empezar.
+    if (pendingLessonOffers(getSession().state, getSession().tutorial).length > 0) {
+      this.lessonOffers = 'start';
+      this.waitForLessonOffer(this.lessonDelay(LESSON_START_MS));
+    }
   }
 
   update(time: number, delta: number): void {
@@ -630,7 +646,10 @@ export class WorldScene extends Phaser.Scene {
     }
     // Al salir de la tienda, los avisos de lo que acaba de desbloquear (o de lo que ya tenía y nunca se le enseñó):
     // primero ellos, sin anuncio ni otro aviso en esta vuelta.
-    if (data?.from === 'shop') this.lessonOffersArmed = true;
+    if (data?.from === 'shop') {
+      this.lessonOffers = 'shop';
+      this.lessonOfferWaiting = false;
+    }
     if (this.lessonOffersPending()) {
       this.time.delayedCall(AD_OFFER_MS, () => this.maybeLessonOffer());
       return;
@@ -658,19 +677,34 @@ export class WorldScene extends Phaser.Scene {
     return true;
   }
 
-  /** ¿Hay que ofrecer la lección de la limpieza o la de la clínica? Solo tras salir de la tienda. */
+  /** ¿Hay que ofrecer ya la lección de la limpieza o la de la clínica? */
   private lessonOffersPending(): boolean {
-    if (!this.lessonOffersArmed) return false;
+    if (!this.lessonOffers || this.lessonOfferWaiting) return false;
     // Las pruebas automáticas los saltan con `?sin-tutorial`, salvo las suyas (`?sin-tutorial&lecciones`).
     const params = import.meta.env.DEV ? new URLSearchParams(window.location.search) : null;
     if (params?.has('sin-tutorial') && !params.has('lecciones')) return false;
     if (pendingLessonOffers(getSession().state, getSession().tutorial).length > 0) return true;
-    this.lessonOffersArmed = false;
+    this.lessonOffers = null;
     return false;
   }
 
+  /** Espera ese rato de juego (con el mapa en pausa no cuenta) y luego ofrece el siguiente aviso. */
+  private waitForLessonOffer(ms: number): void {
+    this.lessonOfferWaiting = true;
+    this.time.delayedCall(ms, () => {
+      this.lessonOfferWaiting = false;
+      this.maybeLessonOffer();
+    });
+  }
+
+  /** Las pruebas automáticas no esperan: con `?lecciones=rapido`, un segundo (solo en desarrollo). */
+  private lessonDelay(ms: number): number {
+    return import.meta.env.DEV && new URLSearchParams(window.location.search).get('lecciones') === 'rapido' ? 1000 : ms;
+  }
+
   /**
-   * El aviso de la limpieza o el de la clínica, al salir de la tienda (nunca dentro) y si no hay otro panel abierto;
+   * El aviso de la limpieza o el de la clínica, al salir de la tienda (nunca dentro) o al rato de empezar la partida, y
+   * si no hay otro panel abierto;
    * si lo hay, espera. Si salen los dos en la misma visita, primero la limpieza y, al acabar o saltar su lección,
    * el de la clínica.
    */

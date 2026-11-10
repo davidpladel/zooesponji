@@ -147,7 +147,8 @@ recintos de al menos 14×9 por dentro con el paisaje de cada especie y farolas r
   ayudas; el resumen (`node tools/matomo/resumen.mjs`) tiene apartados de tutorial y de «ayudas sin palabras».
 - **Lecciones de limpieza y clínica:** al salir de la tienda con un recinto de barro abierto (cerdos, elefantes) o con
   la clínica, y si su aviso no ha salido nunca, sale el aviso de esa lección (`save.tutorial.cleanOffered` y
-  `clinicOffered`; nunca dentro de la tienda). La lección ensucia o pone malito al momento a un animal suyo (o usa uno que
+  `clinicOffered`; nunca dentro de la tienda). A quien ya lo tenía y no vuelve a la tienda, le sale a los 20 s de
+  empezar la partida; si salta uno, el siguiente espera 1 minuto. La lección ensucia o pone malito al momento a un animal suyo (o usa uno que
   ya lo esté) y la mano guía cada paso. En Matomo, los eventos `tutorial | …` llevan la lección en el nombre (`inicio`,
   `limpieza/…`, `clinica/…`) y `tutorial-prepara` dice qué se preparó para practicar.
 
