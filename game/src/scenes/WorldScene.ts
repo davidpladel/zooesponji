@@ -24,6 +24,8 @@ import { getCommunity } from '../systems/community';
 import { bus, type ControlMode } from '../systems/events';
 import { joystickState } from '../systems/joystickState';
 import { getSession } from '../systems/session';
+import { pendingLessonOffers } from '../core/lessons';
+import type { TutorialOfferSceneData } from './TutorialOfferScene';
 import { computeZoom } from '../systems/viewport';
 import { createKeeper, createPet, type Walker } from '../world/Actors';
 import { Board } from '../world/Board';
@@ -65,6 +67,8 @@ export class WorldScene extends Phaser.Scene {
   private feedTarget: string | null = null;
   /** La cuidadora está en la puerta de la clínica (para no reabrirla a cada paso). */
   private atClinicDoor = false;
+  /** Se ha salido de la tienda: tocan los avisos de la limpieza y de la clínica que falten (uno detrás de otro). */
+  private lessonOffersArmed = false;
   /** Relojes del charco y de las enfermedades: solo cuentan con el mundo en marcha. */
   private care = new CareDirector();
   private near: NearState<PenId> = noPen();
@@ -155,6 +159,12 @@ export class WorldScene extends Phaser.Scene {
     this.care = new CareDirector();
     this.pens.setCare(getSession().care);
     const offCare = bus.on('care-changed', () => this.pens.setCare(getSession().care));
+    // Al acabar o dejar una lección (o saltar su aviso), el siguiente aviso que falte: el de la clínica tras el de la limpieza.
+    const nextLessonOffer = () => this.time.delayedCall(NOTICE_MS, () => this.maybeLessonOffer());
+    const offLessonEnded = bus.on('tutorial-ended', nextLessonOffer);
+    const offLessonAnswered = bus.on('tutorial-answered', ({ learn }) => {
+      if (!learn) nextLessonOffer();
+    });
     this.events.on(Phaser.Scenes.Events.RESUME, this.onResume, this);
 
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
@@ -164,6 +174,8 @@ export class WorldScene extends Phaser.Scene {
       offShopUnlocked();
       offFed();
       offCare();
+      offLessonEnded();
+      offLessonAnswered();
       offCommunity();
     });
     this.time.delayedCall(NOTICE_MS, () => {
@@ -616,6 +628,13 @@ export class WorldScene extends Phaser.Scene {
       this.walkToClinic();
       return;
     }
+    // Al salir de la tienda, los avisos de lo que acaba de desbloquear (o de lo que ya tenía y nunca se le enseñó):
+    // primero ellos, sin anuncio ni otro aviso en esta vuelta.
+    if (data?.from === 'shop') this.lessonOffersArmed = true;
+    if (this.lessonOffersPending()) {
+      this.time.delayedCall(AD_OFFER_MS, () => this.maybeLessonOffer());
+      return;
+    }
     // Una pausa natural: se vuelve de dar de comer o de la tienda. De Ajustes, del libro o de «¿Salir?», no.
     if (data?.from === 'shop' || data?.from === 'feed' || data?.from === 'clean') this.time.delayedCall(AD_OFFER_MS, () => this.offerAd());
     if (data?.from !== 'notice' && data?.from !== 'board') this.time.delayedCall(NOTICE_MS, () => this.maybeNotice());
@@ -636,6 +655,33 @@ export class WorldScene extends Phaser.Scene {
     this.stopWalking();
     this.scene.pause();
     this.scene.launch('TutorialOffer');
+    return true;
+  }
+
+  /** ¿Hay que ofrecer la lección de la limpieza o la de la clínica? Solo tras salir de la tienda. */
+  private lessonOffersPending(): boolean {
+    if (!this.lessonOffersArmed) return false;
+    // Las pruebas automáticas los saltan con `?sin-tutorial`, salvo las suyas (`?sin-tutorial&lecciones`).
+    const params = import.meta.env.DEV ? new URLSearchParams(window.location.search) : null;
+    if (params?.has('sin-tutorial') && !params.has('lecciones')) return false;
+    if (pendingLessonOffers(getSession().state, getSession().tutorial).length > 0) return true;
+    this.lessonOffersArmed = false;
+    return false;
+  }
+
+  /**
+   * El aviso de la limpieza o el de la clínica, al salir de la tienda (nunca dentro) y si no hay otro panel abierto;
+   * si lo hay, espera. Si salen los dos en la misma visita, primero la limpieza y, al acabar o saltar su lección,
+   * el de la clínica.
+   */
+  private maybeLessonOffer(): boolean {
+    if (!this.lessonOffersPending()) return false;
+    if (!this.scene.isActive() || this.tutorialRunning() || this.scene.isActive('AdOffer') || this.scene.isActive('PollNotice')) return false;
+    const [lesson] = pendingLessonOffers(getSession().state, getSession().tutorial);
+    if (!lesson) return false;
+    this.stopWalking();
+    this.scene.pause();
+    this.scene.launch('TutorialOffer', { lesson } satisfies TutorialOfferSceneData);
     return true;
   }
 

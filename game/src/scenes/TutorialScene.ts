@@ -408,6 +408,11 @@ export class TutorialScene extends Phaser.Scene {
     return this.lesson;
   }
 
+  /** La lección en marcha y las que quedan detrás. */
+  lessons(): LessonId[] {
+    return [this.lesson, ...this.queue];
+  }
+
   /** El animal de la práctica (limpieza y clínica). */
   practiceResident(): string | null {
     return this.practiceId;

@@ -60,6 +60,8 @@ export interface ZooTestApi {
   tutorialStep(): string | null;
   /** Lección del tutorial en marcha (null si no lo está). */
   tutorialLesson(): LessonId | null;
+  /** La lección en marcha y las que quedan detrás en la cola. */
+  tutorialLessons(): LessonId[];
   /** El animal con el que se practica la limpieza o la clínica. */
   tutorialPractice(): string | null;
   /** Dónde está la mano del tutorial, si se ve. */
@@ -272,6 +274,7 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
     },
     tutorialStep: () => activeScene<TutorialScene>('Tutorial')?.currentStep() ?? null,
     tutorialLesson: () => activeScene<TutorialScene>('Tutorial')?.currentLesson() ?? null,
+    tutorialLessons: () => activeScene<TutorialScene>('Tutorial')?.lessons() ?? [],
     tutorialPractice: () => activeScene<TutorialScene>('Tutorial')?.practiceResident() ?? null,
     tutorialClosePos: () => activeScene<TutorialScene>('Tutorial')?.closePos() ?? null,
     tutorialHand: () => activeScene<TutorialScene>('Tutorial')?.handPos() ?? null,
