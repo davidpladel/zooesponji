@@ -380,6 +380,8 @@ export class FeedScene extends Phaser.Scene {
         onComplete: () => animal.setX(baseX),
       });
     } else {
+      // Su favorita: se la come (cruje o se traga) y además hay fiesta.
+      sfx.play(eatSound(foodId));
       sfx.play('especial');
       this.say(`${t('feed.wow')} 🤩`);
       if (FOODS[foodId].friend) this.friendship(foodId);

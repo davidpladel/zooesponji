@@ -252,6 +252,7 @@ Anuncios con premio de AdMob, en modo infantil. Sin configuración no hay public
 - `game/.env.production.local` (no se sube): `VITE_ADMOB_REWARDED` y `VITE_ADMOB_REWARDED_INTERSTITIAL`, los dos bloques de anuncios. Con `VITE_ADMOB_TESTING=1` la compilación pide los anuncios de prueba de Google.
 - `game/android/admob.properties` (no se sube), con una línea `appId=ca-app-pub-...~...`, o la variable `ZOO_ADMOB_APP_ID`. Sin ninguno, el paquete lleva el identificador de pruebas de Google y `npm run check:manifest -- --publicar` falla.
 - **Nunca tocar anuncios reales en el propio móvil:** AdMob lo cuenta como tráfico no válido. Para probar, `VITE_ADMOB_TESTING=1`.
+- **Monedas para probar en el móvil:** con `VITE_ADMOB_TESTING=1` y `VITE_REGALO_PRUEBA=<monedas>` en ese mismo archivo, al abrir el juego se suman esas monedas una sola vez (`core/testGift.ts`). Solo suma, nunca quita. Sin anuncios de prueba no hace nada; aun así, antes de compilar para Play se quitan las dos líneas.
 - En el navegador se prueba con un proveedor falso: `window.__ZOO__.adsFake('visto')` y `window.__ZOO__.adsAdvance(300)`.
 
 ## Comunidad (tablón)

@@ -43,6 +43,29 @@ test('comer: la carne se traga', async ({ page }) => {
   expect(await sounds(page)).not.toContain('comer-crujiente');
 });
 
+test('comer: su comida favorita también cruje, además de la fiesta (la manzana del cerdo)', async ({ page }) => {
+  await startGame(page);
+  await page.evaluate(async () => {
+    await window.__ZOO__!.addCoins(500);
+    await window.__ZOO__!.buy('cerdos');
+  });
+  await feed(page, 'rosita', 'manzana');
+  await expect.poll(() => sounds(page)).toContain('especial');
+  expect(await sounds(page)).toContain('comer-crujiente');
+});
+
+test('comer: lo que no le gusta no suena a masticar', async ({ page }) => {
+  await startGame(page);
+  await page.evaluate(async () => {
+    await window.__ZOO__!.addCoins(500);
+    await window.__ZOO__!.buy('cerdos');
+  });
+  await feed(page, 'rosita', 'calcetin');
+  await expect.poll(() => sounds(page)).toContain('rechaza');
+  expect(await sounds(page)).not.toContain('comer-crujiente');
+  expect(await sounds(page)).not.toContain('comer-blanda');
+});
+
 test('limpiar: cada herramienta suena al frotar', async ({ page }) => {
   await startGame(page);
   await page.evaluate(async () => {

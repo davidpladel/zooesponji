@@ -11,6 +11,7 @@ import { installAnalytics } from '../systems/analyticsInstall';
 import { bus } from '../systems/events';
 import { deviceLanguages, resolveLanguage, setLanguage } from '../systems/language';
 import { Session, setSession } from '../systems/session';
+import { testGiftAmount, testGiftKey } from '../core/testGift';
 import { queueHand } from '../ui/hand';
 import { queueIcons, smoothIcons } from '../ui/icons';
 import { addTitleBackdrop } from '../ui/titleBackdrop';
@@ -92,6 +93,7 @@ export class PreloadScene extends Phaser.Scene {
   private async startSession(): Promise<void> {
     const session = await Session.load(createStore());
     setSession(session);
+    await giveTestGift(session);
     // El idioma elegido en Ajustes; si no hay ninguno, el del móvil.
     setLanguage(resolveLanguage(session.settings.language, deviceLanguages()));
     // Antes del título, para que su pantalla ya se cuente.
@@ -101,5 +103,25 @@ export class PreloadScene extends Phaser.Scene {
     // Después de las estadísticas: los avisos del tablón ya tienen quien los escuche. No espera a la red.
     await installCommunity();
     this.scene.start('Title');
+  }
+}
+
+/** Monedas de regalo en las versiones de prueba del móvil (core/testGift.ts). Solo suma, una vez. */
+async function giveTestGift(session: Session): Promise<void> {
+  const env = import.meta.env as Record<string, string | undefined>;
+  const given = (key: string): boolean => {
+    try {
+      return localStorage.getItem(key) !== null;
+    } catch {
+      return true;
+    }
+  };
+  const amount = testGiftAmount({ VITE_ADMOB_TESTING: env.VITE_ADMOB_TESTING, VITE_REGALO_PRUEBA: env.VITE_REGALO_PRUEBA }, given);
+  if (amount <= 0) return;
+  await session.earnCoins(amount);
+  try {
+    localStorage.setItem(testGiftKey(amount), new Date().toISOString());
+  } catch {
+    // Sin almacenamiento no se repite: given() ya devuelve true.
   }
 }
