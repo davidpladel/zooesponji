@@ -1,3 +1,4 @@
+import type { LessonId } from '../core/tutorial';
 import type * as Phaser from 'phaser';
 import { getArt } from '../art/art';
 import { AD_SLOTS } from '../core/adPacing';
@@ -51,10 +52,16 @@ export interface ZooTestApi {
   hudCoinsText(): string | null;
   /** Botones del aviso de aprender a jugar. */
   tutorialOfferPos(which: 'learn' | 'skip'): Vec | null;
-  /** Abre el tutorial como el botón Aprender del menú. */
-  openTutorial(): void;
+  /** Qué lección ofrece el aviso abierto (null si no hay aviso). */
+  tutorialOfferLesson(): LessonId | null;
+  /** Abre el tutorial como el botón Aprender del menú (por defecto, solo la lección de inicio). */
+  openTutorial(lessons?: LessonId[]): void;
   /** Paso del tutorial en marcha (null si no lo está). */
   tutorialStep(): string | null;
+  /** Lección del tutorial en marcha (null si no lo está). */
+  tutorialLesson(): LessonId | null;
+  /** El animal con el que se practica la limpieza o la clínica. */
+  tutorialPractice(): string | null;
   /** Dónde está la mano del tutorial, si se ve. */
   tutorialHand(): Vec | null;
   /** Dónde está la ✕ del tutorial. */
@@ -258,11 +265,14 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
       const offer = activeScene<TutorialOfferScene>('TutorialOffer');
       return (which === 'learn' ? offer?.learnPos() : offer?.skipPos()) ?? null;
     },
-    openTutorial: () => {
+    tutorialOfferLesson: () => activeScene<TutorialOfferScene>('TutorialOffer')?.currentLesson() ?? null,
+    openTutorial: (lessons) => {
       if (game.scene.isActive('Tutorial')) game.scene.stop('Tutorial');
-      game.scene.start('Tutorial', { from: 'menu' });
+      game.scene.start('Tutorial', { from: 'menu', lessons });
     },
     tutorialStep: () => activeScene<TutorialScene>('Tutorial')?.currentStep() ?? null,
+    tutorialLesson: () => activeScene<TutorialScene>('Tutorial')?.currentLesson() ?? null,
+    tutorialPractice: () => activeScene<TutorialScene>('Tutorial')?.practiceResident() ?? null,
     tutorialClosePos: () => activeScene<TutorialScene>('Tutorial')?.closePos() ?? null,
     tutorialHand: () => activeScene<TutorialScene>('Tutorial')?.handPos() ?? null,
     tutorialCloseVisible: () => activeScene<TutorialScene>('Tutorial')?.closeVisible() ?? false,

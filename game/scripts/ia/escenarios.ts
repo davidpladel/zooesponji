@@ -11,7 +11,7 @@ export interface Escenario {
     state: { coins: number; counts: Record<string, number>; shopUnlocked: boolean; luna: boolean; clinic: boolean };
     settings: { music: boolean; sfx: boolean; joystick: boolean; stats: boolean };
     book: { seen: string[]; hinted: boolean; page: string | null; opened: boolean };
-    tutorial: { offered: boolean };
+    tutorial: { offered: boolean; cleanOffered: boolean; clinicOffered: boolean };
     shop: { visits: number };
     clinic: { visits: number };
     care: { dirty: string[]; sick: string[]; muddy: string[] };
@@ -42,7 +42,7 @@ export const ESCENARIOS: Record<string, Escenario> = {
       },
       settings: { music: true, sfx: true, joystick: false, stats: false },
       book: { seen: [], hinted: true, page: null, opened: false },
-      tutorial: { offered: true },
+      tutorial: { offered: true, cleanOffered: true, clinicOffered: true },
       shop: { visits: 3 },
       // Ya ha entrado en la clínica: sale su botón debajo del de la tienda.
       clinic: { visits: 1 },

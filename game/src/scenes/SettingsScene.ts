@@ -10,6 +10,8 @@ import { LANGUAGES, LANGUAGE_CHIP, getLanguage, setLanguage, type Language } fro
 import { openLegal } from '../systems/legal';
 import { askQuit } from '../systems/platform';
 import { getSession } from '../systems/session';
+import { menuLessons } from '../core/lessons';
+import type { TutorialSceneData } from './TutorialScene';
 import { addIcon, type IconName } from '../ui/icons';
 import { makePressable } from '../ui/press';
 import { addUiText, fitText } from '../ui/text';
@@ -275,10 +277,11 @@ export class SettingsScene extends Phaser.Scene {
   private press(key: ButtonKey): void {
     sfx.play('tap');
     if (key === 'learn') {
-      // Se vuelve a ver desde el principio, sobre la partida de verdad (sin dar ni quitar monedas).
+      // Se vuelve a ver desde el principio, sobre la partida de verdad (sin dar ni quitar monedas), y detrás,
+      // seguidas, la de la limpieza y la de la clínica si ya las tiene.
       if (this.scene.isActive('Tutorial')) this.scene.stop('Tutorial');
       this.close();
-      this.scene.launch('Tutorial', { from: 'menu' });
+      this.scene.launch('Tutorial', { from: 'menu', lessons: menuLessons(getSession().state) } satisfies TutorialSceneData);
       return;
     }
     if (key === 'privacy') {
