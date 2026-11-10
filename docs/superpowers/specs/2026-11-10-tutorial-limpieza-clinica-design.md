@@ -117,3 +117,16 @@ Los recintos de elefantes ya existían antes de esta versión: quien ya los tien
 ## Lo que queda para quien construya
 
 Cómo se reparte el código entre `TutorialScene` y escenas o módulos nuevos, el dibujo exacto de cada aviso, la animación de la mano al frotar y al dar la medicina, y en qué orden se resuelven los avisos que coinciden con otros.
+
+## Cómo quedó al construirlo (2026-11-10)
+
+Plan: [2026-11-10-tutorial-limpieza-clinica.md](../plans/2026-11-10-tutorial-limpieza-clinica.md). Estado: **construido en la rama, con pruebas automáticas en verde; falta que David lo pruebe jugando.**
+
+- **No se guarda una lista de «pendientes».** `save.tutorial` es `{ offered, cleanOffered, clinicOffered }` y lo que toca enseñar se deduce de lo que tiene abierto y de los avisos que ya salieron (`core/lessons.ts`, `pendingLessonOffers`). Si cierra el juego dentro de la tienda, el aviso sale la próxima vez que salga de ella.
+- **El animal de la práctica** sale del primer recinto de barro abierto (cerdos, elefantes africanos, elefantes asiáticos, en ese orden) con un animal que no esté malito, no necesariamente del recién comprado. Si ya hay uno sucio en un recinto abierto, se usa ese.
+- **La lección de clínica tiene dos pasos más** que el diseño: dar la comida (`clinica/comida`, para que salga el «¡puaj!» y la cruz) y volver (`clinica/volver`: si sale de la clínica sin curar, la mano señala el botón de la clínica). Si la cuidadora no llega a la clínica en 6 s (se ha ido a otro sitio), la mano también señala ese botón.
+- **Pasos en Matomo:** `limpieza/tocar-animal`, `limpieza/cacahuete`, `limpieza/cepillo`, `limpieza/jabon`, `limpieza/agua`, `limpieza/toalla`; `clinica/tocar-animal`, `clinica/comida`, `clinica/cruz`, `clinica/cama`, `clinica/volver`, `clinica/curar`. Los de inicio no cambian. `tutorial-prepara` lleva `limpieza/<recinto>/<animal>`, `clinica/<recinto>/<animal>` o `<lección>/ya-estaba`. El resumen de `tools/matomo/` separa las tres lecciones.
+- **Aviso:** en la de limpieza, un 🐷 con manchas de barro y la mano; en la de clínica, la cruz roja y la mano. La frase va debajo y encoge hasta caber en cualquier idioma.
+- **Al salir de la tienda** el aviso sale a los 0,3 s; en esa vuelta no se ofrece anuncio ni aviso del tablón. Si hay otro panel abierto, espera a la siguiente vuelta al mapa.
+- **Pruebas automáticas:** las demás pruebas de juego abren `/?sin-tutorial`, que ahora salta también estos avisos; las suyas (`tests/e2e/lecciones.spec.ts`) abren `/?sin-tutorial&lecciones`.
+- La partida de los jugadores con IA (`escenario cuidados`) ya ha visto los dos avisos, para que no les salgan.

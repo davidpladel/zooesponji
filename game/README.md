@@ -145,6 +145,11 @@ recintos de al menos 14×9 por dentro con el paisaje de cada especie y farolas r
   lo deja en la página del animal nuevo, y tras varias compras sin leer, en la primera de ellas (`core/book.ts`).
 - **Matomo:** `mapa | boton-tienda | huellas/apagar/andando` y `comer | pista-arrastrar | …` dicen si se usan estas
   ayudas; el resumen (`node tools/matomo/resumen.mjs`) tiene apartados de tutorial y de «ayudas sin palabras».
+- **Lecciones de limpieza y clínica:** al salir de la tienda con un recinto de barro abierto (cerdos, elefantes) o con
+  la clínica, y si su aviso no ha salido nunca, sale el aviso de esa lección (`save.tutorial.cleanOffered` y
+  `clinicOffered`; nunca dentro de la tienda). La lección ensucia o pone malito al momento a un animal suyo (o usa uno que
+  ya lo esté) y la mano guía cada paso. En Matomo, los eventos `tutorial | …` llevan la lección en el nombre (`inicio`,
+  `limpieza/…`, `clinica/…`) y `tutorial-prepara` dice qué se preparó para practicar.
 
 ## Estadísticas: qué hacer con cada cosa nueva
 
@@ -198,7 +203,7 @@ Las piezas de los menús (píldoras, paneles, carteles, chapa de cerrar, monedas
 - `src/core/` — lógica pura sin Phaser (reacciones, economía y extras, guardado, A*, mapas, movimiento, `flock` para que los animales no se pisen, `petting` para el aforo de la granja de contacto, `back` para el botón atrás, `adPacing` para el ritmo de la publicidad, `adConfig` para la configuración de AdMob). Todo con tests.
 - `src/data/` — contenido: animales, comidas, tienda, libro del zoo (`book.ts`: ids de página y qué las desbloquea) y textos (`strings/`: `es.ts` y `en.ts`, una clave por texto; `en.ts` no compila si le falta una; todo texto visible pasa por `t()`, que usa el idioma activo).
 - `src/systems/` — eventos, sesión, almacenamiento, zoom, `audio` (samples y música), `platform` (botón atrás, segundo plano, girar el móvil), `errors` (pantalla ¡Ups!), `language` (idioma activo y detección por el idioma del móvil), `ads` (publicidad con premio: cuándo se pide y se ofrece un anuncio), `adProvider` (avisos del SDK), `adsInstall` (único archivo que toca el complemento de AdMob; solo instala en Android).
-- `src/scenes/` — escenas de Phaser (solo dibujan y recogen input): Boot, Preload, Title, World, Feed (dar de comer), Clean (limpieza), Shop (tienda), Clinic (la clínica por dentro), Cure (curar), Book (libro del zoo), Hud, Settings (menú ⚙️: ajustes, idioma, créditos, privacidad y salir), Quit (¿Salir?), Rotate (gira el móvil), AdOffer (panel que ofrece un anuncio), TutorialOffer (aviso de la primera vez) y Tutorial (la mano que enseña; pasos en `core/tutorial.ts`).
+- `src/scenes/` — escenas de Phaser (solo dibujan y recogen input): Boot, Preload, Title, World, Feed (dar de comer), Clean (limpieza), Shop (tienda), Clinic (la clínica por dentro), Cure (curar), Book (libro del zoo), Hud, Settings (menú ⚙️: ajustes, idioma, créditos, privacidad y salir), Quit (¿Salir?), Rotate (gira el móvil), AdOffer (panel que ofrece un anuncio), TutorialOffer (aviso de la primera vez y de las lecciones de limpieza y clínica) y Tutorial (la mano que enseña; una cola de lecciones: inicio, limpieza y clínica; pasos en `core/tutorial.ts`, qué avisos tocan y con qué animal se practica en `core/lessons.ts`).
 - Luna: `core/petFollow.ts` (sigue el rastro de la cuidadora y espera en la puerta de los recintos) y `world/ShopPet.ts` (curiosea por la tienda; destinos con `pickShopSpot` de `core/shopWalk.ts`).
 - `src/world/` — ayudantes del mundo: `Pens` (los animales de cada recinto, cada uno con su identidad, los candados y el toque sobre un animal para darle de comer; los recintos que no se ven no se actualizan), `ShopBuilding` (edificio y puerta de la tienda), `ShopInterior` (la tienda por dentro), `ShopKeeperWalker` (la cuidadora dentro de la tienda), `Shopkeeper` (el tendero), `ShopHint` (huellas de pista), `VisitorCrowd` (visitantes; en el recinto de ovejas entran a acariciar, 3 como mucho, y salen corazones).
 
@@ -216,7 +221,7 @@ Los tests de contenido fallan si falta alguna de estas piezas.
 
 En `npm run dev` existe `window.__ZOO__` en la consola del navegador (p. ej. `await __ZOO__.addCoins(10)`). No existe en la build de producción.
 
-Ganchos disponibles: `addCoins(n)`, `openFeed('leon')`, `openShop()`, `openSettings()`, `back()` (simula el botón atrás), `crash()` (fuerza la pantalla de error), `goToTile(x, y)`, `keeperTile()`, `tourWaypoints(pasos, conRecintos)`, `walkPropsAbove()`, `unlocked()`, `counts()`, `hudCoinsText()`, `keeperPosition()`, `activeScenes()`, `petPosition()`, `openTutorial()`, `tutorialStep()`. Las pruebas de juego abren `/?sin-tutorial` para que no salga el aviso de aprender (solo funciona en desarrollo). `window.__GAME__` es el juego de Phaser.
+Ganchos disponibles: `addCoins(n)`, `openFeed('leon')`, `openShop()`, `openSettings()`, `back()` (simula el botón atrás), `crash()` (fuerza la pantalla de error), `goToTile(x, y)`, `keeperTile()`, `tourWaypoints(pasos, conRecintos)`, `walkPropsAbove()`, `unlocked()`, `counts()`, `hudCoinsText()`, `keeperPosition()`, `activeScenes()`, `petPosition()`, `openTutorial(lecciones?)`, `tutorialStep()`, `tutorialLesson()`, `tutorialLessons()`, `tutorialPractice()`, `tutorialOfferLesson()`. Las pruebas de juego abren `/?sin-tutorial` para que no salga el aviso de aprender ni los de las lecciones (solo funciona en desarrollo); las de las lecciones abren `/?sin-tutorial&lecciones`. `window.__GAME__` es el juego de Phaser.
 
 ## Sonido
 

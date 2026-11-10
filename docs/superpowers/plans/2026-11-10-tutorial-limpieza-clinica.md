@@ -8,6 +8,8 @@
 
 **Tech Stack:** TypeScript, Phaser 3, Vite, Vitest (unit), Playwright (e2e).
 
+**Estado (2026-11-10):** tareas 1-8 construidas y con pruebas en verde; falta que David lo pruebe jugando (tarea 9, paso 1). Lo que cambió al construirlo está en la spec, «Cómo quedó al construirlo».
+
 **Spec:** [docs/superpowers/specs/2026-11-10-tutorial-limpieza-clinica-design.md](../specs/2026-11-10-tutorial-limpieza-clinica-design.md)
 
 ## Global Constraints
@@ -44,14 +46,14 @@
 - Produces: `interface TutorialProgress { offered: boolean; cleanOffered: boolean; clinicOffered: boolean }`.
 - Produces: `session.markLessonOffered(lesson: LessonId): Promise<void>` (sustituye a `markTutorialOffered`; `'inicio'` → `offered`).
 
-- [ ] **Step 1: Pruebas que fallan**
+- [x] **Step 1: Pruebas que fallan**
   - `save.test.ts` › «una partida de antes sin cleanOffered ni clinicOffered los lee como false»: `parse({ tutorial: { offered: true } })` → `{ offered: true, cleanOffered: false, clinicOffered: false }`.
   - `save.test.ts` › «guarda y lee los tres avisos»: ida y vuelta con `{ offered: true, cleanOffered: true, clinicOffered: false }`.
   - `session.test.ts` › «markLessonOffered marca solo el de esa lección»: tras `markLessonOffered('limpieza')`, `tutorial` es `{ offered: false, cleanOffered: true, clinicOffered: false }` y queda escrito.
-- [ ] **Step 2:** David lanza `npx vitest run tests/unit/save.test.ts tests/unit/session.test.ts` → FALLAN.
-- [ ] **Step 3: Implementar** los campos, `parseTutorial` (cada campo `=== true`), los valores por defecto a `false`, `markLessonOffered` (no escribe si ya estaba a `true`) y cambiar el caller.
-- [ ] **Step 4:** el mismo comando → PASAN. `npx tsc --noEmit` → sin errores.
-- [ ] **Step 5: Commit** `feat(tutorial): guardar los avisos de limpieza y clínica`.
+- [x] **Step 2:** David lanza `npx vitest run tests/unit/save.test.ts tests/unit/session.test.ts` → FALLAN.
+- [x] **Step 3: Implementar** los campos, `parseTutorial` (cada campo `=== true`), los valores por defecto a `false`, `markLessonOffered` (no escribe si ya estaba a `true`) y cambiar el caller.
+- [x] **Step 4:** el mismo comando → PASAN. `npx tsc --noEmit` → sin errores.
+- [x] **Step 5: Commit** `feat(tutorial): guardar los avisos de limpieza y clínica`.
 
 ### Task 2: Qué avisos tocan y con qué animal se practica
 
@@ -68,7 +70,7 @@
   - `cleanPractice(care: CareState, state: GameState): { target: PracticeTarget; care: CareState } | null` — primero un sucio que ya exista en un recinto abierto (`already: true`, `care` igual). Si no, el primer recinto abierto de `MUD_PENS` (en su orden) que tenga un residente no malito: `makeMuddy` + `soil` sobre él (`already: false`). `null` si no hay ninguno.
   - `sickPractice(care: CareState, state: GameState): { target: PracticeTarget; care: CareState } | null` — primero un enfermo que ya exista (`already: true`). Si no, `sickCandidates(care, state)[0]` con `fallSick` (`already: false`). `null` si no hay candidato.
 
-- [ ] **Step 1: Pruebas que fallan** (`lessons.test.ts`):
+- [x] **Step 1: Pruebas que fallan** (`lessons.test.ts`):
   - `pendingLessonOffers`: sin recintos de barro ni clínica → `[]`; con `elefantes-asiaticos` abierto → `['limpieza']`; con eso y `clinic: true` → `['limpieza', 'clinica']`; con `cleanOffered: true` y clínica → `['clinica']`.
   - `menuLessons`: zoo de inicio → `['inicio']`; con cerdos y clínica → `['inicio', 'limpieza', 'clinica']`.
   - `cleanPractice` «solo elefantes asiáticos»: el `penId` es `elefantes-asiaticos`, el residente es de ese recinto, `care.muddy` lo incluye y `care.dirty` contiene al residente.
@@ -77,10 +79,10 @@
   - `cleanPractice` sin recintos de barro abiertos → `null`.
   - `sickPractice` «ya hay 2 enfermos» → uno de ellos con `already: true`, `care.sick.length` sigue en 2.
   - `sickPractice` sin enfermos → `care.sick` tiene 1, `already: false`.
-- [ ] **Step 2:** `npx vitest run tests/unit/lessons.test.ts` → FALLAN.
-- [ ] **Step 3: Implementar** `src/core/lessons.ts` (puro, sin Phaser ni bus).
-- [ ] **Step 4:** el mismo comando → PASAN.
-- [ ] **Step 5: Commit** `feat(tutorial): qué lecciones tocan y con qué animal se practica`.
+- [x] **Step 2:** `npx vitest run tests/unit/lessons.test.ts` → FALLAN.
+- [x] **Step 3: Implementar** `src/core/lessons.ts` (puro, sin Phaser ni bus).
+- [x] **Step 4:** el mismo comando → PASAN.
+- [x] **Step 5: Commit** `feat(tutorial): qué lecciones tocan y con qué animal se practica`.
 
 ### Task 3: Pasos de las lecciones de limpieza y clínica
 
@@ -115,11 +117,11 @@ Transiciones (lo que no aparece deja el paso igual):
 | clínica | `cure` | `cure-closed` `done: true` | `done` |
 | clínica | `cure` | `cure-closed` `done: false` | `bed` |
 
-- [ ] **Step 1: Pruebas que fallan:** un `it.each` por tabla (cada fila de arriba), «lo que no toca deja el paso igual» (`advanceClean('jabon', { type: 'feed-opened' })` → `'jabon'`; `advanceClinic('bed', { type: 'sick-refused' })` → `'bed'`), y `lessonStepName` (`('inicio','move')`→`'moverse'`, `('limpieza','tap-dirty')`→`'limpieza/tocar-animal'`, `('limpieza','cepillo')`→`'limpieza/cepillo'`, `('clinica','back-to-clinic')`→`'clinica/volver'`).
-- [ ] **Step 2:** `npx vitest run tests/unit/tutorial.test.ts` → FALLAN las nuevas; las de antes siguen pasando.
-- [ ] **Step 3: Implementar** en `core/tutorial.ts`. `advance` (inicio) no se toca.
-- [ ] **Step 4:** el mismo comando → PASAN todas.
-- [ ] **Step 5: Commit** `feat(tutorial): pasos de las lecciones de limpieza y clínica`.
+- [x] **Step 1: Pruebas que fallan:** un `it.each` por tabla (cada fila de arriba), «lo que no toca deja el paso igual» (`advanceClean('jabon', { type: 'feed-opened' })` → `'jabon'`; `advanceClinic('bed', { type: 'sick-refused' })` → `'bed'`), y `lessonStepName` (`('inicio','move')`→`'moverse'`, `('limpieza','tap-dirty')`→`'limpieza/tocar-animal'`, `('limpieza','cepillo')`→`'limpieza/cepillo'`, `('clinica','back-to-clinic')`→`'clinica/volver'`).
+- [x] **Step 2:** `npx vitest run tests/unit/tutorial.test.ts` → FALLAN las nuevas; las de antes siguen pasando.
+- [x] **Step 3: Implementar** en `core/tutorial.ts`. `advance` (inicio) no se toca.
+- [x] **Step 4:** el mismo comando → PASAN todas.
+- [x] **Step 5: Commit** `feat(tutorial): pasos de las lecciones de limpieza y clínica`.
 
 ### Task 4: Eventos y Matomo
 
@@ -144,11 +146,11 @@ Transiciones (lo que no aparece deja el paso igual):
   - `tutorial-fin` → valor = segundos de esa lección.
   - `tutorial-prepara` (nueva en `CATALOG.tutorial`) → nombre `part(lesson, residentName(residentId))` si `!already`, o `part(lesson, 'ya-estaba')`.
 
-- [ ] **Step 1: Pruebas que fallan:** actualizar la prueba de tutorial existente a los nuevos payloads (`'tutorial | tutorial-ofrece | inicio'`, `'tutorial | tutorial-fin | inicio'`, pasos de inicio sin cambiar), y una nueva «lección de limpieza: pasos con su lección delante, segundos de la lección»: `tutorial-started {from:'aviso', lesson:'limpieza'}`, +5 s, `tutorial-step {lesson:'limpieza', step:'cepillo'}` → `'tutorial | tutorial-paso | limpieza/cepillo'` con valor 5; `tutorial-prepared {lesson:'limpieza', residentId:<un cerdo>, already:false}` → `'tutorial | tutorial-prepara | limpieza/cerdos/<nombre>'`; con `already:true` → `'tutorial | tutorial-prepara | limpieza/ya-estaba'`. `eventCatalog.test.ts` sigue exigiendo acciones únicas (debe pasar con la nueva).
-- [ ] **Step 2:** `npx vitest run tests/unit/analyticsEvents.test.ts tests/unit/eventCatalog.test.ts` → FALLAN.
-- [ ] **Step 3: Implementar.** `tutorialAt` sigue siendo uno: se reinicia en cada `tutorial-started`.
-- [ ] **Step 4:** el mismo comando → PASAN; `npx tsc --noEmit` limpio.
-- [ ] **Step 5: Commit** `feat(estadisticas): lecciones de limpieza y clínica en Matomo`.
+- [x] **Step 1: Pruebas que fallan:** actualizar la prueba de tutorial existente a los nuevos payloads (`'tutorial | tutorial-ofrece | inicio'`, `'tutorial | tutorial-fin | inicio'`, pasos de inicio sin cambiar), y una nueva «lección de limpieza: pasos con su lección delante, segundos de la lección»: `tutorial-started {from:'aviso', lesson:'limpieza'}`, +5 s, `tutorial-step {lesson:'limpieza', step:'cepillo'}` → `'tutorial | tutorial-paso | limpieza/cepillo'` con valor 5; `tutorial-prepared {lesson:'limpieza', residentId:<un cerdo>, already:false}` → `'tutorial | tutorial-prepara | limpieza/cerdos/<nombre>'`; con `already:true` → `'tutorial | tutorial-prepara | limpieza/ya-estaba'`. `eventCatalog.test.ts` sigue exigiendo acciones únicas (debe pasar con la nueva).
+- [x] **Step 2:** `npx vitest run tests/unit/analyticsEvents.test.ts tests/unit/eventCatalog.test.ts` → FALLAN.
+- [x] **Step 3: Implementar.** `tutorialAt` sigue siendo uno: se reinicia en cada `tutorial-started`.
+- [x] **Step 4:** el mismo comando → PASAN; `npx tsc --noEmit` limpio.
+- [x] **Step 5: Commit** `feat(estadisticas): lecciones de limpieza y clínica en Matomo`.
 
 ### Task 5: Textos de los avisos en 11 idiomas
 
@@ -159,11 +161,11 @@ Transiciones (lo que no aparece deja el paso igual):
 **Interfaces:**
 - Produces: claves `'lesson.clean.offer'` y `'lesson.clinic.offer'`.
 
-- [ ] **Step 1:** añadir las dos claves en `es.ts` con las frases aprobadas (Global Constraints).
-- [ ] **Step 2:** `npx vitest run tests/unit/strings.test.ts` → FALLA («mismas claves que el español»).
-- [ ] **Step 3:** traducir a los otros 10 idiomas, en mayúsculas donde el alfabeto las tiene, con el mismo tono infantil.
-- [ ] **Step 4:** el mismo comando → PASA.
-- [ ] **Step 5: Commit** `feat(tutorial): frases de los avisos de limpieza y clínica`.
+- [x] **Step 1:** añadir las dos claves en `es.ts` con las frases aprobadas (Global Constraints).
+- [x] **Step 2:** `npx vitest run tests/unit/strings.test.ts` → FALLA («mismas claves que el español»).
+- [x] **Step 3:** traducir a los otros 10 idiomas, en mayúsculas donde el alfabeto las tiene, con el mismo tono infantil.
+- [x] **Step 4:** el mismo comando → PASA.
+- [x] **Step 5: Commit** `feat(tutorial): frases de los avisos de limpieza y clínica`.
 
 ### Task 6: Aviso por lección
 
@@ -176,9 +178,9 @@ Transiciones (lo que no aparece deja el paso igual):
 - Produces: `interface TutorialOfferSceneData { lesson?: LessonId }` (por defecto `'inicio'`). Al terminar: `markLessonOffered(lesson)`, `tutorial-answered {lesson, learn}`, reanuda World con `{ from: 'notice' }` y, si aprende, lanza `Tutorial` con `{ from: 'aviso', lessons: [lesson] }`.
 - Produces (pruebas): `tutorialOfferLesson(): LessonId | null` en `window.__ZOO__`.
 
-- [ ] **Step 1: Implementar.** `inicio` queda como ahora (sin frase). `limpieza`: dibujo de un cerdo con manchas (la textura del cerdo de `cerdos` con las manchas que ya usa el mapa, o 🐷 si no está) y la mano 👆; `clinica`: `addRedCross` y la mano. Debajo del dibujo, la frase con `t('lesson.clean.offer' | 'lesson.clinic.offer')`, centrada y ajustada al ancho del panel, sin tapar los botones.
-- [ ] **Step 2:** `npx tsc --noEmit` limpio; `npx vitest run` todo en verde.
-- [ ] **Step 3: Commit** `feat(tutorial): aviso de la limpieza y de la clínica`.
+- [x] **Step 1: Implementar.** `inicio` queda como ahora (sin frase). `limpieza`: dibujo de un cerdo con manchas (la textura del cerdo de `cerdos` con las manchas que ya usa el mapa, o 🐷 si no está) y la mano 👆; `clinica`: `addRedCross` y la mano. Debajo del dibujo, la frase con `t('lesson.clean.offer' | 'lesson.clinic.offer')`, centrada y ajustada al ancho del panel, sin tapar los botones.
+- [x] **Step 2:** `npx tsc --noEmit` limpio; `npx vitest run` todo en verde.
+- [x] **Step 3: Commit** `feat(tutorial): aviso de la limpieza y de la clínica`.
 
 ### Task 7: La cola de lecciones en el tutorial
 
@@ -205,10 +207,10 @@ Comportamiento:
 - La escena sigue por encima de todas las demás (también de `Clean`, `Clinic` y `Cure`). La ✕ se esconde también con `Clean` y `Cure` abiertas (tienen la suya).
 - Ajustes › Aprender: `this.scene.launch('Tutorial', { from: 'menu', lessons: menuLessons(getSession().state) })`.
 
-- [ ] **Step 1: Implementar** `residentScreen` en World y la cola, preparación y gestos en `TutorialScene`. Si los gestos por lección hacen crecer mucho el fichero, se pueden sacar a `src/scenes/lessonGestures.ts` (funciones `(scene, lesson, step, residentId) => Gesture | null`).
-- [ ] **Step 2:** cambiar el botón Aprender de Ajustes.
-- [ ] **Step 3:** `npx tsc --noEmit` limpio; `npx vitest run` en verde; `npx playwright test tests/e2e/tutorial.spec.ts` sigue pasando (lección de inicio igual).
-- [ ] **Step 4: Commit** `feat(tutorial): lecciones de limpieza y clínica guiadas con la mano`.
+- [x] **Step 1: Implementar** `residentScreen` en World y la cola, preparación y gestos en `TutorialScene`. Si los gestos por lección hacen crecer mucho el fichero, se pueden sacar a `src/scenes/lessonGestures.ts` (funciones `(scene, lesson, step, residentId) => Gesture | null`).
+- [x] **Step 2:** cambiar el botón Aprender de Ajustes.
+- [x] **Step 3:** `npx tsc --noEmit` limpio; `npx vitest run` en verde; `npx playwright test tests/e2e/tutorial.spec.ts` sigue pasando (lección de inicio igual).
+- [x] **Step 4: Commit** `feat(tutorial): lecciones de limpieza y clínica guiadas con la mano`.
 
 ### Task 8: Avisos al salir de la tienda
 
@@ -226,16 +228,16 @@ Comportamiento:
 - Al acabar una lección o saltar su aviso (`tutorial-ended` de la última lección de la cola, o `tutorial-answered {learn: false}`), World llama otra vez a `maybeLessonOffer()` tras `NOTICE_MS`: así sale el de la clínica justo después del de la limpieza.
 - El aviso de la primera vez (`maybeTutorialOffer`) tiene prioridad: si sale ese, el de la lección espera a la próxima salida de la tienda.
 
-- [ ] **Step 1: Prueba e2e que falla** (`lecciones.spec.ts`, con `?sin-tutorial` y saltando el aviso de inicio igual que `shop.spec.ts`):
+- [x] **Step 1: Prueba e2e que falla** (`lecciones.spec.ts`, con `?sin-tutorial` y saltando el aviso de inicio igual que `shop.spec.ts`):
   - «comprar elefantes asiáticos: al salir de la tienda, aviso de limpieza; Aprender lleva a un elefante asiático sucio y la mano pasa por los 5 pasos»: `addCoins` + `buy('elefantes-asiaticos')`, abrir y cerrar la tienda, esperar `tutorialOfferLesson() === 'limpieza'`, tocar Aprender, comprobar `tutorialLesson() === 'limpieza'`, `tutorialStep() === 'tap-dirty'` y que la mano se ve.
   - «comprar elefantes y clínica en la misma visita: limpieza primero, y al saltarla, clínica».
   - «en la tienda no sale ningún aviso»: tras `buy`, con la tienda abierta, `tutorialOfferLesson()` es `null`.
   - «quien ya tenía elefantes de antes: aviso al salir de la tienda sin comprar nada».
   - «Aprender del menú con cerdos y clínica: inicio, limpieza y clínica seguidas» (comprobando `tutorialLesson()` al cambiar).
-- [ ] **Step 2:** `npx playwright test tests/e2e/lecciones.spec.ts` → FALLAN.
-- [ ] **Step 3: Implementar** lo de arriba en `WorldScene`.
-- [ ] **Step 4:** el mismo comando → PASAN; `npx playwright test tests/e2e/tutorial.spec.ts tests/e2e/shop.spec.ts tests/e2e/cuidados.spec.ts` siguen pasando.
-- [ ] **Step 5: Commit** `feat(tutorial): avisos de limpieza y clínica al salir de la tienda`.
+- [x] **Step 2:** `npx playwright test tests/e2e/lecciones.spec.ts` → FALLAN.
+- [x] **Step 3: Implementar** lo de arriba en `WorldScene`.
+- [x] **Step 4:** el mismo comando → PASAN; `npx playwright test tests/e2e/tutorial.spec.ts tests/e2e/shop.spec.ts tests/e2e/cuidados.spec.ts` siguen pasando.
+- [x] **Step 5: Commit** `feat(tutorial): avisos de limpieza y clínica al salir de la tienda`.
 
 ### Task 9: Probarlo jugando y dejar los papeles al día
 
@@ -245,6 +247,6 @@ Comportamiento:
 - Modify: este plan (casillas marcadas)
 
 - [ ] **Step 1:** David juega en `npm run dev` con una partida nueva: compra cerdos, sale de la tienda, hace la lección de limpieza entera; compra la clínica, sale, hace la de clínica; luego Ajustes › Aprender. Resultado esperado: avisos en mayúsculas, la mano lleva a cada sitio y no se queda colgada en ningún paso.
-- [ ] **Step 2:** `npm run build` → sin errores.
-- [ ] **Step 3:** actualizar los documentos.
-- [ ] **Step 4: Commit** `docs: tutorial de limpieza y clínica terminado`.
+- [x] **Step 2:** `npm run build` → sin errores.
+- [x] **Step 3:** actualizar los documentos.
+- [x] **Step 4: Commit** `docs: tutorial de limpieza y clínica terminado`.
