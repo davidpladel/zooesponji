@@ -1,6 +1,9 @@
 import { trayFoods, ANIMALS, type AnimalId } from '../data/animals';
 import type { FoodId } from '../data/foods';
 
+/** Las lecciones: la de inicio (aprender a jugar), la de la limpieza y la de la clínica. */
+export type LessonId = 'inicio' | 'limpieza' | 'clinica';
+
 /** Pasos del tutorial, en el orden que fijó David: moverse, tocar, arrastrar la comida, monedas y tienda. */
 export const TUTORIAL_STEPS = ['move', 'tap-animal', 'drag-food', 'coins', 'shop'] as const;
 export type TutorialStep = (typeof TUTORIAL_STEPS)[number];

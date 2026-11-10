@@ -59,7 +59,7 @@ describe('parseSave', () => {
       state: { coins: 5, counts: { ...initialCounts(), leon: 1, cabra: 1, pantera: 0, panda: 1 }, shopUnlocked: true, luna: false, clinic: false },
       settings: { music: true, sfx: false, joystick: false, stats: true },
       book: { seen: [], hinted: false, page: null, opened: false },
-      tutorial: { offered: false },
+      tutorial: { offered: false, cleanOffered: false, clinicOffered: false },
       // Tenía el panda (de compra): ya había entrado en la tienda.
       shop: { visits: 1 },
       clinic: { visits: 0 },
@@ -108,7 +108,7 @@ describe('parseSave', () => {
       state: { ...old.state, luna: false, clinic: false },
       settings: { ...old.settings, stats: true },
       book: { ...old.book, opened: true },
-      tutorial: { offered: false },
+      tutorial: { offered: false, cleanOffered: false, clinicOffered: false },
       shop: { visits: 1 },
       clinic: { visits: 0 },
       care: { dirty: [], sick: [], muddy: [] },
@@ -233,7 +233,7 @@ describe('guardado de Luna, el tutorial, las visitas a la tienda y el libro', ()
   it('una partida nueva: sin Luna, aviso del tutorial pendiente, 0 visitas y libro sin abrir', () => {
     const data = defaultSave();
     expect(data.state.luna).toBe(false);
-    expect(data.tutorial).toEqual({ offered: false });
+    expect(data.tutorial).toEqual({ offered: false, cleanOffered: false, clinicOffered: false });
     expect(data.shop).toEqual({ visits: 0 });
     expect(data.book.opened).toBe(false);
   });
@@ -253,7 +253,7 @@ describe('guardado de Luna, el tutorial, las visitas a la tienda y el libro', ()
 
   it('ida y vuelta conserva todo', () => {
     const data = defaultSave();
-    const full = { ...data, state: { ...data.state, luna: true }, tutorial: { offered: true }, shop: { visits: 4 }, clinic: { visits: 2 }, book: { ...data.book, opened: true } };
+    const full = { ...data, state: { ...data.state, luna: true }, tutorial: { offered: true, cleanOffered: true, clinicOffered: false }, shop: { visits: 4 }, clinic: { visits: 2 }, book: { ...data.book, opened: true } };
     expect(roundTrip(full)).toEqual(full);
   });
 
@@ -266,7 +266,7 @@ describe('guardado de Luna, el tutorial, las visitas a la tienda y el libro', ()
     };
     const parsed = roundTrip(old)!;
     expect(parsed.state.luna).toBe(false);
-    expect(parsed.tutorial).toEqual({ offered: false });
+    expect(parsed.tutorial).toEqual({ offered: false, cleanOffered: false, clinicOffered: false });
     // Tenía 2 cabras (una comprada): cuenta como que ya entró en la tienda.
     expect(parsed.shop).toEqual({ visits: 1 });
     expect(parsed.book.opened).toBe(true);
@@ -287,6 +287,15 @@ describe('guardado de Luna, el tutorial, las visitas a la tienda y el libro', ()
   it('sin páginas leídas, el libro no cuenta como abierto (la página se pone sola al comprar)', () => {
     const old = { version: 2, state: { coins: 0, counts: {}, shopUnlocked: false }, settings: {}, book: { seen: [], hinted: false, page: 'nube' } };
     expect(roundTrip(old)!.book.opened).toBe(false);
+  });
+
+  it('una partida de antes sin cleanOffered ni clinicOffered los lee como false', () => {
+    expect(roundTrip({ ...defaultSave(), tutorial: { offered: true } })!.tutorial).toEqual({ offered: true, cleanOffered: false, clinicOffered: false });
+  });
+
+  it('guarda y lee los tres avisos', () => {
+    const tutorial = { offered: true, cleanOffered: true, clinicOffered: false };
+    expect(roundTrip({ ...defaultSave(), tutorial })!.tutorial).toEqual(tutorial);
   });
 
   it('una partida v1 carga con el aviso pendiente', () => {

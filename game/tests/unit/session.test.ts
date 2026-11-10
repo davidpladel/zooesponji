@@ -241,17 +241,25 @@ describe('Session: tienda, libro y tutorial', () => {
     expect((await Session.load(store, new EventBus<GameEvents>())).clinicVisits.visits).toBe(2);
   });
 
-  it('markBookOpened y markTutorialOffered se guardan y la segunda vez no escriben', async () => {
+  it('markLessonOffered marca solo el de esa lección', async () => {
+    const store = createMemoryStore();
+    const session = await Session.load(store, new EventBus<GameEvents>());
+    await session.markLessonOffered('limpieza');
+    expect(session.tutorial).toEqual({ offered: false, cleanOffered: true, clinicOffered: false });
+    expect((await Session.load(store, new EventBus<GameEvents>())).tutorial).toEqual({ offered: false, cleanOffered: true, clinicOffered: false });
+  });
+
+  it('markBookOpened y markLessonOffered se guardan y la segunda vez no escriben', async () => {
     const store = createMemoryStore();
     const session = await Session.load(store, new EventBus<GameEvents>());
     await session.markBookOpened();
-    await session.markTutorialOffered();
+    await session.markLessonOffered('inicio');
     const reloaded = await Session.load(store, new EventBus<GameEvents>());
     expect(reloaded.book.opened).toBe(true);
     expect(reloaded.tutorial.offered).toBe(true);
     const set = vi.spyOn(store, 'set');
     await session.markBookOpened();
-    await session.markTutorialOffered();
+    await session.markLessonOffered('inicio');
     expect(set).not.toHaveBeenCalled();
   });
 });

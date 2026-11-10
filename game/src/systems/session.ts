@@ -1,11 +1,15 @@
 import { careReward, clean, cure, isDirty, isMudPen, isSick, type CareState } from '../core/care';
 import { addCoins, purchase, type GameState, type PurchaseResult } from '../core/economy';
 import { resolveFeeding, type FeedResult } from '../core/reactions';
+import type { LessonId } from '../core/tutorial';
 import { loadSave, parseSave, writeSave, type BookProgress, type ClinicProgress, type KeyValueStore, type SaveData, type Settings, type ShopProgress, type TutorialProgress } from '../core/save';
 import type { FoodId } from '../data/foods';
 import { CLINIC_ITEM_ID, LUNA_ITEM_ID, parseExtraItemId } from '../data/shop';
 import { PEN_IDS, PENS, findResident, type PenId } from '../data/pens';
 import { bus, type EventBus, type GameEvents } from './events';
+
+/** Dónde se guarda que salió el aviso de cada lección. */
+const LESSON_OFFER_KEY = { inicio: 'offered', limpieza: 'cleanOffered', clinica: 'clinicOffered' } as const satisfies Record<LessonId, keyof TutorialProgress>;
 
 export class Session {
   private constructor(
@@ -188,10 +192,11 @@ export class Session {
     await writeSave(this.store, this.data);
   }
 
-  /** El aviso de aprender a jugar ya salió: no vuelve a salir solo. */
-  async markTutorialOffered(): Promise<void> {
-    if (this.data.tutorial.offered) return;
-    this.data = { ...this.data, tutorial: { offered: true } };
+  /** El aviso de esa lección ya salió: no vuelve a salir solo. */
+  async markLessonOffered(lesson: LessonId): Promise<void> {
+    const key = LESSON_OFFER_KEY[lesson];
+    if (this.data.tutorial[key]) return;
+    this.data = { ...this.data, tutorial: { ...this.data.tutorial, [key]: true } };
     await writeSave(this.store, this.data);
   }
 

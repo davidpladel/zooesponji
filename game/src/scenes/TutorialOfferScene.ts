@@ -70,7 +70,7 @@ export class TutorialOfferScene extends Phaser.Scene {
     if (this.done || !this.scene.isActive()) return;
     this.done = true;
     sfx.play('tap');
-    void getSession().markTutorialOffered();
+    void getSession().markLessonOffered('inicio');
     bus.emit('tutorial-answered', { learn });
     this.counted = false;
     this.scene.stop();

@@ -34,9 +34,11 @@ export interface BookProgress {
   opened: boolean;
 }
 
-/** El aviso de aprender a jugar ya salió (se aprendiera o se saltara). */
+/** Qué avisos de aprender ya salieron (se aprendiera o se saltara): el de inicio, el de la limpieza y el de la clínica. */
 export interface TutorialProgress {
   offered: boolean;
+  cleanOffered: boolean;
+  clinicOffered: boolean;
 }
 
 /**
@@ -127,7 +129,8 @@ function parseBook(raw: unknown): BookProgress {
 
 /** Sin dato (partidas de antes), el aviso está pendiente: sale una vez a todos. */
 function parseTutorial(raw: unknown): TutorialProgress {
-  return { offered: isObject(raw) && raw.offered === true };
+  const flag = (key: string): boolean => isObject(raw) && raw[key] === true;
+  return { offered: flag('offered'), cleanOffered: flag('cleanOffered'), clinicOffered: flag('clinicOffered') };
 }
 
 /**
@@ -149,7 +152,7 @@ export function defaultSave(): SaveData {
     state: initialState(),
     settings: defaultSettings(),
     book: defaultBook(),
-    tutorial: { offered: false },
+    tutorial: { offered: false, cleanOffered: false, clinicOffered: false },
     shop: { visits: 0 },
     clinic: { visits: 0 },
     care: emptyCare(),
@@ -229,7 +232,7 @@ export function migrateLegacy(coinsRaw: string | null, purchasesRaw: string | nu
     },
     settings: defaultSettings(),
     book: defaultBook(),
-    tutorial: { offered: false },
+    tutorial: { offered: false, cleanOffered: false, clinicOffered: false },
     shop: { visits: 0 },
     clinic: { visits: 0 },
     care: emptyCare(),
