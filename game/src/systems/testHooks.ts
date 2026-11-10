@@ -82,6 +82,8 @@ export interface ZooTestApi {
   hudToast(): { text: string; shopIcon: boolean } | null;
   /** Casillas con huellas de Luna hasta la tienda. */
   shopTrailTiles(): { x: number; y: number }[];
+  /** Casillas con huella hasta el animal que señala el tutorial. */
+  tutorialTrailTiles(): { x: number; y: number }[];
   /** Ruta que andaría la cuidadora hasta la puerta de la tienda. */
   shopRoute(): { x: number; y: number }[];
   /** Mano que enseña a arrastrar en la ventana de comer (null si no se ve). */
@@ -288,6 +290,7 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
     hudShopEdgeVisible: () => activeScene<HudScene>('Hud')?.shopEdgeVisible() ?? false,
     hudToast: () => activeScene<HudScene>('Hud')?.toastShown() ?? null,
     shopTrailTiles: () => activeScene<WorldScene>('World')?.shopTrailTiles() ?? [],
+    tutorialTrailTiles: () => activeScene<WorldScene>('World')?.residentTrailTiles() ?? [],
     shopRoute: () => activeScene<WorldScene>('World')?.shopRoute() ?? [],
     feedDragHint: () => activeScene<FeedScene>('Feed')?.dragHintPos() ?? null,
     hudCoinsText: () => activeScene<HudScene>('Hud')?.coinsLabel() ?? null,

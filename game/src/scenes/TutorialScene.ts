@@ -43,6 +43,8 @@ const DRAG_MS = 1800;
 const RUB_MS = 2400;
 /** Si la cuidadora no ha llegado a la clínica en este rato (se ha ido a otro sitio), la mano señala su botón. Largo: los peques tardan en hacer caso (David, 2026-11-10). */
 const CLINIC_WAIT_MS = 15_000;
+/** Si las huellas hasta el animal se acaban (pisadas o pasado su rato) sin haber llegado, vuelven a salir a este rato. */
+const TRAIL_AGAIN_MS = 3000;
 /**
  * Dónde va la ✕ que cierra el tutorial: en la columna de las monedas, debajo del hueco del botón de la clínica (aunque
  * aún no se vea), para no taparlo (David, 2026-11-10). Arriba a la derecha no: ahí está la ✕ de la tienda y la clínica.
@@ -81,6 +83,9 @@ export class TutorialScene extends Phaser.Scene {
   private step: LessonStep = 'move';
   /** El animal de la práctica (limpieza y clínica): la mano lo señala a él. */
   private practiceId: string | null = null;
+  /** Animal al que van las huellas de Luna del paso actual, y cuándo se encendieron por última vez. */
+  private trailTo: string | null = null;
+  private trailAt = 0;
   /** Lo preparado para la lección que empieza (se cuenta en Matomo justo después de `tutorial-started`). */
   private prepared: { lesson: 'limpieza' | 'clinica'; residentId: string; already: boolean } | null = null;
   private moveFrom: Vec | null = null;
@@ -104,6 +109,7 @@ export class TutorialScene extends Phaser.Scene {
     this.queue = [...(data.lessons ?? ['inicio'])];
     this.lesson = 'inicio';
     this.practiceId = null;
+    this.trailTo = null;
     this.prepared = null;
     this.step = 'move';
     this.moveFrom = null;
@@ -140,7 +146,12 @@ export class TutorialScene extends Phaser.Scene {
       bus.on('cure-opened', () => this.on({ type: 'cure-opened' })),
       bus.on('cure-closed', ({ done }) => this.on({ type: 'cure-closed', done })),
     ];
-    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => offs.forEach((off) => off()));
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+      offs.forEach((off) => off());
+      // Se acaba el tutorial (o se cierra con la ✕): sus huellas se apagan.
+      if (this.trailTo) this.scene.get<WorldScene>('World').hideResidentTrail();
+      this.trailTo = null;
+    });
     this.startNext();
   }
 
@@ -232,6 +243,7 @@ export class TutorialScene extends Phaser.Scene {
     this.pollCleaning();
     if (!this.scene.isActive()) return;
     this.gesture = this.currentGesture();
+    this.updateTrail();
     this.joystick.setVisible(false);
     if (this.lesson === 'inicio' && this.step === 'move' && this.scene.isActive('World')) this.showJoystickHint();
     this.draw();
@@ -242,6 +254,29 @@ export class TutorialScene extends Phaser.Scene {
     if (this.lesson !== 'limpieza' || !TOOL_STEPS.includes(this.step) || !this.scene.isActive('Clean')) return;
     const step = this.scene.get<CleanScene>('Clean').state().step;
     if (step !== this.step) this.on({ type: 'clean-step', step });
+  }
+
+  /**
+   * En los pasos de tocar a un animal del mapa, las huellas de Luna marcan en el suelo el camino hasta él, como las
+   * de la tienda (David, 2026-11-10: con el bocadillo y la mano solo, no sabía por dónde ir).
+   */
+  private updateTrail(): void {
+    const world = this.world();
+    if (!world) return;
+    const target = this.trailTarget(world);
+    if (target !== this.trailTo) {
+      if (this.trailTo) world.hideResidentTrail();
+      this.trailTo = target;
+      this.trailAt = -Infinity;
+    }
+    if (!target || world.residentTrailActive() || this.time.now - this.trailAt < TRAIL_AGAIN_MS) return;
+    if (world.guideToResident(target)) this.trailAt = this.time.now;
+  }
+
+  private trailTarget(world: WorldScene): string | null {
+    const step = this.step;
+    if (step === 'tap-animal') return world.tutorialAnimal()?.residentId ?? null;
+    return step === 'tap-dirty' || step === 'tap-sick' ? this.practiceId : null;
   }
 
   private world(): WorldScene | null {

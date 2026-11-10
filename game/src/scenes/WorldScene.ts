@@ -97,6 +97,8 @@ export class WorldScene extends Phaser.Scene {
   private petIdle = 0;
   /** Huellas de Luna hasta la tienda (botón de la tienda, antes de la primera visita). */
   private trail!: PawTrail;
+  /** Para qué son las huellas: la tienda (botón) o el animal que señala el tutorial. */
+  private trailFor: 'shop' | 'resident' | null = null;
 
   constructor() {
     super('World');
@@ -409,24 +411,55 @@ export class WorldScene extends Phaser.Scene {
       this.trail.hide();
       return this.goToTile(door.x, door.y) ? 'andando' : null;
     }
-    if (this.trail.active) {
+    if (this.trail.active && this.trailFor === 'shop') {
       this.trail.fadeOut();
       return 'apagar';
     }
     const path = findPathOrNearest(this.grid, worldToTile(this.keeper, TILE_SIZE), door);
     if (!path || path.length < 2) return null;
     this.trail.show(path, TRAIL_MS);
+    this.trailFor = 'shop';
     return 'huellas';
+  }
+
+  /**
+   * Huellas de Luna por el camino hasta un animal (el que señala el tutorial), como las de la tienda. False si no hay
+   * camino o ya está al lado.
+   */
+  guideToResident(residentId: string): boolean {
+    const at = this.pens.positionOf(residentId);
+    if (!at) return false;
+    const path = findPathOrNearest(this.grid, worldToTile(this.keeper, TILE_SIZE), worldToTile(at, TILE_SIZE));
+    if (!path || path.length < 2) return false;
+    this.trail.show(path, TRAIL_MS);
+    if (!this.trail.active) return false;
+    this.trailFor = 'resident';
+    return true;
+  }
+
+  /** ¿Hay huellas hasta un animal? */
+  residentTrailActive(): boolean {
+    return (this.trail?.active ?? false) && this.trailFor === 'resident';
+  }
+
+  /** Apaga las huellas hasta un animal (las de la tienda no las toca). */
+  hideResidentTrail(): void {
+    if (this.trailFor === 'resident') this.trail.fadeOut();
   }
 
   /** ¿Hay huellas hasta la tienda? */
   shopTrailActive(): boolean {
-    return this.trail?.active ?? false;
+    return (this.trail?.active ?? false) && this.trailFor === 'shop';
   }
 
-  /** Para pruebas: casillas con huella. */
+  /** Para pruebas: casillas con huella hasta la tienda. */
   shopTrailTiles(): Point[] {
-    return this.trail?.tiles() ?? [];
+    return this.shopTrailActive() ? this.trail.tiles() : [];
+  }
+
+  /** Para pruebas: casillas con huella hasta el animal del tutorial. */
+  residentTrailTiles(): Point[] {
+    return this.residentTrailActive() ? this.trail.tiles() : [];
   }
 
   /** Para pruebas: la ruta que andaría la cuidadora hasta la puerta de la tienda. */

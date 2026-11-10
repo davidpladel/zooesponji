@@ -219,3 +219,35 @@ test('quien ya lo tenía todo y no entra en la tienda: al empezar la partida, un
   expect(await offerLesson(page)).toBeNull();
   expect(await page.evaluate(() => window.__ZOO__!.activeScenes())).not.toContain('TutorialOffer');
 });
+
+test('en las lecciones, las huellas de Luna marcan en el suelo el camino hasta el animal (cerdos, clínica)', async ({ page }) => {
+  // Como David el 2026-11-10: acaba de comprar los cerdos (sin elefantes) y sale de la tienda.
+  await startGame(page);
+  await buy(page, 'cerdos', 'clinic');
+  await visitShop(page);
+  await page.waitForFunction(() => window.__ZOO__!.tutorialOfferLesson() === 'limpieza', null, { timeout: 10_000 });
+  await tapOffer(page, 'learn');
+  await page.waitForFunction(() => window.__ZOO__!.tutorialLesson() === 'limpieza');
+  expect(await step(page)).toBe('tap-dirty');
+  // Huellas en el suelo, y son del tutorial: no encienden el bocadillo de la tienda.
+  await page.waitForFunction(() => window.__ZOO__!.tutorialTrailTiles().length > 0);
+  expect(await page.evaluate(() => window.__ZOO__!.shopTrailTiles())).toEqual([]);
+
+  // Al tocar al cerdo, ya han servido: se apagan.
+  const practice = (await page.evaluate(() => window.__ZOO__!.tutorialPractice()))!;
+  expect(await page.evaluate((id) => window.__ZOO__!.feedResident(id), practice)).toBe(true);
+  await page.waitForFunction(() => window.__ZOO__!.activeScenes().includes('Clean'), null, { timeout: 60_000 });
+  await cleanAll(page);
+  await page.waitForFunction(() => window.__ZOO__!.tutorialLesson() === null);
+  await page.waitForFunction(() => !window.__ZOO__!.activeScenes().includes('Clean'));
+  expect(await page.evaluate(() => window.__ZOO__!.tutorialTrailTiles())).toEqual([]);
+
+  // Hecha la limpieza, sale el aviso de la clínica.
+  await page.waitForFunction(() => window.__ZOO__!.tutorialOfferLesson() === 'clinica', null, { timeout: 10_000 });
+  await tapOffer(page, 'learn');
+  await page.waitForFunction(() => window.__ZOO__!.tutorialLesson() === 'clinica');
+
+  // Clínica: también hasta el malito.
+  expect(await step(page)).toBe('tap-sick');
+  await page.waitForFunction(() => window.__ZOO__!.tutorialTrailTiles().length > 0);
+});
