@@ -126,6 +126,10 @@ recintos de al menos 14×9 por dentro con el paisaje de cada especie y farolas r
 - Las pruebas del mapa (`zoomap`, `caminos`, `recintos`, `tour`) leen las posiciones del propio mapa, no números
   fijos. La prueba de juego `recorrido.spec.ts` hace andar a la cuidadora tocando la pantalla por una ruta que pisa
   todas las casillas (`core/tour.ts`) y comprueba que llega, que Luna la sigue y que nada que se pisa queda encima.
+- **Histórico del mapa:** cada vez que cambia el mapa (o entra algo nuevo que se ve en él) se saca una foto del zoo
+  entero con todo comprado y se guarda en `mapa-historico/` del repo privado (lleva el arte de los packs, nunca aquí).
+  Con `npm run dev` en marcha, desde `game/`: `node ../../zooesponji-private/mapa-historico/foto-mapa.mjs`. Se
+  apunta qué hay nuevo en la tabla de su README.
 
 ## Llegar a la tienda sin leer
 
