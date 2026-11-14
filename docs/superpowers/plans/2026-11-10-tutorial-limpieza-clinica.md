@@ -246,7 +246,7 @@ Comportamiento:
 - Modify: `README.md`, `game/README.md` (tutorial y Matomo)
 - Modify: este plan (casillas marcadas)
 
-- [ ] **Step 1:** David juega en `npm run dev` con una partida nueva: compra cerdos, sale de la tienda, hace la lección de limpieza entera; compra la clínica, sale, hace la de clínica; luego Ajustes › Aprender. Resultado esperado: avisos en mayúsculas, la mano lleva a cada sitio y no se queda colgada en ningún paso.
+- [x] **Step 1:** David juega en `npm run dev` con una partida nueva: compra cerdos, sale de la tienda, hace la lección de limpieza entera; compra la clínica, sale, hace la de clínica; luego Ajustes › Aprender. Resultado esperado: avisos en mayúsculas, la mano lleva a cada sitio y no se queda colgada en ningún paso.
 - [x] **Step 2:** `npm run build` → sin errores.
 - [x] **Step 3:** actualizar los documentos.
 - [x] **Step 4: Commit** `docs: tutorial de limpieza y clínica terminado`.
