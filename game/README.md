@@ -264,7 +264,7 @@ El tablón de la plaza habla con el servidor de comunidad. Sin configuración no
 
 ## Versión
 
-`version` en `package.json` y `versionName` en `android/app/build.gradle`: **2.10.0** con el `versionCode` **13** (2026-11-10, en la rama `feat/plaza-recintos-recorrido`; subida a Play el 2026-11-11 y publicada en producción y prueba cerrada el 2026-11-13). La próxima subida lleva el **14**. `versionCode` sube en 1 con cada subida a Play: el **7** es la 2.6.0 (primera con anuncios), subida a la prueba cerrada el 2026-10-12; el **8** es la 2.7.0 (tablón de la comunidad), subida; el **9** es la 2.7.1 (arreglos del muro del tablón), publicada en Play; el **10** es la 2.8.0; el **11**, la 2.8.1, publicada; el **12**, la 2.9.0 (con R8; la 2.8.2 no se llegó a subir), publicada.
+`version` en `package.json` y `versionName` en `android/app/build.gradle`: **2.10.0** con el `versionCode` **13** (2026-11-10, hecha en la rama `feat/plaza-recintos-recorrido` y en `main` desde el 2026-11-14, etiqueta `v2.10.0`; subida a Play el 2026-11-11 y publicada en producción y prueba cerrada el 2026-11-13). La próxima subida lleva el **14**. `versionCode` sube en 1 con cada subida a Play: el **7** es la 2.6.0 (primera con anuncios), subida a la prueba cerrada el 2026-10-12; el **8** es la 2.7.0 (tablón de la comunidad), subida; el **9** es la 2.7.1 (arreglos del muro del tablón), publicada en Play; el **10** es la 2.8.0; el **11**, la 2.8.1, publicada; el **12**, la 2.9.0 (con R8; la 2.8.2 no se llegó a subir), publicada.
 
 Al sacar una versión nueva, la versión se cambia a mano en estos sitios (el resto la leen solos):
 
