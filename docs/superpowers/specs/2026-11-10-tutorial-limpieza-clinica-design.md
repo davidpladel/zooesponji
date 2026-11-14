@@ -120,7 +120,7 @@ Cómo se reparte el código entre `TutorialScene` y escenas o módulos nuevos, e
 
 ## Cómo quedó al construirlo (2026-11-10)
 
-Plan: [2026-11-10-tutorial-limpieza-clinica.md](../plans/2026-11-10-tutorial-limpieza-clinica.md). Estado: **construido en la rama, con pruebas automáticas en verde; falta que David lo pruebe jugando.**
+Plan: [2026-11-10-tutorial-limpieza-clinica.md](../plans/2026-11-10-tutorial-limpieza-clinica.md). Estado: **construido, con pruebas automáticas en verde y probado jugando por David; publicado en la 2.10.0 (Play, 2026-11-13).**
 
 - **No se guarda una lista de «pendientes».** `save.tutorial` es `{ offered, cleanOffered, clinicOffered }` y lo que toca enseñar se deduce de lo que tiene abierto y de los avisos que ya salieron (`core/lessons.ts`, `pendingLessonOffers`). Si cierra el juego dentro de la tienda, el aviso sale la próxima vez que salga de ella.
 - **El animal de la práctica** sale del primer recinto de barro abierto (cerdos, elefantes africanos, elefantes asiáticos, en ese orden) con un animal que no esté malito, no necesariamente del recién comprado. Si ya hay uno sucio en un recinto abierto, se usa ese.
