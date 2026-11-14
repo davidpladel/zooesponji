@@ -37,6 +37,7 @@ versión del juego.
 
 ## Cerrar una votación
 
-Poner en `ganadora` el id de la opción que gana (en caso de empate decides tú), añadir la entrada al
+Los porcentajes de cada opción salen en `reparto` de `estado.php`. Para cerrarla antes de su fecha, poner en
+`cierra` el día de ayer (`cierra` cuenta como abierto). Poner en `ganadora` el id de la opción que gana (en caso de empate decides tú), añadir la entrada al
 principio de `muro` con `"estado": "elegida"`, y pasar el comprobador. Cuando la idea esté hecha en el
 juego, cambiar su estado a `"hecha"` y, si toca, poner `recinto`.
