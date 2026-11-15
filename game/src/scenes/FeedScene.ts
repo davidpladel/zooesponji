@@ -17,7 +17,7 @@ import { addHand } from '../ui/hand';
 import type { TutorialScene } from './TutorialScene';
 import { sceneryTexture } from '../ui/paint';
 import { textStyle } from '../ui/theme';
-import { addRedCross } from '../ui/redCross';
+import { addRedCrossButton } from '../ui/redCross';
 import { addUiText, fitText, type UiText } from '../ui/text';
 import { HUD_COIN, addCloseBadge, addPanel, addRibbonTitle, addTile, addVeil, restartOnResize } from '../ui/widgets';
 
@@ -30,6 +30,8 @@ export interface FeedSceneData {
 
 /** Margen (px) alrededor del animal para que soltar "cerca" cuente. */
 const DROP_MARGIN = 48;
+/** Hueco libre entre la zona donde se suelta la comida y el botón de la cruz. */
+const CROSS_GAP = 10;
 /** Retardo elástico de la comida al seguir el dedo (0..1; 1 = sin retardo). */
 const FOLLOW = 0.35;
 /** Reacciones, monedas y corazones van por encima de todo: título (25) y botón de cerrar (30). */
@@ -322,14 +324,25 @@ export class FeedScene extends Phaser.Scene {
     }
     const { width, height } = this.scale;
     const size = Phaser.Math.Clamp(height * 0.14, 56, 110);
-    // Al lado del animal, a la altura de su cabeza: arriba tapaba el título.
-    const at = { x: Math.min(width * 0.82, this.animal.x + this.animal.displayWidth * 0.5 + size * 0.75), y: this.animal.y - this.animal.displayHeight * 0.1 };
-    const cross = addRedCross(this, at.x, at.y, size).setDepth(REACTION_DEPTH).setScale(0);
-    cross.setInteractive(new Phaser.Geom.Rectangle(-size, -size, size * 2, size * 2), Phaser.Geom.Rectangle.Contains);
+    // Botón redondo, separado del animal: su zona táctil no puede pisar al animal ni la zona donde se suelta la
+    // comida (el niño suelta comida junto al animal y no debe pulsarlo sin querer). A la altura de su cabeza.
+    const { button: cross, ring, radius } = addRedCrossButton(this, 0, 0, size);
+    const reach = this.animal.x + this.animal.displayWidth * 0.5 + DROP_MARGIN + CROSS_GAP + radius;
+    cross.setPosition(Math.min(width - radius - 8, reach), this.animal.y - this.animal.displayHeight * 0.1);
+    cross.setDepth(REACTION_DEPTH).setScale(0);
+    // La zona táctil es justo el disco (los puntos del área son relativos a la esquina del contenedor).
+    cross.setInteractive(new Phaser.Geom.Circle(radius, radius, radius), Phaser.Geom.Circle.Contains);
     cross.input!.cursor = 'pointer';
     cross.on('pointerup', () => this.goToClinic());
-    this.tweens.add({ targets: cross, scale: 1, duration: 260, ease: 'Back.easeOut' });
-    this.tweens.add({ targets: cross, angle: { from: -6, to: 6 }, duration: 500, yoyo: true, repeat: -1, ease: 'Sine.InOut', delay: 260 });
+    // Sale con un bote y se queda latiendo (zoom leve) con el aro parpadeando: se ve que es un botón que pulsar.
+    this.tweens.add({
+      targets: cross,
+      scale: 1,
+      duration: 260,
+      ease: 'Back.easeOut',
+      onComplete: () => this.tweens.add({ targets: cross, scale: 1.12, duration: 420, yoyo: true, repeat: -1, ease: 'Sine.InOut' }),
+    });
+    this.tweens.add({ targets: ring, alpha: { from: 0.15, to: 0.8 }, duration: 420, yoyo: true, repeat: -1, ease: 'Sine.InOut' });
     const hint = addUiText(this, width / 2, height * 0.66, t('feed.sick'), textStyle(Math.round(Phaser.Math.Clamp(height * 0.045, 15, 26)), '#ffffff', '#4e342e'))
       .setOrigin(0.5)
       .setDepth(REACTION_DEPTH);
