@@ -343,7 +343,11 @@ export class FeedScene extends Phaser.Scene {
       onComplete: () => this.tweens.add({ targets: cross, scale: 1.12, duration: 420, yoyo: true, repeat: -1, ease: 'Sine.InOut' }),
     });
     this.tweens.add({ targets: ring, alpha: { from: 0.15, to: 0.8 }, duration: 420, yoyo: true, repeat: -1, ease: 'Sine.InOut' });
-    const hint = addUiText(this, width / 2, height * 0.66, t('feed.sick'), textStyle(Math.round(Phaser.Math.Clamp(height * 0.045, 15, 26)), '#ffffff', '#4e342e'))
+    // En el hueco entre la ventana del paisaje (acaba en 0,59·alto) y lo más alto de la bandeja de comida.
+    const trayTile = Math.round(Phaser.Math.Clamp(Math.round(height * 0.12), 56, 96) * 1.45);
+    const gapTop = height * 0.59;
+    const gapBottom = height * 0.79 - trayTile / 2;
+    const hint = addUiText(this, width / 2, (gapTop + gapBottom) / 2, t('feed.sick'), textStyle(Math.round(Phaser.Math.Clamp(height * 0.045, 15, 26)), '#ffffff', '#4e342e'))
       .setOrigin(0.5)
       .setDepth(REACTION_DEPTH);
     fitText(hint, width * 0.8);
