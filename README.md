@@ -2,7 +2,7 @@
 
 Creado por y para Daniela y Adrián, con la ayuda de su padre y de Claude + OpenCode + DeepSeek + ChatGPT.
 
-**Versión actual: 2.10.0** (2026-11-11, en `main` desde el 2026-11-14, etiqueta `v2.10.0`; versionCode 13) · Juega en la web: https://davidpladel.com/zoo/ (aún con una versión anterior) · Android: **publicado en Google Play** (producción y prueba cerrada) con la 2.10.0 (versionCode 13, publicada el 2026-11-13)
+**Versión actual: 2.10.0** (2026-11-11, en `main` desde el 2026-11-14, etiqueta `v2.10.0`; versionCode 13) · Juega en la web: https://davidpladel.com/zoo/ (aún con una versión anterior) · Android: **publicado en Google Play** (producción y prueba cerrada) con la 2.10.0 (versionCode 13, publicada el 2026-11-13) · 🏅 **Aprobada por profesores** en Google Play desde el 2026-11-16
 
 ## La idea
 
@@ -137,6 +137,13 @@ Ficha de Play al día (2026-10-08): David subió las capturas nuevas de `game/st
 - **Notas de cada versión:** en los 13 idiomas que pide Play (los 12 de la ficha más en-GB, en el orden de su plantilla), en `game/store/notas-version-<versión>.txt` (la primera, [`notas-version-2.7.1.txt`](game/store/notas-version-2.7.1.txt)); desde la 2.8.0 ya sin aviso de idioma, porque el juego está en todos; David valida el texto antes de cada subida; se pegan enteras en «Notas de la versión» al crear la versión en Play.
 - **Enviada no es publicada.** La API de Play (`edits.tracks`) devuelve lo que se ha enviado a cada pista: `status: completed` significa «lanzamiento al 100 % pedido», no «aprobada por Google». La API no dice si un cambio está en revisión: eso solo sale en Play Console → «Resumen de publicación» → «Cambios en revisión». Antes de dar una versión o un texto de la ficha por publicado, mirarlo ahí; mientras está en revisión, en la tienda sigue lo anterior.
 - Pendiente: subir textos e imágenes por la API de Play Console (p. ej. `fastlane supply`) para no hacerlo a mano.
+
+🏅 **Aprobada por profesores (2026-11-16).** Google Play aprobó el juego en su programa «Aprobada por profesores»: lleva la insignia en la ficha y aparece en la pestaña Niños de Google Play. Lo solicitó David marcando «Incluir mi aplicación en el Programa Aprobada por profesores» en Play Console → Contenido de la aplicación → Contenido y audiencia objetivo → Presencia en Google Play Store (no está apuntado cuándo). La fecha es la «Última revisión» que muestra Play Console en la página del programa; David vio la insignia en la ficha ese mismo día. Grupos de edad objetivo: 5 años o menos, 6-8 y 9-12. Motivos, tal como los pone la ficha de Google Play:
+- Edades recomendadas: hasta 12 años (en Play Console: «5 años o menos»).
+- Divertida y entretenida: personajes, temática popular.
+- Especialmente diseñada para niños: palabras y sonidos, facilidad de uso, arte y animación.
+- Creatividad e imaginación: creatividad.
+- Mensajes positivos: diversidad.
 
 Pendiente, por orden: R8 ya va en Play desde la 2.9.0 ([spec](docs/superpowers/specs/2026-10-25-optimizacion-dex-r8-design.md)): antes de compilar cada paquete, los pasos de R8 de la guía privada; falta vigilar «Fallos y errores ANR» y apuntar en la spec la optimización de código DEX y el tamaño de descarga; cuando haya datos de la 2.6.0, mirar `anuncio-vacio` y `anuncio-segundos` en Matomo; al pasar a producción, enlazar la app en AdMob con su ficha de Play; publicar la 2.5.1 en la web; completar los 14 días con 12 testers y pedir el acceso a producción (6b). Opcional en Matomo: conservación corta de los registros en bruto. Cabo suelto de la 2.6.0: la prueba `zoo-grande.spec.ts:46` («se compra el estanque…») falló una vez en la tanda completa del 2026-10-12 (el maíz no llegó al pato, con el equipo lento) y pasó tres veces seguidas lanzada sola. Cabos sueltos de la 2.4.0: la prueba `zoo-grande.spec.ts:104` («sin comprar las ovejas, ningún visitante entra en su recinto») falló una vez en una tanda completa y pasó las demás, sin que se llegara a ver el error; y cambiar de idioma con la ventana de comer abierta, o con el libro sobre la tienda, no tiene prueba de juego propia. Ideas para después, cada una con su spec: día y noche y acuario con delfines (bañar/limpiar y la clínica ya están en la 2.10.0).
 
