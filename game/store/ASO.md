@@ -120,18 +120,23 @@ Las imágenes quedan en `game/store/out/` (ignorada por git).
   [Keyword Monitor](https://help.asomobile.net/ru/articles/4549184-keyword-monitor),
   [App Keywords](https://help.asomobile.net/ru/articles/9783054-app-keywords)
 
-## Pendientes (a 2026-11-17)
+## Pendientes (a 2026-11-18)
 
-- [ ] **Revisión de Google** de la ficha enviada el 2026-11-17: comprobar en Play Console que pasa y que la tienda la
+- [ ] **Revisión de Google** de la ficha enviada el 2026-11-17 y reenviada con los idiomas nuevos el 2026-11-18: comprobar en Play Console que pasa y que la tienda la
       enseña.
 - [ ] **Hacia el 2026-12-01:** posiciones en Keyword Monitor (España, EE. UU., México y Colombia) y visitas,
       conversión e instalaciones en Play Console, comparadas con las dos semanas de antes. Separar el efecto de
       «Aprobada por profesores» (2026-11-16), que llegó a la vez.
 - [ ] **Icono de la app instalada:** está en `feat/release-2.11.0`; sale con la próxima subida (versionCode 14).
       Comprobarlo en el móvil al probar el paquete.
-- [ ] **Los otros 9 idiomas** (fr, pt-BR, pt-PT, it, ru, ar, hi, zh, ja) siguen con los textos del 2026-11-03 y las
-      imágenes del idioma principal. Hacerles su propia búsqueda de palabras (empezar por pt-BR: hubo instalaciones de
-      Brasil) y sus capturas con el juego en su idioma.
+- [x] **pt-BR, fr-FR, hi-IN y en-IN (nuevo)** (2026-11-18): búsqueda propia de palabras en Brasil, Francia e India y
+      textos al día (granja, cerdos, baño, clínica). Datos y textos en `ficha-play-idiomas-2026-11-18.txt`. Enviados a
+      revisión junto con lo del 2026-11-17 (edición 11061154857540134968). Palabras añadidas al Keyword Monitor (BR, FR,
+      IN). Siguen sin capturas propias: usan las del idioma principal.
+- [ ] **Los otros 6 idiomas** (pt-PT, it, ru, ar, zh, ja) siguen con los textos del 2026-11-03 (sin granja, cerdos ni
+      clínica). Siguiente por número de niños: árabe (Egipto, Arabia Saudí) y ruso. En chino, Google Play no funciona en
+      China continental: mirar Taiwán o Hong Kong, o dejarlo.
+- [ ] **Capturas en su idioma** para pt-BR, fr-FR e hi-IN (los scripts de capturas solo admiten `es` y `en`).
 - [ ] **Contador de monedas** visible (con 92 280 monedas) en las capturas de zonas del parque (bambú y polo, en
       tabletas): rehacerlas sin tantas monedas o tapándolo.
 - [ ] **Gráfico de funciones:** sigue con el león de antes (`make_icon.py`); se podría poner el del icono nuevo.
