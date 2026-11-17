@@ -1,0 +1,102 @@
+Zoo Esponji — textos DEFINITIVOS de la ficha de Google Play (2026-11-17), pendientes del visto bueno de David
+Estudio y datos en ficha-play-propuesta-2026-11-17.txt. Cambian es-ES, es-419, en-US y en-GB; el resto de idiomas sigue como en ficha-play-traducciones.txt.
+Límites: nombre 30, descripción breve 80, descripción completa 4000.
+
+Por qué cada título (tráfico diario estimado y competencia 0-10, ASO Mobile):
+- es-ES: «juego para niños de 2-5 años» 200, competencia 3,7, eficiencia media; los rivales directos salen ahí del 4.º al 25.º. Es la mejor de España (David pide además decir que también vale de 5 a 12).
+- es-419: en Hispanoamérica «juego para niños de 2-5 años» no tiene tráfico; mandan «zoo» (México 726, ya estamos del 19.º al 27.º) y «juegos de animales» (Colombia 115, Chile 75) y «juegos de granjas» (México 185).
+- en-US / en-GB: «toddler games» 1471, competencia 4,4, eficiencia muy alta: la mejor de todo el estudio. «kids animal games» 257 (3,8) va en la descripción breve.
+
+==================================================
+Idioma: es-ES
+==================================================
+Nombre: Zoo Esponji: Juego niños 2-5
+Descripción breve: Juego para niños de 2-5 años, y también de 5 a 12: cuida tu zoo y tu granja
+Descripción completa:
+Juego para niños de 2-5 años, y también para mayores de 5 a 12: en Zoo Esponji cuidas tu propio zoo y una granja de animales. Eres la cuidadora: recorre el parque, da de comer a los animales y descubre qué le gusta a cada uno. Sin prisas, sin tiempo límite y sin perder nunca: gana monedas, compra animales nuevos y haz crecer tu zoológico.
+
+🦁 ¿Qué come cada animal?
+El león come carne, la cabra prefiere piedras y zanahorias, y si le das la comida equivocada… ¡pondrá cara de asco! Pero cuidado con el conejo: si se lo das a la cabra o al panda, en vez de comérselo se harán amigos.
+
+🐷 Una granja de animales
+En la granja viven ovejas, caballos, gallinas, cinco cerditos y un estanque de patos. Los cerdos se manchan de barro en su charco: báñalos con cepillo, jabón, agua tibia y toalla, y vuelven a estar limpios.
+
+🩺 Cura a los animales
+Si un animal se pone malito, llévalo a la clínica: el veterinario y la veterinaria te esperan para darle sus medicinas.
+
+🐘 Un zoo enorme para explorar
+· La sabana, con jirafas, cebras, gacelas y elefantes.
+· El bosque de bambú de los pandas y la catarata de la pantera negra.
+· El polo, con sus pingüinos.
+· Una plaza con la fuente del león en el centro.
+· Luna, la perrita de la cuidadora, te sigue por todo el parque.
+· Cada animal tiene su nombre y su página en el libro secreto del zoo.
+
+✋ Se aprende a jugar sin leer
+Una mano enseña cada gesto, así que los más pequeños aprenden a jugar aunque no sepan leer. Hay lecciones para dar de comer, bañar y curar.
+
+💡 Tus ideas llegan al zoo
+Envía tus ideas y vota las de otras niñas y niños. Se revisan antes de publicarse y algunas ya están dentro del juego: la clínica la eligieron los jugadores en una votación.
+
+👪 Pensado para niños y familias
+· Juegos de animales para niños de 2 a 5 años, y también de 5 a 12.
+· Fácil y tranquilo: se juega tocando y arrastrando, sin tiempo límite.
+· Sin compras ni registros.
+· De vez en cuando ofrece ver un anuncio a cambio de monedas, y siempre se puede decir que no.
+· Se puede jugar sin conexión a internet.
+· Pixel art dibujado con cariño, música y efectos de sonido.
+· En 11 idiomas, entre ellos el español y el inglés.
+
+Creado por y para Daniela (9 años) y Adrián (5 años), con ayuda de su padre. Seguiremos añadiendo novedades, muchas inventadas por ellos y por ti.
+
+==================================================
+Idioma: es-419
+==================================================
+Nombre: Zoo Esponji juegos de animales
+Descripción breve: Juegos de animales para niños de 2 a 12 años: cuida tu zoo y tu granja
+Descripción completa:
+Juegos de animales para niños de 2 a 5 años, y también para mayores de 5 a 12: en Zoo Esponji cuidas tu propio zoo y una granja de animales. Eres la cuidadora: recorre el parque, alimenta a los animales y descubre qué le gusta a cada uno. Sin prisas, sin tiempo límite y sin perder nunca: gana monedas, compra animales nuevos y haz crecer tu zoológico.
+
+(Desde «🦁 ¿Qué come cada animal?» hasta el final, igual que es-ES.)
+
+==================================================
+Idioma: en-US (y en-GB igual)
+==================================================
+Nombre: Zoo Esponji: Toddler Games
+Descripción breve: Kids animal games for ages 2-5, and 5-12 too: look after your zoo and farm
+Descripción completa:
+Toddler games for ages 2 to 5, and for big kids aged 5 to 12 too: in Zoo Esponji you look after your own zoo and a farm full of animals. You're the zookeeper: walk around the park, feed the zoo animals and find out what each one likes. No rush, no timers and you can never lose: earn coins, buy new animals and watch your zoo grow.
+
+🦁 What does each animal eat?
+The lion eats meat, the goat prefers rocks and carrots, and if you give them the wrong food… they'll make a yucky face! But watch out for the rabbit: give it to the goat or the panda and, instead of eating it, they'll become friends.
+
+🐷 A farm full of animals
+The farm has sheep, horses, chickens, five piglets and a duck pond. The pigs get muddy in their puddle: wash them with a brush, soap, warm water and a towel, and they're clean again.
+
+🩺 Heal the animals
+If an animal feels poorly, take it to the clinic: the vets are waiting to give it its medicine.
+
+🐘 A huge zoo to explore
+· The savanna, with giraffes, zebras, gazelles and elephants.
+· The pandas' bamboo forest and the black panther's waterfall.
+· The polar zone, with its penguins.
+· A square with the lion fountain in the middle.
+· Moon, the keeper's little dog, follows you all around the park.
+· Every animal has its own name and page in the zoo's secret book.
+
+✋ Learn to play without reading
+A hand shows each move, so little ones can learn to play even before they can read. There are lessons for feeding, bathing and healing.
+
+💡 Your ideas come to the zoo
+Send your ideas and vote for other kids' ideas. They're reviewed before being published, and some are already in the game: players chose the clinic in a vote.
+
+👪 Made for kids and families
+· Kids animal games for ages 2 to 5, and 5 to 12 too.
+· Easy and calm: just tap and drag, with no time limits.
+· No purchases or sign-ups.
+· Now and then it offers an ad in exchange for coins, and you can always say no.
+· Play offline, no internet needed.
+· Pixel art drawn with love, music and sound effects.
+· In 11 languages, including English and Spanish.
+
+Created by and for Daniela (age 9) and Adrián (age 5), with help from their dad. We'll keep adding new features, many of them invented by them and by you.

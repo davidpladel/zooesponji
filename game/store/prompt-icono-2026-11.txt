@@ -1,0 +1,17 @@
+Prompt para ChatGPT — icono nuevo de Zoo Esponji (noviembre 2026)
+Imagen de base que hay que adjuntar: game/store/play/icono-512.png (el león actual).
+Después: guardar el resultado en 512x512 PNG y pasárselo a Claude para cambiarlo en la ficha y en el juego.
+
+---
+Using the attached lion as the character (keep the same friendly face, mane shape, colours and soft cartoon style), create a square mobile game icon, 1024x1024 px.
+
+Composition:
+- The lion's head and front paws are big and close to the camera, filling about 80% of the square, slightly tilted, with a happy open smile.
+- The lion holds up a large, shiny gold coin with both front paws, in the lower right part of the icon. The coin must be clearly visible and big (about one third of the icon's width), with a thick golden rim, a soft shine and a simple paw print stamped on it.
+- Plain, bright, saturated background: a sky-blue to turquoise radial gradient (#58B0F0 in the centre), with a soft white glow behind the lion's head. No scenery.
+
+Style and rules:
+- Thick, clean dark-brown outlines and strong contrast, so it still reads at 48x48 px on a phone.
+- No text, no letters, no numbers, no logos, no frame, no rounded corners and no transparent areas (Google Play adds the rounded corners).
+- Keep everything important away from the outer 10% of the square.
+- Child-friendly, warm and cute; it is a zoo game for kids aged 2 to 12.
