@@ -62,7 +62,9 @@ Reglas de las guías de ASO Mobile:
   encabezados). **Como mucho una repetición exacta cada 250 letras y menos del 3 %.** Precisión antes que repetición.
 - También cuentan el nombre del desarrollador, el del paquete (poco) y el texto de las reseñas.
 - No traducir palabras clave: cada idioma, su propia búsqueda.
-- Comprobar límites y repeticiones (ver `plan_subida.py` y el conteo de `ficha-play-propuesta-2026-11-17.txt`).
+- Comprobar límites y repeticiones con `PYTHONIOENCODING=utf-8 python densidad.py` (todas las fichas; sale «MAL» si un
+  texto se pasa de largo o una búsqueda se repite más de una vez cada 250 letras o llega al 3 %). Al añadir un idioma,
+  poner sus búsquedas en `CLAVES`. En japonés y chino cuenta por letras, porque no separan las palabras con espacios.
 - **Nada que el juego no tenga.** Los textos los revisa David antes de subir.
 
 ## 6. Imágenes (conversión)
@@ -133,9 +135,16 @@ Las imágenes quedan en `game/store/out/` (ignorada por git).
       textos al día (granja, cerdos, baño, clínica). Datos y textos en `ficha-play-idiomas-2026-11-18.txt`. Enviados a
       revisión junto con lo del 2026-11-17 (edición 11061154857540134968). Palabras añadidas al Keyword Monitor (BR, FR,
       IN). Siguen sin capturas propias: usan las del idioma principal.
-- [ ] **Los otros 6 idiomas** (pt-PT, it, ru, ar, zh, ja) siguen con los textos del 2026-11-03 (sin granja, cerdos ni
-      clínica). Siguiente por número de niños: árabe (Egipto, Arabia Saudí) y ruso. En chino, Google Play no funciona en
-      China continental: mirar Taiwán o Hong Kong, o dejarlo.
+- [x] **Revisión de densidad** (2026-11-18): las 7 fichas enviadas (es-ES, es-419, en-US/GB, pt-BR, fr-FR, hi-IN,
+      en-IN) cumplen: ninguna búsqueda pasa del 1,8 % ni de una vez cada 250 letras (`densidad.py`).
+- [ ] **Los otros 6 idiomas (ar, ru, pt-PT, it, ja, zh-CN): escritos y comprobados, SIN SUBIR** (2026-11-18). Textos y
+      datos en `ficha-play-resto-idiomas-2026-11-18.txt`. David pidió subirlos en otra tanda, **cuando Google apruebe**
+      lo enviado el 17 y el 18 (para no tocar esa revisión). Al subirlos: pasarlos a `plan_subida.py`, permiso de
+      David, y añadir sus búsquedas al Keyword Monitor (SA, EG, RU, PT, IT, JP). Títulos nuevos: «العاب اطفال»,
+      «Детские игры», «Jogos infantis», «Giochi bambini», «子供ゲーム 動物園»; zh-CN conserva el suyo.
+      En árabe no se nombran los cerdos (el baño se cuenta con los elefantes): que David lo confirme.
+- [ ] **Ficha zh-TW para Taiwán** (idea): allí se busca en chino tradicional («小朋友遊戲» 124 al día) y hoy ven la ficha
+      por defecto. Sería un idioma nuevo de ficha (el juego no tiene chino tradicional).
 - [ ] **Capturas en su idioma** para pt-BR, fr-FR e hi-IN (los scripts de capturas solo admiten `es` y `en`).
 - [ ] **Contador de monedas** visible (con 92 280 monedas) en las capturas de zonas del parque (bambú y polo, en
       tabletas): rehacerlas sin tantas monedas o tapándolo.
