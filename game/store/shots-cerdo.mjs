@@ -1,9 +1,13 @@
 // Ráfaga del cerdito durante el cepillado (se va girando: de frente, un lado, el otro y culete), para la ficha.
-// Necesita `npm run dev` (puerto 5173). Uso (desde game/store):  node shots-cerdo.mjs [es|en]
-// Salida: out/<idioma>-cerdo-<n>.png
+// Necesita `npm run dev` (puerto 5173). Uso (desde game/store):  node shots-cerdo.mjs [es|en] [residente recinto]
+// Sin más argumentos, la cerdita Rosita; con «tembo elefantes-africanos», el elefante (para la ficha árabe, sin cerdos).
+// Salida: out/<idioma>-cerdo-<n>.png, o out/<idioma>-<residente>-<n>.png con otro animal.
 import { chromium } from '@playwright/test';
 
 const LANG = process.argv[2] === 'en' ? 'en' : 'es';
+const QUIEN = process.argv[3] ?? 'rosita';
+const RECINTO = process.argv[4] ?? 'cerdos';
+const PREFIJO = QUIEN === 'rosita' ? 'cerdo' : QUIEN;
 const OUT = new URL('./out/', import.meta.url).pathname.replace(/^\/(\w:)/, '$1');
 const browser = await chromium.launch({ channel: 'chrome' });
 const ctx = await browser.newContext({ viewport: { width: 1920, height: 1080 }, locale: LANG === 'en' ? 'en-US' : 'es-ES' });
@@ -16,12 +20,12 @@ await page.waitForFunction(() => window.__ZOO__?.activeScenes().includes('Title'
 const b0 = await box();
 await page.mouse.click(b0.x + b0.width / 2, b0.y + b0.height * 0.62);
 await page.waitForFunction(() => window.__ZOO__?.activeScenes().includes('World'));
-await zoo(async () => {
-  await window.__ZOO__.addCoins(500);
-  await window.__ZOO__.buy('cerdos');
-  await window.__ZOO__.forceSoil('rosita');
-  window.__ZOO__.openClean('rosita');
-});
+await zoo(async ([quien, recinto]) => {
+  await window.__ZOO__.addCoins(5000);
+  try { await window.__ZOO__.buy(recinto); } catch { /* ya lo tenía */ }
+  await window.__ZOO__.forceSoil(quien);
+  window.__ZOO__.openClean(quien);
+}, [QUIEN, RECINTO]);
 await page.waitForFunction(() => window.__ZOO__.cleanState() !== null);
 await page.waitForTimeout(1200);
 
@@ -41,7 +45,7 @@ for (let guard = 0; guard < 200; guard++) {
   if (state.step === 'cepillo') {
     await page.mouse.move(b.x + a.x + 40, b.y + a.y - 20, { steps: 3 });
     await page.waitForTimeout(250);
-    await page.screenshot({ path: `${OUT}${LANG}-cerdo-${String(++n).padStart(2, '0')}.png` });
+    await page.screenshot({ path: `${OUT}${LANG}-${PREFIJO}-${String(++n).padStart(2, '0')}.png` });
   }
   await page.mouse.up();
   await page.waitForTimeout(350);

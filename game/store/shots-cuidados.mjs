@@ -5,6 +5,10 @@ import { chromium } from '@playwright/test';
 import fs from 'node:fs';
 
 const LANG = process.argv[2] === 'en' ? 'en' : 'es';
+// Animal que se cura en la clínica (3.er argumento; por defecto el león Bills). Con otro, las tomas de curar se llaman
+// curar-<residente>-<n>: así la ficha no repite el león (2026-11-18).
+const CURAR = process.argv[3] ?? 'bills';
+const CUR = CURAR === 'bills' ? 'curar' : `curar-${CURAR}`;
 const OUT = new URL('./out/', import.meta.url).pathname.replace(/^\/(\w:)/, '$1');
 fs.mkdirSync(OUT, { recursive: true });
 const browser = await chromium.launch({ channel: 'chrome' });
@@ -90,13 +94,13 @@ await shot('banar-final');
 await until(() => !window.__ZOO__.activeScenes().includes('Clean'), null, 15000).catch(() => {});
 await wait(1000);
 
-// 3. Clínica: el león y un cerdito malitos en las camillas; luego curar al león.
-await zoo(async () => {
+// 3. Clínica: el animal elegido y un cerdito malitos en las camillas; luego curar al primero.
+await zoo(async (quien) => {
   await window.__ZOO__.giveClinic();
-  await window.__ZOO__.forceSick('bills');
+  await window.__ZOO__.forceSick(quien);
   await window.__ZOO__.forceSick('rosita');
   window.__ZOO__.openClinic();
-});
+}, CURAR);
 await until(() => window.__ZOO__.clinicBeds() !== null);
 await wait(2500);
 await shot('clinica');
@@ -105,15 +109,15 @@ const b1 = await box();
 await page.mouse.click(b1.x + bed.x, b1.y + bed.y);
 await until(() => window.__ZOO__.cureDoses() !== null, null, 20000);
 await wait(1200);
-await shot('curar-0');
+await shot(`${CUR}-0`);
 for (let i = 0; i < 5; i++) {
   const cure = await zoo(() => window.__ZOO__.cureTargets());
   if (!cure) break;
   await drag(Object.values(cure.medicines)[i % 4], cure.animal);
   await wait(500);
-  await shot(`curar-${i + 1}`);
+  await shot(`${CUR}-${i + 1}`);
 }
 await wait(1500);
-await shot('curar-final');
+await shot(`${CUR}-final`);
 await browser.close();
 console.log('Hecho:', LANG);

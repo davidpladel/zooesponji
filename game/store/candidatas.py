@@ -38,9 +38,11 @@ CANDIDATAS = {
         ('zona-ovejas-2', 'LAS OVEJAS', 'CADA UNA CON SU NOMBRE'),
     ],
 }
-# En inglés, solo las que eligió David (2026-11-17): C1, C8, C12, C18 y C21, con su mismo número.
+# En inglés, solo las que eligió David (2026-11-17): C1, C8, C12, C18 y C21, con su mismo número, y la C2 (cebra)
+# desde el 2026-11-18, porque la cabra pasó a curarse en la clínica y salía dos veces en las de tableta.
 _EN = {
     1: ('comer-lola', 'THE GIRAFFE', 'LOVES BANANAS!'),
+    2: ('comer-raya', 'THE ZEBRA', 'CRAZY ABOUT APPLES!'),  # 2026-11-18: sustituye a la cabra en las de tableta
     8: ('comer-cuac', 'THE DUCK', 'LOVES FISH!'),
     12: ('comer-gordi', 'THE GOAT', 'EATS CARROTS... AND ROCKS!'),
     18: ('zona-panda-1', 'THE BAMBOO FOREST', 'WHERE THE PANDAS LIVE'),

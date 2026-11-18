@@ -1,4 +1,4 @@
-Zoo Esponji — fichas de Google Play de los 6 idiomas que faltaban (2026-11-18), con el estudio de ASO Mobile
+Zoo Esponji — fichas de Google Play de los 6 idiomas que faltaban y 4 nuevos (2026-11-18), con el estudio de ASO Mobile
 Mismo proceso que es/en y pt-BR/fr/hi (game/store/ASO.md): Keyword Check de cada candidata en los países del idioma.
 Límites: nombre 30, descripción breve 80, descripción completa 4000. El cuerpo sigue a la ficha es-ES del 2026-11-17
 (granja, cerdos, baño, clínica, Luna, plaza, tutorial sin palabras), que las traducciones del 2026-11-03 aún no contaban.
@@ -29,8 +29,25 @@ Datos (tráfico diario estimado por ASO Mobile, competencia 0-10, eficiencia), m
   «幼児 ゲーム» 10.
 - Chino: Google Play no funciona en China continental. Singapur: «儿童游戏» y «动物园» sin datos. Taiwán (escribe en
   tradicional y vería una ficha zh-TW, que no tenemos): «小朋友遊戲» 124 · «動物園» 81 · «兒童遊戲» 11 · «儿童游戏» 11.
-  Decisión: zh-CN conserva su título (no hay búsqueda medible mejor) y solo se pone al día el texto. Una ficha zh-TW
-  propia para Taiwán sería otra tarea (ver Pendientes en ASO.md).
+  Decisión: zh-CN conserva su título (no hay búsqueda medible mejor) y solo se pone al día el texto. Y se crea la ficha
+  zh-TW (pedida por David el 2026-11-18): «小朋友遊戲» 124 (arriba apps para peques de 2-4 años y BabyBus) ·
+  «動物遊戲» 87 (3,1) · «動物園» 81 · «農場» 53 (3,2) · «幼兒遊戲» 20. El juego no tiene chino tradicional: la ficha
+  dice que está en simplificado.
+- Idiomas nuevos de ficha (David: «los que veas oportunos», 2026-11-18). El juego no los tiene; cada ficha lo dice y
+  recuerda que casi no hace falta leer. Sin el nombre «Luna»: en esos móviles el juego sale en inglés («Moon»).
+  · Alemania (de-DE): «kinderspiele» 501 (3,8, alta; arriba «Kinderspiele für 2,3,4 Jahre») · «bauernhof» 224 (4,1) ·
+    «tierspiele» 155 (1,8).
+  · Indonesia (id): «game anak» 726 (4, muy alta: la mejor de todo el estudio) · «game anak offline» 126 · «game hewan»
+    110 (1,9) · «kebun binatang» 25. País de mayoría musulmana: como el árabe, sin cerdos en el texto y con las
+    capturas del árabe (elefante en el baño, tienda sin cerdos).
+  · Corea del Sur (ko-KR): «유아게임» 241 (3,5, media; arriba apps de peques y Pororo) · «동물 게임» 1.
+  · Turquía: descartada; todas las búsquedas daban 17 (cifra de relleno de ASO Mobile, no un dato).
+
+Capturas (2026-11-18, pedido de David): el león salía tres veces (comiendo, en su recinto y en la clínica). En es/en la
+2.ª es ahora la jirafa (candidata C1) y en la clínica se cura la cabra; en las de tableta la cabra (C12) deja su sitio
+a la cebra (C2). En inglés, la tienda, el libro y el parque salen ya con el juego en inglés (antes, en español). El
+árabe y el indonesio llevan las de inglés con el elefante bañándose y la tienda sin cerdos a la venta. Plan de subida:
+`python plan_subida.py tanda2`.
 
 ==================================================
 Idioma: ar
@@ -287,4 +304,176 @@ Descripción completa:
 · 支持包括中文在内的11种语言。
 
 由爸爸帮忙，为Daniela（9岁）和Adrián（5岁）而做，也和他们一起做。我们会继续添加新内容，其中很多是他们和你想出来的。
+==================================================
+
+==================================================
+Idioma: zh-TW (nueva; Taiwán, chino tradicional)
+==================================================
+Nombre: Zoo Esponji：小朋友遊戲 動物園
+Descripción breve: 2-5歲小朋友遊戲，5-12歲也能玩：照顧你的動物園和農場，餵食、洗澡、看病
+Descripción completa:
+適合2到5歲的小朋友遊戲，5到12歲的大孩子也能玩：在Zoo Esponji裡，你要照顧自己的動物園和一座滿是動物的農場。你是飼育員：在公園裡散步，餵動物吃東西，發現每隻動物喜歡什麼。不用急，沒有時間限制，也永遠不會輸：賺金幣、買新動物，讓你的樂園越來越大。
+
+🦁 每種動物吃什麼？
+獅子吃肉，山羊喜歡石頭和紅蘿蔔，如果餵錯了食物……牠會做出嫌棄的鬼臉！但是要小心兔子：如果把牠給山羊或熊貓，牠們不會吃掉牠，而是會變成好朋友。
+
+🐷 滿是動物的農場
+農場裡住著綿羊、馬、母雞、五隻小豬，還有一個鴨子池塘。小豬會在泥坑裡弄得髒兮兮：用刷子、肥皂、溫水和毛巾幫牠們洗澡，牠們就又乾乾淨淨了。
+
+🩺 幫動物看病
+如果有動物生病了，就帶牠去診所：獸醫叔叔和獸醫阿姨正等著給牠吃藥。
+
+🐘 巨大的動物園等你探索
+· 有長頸鹿、斑馬、瞪羚和大象的草原。
+· 熊貓的竹林和黑豹的瀑布。
+· 有企鵝的極地。
+· 中間有獅子噴泉的廣場。
+· 月亮，飼育員的小狗，會陪你逛遍整個公園。
+· 每隻動物都有自己的名字，在秘密圖鑑裡都有自己的一頁。
+
+✋ 不識字也能學會玩
+一隻小手會示範每個動作，所以還不識字的小朋友也能學會玩。還有餵食、洗澡和看病的小課程。
+
+💡 你的點子會進入遊戲
+送出你的點子，幫其他小朋友的點子投票。點子在公開前會經過審核，有些已經加入遊戲：診所就是玩家投票選出來的。
+
+👪 為孩子和家庭設計
+· 適合2到5歲、也適合5到12歲孩子的動物遊戲。
+· 簡單又輕鬆：只要點一點、拖一拖，沒有時間限制。
+· 沒有內購，不用註冊。
+· 偶爾會提供看廣告換金幣的選擇，隨時都可以拒絕。
+· 不連網也能玩。
+· 用心繪製的像素畫，還有音樂和音效。
+· 幾乎不需要文字。遊戲支援11種語言，包括簡體中文。
+
+由爸爸幫忙，為Daniela（9歲）和Adrián（5歲）而做，也和他們一起做。我們會繼續加入新內容，其中很多是他們和你想出來的。
+
+==================================================
+Idioma: de-DE (nueva; el juego no tiene alemán: se dice en el texto)
+==================================================
+Nombre: Zoo Esponji: Kinderspiele
+Descripción breve: Kinderspiele ab 2 Jahren, auch für 5-12: Kümmere dich um Zoo und Bauernhof
+Descripción completa:
+Kinderspiele für 2 bis 5 Jahre, und auch für Größere von 5 bis 12: In Zoo Esponji kümmerst du dich um deinen eigenen Zoo und einen Bauernhof voller Tiere. Du bist die Tierpflegerin: Spaziere durch den Park, füttere die Tiere und finde heraus, was jedes am liebsten mag. Ohne Eile, ohne Zeitlimit und ohne jemals zu verlieren: Sammle Münzen, kaufe neue Tiere und lass deinen Zoo wachsen.
+
+🦁 Was frisst welches Tier?
+Der Löwe frisst Fleisch, die Ziege mag Steine und Karotten, und wenn du das falsche Futter gibst … zieht sie eine angeekelte Grimasse! Aber Vorsicht mit dem Hasen: Gibst du ihn der Ziege oder dem Panda, fressen sie ihn nicht, sondern werden Freunde.
+
+🐷 Ein Bauernhof voller Tiere
+Auf dem Bauernhof leben Schafe, Pferde, Hühner, fünf Ferkel und ein Ententeich. Die Schweine machen sich in ihrer Pfütze schmutzig: Bade sie mit Bürste, Seife, warmem Wasser und Handtuch, und schon sind sie wieder sauber.
+
+🩺 Heile die Tiere
+Wenn ein Tier krank wird, bring es in die Tierklinik: Der Tierarzt und die Tierärztin warten schon mit der Medizin.
+
+🐘 Ein riesiger Zoo zum Entdecken
+· Die Savanne mit Giraffen, Zebras, Gazellen und Elefanten.
+· Der Bambuswald der Pandas und der Wasserfall des schwarzen Panthers.
+· Der Pol mit seinen Pinguinen.
+· Ein Platz mit dem Löwenbrunnen in der Mitte.
+· Das Hündchen der Tierpflegerin folgt dir durch den ganzen Park.
+· Jedes Tier hat seinen Namen und seine Seite im geheimen Zoobuch.
+
+✋ Spielen lernen ohne Lesen
+Eine Hand zeigt jede Bewegung, so lernen auch die Kleinsten zu spielen, bevor sie lesen können. Es gibt Lektionen zum Füttern, Baden und Heilen.
+
+💡 Deine Ideen kommen in den Zoo
+Schick deine Ideen und stimme für die Ideen anderer Kinder ab. Sie werden vor der Veröffentlichung geprüft, und einige sind schon im Spiel: Die Klinik haben die Spieler in einer Abstimmung ausgewählt.
+
+👪 Für Kinder und Familien
+· Tierspiele für Kinder von 2 bis 5 Jahren, und auch von 5 bis 12.
+· Einfach und ruhig: nur tippen und ziehen, ohne Zeitlimit.
+· Keine Käufe, keine Anmeldung.
+· Ab und zu bietet es Werbung gegen Münzen an, und man kann immer Nein sagen.
+· Spielbar ohne Internet.
+· Liebevoll gezeichnete Pixel-Art, Musik und Soundeffekte.
+· Fast ohne Worte spielbar. Das Spiel gibt es in 11 Sprachen, Deutsch ist noch nicht dabei.
+
+Gemacht für und mit Daniela (9 Jahre) und Adrián (5 Jahre), mit Hilfe ihres Papas. Wir fügen weiter Neues hinzu, vieles davon von ihnen und von dir erfunden.
+
+==================================================
+Idioma: id (nueva; sin cerdos y con las capturas del árabe; el juego no tiene indonesio: se dice en el texto)
+==================================================
+Nombre: Zoo Esponji: Game Anak
+Descripción breve: Game anak 2-5 tahun, juga 5-12: rawat kebun binatang dan peternakanmu
+Descripción completa:
+Game anak untuk usia 2 sampai 5 tahun, dan juga untuk anak yang lebih besar usia 5 sampai 12: di Zoo Esponji kamu merawat kebun binatangmu sendiri dan sebuah peternakan penuh hewan. Kamu adalah penjaga kebun binatang: jalan-jalan di taman, beri makan hewan-hewan, dan cari tahu apa kesukaan masing-masing. Tanpa terburu-buru, tanpa batas waktu, dan tidak pernah kalah: kumpulkan koin, beli hewan baru, dan buat kebun binatangmu makin besar.
+
+🦁 Setiap hewan makan apa?
+Singa makan daging, kambing suka batu dan wortel, dan kalau kamu memberi makanan yang salah… dia akan memasang wajah jijik! Tapi hati-hati dengan kelinci: kalau kamu memberikannya kepada kambing atau panda, mereka tidak akan memakannya, malah jadi teman.
+
+🐘 Mandikan hewan
+Gajah jadi kotor kena lumpur di kolamnya: mandikan dengan sikat, sabun, air hangat, dan handuk, lalu dia bersih lagi.
+
+🐑 Peternakan penuh hewan
+Di peternakan tinggal domba, kuda, ayam, dan ada kolam bebek.
+
+🩺 Obati hewan yang sakit
+Kalau ada hewan yang sakit, bawa ke klinik: dokter hewan sudah menunggu untuk memberinya obat.
+
+🌍 Kebun binatang besar untuk dijelajahi
+· Sabana dengan jerapah, zebra, gazel, dan gajah.
+· Hutan bambu panda dan air terjun macan kumbang.
+· Kutub dengan penguin-penguinnya.
+· Alun-alun dengan air mancur singa di tengahnya.
+· Anjing kecil si penjaga mengikutimu ke seluruh taman.
+· Setiap hewan punya nama dan halamannya sendiri di buku rahasia.
+
+✋ Belajar main tanpa membaca
+Sebuah tangan menunjukkan setiap gerakan, jadi si kecil bisa belajar bermain bahkan sebelum bisa membaca. Ada pelajaran memberi makan, memandikan, dan mengobati.
+
+💡 Idemu sampai ke dalam game
+Kirim idemu dan pilih ide anak-anak lain. Ide diperiksa sebelum diterbitkan, dan beberapa sudah ada di dalam game: klinik dipilih oleh para pemain lewat pemungutan suara.
+
+👪 Untuk anak dan keluarga
+· Game hewan untuk anak usia 2 sampai 5 tahun, dan juga 5 sampai 12.
+· Mudah dan tenang: cukup sentuh dan geser, tanpa batas waktu.
+· Tanpa pembelian dan tanpa pendaftaran.
+· Sesekali menawarkan iklan untuk ditukar koin, dan selalu boleh menolak.
+· Game anak offline: bisa dimainkan tanpa internet.
+· Pixel art yang digambar dengan sepenuh hati, musik, dan efek suara.
+· Hampir tanpa kata. Game ini tersedia dalam 11 bahasa; bahasa Indonesia belum termasuk.
+
+Dibuat oleh dan untuk Daniela (9 tahun) dan Adrián (5 tahun), dengan bantuan ayah mereka. Kami akan terus menambahkan hal baru, banyak di antaranya ide mereka dan idemu.
+
+==================================================
+Idioma: ko-KR (nueva; el juego no tiene coreano: se dice en el texto)
+==================================================
+Nombre: Zoo Esponji: 유아게임 동물원
+Descripción breve: 2~5세 유아게임, 5~12세도 함께! 동물원과 농장의 동물들을 돌봐 주세요
+Descripción completa:
+2~5세를 위한 유아게임, 5~12세 큰 아이들도 함께 즐길 수 있어요. Zoo Esponji에서는 나만의 동물원과 동물이 가득한 농장을 돌봐요. 여러분은 사육사예요. 공원을 산책하고, 동물들에게 먹이를 주고, 저마다 무엇을 좋아하는지 알아보세요. 서두를 필요도, 시간 제한도 없고, 절대 지지 않아요. 동전을 모으고, 새 동물을 사서 동물원을 키워 보세요.
+
+🦁 어떤 동물이 무엇을 먹을까?
+사자는 고기를 먹고, 염소는 돌과 당근을 좋아해요. 엉뚱한 먹이를 주면… 웩 하는 표정을 지어요! 그런데 토끼는 조심하세요. 염소나 판다에게 주면 먹는 대신 친구가 된답니다.
+
+🐷 동물이 가득한 농장
+농장에는 양, 말, 닭, 아기 돼지 다섯 마리와 오리 연못이 있어요. 돼지들은 웅덩이 진흙에 더러워져요. 솔, 비누, 따뜻한 물, 수건으로 목욕시키면 다시 깨끗해져요.
+
+🩺 아픈 동물 치료하기
+동물이 아프면 병원에 데려가세요. 수의사 선생님들이 약을 주려고 기다리고 있어요.
+
+🐘 탐험할 수 있는 커다란 동물원
+· 기린, 얼룩말, 가젤, 코끼리가 사는 사바나.
+· 판다의 대나무 숲과 흑표범의 폭포.
+· 펭귄이 사는 극지방.
+· 가운데에 사자 분수가 있는 광장.
+· 사육사의 강아지가 공원 어디든 따라다녀요.
+· 모든 동물에게 이름이 있고, 비밀 책에 저마다의 페이지가 있어요.
+
+✋ 글을 몰라도 배울 수 있어요
+손이 동작 하나하나를 보여 줘서, 아직 글을 못 읽는 어린아이도 노는 법을 배울 수 있어요. 먹이 주기, 목욕, 치료 레슨이 있어요.
+
+💡 여러분의 아이디어가 게임으로
+아이디어를 보내고 다른 친구들의 아이디어에 투표해 보세요. 공개 전에 확인을 거치며, 몇몇은 이미 게임에 들어가 있어요. 병원은 플레이어들이 투표로 골랐답니다.
+
+👪 아이와 가족을 위해
+· 2~5세, 그리고 5~12세 아이를 위한 동물 게임.
+· 쉽고 차분하게: 터치하고 끌기만 하면 돼요. 시간 제한 없음.
+· 구매 없음, 가입 없음.
+· 가끔 동전을 받고 광고를 볼지 물어보지만, 언제든 거절할 수 있어요.
+· 인터넷 없이도 즐길 수 있어요.
+· 정성껏 그린 픽셀 아트, 음악과 효과음.
+· 글이 거의 없는 게임이에요. 11개 언어를 지원하지만 한국어는 아직 없어요.
+
+Daniela(9세)와 Adrián(5세)을 위해, 두 아이와 함께, 아빠의 도움을 받아 만들었어요. 앞으로도 새로운 것을 계속 추가할 거예요. 그중 많은 것이 두 아이와 여러분의 아이디어랍니다.
 ==================================================

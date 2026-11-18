@@ -137,14 +137,16 @@ Las imágenes quedan en `game/store/out/` (ignorada por git).
       IN). Siguen sin capturas propias: usan las del idioma principal.
 - [x] **Revisión de densidad** (2026-11-18): las 7 fichas enviadas (es-ES, es-419, en-US/GB, pt-BR, fr-FR, hi-IN,
       en-IN) cumplen: ninguna búsqueda pasa del 1,8 % ni de una vez cada 250 letras (`densidad.py`).
-- [ ] **Los otros 6 idiomas (ar, ru, pt-PT, it, ja, zh-CN): escritos y comprobados, SIN SUBIR** (2026-11-18). Textos y
-      datos en `ficha-play-resto-idiomas-2026-11-18.txt`. David pidió subirlos en otra tanda, **cuando Google apruebe**
-      lo enviado el 17 y el 18 (para no tocar esa revisión). Al subirlos: pasarlos a `plan_subida.py`, permiso de
-      David, y añadir sus búsquedas al Keyword Monitor (SA, EG, RU, PT, IT, JP). Títulos nuevos: «العاب اطفال»,
-      «Детские игры», «Jogos infantis», «Giochi bambini», «子供ゲーム 動物園»; zh-CN conserva el suyo.
-      En árabe no se nombran los cerdos (el baño se cuenta con los elefantes): que David lo confirme.
-- [ ] **Ficha zh-TW para Taiwán** (idea): allí se busca en chino tradicional («小朋友遊戲» 124 al día) y hoy ven la ficha
-      por defecto. Sería un idioma nuevo de ficha (el juego no tiene chino tradicional).
+- [ ] **Tanda 2, SIN SUBIR** (preparada el 2026-11-18). David pidió subirla **cuando Google apruebe** lo enviado el 17
+      y el 18 (para no tocar esa revisión). Lleva:
+      · Textos de ar, ru, pt-PT, it, ja y zh-CN al día, y 4 fichas nuevas: zh-TW (Taiwán), de-DE, id (Indonesia) y
+        ko-KR. Datos y textos en `ficha-play-resto-idiomas-2026-11-18.txt`.
+      · Capturas de es/en sin el león repetido (jirafa en la 2.ª, la cabra en la clínica, cebra en tableta) y con la
+        tienda, el libro y el parque en inglés en las de inglés.
+      · Árabe e indonesio sin cerdos: texto y capturas propias (elefante en el baño, tienda sin cerdos).
+      Al subir: `python plan_subida.py tanda2 > out/plan-ficha-tanda2.json`, permiso de David, `play-ficha.mjs subir`
+      y añadir las búsquedas al Keyword Monitor (SA, EG, RU, PT, IT, JP, TW, DE, ID, KR).
+- [ ] **Turquía:** ASO Mobile no tenía datos fiables (todo daba 17). Volver a medir más adelante.
 - [ ] **Capturas en su idioma** para pt-BR, fr-FR e hi-IN (los scripts de capturas solo admiten `es` y `en`).
 - [ ] **Contador de monedas** visible (con 92 280 monedas) en las capturas de zonas del parque (bambú y polo, en
       tabletas): rehacerlas sin tantas monedas o tapándolo.

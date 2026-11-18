@@ -24,9 +24,13 @@ CLAVES = {
     'it-IT': ['giochi bambini', 'giochi per bambini', 'giochi di animali', 'fattoria', 'zoo'],
     'ja-JP': ['子供ゲーム', '子供向けゲーム', '動物ゲーム', '動物園', '牧場'],
     'zh-CN': ['儿童游戏', '动物游戏', '动物园', '农场'],
+    'zh-TW': ['小朋友遊戲', '動物遊戲', '動物園', '農場'],
+    'de-DE': ['kinderspiele', 'tierspiele', 'bauernhof', 'zoo'],
+    'id': ['game anak', 'game hewan', 'game anak offline', 'kebun binatang'],
+    'ko-KR': ['유아게임', '동물 게임', '동물원', '농장'],
 }
 # Japonés y chino no separan las palabras con espacios: se cuenta por letras (densidad = letras de la búsqueda / letras).
-SIN_ESPACIOS = ('ja-JP', 'zh-CN')
+SIN_ESPACIOS = ('ja-JP', 'zh-CN', 'zh-TW')
 
 
 def fichas():
