@@ -32,6 +32,12 @@ CLAVES = {
     'pl-PL': ['gry dla dzieci', 'gry o zwierzętach', 'zoo', 'farma'],
     'nl-NL': ['kinderspelletjes', 'dierenspelletjes', 'dierentuin', 'boerderij'],
 }
+# Regla fija (ASO.md › 5): en países de mayoría musulmana la ficha no nombra a los cerdos. Palabras prohibidas por idioma.
+SIN_CERDOS = {
+    'ar': ['خنزير', 'خنازير', 'خنزيرة'],
+    'id': ['babi'],
+    'tr-TR': ['domuz'],
+}
 # Japonés y chino no separan las palabras con espacios: se cuenta por letras (densidad = letras de la búsqueda / letras).
 SIN_ESPACIOS = ('ja-JP', 'zh-CN', 'zh-TW')
 
@@ -84,6 +90,10 @@ for lang, c in fichas().items():
     letras = len(c)
     print(f'\n== {lang}: {letras} letras, {n} palabras, máx. {letras // 250} repeticiones por búsqueda')
     t, s = TITULOS.get(lang, ('', ''))
+    for cerdo in SIN_CERDOS.get(lang, []):
+        if cerdo in (t + ' ' + s + ' ' + c).lower():
+            ok = False
+            print(f'  MAL la ficha nombra a los cerdos («{cerdo}»): en este idioma no se nombran (ASO.md › 5)')
     largo = len(t) > 30 or len(s) > 80 or letras > 4000
     ok &= not largo
     print(f'  {"MAL" if largo else "ok "} nombre {len(t)}/30, breve {len(s)}/80, completa {letras}/4000')

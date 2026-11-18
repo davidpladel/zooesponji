@@ -1,4 +1,6 @@
 Zoo Esponji — textos DEFINITIVOS de la ficha de Google Play (2026-11-17), pendientes del visto bueno de David
+REGLA FIJA (ASO.md › 5): en las fichas de países de mayoría musulmana (hoy ar, id y tr-TR) no se nombran los
+cerdos ni salen en las capturas (llevan las del árabe, con el elefante). El juego no cambia.
 Estudio y datos en ficha-play-propuesta-2026-11-17.txt. Cambian es-ES, es-419, en-US y en-GB; el resto de idiomas sigue como en ficha-play-traducciones.txt.
 Límites: nombre 30, descripción breve 80, descripción completa 4000.
 

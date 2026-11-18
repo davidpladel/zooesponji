@@ -68,6 +68,13 @@ Reglas de las guías de ASO Mobile:
   texto se pasa de largo o una búsqueda se repite más de una vez cada 250 letras o llega al 3 %). Al añadir un idioma,
   poner sus búsquedas en `CLAVES`. En japonés y chino cuenta por letras, porque no separan las palabras con espacios.
 - **Nada que el juego no tenga.** Los textos los revisa David antes de subir.
+- **Sin cerdos en los países de mayoría musulmana (regla fija, David, 2026-11-18).** En las fichas de esos idiomas no
+  se nombran los cerdos ni salen en las capturas: hoy **árabe (`ar`), indonesio (`id`) y turco (`tr-TR`)**. El baño se
+  cuenta con los elefantes (también se manchan de barro en su charca) y la granja con ovejas, caballos, gallinas y
+  patos. Llevan las capturas del árabe (`capturas_ficha.py › CAPTURAS['ar']`: elefante en el baño y tienda sin
+  cerdos a la venta) y en `plan_subida.py` se les asigna `imgs('ar')`. **Cualquier idioma nuevo de un país de mayoría
+  musulmana** (malayo, urdu, persa, bengalí de Bangladés, kazajo, uzbeko, azerí…) va igual. Es solo la ficha: el
+  juego no cambia y los cerdos siguen dentro para todos (no se promete que no estén, solo no se enseñan).
 
 ## 6. Imágenes (conversión)
 
@@ -76,6 +83,8 @@ Lo que hacen los rivales que convierten y lo que dicen las guías:
 - **Icono:** cara del animal grande, fondo de color vivo y algún objeto (moneda, regalo). Sin letras. Comprobar a 48 px
   y con las esquinas redondeadas de Play. Lo dibuja ChatGPT con la imagen de base y un prompt (ejemplo en
   `prompt-icono-2026-11.txt`); el original va al repo privado.
+- **Sin cerdos donde la ficha no los nombra** (ver la regla del apartado 5): esas fichas llevan su propio juego de
+  capturas, nunca las de por defecto, que tienen el cerdito bañándose.
 - **Capturas:** todas con rótulo grande (Google lee el texto). Las **3 primeras explican el juego**. Animales **en
   primer plano**: como es pixel art, se amplía por píxeles enteros (`capturas_ficha.py › de_cerca`).
 - **Cuántas:** Play admite **8 por tipo de dispositivo**: 8 de móvil, 8 de tableta de 7" y 8 de 10". Las de 1920x1080

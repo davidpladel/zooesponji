@@ -1,4 +1,6 @@
 Zoo Esponji — fichas de Google Play de los 6 idiomas que faltaban y 7 nuevos (2026-11-18), con el estudio de ASO Mobile
+REGLA FIJA (ASO.md › 5): en las fichas de países de mayoría musulmana (hoy ar, id y tr-TR) no se nombran los
+cerdos ni salen en las capturas (llevan las del árabe, con el elefante). El juego no cambia.
 Mismo proceso que es/en y pt-BR/fr/hi (game/store/ASO.md): Keyword Check de cada candidata en los países del idioma.
 Límites: nombre 30, descripción breve 80, descripción completa 4000. El cuerpo sigue a la ficha es-ES del 2026-11-17
 (granja, cerdos, baño, clínica, Luna, plaza, tutorial sin palabras), que las traducciones del 2026-11-03 aún no contaban.
