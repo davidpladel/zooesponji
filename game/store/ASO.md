@@ -11,6 +11,8 @@ Nada de adivinar: cada decisión tiene que salir de un dato medido o de lo que d
   (como el 2026-11-17).
 - **Qué mirar primero.** Instalaciones y visitas a la ficha (informes de Play, `play-gcs.mjs`, con ~5 días de retraso),
   jugadores en Matomo (`tools/matomo/`) y con qué búsquedas salimos hoy (ASO Mobile › App Keywords).
+- **Ojo con los plurales.** Una búsqueda que da muy poco puede ir bien en otra forma: en Turquía «çocuk oyunları»
+  (plural) da 17 y «çocuk oyunu» (singular) 323. Probar siempre singular y plural antes de descartar un país.
 - **Herramienta.** ASO Mobile, **en la web**, desde el Chrome de David (tiene la sesión abierta). El conector MCP de
   ASO Mobile solo sirve para `app_search` y para añadir palabras al seguimiento: sin créditos de API, todo lo demás da 403.
 
@@ -139,14 +141,16 @@ Las imágenes quedan en `game/store/out/` (ignorada por git).
       en-IN) cumplen: ninguna búsqueda pasa del 1,8 % ni de una vez cada 250 letras (`densidad.py`).
 - [ ] **Tanda 2, SIN SUBIR** (preparada el 2026-11-18). David pidió subirla **cuando Google apruebe** lo enviado el 17
       y el 18 (para no tocar esa revisión). Lleva:
-      · Textos de ar, ru, pt-PT, it, ja y zh-CN al día, y 4 fichas nuevas: zh-TW (Taiwán), de-DE, id (Indonesia) y
-        ko-KR. Datos y textos en `ficha-play-resto-idiomas-2026-11-18.txt`.
+      · Textos de ar, ru, pt-PT, it, ja y zh-CN al día, y 7 fichas nuevas: zh-TW (Taiwán), de-DE, id (Indonesia),
+        ko-KR, tr-TR, pl-PL y nl-NL. Datos y textos en `ficha-play-resto-idiomas-2026-11-18.txt`.
       · Capturas de es/en sin el león repetido (jirafa en la 2.ª, la cabra en la clínica, cebra en tableta) y con la
         tienda, el libro y el parque en inglés en las de inglés.
-      · Árabe e indonesio sin cerdos: texto y capturas propias (elefante en el baño, tienda sin cerdos).
+      · Árabe, indonesio y turco sin cerdos: texto y capturas propias (elefante en el baño, tienda sin cerdos).
       Al subir: `python plan_subida.py tanda2 > out/plan-ficha-tanda2.json`, permiso de David, `play-ficha.mjs subir`
-      y añadir las búsquedas al Keyword Monitor (SA, EG, RU, PT, IT, JP, TW, DE, ID, KR).
-- [ ] **Turquía:** ASO Mobile no tenía datos fiables (todo daba 17). Volver a medir más adelante.
+      y añadir las búsquedas al Keyword Monitor (SA, EG, RU, PT, IT, JP, TW, DE, ID, KR, TR, PL, NL).
+- [ ] **Vietnam y Tailandia:** sin ficha de momento (70 y 106 búsquedas al día). Volver a medirlas más adelante.
+- [x] **Captura del final de la votación** (2026-11-18): aviso de la ganadora y tablón con confeti, en es y en, en
+      `game/store/votacion/` (cómo se sacan, en su README). Para la próxima votación, lo mismo.
 - [ ] **Capturas en su idioma** para pt-BR, fr-FR e hi-IN (los scripts de capturas solo admiten `es` y `en`).
 - [ ] **Contador de monedas** visible (con 92 280 monedas) en las capturas de zonas del parque (bambú y polo, en
       tabletas): rehacerlas sin tantas monedas o tapándolo.

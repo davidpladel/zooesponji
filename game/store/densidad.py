@@ -28,6 +28,9 @@ CLAVES = {
     'de-DE': ['kinderspiele', 'tierspiele', 'bauernhof', 'zoo'],
     'id': ['game anak', 'game hewan', 'game anak offline', 'kebun binatang'],
     'ko-KR': ['유아게임', '동물 게임', '동물원', '농장'],
+    'tr-TR': ['çocuk oyunu', 'bebek oyunu', 'hayvan oyunu', 'hayvanat bahçesi'],
+    'pl-PL': ['gry dla dzieci', 'gry o zwierzętach', 'zoo', 'farma'],
+    'nl-NL': ['kinderspelletjes', 'dierenspelletjes', 'dierentuin', 'boerderij'],
 }
 # Japonés y chino no separan las palabras con espacios: se cuenta por letras (densidad = letras de la búsqueda / letras).
 SIN_ESPACIOS = ('ja-JP', 'zh-CN', 'zh-TW')

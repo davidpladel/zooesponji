@@ -1,4 +1,4 @@
-Zoo Esponji — fichas de Google Play de los 6 idiomas que faltaban y 4 nuevos (2026-11-18), con el estudio de ASO Mobile
+Zoo Esponji — fichas de Google Play de los 6 idiomas que faltaban y 7 nuevos (2026-11-18), con el estudio de ASO Mobile
 Mismo proceso que es/en y pt-BR/fr/hi (game/store/ASO.md): Keyword Check de cada candidata en los países del idioma.
 Límites: nombre 30, descripción breve 80, descripción completa 4000. El cuerpo sigue a la ficha es-ES del 2026-11-17
 (granja, cerdos, baño, clínica, Luna, plaza, tutorial sin palabras), que las traducciones del 2026-11-03 aún no contaban.
@@ -41,12 +41,21 @@ Datos (tráfico diario estimado por ASO Mobile, competencia 0-10, eficiencia), m
     110 (1,9) · «kebun binatang» 25. País de mayoría musulmana: como el árabe, sin cerdos en el texto y con las
     capturas del árabe (elefante en el baño, tienda sin cerdos).
   · Corea del Sur (ko-KR): «유아게임» 241 (3,5, media; arriba apps de peques y Pororo) · «동물 게임» 1.
-  · Turquía: descartada; todas las búsquedas daban 17 (cifra de relleno de ASO Mobile, no un dato).
+  · Turquía (tr-TR), revisada a petición de David: lo de «17» era real (el gráfico va de 10 a 30), pero es la forma en
+    plural, que casi no se busca. En singular sí: «çocuk oyunu» 323 (3,6, alta) · «bebek oyunu» 328 (3,6, alta; «bebek»
+    es bebé y también muñeca, pero arriba salen apps de 1-5 años) · «hayvan oyunu» 68 · «çiftlik» 15. País de mayoría
+    musulmana: sin cerdos y con las capturas del árabe, como Indonesia.
+  · Polonia (pl-PL): «gry dla dzieci» 784 (4,8, alta; arriba «Gry dla dzieci w wieku 1-5 lat») · «gry o zwierzętach» 52 ·
+    «farma» 9.
+  · Países Bajos (nl-NL): «kinderspelletjes» 166 (5,1, media). «kinderspelletjes gratis» 358, pero «gratis» no se usa
+    (regla de ASO.md). «spelletjes voor kinderen» y «peuterspelletjes» 5.
+  · Sin ficha por ahora: Vietnam («game trẻ em» 70, «game cho bé» 35) y Tailandia («เกมเด็ก» 106, ASO Mobile aún
+    analizándola). Poco tráfico para lo que cuesta mantener otra ficha: volver a mirarlas más adelante.
 
 Capturas (2026-11-18, pedido de David): el león salía tres veces (comiendo, en su recinto y en la clínica). En es/en la
 2.ª es ahora la jirafa (candidata C1) y en la clínica se cura la cabra; en las de tableta la cabra (C12) deja su sitio
 a la cebra (C2). En inglés, la tienda, el libro y el parque salen ya con el juego en inglés (antes, en español). El
-árabe y el indonesio llevan las de inglés con el elefante bañándose y la tienda sin cerdos a la venta. Plan de subida:
+árabe, el indonesio y el turco llevan las de inglés con el elefante bañándose y la tienda sin cerdos a la venta. Plan de subida:
 `python plan_subida.py tanda2`.
 
 ==================================================
@@ -476,4 +485,134 @@ Descripción completa:
 · 글이 거의 없는 게임이에요. 11개 언어를 지원하지만 한국어는 아직 없어요.
 
 Daniela(9세)와 Adrián(5세)을 위해, 두 아이와 함께, 아빠의 도움을 받아 만들었어요. 앞으로도 새로운 것을 계속 추가할 거예요. 그중 많은 것이 두 아이와 여러분의 아이디어랍니다.
+==================================================
+
+==================================================
+Idioma: tr-TR (nueva; sin cerdos y con las capturas del árabe; el juego no tiene turco: se dice en el texto)
+==================================================
+Nombre: Zoo Esponji: Çocuk Oyunu
+Descripción breve: 2-5 yaş çocuk oyunu, 5-12 yaşa da uygun: hayvanat bahçeni ve çiftliğini büyüt
+Descripción completa:
+2-5 yaş için çocuk oyunu, 5-12 yaş arası büyük çocuklar için de: Zoo Esponji'de kendi hayvanat bahçene ve hayvanlarla dolu bir çiftliğe bakıyorsun. Sen bakıcısın: parkta gez, hayvanları besle ve her birinin neyi sevdiğini keşfet. Acele yok, süre sınırı yok ve asla kaybetmek yok: jeton topla, yeni hayvanlar al ve hayvanat bahçeni büyüt.
+
+🦁 Hangi hayvan ne yer?
+Aslan et yer, keçi taşları ve havucu sever, yanlış yemeği verirsen… iğrenmiş bir surat yapar! Ama tavşana dikkat: onu keçiye ya da pandaya verirsen, onu yemezler, arkadaş olurlar.
+
+🐘 Hayvanları yıka
+Filler göletlerindeki çamurla kirlenir: onları fırça, sabun, ılık su ve havluyla yıka, yine tertemiz olsunlar.
+
+🐑 Hayvanlarla dolu bir çiftlik
+Çiftlikte koyunlar, atlar, tavuklar ve bir ördek göleti var.
+
+🩺 Hayvanları iyileştir
+Bir hayvan hastalanırsa onu kliniğe götür: veteriner ona ilacını vermek için bekliyor.
+
+🌍 Keşfedilecek kocaman bir hayvanat bahçesi
+· Zürafalar, zebralar, ceylanlar ve fillerle savana.
+· Pandaların bambu ormanı ve kara panterin şelalesi.
+· Penguenleriyle kutup.
+· Ortasında aslan çeşmesi olan bir meydan.
+· Bakıcının köpekçiği parkın her yerinde peşinden gelir.
+· Her hayvanın bir adı ve gizli kitapta kendi sayfası var.
+
+✋ Okumadan oynamayı öğren
+Bir el her hareketi gösterir, böylece küçükler okumayı bilmeden oynamayı öğrenir. Besleme, yıkama ve iyileştirme dersleri var.
+
+💡 Fikirlerin oyuna giriyor
+Fikirlerini gönder ve diğer çocukların fikirlerine oy ver. Fikirler yayınlanmadan önce kontrol edilir ve bazıları zaten oyunda: kliniği oyuncular bir oylamayla seçti.
+
+👪 Çocuklar ve aileler için
+· 2-5 yaş için bebek oyunu, 5-12 yaş için de eğlenceli bir hayvan oyunu.
+· Kolay ve sakin: sadece dokun ve sürükle, süre sınırı yok.
+· Satın alma yok, kayıt yok.
+· Ara sıra jeton karşılığında reklam izlemeyi önerir, her zaman hayır diyebilirsin.
+· İnternetsiz oynanır.
+· Sevgiyle çizilmiş piksel sanatı, müzik ve ses efektleri.
+· Neredeyse hiç yazı yok. Oyun 11 dilde var; Türkçe henüz yok.
+
+Daniela (9 yaş) ve Adrián (5 yaş) için, onlarla birlikte ve babalarının yardımıyla yapıldı. Yenilikler eklemeye devam edeceğiz; çoğunu onlar ve sen bulacaksınız.
+
+==================================================
+Idioma: pl-PL (nueva; el juego no tiene polaco: se dice en el texto)
+==================================================
+Nombre: Zoo Esponji: Gry dla dzieci
+Descripción breve: Gry dla dzieci 2-5 lat, a także 5-12: opiekuj się swoim zoo i farmą zwierząt
+Descripción completa:
+Gry dla dzieci w wieku 2-5 lat, a także dla starszych, od 5 do 12 lat: w Zoo Esponji opiekujesz się własnym zoo i farmą pełną zwierząt. Jesteś opiekunką: spaceruj po parku, karm zwierzęta i odkryj, co lubi każde z nich. Bez pośpiechu, bez limitu czasu i bez przegrywania: zbieraj monety, kupuj nowe zwierzęta i rozbudowuj swoje zoo.
+
+🦁 Co je każde zwierzę?
+Lew je mięso, koza woli kamienie i marchewki, a jeśli dasz jej złe jedzenie… zrobi zniesmaczoną minę! Ale uwaga na królika: jeśli dasz go kozie albo pandzie, nie zjedzą go, tylko się zaprzyjaźnią.
+
+🐷 Farma pełna zwierząt
+Na farmie mieszkają owce, konie, kury, pięć prosiaczków i staw z kaczkami. Świnki brudzą się w błotnistej kałuży: wykąp je szczotką, mydłem, ciepłą wodą i ręcznikiem, a znowu będą czyste.
+
+🩺 Lecz zwierzęta
+Jeśli zwierzątko zachoruje, zabierz je do kliniki: weterynarze już czekają z lekarstwem.
+
+🐘 Ogromne zoo do odkrycia
+· Sawanna z żyrafami, zebrami, gazelami i słoniami.
+· Bambusowy las pand i wodospad czarnej pantery.
+· Biegun z pingwinami.
+· Plac z fontanną z lwem pośrodku.
+· Piesek opiekunki chodzi za tobą po całym parku.
+· Każde zwierzę ma swoje imię i swoją stronę w sekretnej księdze zoo.
+
+✋ Gra bez czytania
+Ręka pokazuje każdy ruch, więc nawet maluchy, które nie umieją czytać, szybko uczą się grać. Są lekcje karmienia, kąpania i leczenia.
+
+💡 Twoje pomysły trafiają do gry
+Wysyłaj pomysły i głosuj na pomysły innych dzieci. Są sprawdzane przed publikacją, a niektóre już są w grze: klinikę wybrali gracze w głosowaniu.
+
+👪 Dla dzieci i rodzin
+· Gry o zwierzętach dla dzieci od 2 do 5 lat, a także od 5 do 12.
+· Łatwo i spokojnie: tylko dotykasz i przeciągasz, bez limitu czasu.
+· Bez zakupów i rejestracji.
+· Czasem proponuje obejrzenie reklamy w zamian za monety, i zawsze można odmówić.
+· Można grać bez internetu.
+· Pikselowa grafika rysowana z sercem, muzyka i efekty dźwiękowe.
+· Prawie bez słów. Gra jest dostępna w 11 językach; polskiego jeszcze nie ma.
+
+Stworzona dla Danieli (9 lat) i Adriána (5 lat) i razem z nimi, z pomocą ich taty. Będziemy dodawać nowości, wiele wymyślonych przez nich i przez ciebie.
+
+==================================================
+Idioma: nl-NL (nueva; el juego no tiene neerlandés: se dice en el texto)
+==================================================
+Nombre: Zoo Esponji: Kinderspelletjes
+Descripción breve: Kinderspelletjes voor 2-5 jaar, ook 5-12: zorg voor je dierentuin en boerderij
+Descripción completa:
+Kinderspelletjes voor 2 tot 5 jaar, en ook voor grotere kinderen van 5 tot 12: in Zoo Esponji zorg je voor je eigen dierentuin en een boerderij vol dieren. Jij bent de dierenverzorger: wandel door het park, geef de dieren eten en ontdek wat elk dier het lekkerst vindt. Geen haast, geen tijdslimiet en je kunt nooit verliezen: verdien munten, koop nieuwe dieren en laat je dierentuin groeien.
+
+🦁 Wat eet elk dier?
+De leeuw eet vlees, de geit houdt van stenen en wortels, en als je het verkeerde eten geeft… trekt ze een vies gezicht! Maar pas op met het konijn: geef je het aan de geit of de panda, dan eten ze het niet op, maar worden ze vrienden.
+
+🐷 Een boerderij vol dieren
+Op de boerderij wonen schapen, paarden, kippen, vijf biggetjes en een eendenvijver. De varkens worden vies in hun modderplas: was ze met een borstel, zeep, lauw water en een handdoek, en ze zijn weer schoon.
+
+🩺 Verzorg zieke dieren
+Wordt een dier ziek, breng het dan naar de kliniek: de dierenartsen staan klaar met het medicijn.
+
+🐘 Een enorme dierentuin om te ontdekken
+· De savanne met giraffen, zebra's, gazellen en olifanten.
+· Het bamboebos van de panda's en de waterval van de zwarte panter.
+· De pool met de pinguïns.
+· Een plein met de leeuwenfontein in het midden.
+· Het hondje van de verzorger loopt overal met je mee.
+· Elk dier heeft een naam en een eigen pagina in het geheime boek.
+
+✋ Spelen zonder te lezen
+Een hand laat elke beweging zien, zodat ook de kleinsten leren spelen voordat ze kunnen lezen. Er zijn lesjes voor eten geven, wassen en beter maken.
+
+💡 Jouw ideeën komen in het spel
+Stuur je ideeën in en stem op de ideeën van andere kinderen. Ze worden gecontroleerd voordat ze verschijnen, en sommige zitten al in het spel: de kliniek is door de spelers gekozen in een stemming.
+
+👪 Voor kinderen en gezinnen
+· Dierenspelletjes voor kinderen van 2 tot 5 jaar, en ook van 5 tot 12.
+· Makkelijk en rustig: alleen tikken en slepen, zonder tijdslimiet.
+· Geen aankopen en geen account.
+· Af en toe biedt het een reclame aan in ruil voor munten, en je kunt altijd nee zeggen.
+· Speelbaar zonder internet.
+· Met liefde getekende pixelart, muziek en geluidseffecten.
+· Bijna zonder woorden. Het spel is er in 11 talen; Nederlands zit er nog niet bij.
+
+Gemaakt voor en met Daniela (9 jaar) en Adrián (5 jaar), met hulp van hun papa. We blijven nieuwe dingen toevoegen, veel ervan bedacht door hen en door jou.
 ==================================================

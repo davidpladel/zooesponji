@@ -65,5 +65,6 @@ if len(sys.argv) > 1 and sys.argv[1] == 'tanda2':
     images = {lang: {k: v for k, v in imgs_.items() if k != 'icon'} for lang, imgs_ in images.items()}
     images['ar'] = imgs('ar')
     images['id'] = imgs('ar')  # Indonesia: como el árabe, sin cerdos en el texto ni en las capturas
+    images['tr-TR'] = imgs('ar')  # Turquía: igual
 
 print(json.dumps({'listings': listings, 'images': images}, ensure_ascii=False, indent=1))
