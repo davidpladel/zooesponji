@@ -289,6 +289,21 @@ escribe: `server/README.md` › «Aviso para actualizar el juego»).
   `window.__ZOO__.updateFake({ available, allowed, versionCode, results, today })`, `updateCheck()`,
   `updateState()`, `updateSetToday('AAAA-MM-DD')` y `updatePos('yes' | 'no' | 'exit')`
   (`tests/e2e/actualizacion.spec.ts`). Probarlo de verdad pide dos versiones en la pista interna de Play.
+- **Probar en casa (servidor real en el PC + Play falso, también desde el móvil por la wifi):**
+  1. Servidor: desde `server/`, `.\local\servidor.ps1 -Tipo grande` (tipos `pequena`, `grande`, `rota`, `ninguno`).
+     Usa el PHP de XAMPP y una base de datos SQLite de archivo (sin MySQL): crea `app/config.php` de prueba (ignorado
+     por git; si ya hay uno que no es el de prueba, no lo toca) y `app/datos/comunidad.json` sin votación. Dice la
+     dirección del PC en la red de casa.
+  2. Juego: desde `game/`, `$env:VITE_COMMUNITY_URL = 'http://<IP del PC>:8080'` y `npm run dev -- --host`. Con
+     `npm run dev`, el juego acepta un servidor `http://` de la red de casa (192.168.x, 10.x, 172.16–31.x); el
+     paquete de Play, nunca.
+  3. Abrir `http://<IP del PC>:5173/?play-falso&aviso-de-cero` (en el PC o en el Chrome del móvil). Opciones de la
+     dirección: `play-falso=cancelada,actualizada` (lo que «contesta» Play en cada intento; el último se repite),
+     `codigo=13` (la versión que dice tener el juego; con `codigo=9` y `-Tipo pequena` o `grande` está por debajo
+     de la mínima: rota), `dia=2026-11-21` (cambia el día para ver el aviso siguiente), `play=no-hay` o
+     `play=no-permitida` (Play dice que no se puede: no debe salir nada) y `aviso-de-cero` (borra lo aplazado).
+  4. La primera vez, Windows pregunta si deja entrar a `node` y a `php` desde la red: «Redes privadas», sí.
+  Con «actualizada» el Play falso solo cierra el aviso; en el móvil de verdad Play reinicia la app.
 
 ## Versión
 

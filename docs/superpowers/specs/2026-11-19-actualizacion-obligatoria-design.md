@@ -1,6 +1,6 @@
 # Aviso para actualizar el juego (suave, de versión grande y obligatorio)
 
-Fecha: 2026-11-19 · Rama: `feat/release-2.11.0` · Estado: **diseño aprobado por David el 2026-11-19; implementado el 2026-11-19, pendiente de la validación visual de David** (ver «Cómo quedó») (política de tres niveles; el plan de salida de abajo lo propuso él)
+Fecha: 2026-11-19 · Rama: `feat/release-2.11.0` · Estado: **diseño aprobado por David el 2026-11-19; implementado el 2026-11-19, aspecto validado por David** (ver «Cómo quedó») (política de tres niveles; el plan de salida de abajo lo propuso él)
 
 ## Por qué
 
@@ -170,7 +170,7 @@ La primera vez que se use la clave será con la 2.12.0.
   interna): el aviso no se puede ver en `npm run dev`. En pruebas de juego se sustituye Play por una pieza falsa
   (como ya se hace con los anuncios y el tablón).
 - **Antes de publicar** se lee la política de «Diseñado para Familias» sobre este flujo y se anota el resultado
-  aquí.
+  aquí (hecho el 2026-11-19: ver «Política de Diseñado para Familias» al final).
 
 ## Estadísticas (Matomo)
 
@@ -252,7 +252,29 @@ Plan: `docs/superpowers/plans/2026-11-19-actualizacion-obligatoria.md`. Hecho en
   `communitySystem`, `analyticsEvents`, `eventCatalog`), PHPUnit (`ContenidoTest`, `EstadoTest`) y de juego
   (`tests/e2e/actualizacion.spec.ts`, Play falso).
 
-**No verificado aún:** el aspecto (lo valida David con capturas), el AAB con el plugin (`check:aab`; `check:manifest`
-pasó pero contra un manifiesto compilado antes del plugin), la política de «Diseñado para Familias» sobre este
-flujo, y la prueba de verdad con dos versiones en la pista interna de Play. La versión (2.11.0, versionCode 14) no
+**Aspecto validado por David el 2026-11-19**, con un cambio: la puerta de salida del bloqueo va en rojo (como las X
+de cerrar), con el dibujo de la puerta. La política de Familias está revisada (abajo). Para probar en casa contra un
+servidor en el PC: `game/README.md` › «Avisos de actualización».
+
+**No verificado aún:** el AAB con el plugin (`check:aab`; `check:manifest` pasó pero contra un manifiesto compilado
+antes del plugin) y la prueba de verdad con dos versiones en la pista interna de Play. La versión (2.11.0, versionCode 14) no
 está subida en los archivos: es de otro paso.
+
+### Política de «Diseñado para Familias» (revisada el 2026-11-19, leída en el texto original)
+
+- **Nada lo prohíbe.** La política de Familias ([9893335](https://support.google.com/googleplay/android-developer/answer/9893335))
+  no habla de actualizaciones, forzadas o no. La página de actualizaciones dentro de la app
+  ([in-app-updates](https://developer.android.com/guide/playcore/in-app-updates)) no habla de niños, y presenta la
+  inmediata como pensada para obligar a actualizar y reiniciar. La herramienta de Play Console
+  ([13812041](https://support.google.com/googleplay/android-developer/answer/13812041)) no tiene límites por edad.
+- **SDK aprobados para niños** (requisito de Familias para apps solo infantiles): los términos del SDK de Play Core
+  ([licencia](https://developer.android.com/guide/playcore/license)) y los Google APIs Terms no dicen nada sobre
+  servicios dirigidos a niños: ni lo prohíben ni lo aprueban de forma expresa. Es una librería de la propia Google
+  Play, sin anuncios. Riesgo bajo, pero no hay una frase que lo confirme.
+- **Datos:** Google dice que la librería usa «Device metadata», «Application version» y la lista de módulos
+  instalados, y que no se pasan a terceros. No usa el identificador de publicidad. **Para el formulario de seguridad
+  de los datos:** comprobar en Play Console si hay que declarar algo nuevo al subir la 2.11.0 (lo decide David).
+- **Lo que pide para menores de 5** (orientación, no regla): evitar castigos y que la app se pueda usar a esa edad.
+  Por eso el bloqueo solo sale si el jugador cancela la ventana de Play, lleva la puerta roja de salida y nunca sale si
+  Play no confirma que se puede actualizar. Sin anuncios ni enlaces fuera del juego.
+- **Antes de usar `minima`** (bloqueo): mirarlo con calma; con `ultima` y `grande` basta en casi todos los casos.
