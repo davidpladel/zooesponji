@@ -7,6 +7,7 @@ import { phaserBackend, queueAudio, sfx } from '../systems/audio';
 import { createStore } from '../systems/createStore';
 import { installAds } from '../systems/adsInstall';
 import { installCommunity } from '../systems/communityInstall';
+import { installUpdateNotice } from '../systems/updateNoticeInstall';
 import { installAnalytics } from '../systems/analyticsInstall';
 import { bus } from '../systems/events';
 import { deviceLanguages, resolveLanguage, setLanguage } from '../systems/language';
@@ -102,6 +103,8 @@ export class PreloadScene extends Phaser.Scene {
     await installAds(this.game);
     // Después de las estadísticas: los avisos del tablón ya tienen quien los escuche. No espera a la red.
     await installCommunity();
+    // Después del tablón: la clave `actualizacion` llega en su misma respuesta. Solo Android.
+    installUpdateNotice(this.game);
     this.scene.start('Title');
   }
 }

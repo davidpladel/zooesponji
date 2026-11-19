@@ -1,6 +1,7 @@
 import type { AdSlot } from '../core/adPacing';
 import type { Settings } from '../core/save';
 import type { LessonId } from '../core/tutorial';
+import type { UpdateKind } from '../core/updatePolicy';
 import type { Reaction } from '../data/animals';
 import type { FoodId } from '../data/foods';
 import type { PenId } from '../data/pens';
@@ -156,6 +157,16 @@ export interface GameEvents {
   'board-zone': { zone: string };
   /** Se pasa de página en el muro. `page`: la nueva, desde 1. */
   'board-page': { page: number };
+  /** Sale el aviso para actualizar (la ventana suave o la pantalla de bloqueo). */
+  'update-offered': { kind: UpdateKind };
+  /** Pulsa «actualizar» (en la ventana suave o en el bloqueo). */
+  'update-accepted': { kind: UpdateKind };
+  /** Pulsa «luego» o «atrás» en la ventana suave. `deferred`: veces aplazadas ya, contando esta. */
+  'update-later': { kind: UpdateKind; deferred: number };
+  /** Llega la actualización obligatoria (la grande a la tercera, o la rota). */
+  'update-forced': { kind: 'grande' | 'rota' };
+  /** Play cancela o falla la actualización. */
+  'update-failed': { kind: UpdateKind };
 }
 
 export const bus = new EventBus<GameEvents>();

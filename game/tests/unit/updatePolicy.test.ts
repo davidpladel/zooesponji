@@ -90,7 +90,7 @@ describe('isSafeMoment', () => {
     expect(isSafeMoment(['World', 'Hud'])).toBe(true);
   });
   it('no seguro con una ventana, una acción o el tutorial en marcha', () => {
-    for (const k of ['Shop', 'Feed', 'Clean', 'Cure', 'Clinic', 'Book', 'Board', 'Tutorial', 'TutorialOffer', 'Quit', 'Settings', 'AdOffer', 'PollNotice', 'UpdateNotice']) {
+    for (const k of ['Shop', 'Feed', 'Clean', 'Cure', 'Clinic', 'Book', 'Board', 'Tutorial', 'TutorialOffer', 'Quit', 'Settings', 'AdOffer', 'PollNotice', 'UpdateNotice', 'Rotate']) {
       expect(isSafeMoment(['World', 'Hud', k]), k).toBe(false);
     }
   });

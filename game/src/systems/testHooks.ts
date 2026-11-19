@@ -31,6 +31,10 @@ import { getAds } from './ads';
 import { startAds } from './adsInstall';
 import { getCommunity } from './community';
 import { startCommunity } from './communityInstall';
+import type { PlayUpdateResult } from './appUpdate';
+import { getUpdateNotice, startUpdateNotice } from './updateNoticeInstall';
+import type { UpdateMemory } from '../core/updatePolicy';
+import type { UpdateNoticeScene } from '../scenes/UpdateNoticeScene';
 import { bus, type GameEvents } from './events';
 import { sfx } from './audio';
 import { getLanguage, isLanguage } from './language';
@@ -213,6 +217,13 @@ export interface ZooTestApi {
   /** Monta el tablón contra un servidor (en las pruebas, uno falso con `page.route`). */
   communityStart(baseUrl: string): Promise<void>;
   communityPhase(): string | null;
+  /** Aviso de actualizar con un Play falso (en el navegador no hay Play). `results`: lo que devuelve cada intento (el último se repite). */
+  updateFake(o?: { available?: boolean; allowed?: boolean; versionCode?: number; results?: PlayUpdateResult[]; today?: string }): void;
+  /** Cambia el día del móvil que ve el aviso (`AAAA-MM-DD`). */
+  updateSetToday(day: string): void;
+  updateCheck(): Promise<void>;
+  updateState(): { mode: 'suave' | 'bloqueo' | null; memory: UpdateMemory | null; immediate: PlayUpdateResult[] };
+  updatePos(key: 'yes' | 'no' | 'exit'): Vec | null;
   boardTile(): { x: number; y: number } | null;
   boardScreenPos(): Vec | null;
   boardSparkling(): boolean;
@@ -238,6 +249,10 @@ declare global {
 }
 
 /** Solo en desarrollo: API para Playwright y depuración. Nunca en la build de producción. */
+/** Play falso del aviso de actualizar: día que ve y lo que ha devuelto cada intento. */
+let updateToday = '2026-11-20';
+const updateCalls: PlayUpdateResult[] = [];
+
 export function installTestHooks(game: Phaser.Game, platform: Platform): void {
   if (!import.meta.env.DEV) return;
 
@@ -444,6 +459,31 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
       await startCommunity(baseUrl);
     },
     communityPhase: () => getCommunity()?.phase() ?? null,
+    updateFake: (o = {}) => {
+      updateToday = o.today ?? '2026-11-20';
+      updateCalls.length = 0;
+      const results = [...(o.results ?? ['cancelada'])];
+      startUpdateNotice(game, {
+        info: async () => ({ available: o.available ?? true, immediateAllowed: o.allowed ?? true, versionCode: o.versionCode ?? 12 }),
+        immediate: async () => {
+          const result = (results.length > 1 ? results.shift() : results[0]) ?? 'cancelada';
+          updateCalls.push(result);
+          return result;
+        },
+      }, { today: () => updateToday });
+    },
+    updateSetToday: (day) => { updateToday = day; },
+    updateCheck: async () => { await getUpdateNotice()?.check(); },
+    updateState: () => ({
+      mode: activeScene<UpdateNoticeScene>('UpdateNotice')?.mode ?? null,
+      memory: getUpdateNotice()?.memory ?? null,
+      immediate: [...updateCalls],
+    }),
+    updatePos: (key) => {
+      const scene = activeScene<UpdateNoticeScene>('UpdateNotice');
+      if (!scene) return null;
+      return key === 'yes' ? scene.yesPos() : key === 'no' ? scene.noPos() : scene.exitPos();
+    },
     boardTile: () => game.scene.getScene<WorldScene>('World').boardTile(),
     boardScreenPos: () => activeScene<WorldScene>('World')?.boardScreenPos() ?? null,
     boardSparkling: () => game.scene.getScene<WorldScene>('World').boardSparkling(),

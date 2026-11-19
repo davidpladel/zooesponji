@@ -1,6 +1,7 @@
 import * as Phaser from 'phaser';
 import { t } from '../data/strings';
 import { sfx } from '../systems/audio';
+import { getUpdateNotice } from '../systems/updateNoticeInstall';
 import { textStyle } from '../ui/theme';
 import { addTitleBackdrop } from '../ui/titleBackdrop';
 import { addHeartLine, addPillButton, restartOnResize } from '../ui/widgets';
@@ -43,6 +44,8 @@ export class TitleScene extends Phaser.Scene {
       .text(width / 2, height * 0.89 + creditSize * 1.05, t('credits.copyright'), { ...textStyle(copySize, '#ffffff', '#5a3210'), fontFamily: 'sans-serif', fontStyle: 'normal' })
       .setOrigin(0.5);
     restartOnResize(this);
+    // El título es el momento seguro para el aviso de actualizar (si toca y Play lo permite).
+    void getUpdateNotice()?.check();
   }
 
   private play(): void {
