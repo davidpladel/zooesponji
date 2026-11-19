@@ -254,7 +254,9 @@ Plan: `docs/superpowers/plans/2026-11-19-actualizacion-obligatoria.md`. Hecho en
 
 **Aspecto validado por David el 2026-11-19**, con un cambio: la puerta de salida del bloqueo va en rojo (como las X
 de cerrar), con el dibujo de la puerta. La política de Familias está revisada (abajo). Para probar en casa contra un
-servidor en el PC: `game/README.md` › «Avisos de actualización».
+servidor en el PC: `game/README.md` › «Avisos de actualización». **David lo probó así el 2026-11-19** (servidor en el PC y
+Chrome del móvil por la wifi, Play falso): sale el aviso y el recorrido funciona. Con el Play falso, pulsar la flecha
+no abre nada (no hay Play en el navegador); la ventana auténtica de Play queda para la pista interna.
 
 **No verificado aún:** el AAB con el plugin (`check:aab`; `check:manifest` pasó pero contra un manifiesto compilado
 antes del plugin) y la prueba de verdad con dos versiones en la pista interna de Play. La versión (2.11.0, versionCode 14) no

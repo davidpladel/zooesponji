@@ -294,7 +294,8 @@ escribe: `server/README.md` › «Aviso para actualizar el juego»).
      Usa el PHP de XAMPP y una base de datos SQLite de archivo (sin MySQL): crea `app/config.php` de prueba (ignorado
      por git; si ya hay uno que no es el de prueba, no lo toca) y `app/datos/comunidad.json` sin votación. Dice la
      dirección del PC en la red de casa.
-  2. Juego: desde `game/`, `$env:VITE_COMMUNITY_URL = 'http://<IP del PC>:8080'` y `npm run dev -- --host`. Con
+  2. Juego: desde `game/`, `$env:VITE_COMMUNITY_URL = 'http://<IP del PC>:8080'` (con los números de verdad, p. ej.
+     `192.168.1.35`: `servidor.ps1` escribe la línea exacta) y `npm run dev -- --host`. Con
      `npm run dev`, el juego acepta un servidor `http://` de la red de casa (192.168.x, 10.x, 172.16–31.x); el
      paquete de Play, nunca.
   3. Abrir `http://<IP del PC>:5173/?play-falso&aviso-de-cero` (en el PC o en el Chrome del móvil). Opciones de la
