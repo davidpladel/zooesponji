@@ -30,6 +30,11 @@ final class Estado
             $votacion['abierta'] = Contenido::abierta($votacion, $hoy);
             $votacion['reparto'] = self::porcentajes($almacen->totales($votacion['id']), array_column($votacion['opciones'], 'id'));
         }
-        return ['hoy' => $hoy, 'ideas' => $almacen->contarIdeas(), 'votacion' => $votacion, 'muro' => $contenido['muro']];
+        $estado = ['hoy' => $hoy, 'ideas' => $almacen->contarIdeas(), 'votacion' => $votacion, 'muro' => $contenido['muro']];
+        // Sin aviso, la respuesta es idéntica a la de siempre.
+        if (($contenido['actualizacion'] ?? null) !== null) {
+            $estado['actualizacion'] = $contenido['actualizacion'];
+        }
+        return $estado;
     }
 }
