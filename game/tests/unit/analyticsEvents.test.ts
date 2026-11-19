@@ -557,6 +557,26 @@ describe('GameTracker: tablón', () => {
   });
 });
 
+describe('GameTracker: aviso de actualizar', () => {
+  it('ofrece, acepta, luego (con las veces aplazadas), obliga y fallo; el tipo va en el nombre', async () => {
+    const t = setup();
+    await t.tracker.start();
+    t.events.emit('update-offered', { kind: 'pequena' });
+    t.events.emit('update-accepted', { kind: 'grande' });
+    t.events.emit('update-later', { kind: 'grande', deferred: 2 });
+    t.events.emit('update-forced', { kind: 'rota' });
+    t.events.emit('update-failed', { kind: 'rota' });
+    expect(t.sent).toEqual([
+      'actualizacion | actualizacion-ofrece | pequena',
+      'actualizacion | actualizacion-acepta | grande',
+      'actualizacion | actualizacion-luego | grande',
+      'actualizacion | actualizacion-obliga | rota',
+      'actualizacion | actualizacion-fallo | rota',
+    ]);
+    expect(t.values.get('actualizacion | actualizacion-luego | grande')).toBe(2);
+  });
+});
+
 describe('GameTracker: cuidados (cerdos, limpieza y clínica)', () => {
   it('comprar la clínica se cuenta como compra de edificio y da la primera compra', async () => {
     const t = setup();

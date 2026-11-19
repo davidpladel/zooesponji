@@ -271,6 +271,13 @@ export class GameTracker implements AnalyticsHooks {
     on('board-zone', ({ zone }) => this.send('tablon', 'tablon-pestana', zone));
     on('board-page', ({ page }) => this.send('tablon', 'tablon-pagina', undefined, page));
 
+    // Aviso de actualizar: el tipo (pequena, grande o rota) en el nombre; en «luego», las veces aplazadas ya.
+    on('update-offered', ({ kind }) => this.send('actualizacion', 'actualizacion-ofrece', kind));
+    on('update-accepted', ({ kind }) => this.send('actualizacion', 'actualizacion-acepta', kind));
+    on('update-later', ({ kind, deferred }) => this.send('actualizacion', 'actualizacion-luego', kind, deferred));
+    on('update-forced', ({ kind }) => this.send('actualizacion', 'actualizacion-obliga', kind));
+    on('update-failed', ({ kind }) => this.send('actualizacion', 'actualizacion-fallo', kind));
+
     try {
       const saved = parseReach(await store.get(REACH_KEY));
       this.reach = saved ?? seedSteps(emptyReach(this.today()), knownSteps(this.deps.state(), this.deps.book()));
