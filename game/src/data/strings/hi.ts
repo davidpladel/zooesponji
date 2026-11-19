@@ -134,6 +134,7 @@ export const STRINGS_HI: Record<StringKey, string> = {
   'board.lastDay': 'आखिरी दिन!',
   'board.vote': 'वोट करो',
   'board.goVote': 'चलो वोट करें!',
+  'update.title': 'नया वर्ज़न आ गया!',
   'board.change': 'बदलो',
   'board.see': 'देखो!',
   'board.nextSoon': 'वोट के लिए नए आइडिया जल्दी आएँगे',

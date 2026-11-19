@@ -134,6 +134,7 @@ export const STRINGS_ZH: Record<StringKey, string> = {
   'board.lastDay': '最后一天！',
   'board.vote': '投票',
   'board.goVote': '去投票！',
+  'update.title': '有新版本啦！',
   'board.change': '换一个',
   'board.see': '看看！',
   'board.nextSoon': '新的投票点子马上就来',

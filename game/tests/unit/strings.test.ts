@@ -96,3 +96,14 @@ describe.each(LANGUAGES.filter((lang) => lang !== 'es'))('%s', (lang) => {
     },
   );
 });
+
+describe('aviso de actualizar', () => {
+  it('«update.title» está en los 11 idiomas, es una frase corta y no se repite el español en otros idiomas', () => {
+    for (const lang of LANGUAGES) {
+      const text = STRINGS[lang]['update.title'];
+      expect(text, lang).toBeTruthy();
+      expect(Array.from(text).length, lang).toBeLessThanOrEqual(40);
+    }
+    expect(STRINGS.en['update.title']).not.toBe(STRINGS.es['update.title']);
+  });
+});

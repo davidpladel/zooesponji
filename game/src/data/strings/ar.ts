@@ -135,6 +135,7 @@ export const STRINGS_AR: Record<StringKey, string> = {
   'board.lastDay': 'آخر يوم!',
   'board.vote': 'صوّت',
   'board.goVote': 'هيا نصوّت!',
+  'update.title': 'يوجد إصدار جديد!',
   'board.change': 'غيّر',
   'board.see': 'شاهد!',
   'board.nextSoon': 'قريبًا أفكار جديدة للتصويت',
