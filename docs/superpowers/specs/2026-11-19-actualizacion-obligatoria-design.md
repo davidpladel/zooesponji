@@ -125,7 +125,8 @@ El mecanismo vive **dentro de la app**, así que solo lo tienen las versiones qu
 2. **Ya publicada y al 100 % en Play** (producción y prueba cerrada), lanzar la herramienta de Play Console
    «avisar para actualizar» contra la 2.10.0 y anteriores. Es el único camino para quien no tiene el mecanismo:
    aviso a pantalla completa que **se puede cerrar y vuelve en cada arranque en frío** (no bloquea; Google contó
-   más de un 50 % de respuesta). Publicar y lanzar esto va con permiso expreso de David.
+   más de un 50 % de respuesta). Publicar y lanzar esto va con permiso expreso de David, y es él quien lo manda desde Play Console (o Claude con la
+   API `apprecovery` y su permiso).
 3. **Desde la 2.11.0, cada versión siguiente** (2.12.0…) ya se puede subir a «grande» u obligar por el servidor, y
    llega a todos los que pasaron por la 2.11.0.
 
@@ -190,7 +191,7 @@ en `tools/matomo/resumen.mjs` y estadísticas apagadas en los jugadores con IA. 
 
 ## Pruebas (una por caso)
 
-Al empezar el plan se pregunta a David si las lanza Claude o él. Pesadas de una en una (`--workers=1`).
+**Las lanza Claude** (decidido por David el 2026-11-19). Pesadas de una en una (`--workers=1`), nunca varios navegadores a la vez.
 
 - **Unitarias de `updatePolicy`:** versión al día (nada); pequeña (una al día, tope de tres); grande (dos suaves y a
   la tercera obligatoria); rota (obligatoria ya); aplazadas de una `ultima` vieja (empieza de cero con una nueva);
