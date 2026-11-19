@@ -20,6 +20,33 @@ const raw = () => ({
 
 const status = (patch: (r: ReturnType<typeof raw>) => unknown = (r) => r): CommunityStatus => parseStatus(patch(raw()))!;
 
+describe('parseStatus: clave actualizacion', () => {
+  it('la lee si es válida y, si falta, es null con el resto igual', () => {
+    expect(status((r) => ({ ...r, actualizacion: { minima: 12, ultima: 14, grande: true } })).actualizacion).toEqual({ minima: 12, ultima: 14, grande: true });
+    expect(status().actualizacion).toBeNull();
+  });
+
+  it('mal formada: sin aviso, pero la votación y el muro se leen', () => {
+    for (const bad of [{ minima: 12, ultima: 'x' }, { minima: -1, ultima: 14 }, { minima: 15, ultima: 14 }, { minima: 12, ultima: 14, grande: 1 }, 5, 'x']) {
+      const s = status((r) => ({ ...r, actualizacion: bad }));
+      expect(s.actualizacion, JSON.stringify(bad)).toBeNull();
+      expect(s.ideas).toBe(127);
+      expect(s.votacion?.id).toBe('2026-11-a');
+      expect(s.muro).toHaveLength(1);
+    }
+  });
+
+  it('compatibilidad: con la clave nueva, lo que leen las versiones ya publicadas (hoy, ideas, votacion, muro) es idéntico', () => {
+    const old = status();
+    const next = status((r) => ({ ...r, actualizacion: { minima: 12, ultima: 14, grande: false } }));
+    expect({ hoy: next.hoy, ideas: next.ideas, votacion: next.votacion, muro: next.muro }).toEqual({ hoy: old.hoy, ideas: old.ideas, votacion: old.votacion, muro: old.muro });
+  });
+
+  it('un guardado viejo (última respuesta sin la clave) se lee con actualizacion null', () => {
+    expect(parseMemory(JSON.stringify({ last: raw() })).last?.actualizacion).toBeNull();
+  });
+});
+
 describe('parseStatus', () => {
   it('acepta la respuesta del servidor', () => {
     const s = status();

@@ -1,4 +1,5 @@
 import { LANGUAGES, type Language } from '../systems/language';
+import { parseUpdateKey, type UpdateKey } from './updatePolicy';
 
 /**
  * El tablón de la comunidad: lo que dice el servidor (`estado.php`) y lo que recuerda el aparato.
@@ -40,6 +41,8 @@ export interface CommunityStatus {
   ideas: number;
   votacion: Poll | null;
   muro: WallEntry[];
+  /** Aviso para actualizar el juego; `null` si no viene o viene mal (sin aviso). */
+  actualizacion: UpdateKey | null;
 }
 
 export const MAX_TITLE = 30;
@@ -121,7 +124,7 @@ export function parseStatus(raw: unknown): CommunityStatus | null {
   const ideas = raw.ideas;
   if (typeof ideas !== 'number' || !Number.isInteger(ideas) || ideas < 0) return null;
   const muro = raw.muro.slice(0, MAX_WALL).map(readWallEntry).filter((e): e is WallEntry => e !== null);
-  return { hoy: raw.hoy, ideas, votacion: readPoll(raw.votacion), muro };
+  return { hoy: raw.hoy, ideas, votacion: readPoll(raw.votacion), muro, actualizacion: parseUpdateKey(raw.actualizacion) };
 }
 
 // --- Memoria del aparato ---

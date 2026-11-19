@@ -54,6 +54,26 @@ describe('Community', () => {
     expect(updates).toHaveLength(1);
   });
 
+  it('liveUpdateKey: solo con respuesta de esta sesión, nunca la copia guardada', async () => {
+    const withKey = { ...STATUS, actualizacion: { minima: 12, ultima: 14, grande: true } };
+    const live = make({ '/estado.php': ok(withKey) });
+    expect(live.community.liveUpdateKey()).toBeNull();
+    await live.community.start();
+    expect(live.community.liveUpdateKey()).toEqual({ minima: 12, ultima: 14, grande: true });
+    // sin conexión: la copia guardada la lleva, pero no vale para avisar ni bloquear
+    const cached = make({}, { [COMMUNITY_KEY]: JSON.stringify({ last: withKey }) });
+    await cached.community.start();
+    expect(cached.community.status?.actualizacion).not.toBeNull();
+    expect(cached.community.liveUpdateKey()).toBeNull();
+    // tras un fallo, vuelve a null
+    let up = true;
+    const flaky = make({ '/estado.php': () => (up ? { status: 200, body: withKey } : null) });
+    await flaky.community.start();
+    up = false;
+    await flaky.community.refresh();
+    expect(flaky.community.liveUpdateKey()).toBeNull();
+  });
+
   it('sin conexión y sin nada guardado: no hay estado y no lanza', async () => {
     const { community, updates } = make({});
     await community.start();

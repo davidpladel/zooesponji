@@ -3,6 +3,7 @@ import {
   type CommunityMemory, type CommunityStatus, type PollPhase,
 } from '../core/community';
 import { dayKey } from '../core/activity';
+import type { UpdateKey } from '../core/updatePolicy';
 import type { KeyValueStore } from '../core/save';
 import type { EventBus, GameEvents } from './events';
 
@@ -56,6 +57,11 @@ export class Community {
 
   get online(): boolean {
     return this.ok;
+  }
+
+  /** La clave `actualizacion` solo si el servidor respondió bien en esta sesión: la copia guardada nunca vale para avisar ni bloquear. */
+  liveUpdateKey(): UpdateKey | null {
+    return this.ok && this.last ? this.last.actualizacion : null;
   }
 
   get memory(): Readonly<CommunityMemory> {
