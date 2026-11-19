@@ -31,7 +31,7 @@ import { getAds } from './ads';
 import { startAds } from './adsInstall';
 import { getCommunity } from './community';
 import { startCommunity } from './communityInstall';
-import type { PlayUpdateResult } from './appUpdate';
+import { createFakePlayUpdater, type PlayUpdateResult } from './appUpdate';
 import { getUpdateNotice, startUpdateNotice } from './updateNoticeInstall';
 import type { UpdateMemory } from '../core/updatePolicy';
 import type { UpdateNoticeScene } from '../scenes/UpdateNoticeScene';
@@ -464,15 +464,7 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
     updateFake: (o = {}) => {
       updateToday = o.today ?? '2026-11-20';
       updateCalls.length = 0;
-      const results = [...(o.results ?? ['cancelada'])];
-      startUpdateNotice(game, {
-        info: async () => ({ available: o.available ?? true, immediateAllowed: o.allowed ?? true, versionCode: o.versionCode ?? 12 }),
-        immediate: async () => {
-          const result = (results.length > 1 ? results.shift() : results[0]) ?? 'cancelada';
-          updateCalls.push(result);
-          return result;
-        },
-      }, { today: () => updateToday });
+      startUpdateNotice(game, createFakePlayUpdater(o, (result) => updateCalls.push(result)), { today: () => updateToday });
     },
     updateSetToday: (day) => { updateToday = day; },
     updateCheck: async () => { await getUpdateNotice()?.check(); },

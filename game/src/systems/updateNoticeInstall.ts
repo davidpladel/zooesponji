@@ -2,7 +2,8 @@ import { App } from '@capacitor/app';
 import { Capacitor } from '@capacitor/core';
 import type * as Phaser from 'phaser';
 import type { UpdateNoticeScene } from '../scenes/UpdateNoticeScene';
-import { createPlayUpdater, getPlayUpdater, setPlayUpdater, type PlayUpdater } from './appUpdate';
+import { UPDATE_KEY } from '../core/updatePolicy';
+import { createFakePlayUpdater, createPlayUpdater, fakePlayFromQuery, getPlayUpdater, setPlayUpdater, type PlayUpdater } from './appUpdate';
 import { getCommunity } from './community';
 import { createStore } from './createStore';
 import { bus } from './events';
@@ -48,6 +49,8 @@ export function startUpdateNotice(game: Phaser.Game, play: PlayUpdater, options:
 /** Solo en Android nativo. Nunca lanza: el aviso nunca impide jugar. */
 export function installUpdateNotice(game: Phaser.Game): void {
   try {
+    // Prueba en casa con `npm run dev`: Play falso desde la dirección (`?play-falso=...`). Nunca en el paquete.
+    if (import.meta.env.DEV && startFakeFromUrl(game)) return;
     if (!Capacitor.isNativePlatform() || Capacitor.getPlatform() !== 'android') return;
     startUpdateNotice(game, createPlayUpdater());
     // Volver a abrir la app es otro momento seguro (si no hay nada abierto).
@@ -57,4 +60,20 @@ export function installUpdateNotice(game: Phaser.Game): void {
   } catch {
     current = null;
   }
+}
+
+/** `?play-falso` en la dirección (solo `npm run dev`): monta el aviso con un Play falso. */
+function startFakeFromUrl(game: Phaser.Game): boolean {
+  const fake = fakePlayFromQuery(window.location.search);
+  if (!fake) return false;
+  if (fake.reset) {
+    try {
+      window.localStorage.removeItem(UPDATE_KEY);
+    } catch {
+      // Sin almacén: no hay nada que borrar.
+    }
+  }
+  const today = fake.today;
+  startUpdateNotice(game, createFakePlayUpdater(fake.play), { today: today ? () => today : undefined });
+  return true;
 }

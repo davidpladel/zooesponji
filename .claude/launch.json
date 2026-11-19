@@ -67,6 +67,37 @@
       ],
       "port": 8090,
       "autoPort": false
+    },
+    {
+      "name": "comunidad-local",
+      "runtimeExecutable": "C:/xampp/php/php.exe",
+      "runtimeArgs": [
+        "-S",
+        "0.0.0.0:8080",
+        "-t",
+        "server/public"
+      ],
+      "port": 8080,
+      "autoPort": false
+    },
+    {
+      "name": "game-comunidad-local",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--prefix",
+        "game",
+        "--",
+        "--port",
+        "5175",
+        "--strictPort"
+      ],
+      "env": {
+        "VITE_COMMUNITY_URL": "http://localhost:8080"
+      },
+      "port": 5175,
+      "autoPort": false
     }
   ]
 }

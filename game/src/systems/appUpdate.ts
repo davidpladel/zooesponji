@@ -77,3 +77,49 @@ export function setPlayUpdater(updater: PlayUpdater | null): void {
 export function getPlayUpdater(): PlayUpdater | null {
   return current;
 }
+
+// --- Play falso: pruebas de juego y prueba en casa con `npm run dev` (en el navegador no hay Play) ---
+
+export interface FakePlayOptions {
+  available?: boolean;
+  allowed?: boolean;
+  versionCode?: number;
+  /** Lo que devuelve cada intento de actualizar; el último se repite. */
+  results?: PlayUpdateResult[];
+}
+
+const RESULTS: readonly PlayUpdateResult[] = ['actualizada', 'cancelada', 'fallo', 'no-disponible'];
+
+export function createFakePlayUpdater(o: FakePlayOptions = {}, onCall?: (result: PlayUpdateResult) => void): PlayUpdater {
+  const results = [...(o.results ?? ['cancelada'])];
+  return {
+    info: async () => ({ available: o.available ?? true, immediateAllowed: o.allowed ?? true, versionCode: o.versionCode ?? 12 }),
+    immediate: async () => {
+      const result = (results.length > 1 ? results.shift() : results[0]) ?? 'cancelada';
+      onCall?.(result);
+      return result;
+    },
+  };
+}
+
+/**
+ * Lee el Play falso de la dirección: `?play-falso=cancelada,actualizada&codigo=13&dia=2026-11-21&play=no-hay&aviso-de-cero`.
+ * `null` sin `play-falso`. Solo se usa con `npm run dev` (lo decide quien lo llama).
+ */
+export function fakePlayFromQuery(search: string): { play: Required<FakePlayOptions>; today: string | null; reset: boolean } | null {
+  const q = new URLSearchParams(search);
+  if (!q.has('play-falso')) return null;
+  const results = (q.get('play-falso') ?? '').split(',').filter((r): r is PlayUpdateResult => (RESULTS as string[]).includes(r));
+  const code = q.get('codigo') ?? '';
+  const day = q.get('dia') ?? '';
+  return {
+    play: {
+      available: q.get('play') !== 'no-hay',
+      allowed: q.get('play') !== 'no-permitida',
+      versionCode: /^\d+$/.test(code) ? Number(code) : 13,
+      results: results.length > 0 ? results : ['cancelada'],
+    },
+    today: /^\d{4}-\d{2}-\d{2}$/.test(day) ? day : null,
+    reset: q.has('aviso-de-cero'),
+  };
+}

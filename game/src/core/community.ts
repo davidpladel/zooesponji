@@ -233,9 +233,11 @@ export function localized(text: Localized, lang: Language): string {
 }
 
 /** La dirección del servidor de comunidad. Solo HTTPS (o localhost para probar). Sin barra final. */
-export function communityUrl(env: { VITE_COMMUNITY_URL?: string }): string | null {
+/** Dirección del servidor del tablón. Con `DEV` (solo `npm run dev`) admite también un servidor de la red de casa por http. */
+export function communityUrl(env: { VITE_COMMUNITY_URL?: string; DEV?: boolean }): string | null {
   const url = (env.VITE_COMMUNITY_URL ?? '').trim().replace(/\/+$/, '');
   if (/^https:\/\/[a-z0-9.-]+(:\d+)?$/i.test(url)) return url;
   if (/^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(url)) return url;
+  if (env.DEV === true && /^http:\/\/(192\.168|10\.\d{1,3}|172\.(1[6-9]|2\d|3[01]))\.\d{1,3}\.\d{1,3}(:\d+)?$/.test(url)) return url;
   return null;
 }

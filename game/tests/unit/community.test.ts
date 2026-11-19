@@ -207,4 +207,15 @@ describe('communityUrl', () => {
     expect(communityUrl({ VITE_COMMUNITY_URL: '' })).toBeNull();
     expect(communityUrl({})).toBeNull();
   });
+
+  it('red de casa (http a una IP privada): solo en modo desarrollo, nunca en el paquete', () => {
+    for (const url of ['http://192.168.1.40:8080', 'http://10.0.0.5:8080', 'http://172.16.3.2:8080']) {
+      expect(communityUrl({ VITE_COMMUNITY_URL: url, DEV: true }), url).toBe(url);
+      expect(communityUrl({ VITE_COMMUNITY_URL: url, DEV: false }), url).toBeNull();
+      expect(communityUrl({ VITE_COMMUNITY_URL: url }), url).toBeNull();
+    }
+    for (const url of ['http://8.8.8.8:8080', 'http://172.32.0.1', 'http://192.168.1.40.evil.com', 'http://api.zooesponji.com']) {
+      expect(communityUrl({ VITE_COMMUNITY_URL: url, DEV: true }), url).toBeNull();
+    }
+  });
 });

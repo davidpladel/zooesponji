@@ -105,3 +105,32 @@ describe('setPlayUpdater', () => {
     expect(getPlayUpdater()).toBe(fake);
   });
 });
+
+describe('Play falso para probar en casa (solo npm run dev)', () => {
+  it('sin ?play-falso no hay Play falso', async () => {
+    const { fakePlayFromQuery } = await import('../../src/systems/appUpdate');
+    expect(fakePlayFromQuery('')).toBeNull();
+    expect(fakePlayFromQuery('?sin-tutorial')).toBeNull();
+  });
+  it('lee resultados, código, día, «no hay» / «no permitida» y empezar de cero', async () => {
+    const { fakePlayFromQuery } = await import('../../src/systems/appUpdate');
+    expect(fakePlayFromQuery('?play-falso')).toEqual({ play: { available: true, allowed: true, versionCode: 13, results: ['cancelada'] }, today: null, reset: false });
+    expect(fakePlayFromQuery('?play-falso=cancelada,actualizada&codigo=9&dia=2026-11-22&aviso-de-cero')).toEqual({
+      play: { available: true, allowed: true, versionCode: 9, results: ['cancelada', 'actualizada'] }, today: '2026-11-22', reset: true,
+    });
+    expect(fakePlayFromQuery('?play-falso&play=no-hay')?.play.available).toBe(false);
+    expect(fakePlayFromQuery('?play-falso&play=no-permitida')?.play.allowed).toBe(false);
+  });
+  it('lo raro se ignora: resultados desconocidos, código o día mal escritos', async () => {
+    const { fakePlayFromQuery } = await import('../../src/systems/appUpdate');
+    expect(fakePlayFromQuery('?play-falso=hola,fallo&codigo=abc&dia=ayer')).toEqual({ play: { available: true, allowed: true, versionCode: 13, results: ['fallo'] }, today: null, reset: false });
+  });
+  it('el Play falso devuelve los resultados en orden y repite el último', async () => {
+    const { createFakePlayUpdater } = await import('../../src/systems/appUpdate');
+    const calls: string[] = [];
+    const fake = createFakePlayUpdater({ results: ['cancelada', 'actualizada'], versionCode: 12 }, (r) => calls.push(r));
+    expect(await fake.info()).toEqual({ available: true, immediateAllowed: true, versionCode: 12 });
+    expect([await fake.immediate(), await fake.immediate(), await fake.immediate()]).toEqual(['cancelada', 'actualizada', 'actualizada']);
+    expect(calls).toEqual(['cancelada', 'actualizada', 'actualizada']);
+  });
+});

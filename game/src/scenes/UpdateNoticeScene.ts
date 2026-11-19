@@ -122,7 +122,7 @@ export class UpdateNoticeScene extends Phaser.Scene {
     this.yes = big;
     // La puerta de salida: el niño nunca queda atrapado.
     const door = Phaser.Math.Clamp(height * 0.14, 48, 72);
-    this.exit = addPillButton(this, width - door, height - door, door, door, { color: 'gray', icon: 'door', onTap: () => askQuit(this.game) });
+    this.exit = addPillButton(this, width - door, height - door, door, door, { color: 'red', icon: 'door', onTap: () => askQuit(this.game) });
   }
 
   private accept(): void {
