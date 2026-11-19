@@ -50,6 +50,7 @@ export class UpdateNoticeScene extends Phaser.Scene {
   private yes: Phaser.GameObjects.Container | null = null;
   private no: Phaser.GameObjects.Container | null = null;
   private exit: Phaser.GameObjects.Container | null = null;
+  private title: { text: Phaser.GameObjects.Text; max: number } | null = null;
 
   constructor() {
     super(UPDATE_NOTICE_KEY);
@@ -61,6 +62,7 @@ export class UpdateNoticeScene extends Phaser.Scene {
     this.yes = null;
     this.no = null;
     this.exit = null;
+    this.title = null;
   }
 
   get mode(): UpdateNoticeMode | null {
@@ -95,7 +97,8 @@ export class UpdateNoticeScene extends Phaser.Scene {
     addPanel(this, cx, cy, panelW, panelH);
     const button = Phaser.Math.Clamp(panelH * 0.24, 60, 110);
     this.disc(cx, cy - panelH * 0.2, panelH * 0.4);
-    fitText(addUiText(this, cx, cy + panelH * 0.07, t('update.title'), textStyle(Math.round(panelH * 0.09), UI.brown, UI.cream)).setOrigin(0.5), panelW * 0.86);
+    const text = fitText(addUiText(this, cx, cy + panelH * 0.07, t('update.title'), textStyle(Math.round(panelH * 0.09), UI.brown, UI.cream)).setOrigin(0.5), panelW * 0.86);
+    this.title = { text, max: panelW * 0.86 };
     const rowY = cy + panelH * 0.3;
     // El grande, a un lado; el pequeño del reloj, al otro: «luego» no tapa a «actualizar».
     const yesW = Math.min(panelW * 0.5, button * 2.2);
@@ -111,7 +114,8 @@ export class UpdateNoticeScene extends Phaser.Scene {
     this.add.rectangle(0, 0, width, height, UI.veil, 1).setOrigin(0).setInteractive();
     const side = Math.min(width, height);
     const d = Phaser.Math.Clamp(side * 0.46, 110, 320);
-    fitText(addUiText(this, width / 2, height * 0.14, t('update.title'), textStyle(Math.round(Math.max(20, side * 0.09)), '#ffffff', '#24600f')).setOrigin(0.5), width * 0.88);
+    const text = fitText(addUiText(this, width / 2, height * 0.14, t('update.title'), textStyle(Math.round(Math.max(20, side * 0.09)), '#ffffff', '#24600f')).setOrigin(0.5), width * 0.88);
+    this.title = { text, max: width * 0.88 };
     const big = this.disc(width / 2, height * 0.54, d);
     makePressable(big, () => this.accept());
     this.tweens.add({ targets: big, scale: 1.05, duration: 700, yoyo: true, repeat: -1, ease: 'Sine.InOut' });
@@ -154,6 +158,12 @@ export class UpdateNoticeScene extends Phaser.Scene {
 
   noPos(): Vec | null {
     return this.no ? { x: this.no.x, y: this.no.y } : null;
+  }
+
+  /** Ancho del texto, ancho que tiene y tamaño de letra final (para ver que cabe en cada idioma). */
+  titleFit(): { width: number; max: number; size: number } | null {
+    if (!this.title) return null;
+    return { width: this.title.text.width, max: this.title.max, size: Number.parseInt(String(this.title.text.style.fontSize), 10) };
   }
 
   exitPos(): Vec | null {

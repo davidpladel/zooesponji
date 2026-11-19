@@ -224,6 +224,7 @@ export interface ZooTestApi {
   updateCheck(): Promise<void>;
   updateState(): { mode: 'suave' | 'bloqueo' | null; memory: UpdateMemory | null; immediate: PlayUpdateResult[] };
   updatePos(key: 'yes' | 'no' | 'exit'): Vec | null;
+  updateTitleFit(): { width: number; max: number; size: number } | null;
   boardTile(): { x: number; y: number } | null;
   boardScreenPos(): Vec | null;
   boardSparkling(): boolean;
@@ -265,6 +266,7 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
     'book-index', 'book-closed', 'legal-opened', 'quit-asked', 'quit-answered',
     'ad-offered', 'ad-accepted', 'ad-declined', 'ad-watched', 'ad-cut', 'ad-failed', 'ad-empty', 'ad-closed',
     'board-opened', 'board-voted', 'board-qr', 'board-offline', 'poll-notice',
+    'update-offered', 'update-accepted', 'update-later', 'update-forced', 'update-failed',
     'tutorial-offered', 'tutorial-answered', 'tutorial-started', 'tutorial-step', 'tutorial-ended', 'tutorial-prepared',
   ];
   const busLog: string[] = [];
@@ -479,6 +481,7 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
       memory: getUpdateNotice()?.memory ?? null,
       immediate: [...updateCalls],
     }),
+    updateTitleFit: () => activeScene<UpdateNoticeScene>('UpdateNotice')?.titleFit() ?? null,
     updatePos: (key) => {
       const scene = activeScene<UpdateNoticeScene>('UpdateNotice');
       if (!scene) return null;
