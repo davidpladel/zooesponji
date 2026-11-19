@@ -92,6 +92,25 @@ ningún paquete y Hestia conserva los `nginx.ssl.conf_*` del dominio al reconstr
 y se vuelve a crear el dominio, si se cambia su plantilla de nginx por una que no los incluya o si se pasa a
 otro servidor: entonces hay que repetir los pasos 1 a 3.
 
+## Aviso para actualizar el juego
+
+Desde la 2.11.0, el juego lee en `estado.php` la clave `actualizacion`, que se pone a mano en `comunidad.json`:
+
+    "actualizacion": { "minima": 12, "ultima": 15, "grande": true }
+
+- Los números son `versionCode` (el entero que sube con cada subida a Play), nunca el nombre de la versión.
+- `ultima`: quien tenga una versión anterior ve el aviso. Con `grande: false`, una ventana suave («actualizar» o
+  «luego») como mucho una vez al día y tres veces en total; con `grande: true`, dos veces suaves y a la tercera la
+  ventana de Play que no deja seguir.
+- `minima`: por debajo, actualización obligatoria ya. Solo para una versión rota de verdad.
+- Sin la clave (o con `null`) no hay aviso, y `estado.php` responde igual que antes (las versiones ya publicadas
+  no la leen). Si la clave está mal escrita (números negativos, texto, `ultima` menor que `minima`), el archivo
+  entero se da por roto: como con cualquier otro error, el servidor sigue con el muro de la última copia buena,
+  sin votación y sin aviso.
+- **Antes de subir `ultima`**, la versión nueva tiene que estar al 100 % en Play (producción y prueba cerrada); el
+  juego nunca bloquea si Play no confirma que hay versión para ese móvil. Sube `ultima` y `minima` en dos pasos.
+- Detalle en la spec `docs/superpowers/specs/2026-11-19-actualizacion-obligatoria-design.md`.
+
 ## Actualizar
 
 Vuelve a subir `public/` y `app/src/` (y los scripts sueltos de `app/`, como `votos-hora.php`). No pises `config.php` ni `datos/`.

@@ -208,7 +208,7 @@ Las piezas de los menús (píldoras, paneles, carteles, chapa de cerrar, monedas
 - `src/core/` — lógica pura sin Phaser (reacciones, economía y extras, guardado, A*, mapas, movimiento, `flock` para que los animales no se pisen, `petting` para el aforo de la granja de contacto, `back` para el botón atrás, `adPacing` para el ritmo de la publicidad, `adConfig` para la configuración de AdMob). Todo con tests.
 - `src/data/` — contenido: animales, comidas, tienda, libro del zoo (`book.ts`: ids de página y qué las desbloquea) y textos (`strings/`: `es.ts` y `en.ts`, una clave por texto; `en.ts` no compila si le falta una; todo texto visible pasa por `t()`, que usa el idioma activo).
 - `src/systems/` — eventos, sesión, almacenamiento, zoom, `audio` (samples y música), `platform` (botón atrás, segundo plano, girar el móvil), `errors` (pantalla ¡Ups!), `language` (idioma activo y detección por el idioma del móvil), `ads` (publicidad con premio: cuándo se pide y se ofrece un anuncio), `adProvider` (avisos del SDK), `adsInstall` (único archivo que toca el complemento de AdMob; solo instala en Android).
-- `src/scenes/` — escenas de Phaser (solo dibujan y recogen input): Boot, Preload, Title, World, Feed (dar de comer), Clean (limpieza), Shop (tienda), Clinic (la clínica por dentro), Cure (curar), Book (libro del zoo), Hud, Settings (menú ⚙️: ajustes, idioma, créditos, privacidad y salir), Quit (¿Salir?), Rotate (gira el móvil), AdOffer (panel que ofrece un anuncio), TutorialOffer (aviso de la primera vez y de las lecciones de limpieza y clínica) y Tutorial (la mano que enseña; una cola de lecciones: inicio, limpieza y clínica; pasos en `core/tutorial.ts`, qué avisos tocan y con qué animal se practica en `core/lessons.ts`).
+- `src/scenes/` — escenas de Phaser (solo dibujan y recogen input): Boot, Preload, Title, World, Feed (dar de comer), Clean (limpieza), Shop (tienda), Clinic (la clínica por dentro), Cure (curar), Book (libro del zoo), Hud, Settings (menú ⚙️: ajustes, idioma, créditos, privacidad y salir), Quit (¿Salir?), Rotate (gira el móvil), AdOffer (panel que ofrece un anuncio), UpdateNotice (aviso para actualizar: ventana suave o bloqueo), TutorialOffer (aviso de la primera vez y de las lecciones de limpieza y clínica) y Tutorial (la mano que enseña; una cola de lecciones: inicio, limpieza y clínica; pasos en `core/tutorial.ts`, qué avisos tocan y con qué animal se practica en `core/lessons.ts`).
 - Luna: `core/petFollow.ts` (sigue el rastro de la cuidadora y espera en la puerta de los recintos) y `world/ShopPet.ts` (curiosea por la tienda; destinos con `pickShopSpot` de `core/shopWalk.ts`).
 - `src/world/` — ayudantes del mundo: `Pens` (los animales de cada recinto, cada uno con su identidad, los candados y el toque sobre un animal para darle de comer; los recintos que no se ven no se actualizan), `ShopBuilding` (edificio y puerta de la tienda), `ShopInterior` (la tienda por dentro), `ShopKeeperWalker` (la cuidadora dentro de la tienda), `Shopkeeper` (el tendero), `ShopHint` (huellas de pista), `VisitorCrowd` (visitantes; en el recinto de ovejas entran a acariciar, 3 como mucho, y salen corazones).
 
@@ -265,6 +265,30 @@ El tablón de la plaza habla con el servidor de comunidad. Sin configuración no
 
 - `game/.env.production.local` (no se sube): `VITE_COMMUNITY_URL`, la dirección del servidor (`https://api.zooesponji.com`).
 - `src/core/community.ts`: tipos y validación de lo que llega del servidor. `src/systems/community.ts`: consulta el estado, guarda el voto y construye la dirección de los dibujos (`dibujo.php?f=...`). `BoardScene` es el tablón y `PollNoticeScene`, el aviso de votación nueva.
+
+## Avisos de actualización (solo Android, desde la 2.11.0)
+
+Quien tenga una versión vieja ve un aviso para actualizar; la ventana la pone Play encima del juego (actualización
+inmediata), sin enlaces a la tienda. Lo decide la clave `actualizacion` de `comunidad.json` en el servidor (cómo se
+escribe: `server/README.md` › «Aviso para actualizar el juego»).
+
+- `src/core/updatePolicy.ts`: la lógica pura (`decideUpdate`: `nada`, `suave` u `obligatoria`), los topes
+  (`MAX_SOFT_SMALL` = 3, `MAX_SOFT_BIG` = 2, como mucho un aviso al día), la memoria del aparato (clave
+  `zooesponji_v3_update`: `ultima`, `aplazadas`, `ultimoAviso`; con otra `ultima` empieza de cero) y `isSafeMoment`.
+- `src/systems/appUpdate.ts`: único archivo que toca el plugin `@capawesome/capacitor-app-update` (solo
+  `getAppUpdateInfo` y `performImmediateUpdate`; nunca `openAppStore`).
+- `src/systems/updateNotice.ts` (y `updateNoticeInstall.ts`): mira en el título, al llegar la respuesta del servidor
+  y al volver a abrir la app. Solo avisa si el servidor respondió **en esta sesión**, si es un momento seguro (título
+  o mapa sin ventanas ni lecciones abiertas) y si Play dice que hay versión y que la actualización inmediata está
+  permitida. Si el jugador cancela la obligatoria, sale la pantalla de bloqueo (flecha para reintentar y puerta de
+  «Salir»); si Play falla, se deja jugar.
+- `UpdateNoticeScene`: ventana suave (flecha, ✓ verde y reloj de «luego»; «atrás» = «luego») o bloqueo («atrás» =
+  «¿Salir?»). Dibujos en `src/ui/updateArt.ts`. Un solo texto, `update.title`, en los 11 idiomas.
+- Estadísticas: categoría `actualizacion` (`actualizacion-ofrece`, `-acepta`, `-luego`, `-obliga`, `-fallo`).
+- **No se ve en `npm run dev`:** en el navegador no hay Play. Las pruebas usan uno falso:
+  `window.__ZOO__.updateFake({ available, allowed, versionCode, results, today })`, `updateCheck()`,
+  `updateState()`, `updateSetToday('AAAA-MM-DD')` y `updatePos('yes' | 'no' | 'exit')`
+  (`tests/e2e/actualizacion.spec.ts`). Probarlo de verdad pide dos versiones en la pista interna de Play.
 
 ## Versión
 

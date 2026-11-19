@@ -1,6 +1,6 @@
 # Aviso para actualizar el juego (suave, de versión grande y obligatorio)
 
-Fecha: 2026-11-19 · Rama: `feat/release-2.11.0` · Estado: **diseño aprobado por David el 2026-11-19** (política de tres niveles; el plan de salida de abajo lo propuso él)
+Fecha: 2026-11-19 · Rama: `feat/release-2.11.0` · Estado: **diseño aprobado por David el 2026-11-19; implementado el 2026-11-19, pendiente de la validación visual de David** (ver «Cómo quedó») (política de tres niveles; el plan de salida de abajo lo propuso él)
 
 ## Por qué
 
@@ -223,3 +223,36 @@ en `tools/matomo/resumen.mjs` y estadísticas apagadas en los jugadores con IA. 
 - Documentación al día al cerrar: `README.md` raíz (hoja de ruta), `game/README.md` (versión y un apartado nuevo
   «Avisos de actualización» con cómo cambiar `actualizacion`), `server/README.md` y el «Cómo quedó» de esta spec.
 - En las notas de versión de Play no se promete nada de esto.
+
+## Cómo quedó (2026-11-19, rama `feat/release-2.11.0`)
+
+Plan: `docs/superpowers/plans/2026-11-19-actualizacion-obligatoria.md`. Hecho en la propia sesión, con pruebas primero.
+
+- **Plugin leído en sus tipos reales** (`@capawesome/capacitor-app-update` 8.1.1, MIT, `dist/esm/definitions.d.ts`):
+  `getAppUpdateInfo()` devuelve `updateAvailability` (`UPDATE_AVAILABLE = 2`), `immediateUpdateAllowed` (opcional) y
+  `currentVersionCode` (**texto**, se convierte a entero). `performImmediateUpdate()` devuelve `{ code }`:
+  `OK = 0`, `CANCELED = 1`, `FAILED = 2`, `NOT_AVAILABLE = 3`, `NOT_ALLOWED = 4`, `INFO_MISSING = 5`; exige haber
+  pedido antes la información (el envoltorio lo hace siempre). El plugin trae `openAppStore` (abre `market://`): **no
+  se usa**. No trae reglas de R8 propias; añade `com.google.android.play:app-update` al AAB.
+- **El versionCode instalado se lee de Play** (`currentVersionCode`), no de `App.getInfo()`: si Play no lo da, no hay aviso.
+- **Decisión del constructor: Play «falla» no bloquea.** Solo `CANCELED` (el jugador cerró la ventana de Play) lleva a
+  la pantalla de bloqueo; `FAILED` o una excepción dejan jugar (se cuenta `actualizacion-fallo`) para no atrapar a un
+  niño con un móvil donde Play no puede actualizar. `NOT_AVAILABLE`, `NOT_ALLOWED` e `INFO_MISSING` tampoco bloquean.
+  Desde el bloqueo, si Play falla o ya no puede, el bloqueo se cierra.
+- **«Actualizar» en la ventana suave y luego cancelar en Play** cuenta como una vez aplazada (si no, la grande nunca
+  llegaría a la tercera).
+- **La rota no mira el «uno al día»**: sale en cada momento seguro mientras la versión esté por debajo de `minima`.
+- **Momento seguro** (`isSafeMoment`): título, o mapa sin tienda, comida, limpieza, clínica, cura, libro, tablón,
+  ajustes, salir, lecciones, paneles de anuncio o de votación, ni la capa de «gira el móvil».
+- **Botón «atrás»:** en la suave es «luego»; en el bloqueo abre «¿Salir?» (nunca cierra el bloqueo).
+- **Servidor:** `Contenido::validar` valida la clave (si está mal, el archivo se da por roto como con cualquier otro
+  error: se queda el muro de la copia buena, sin votación ni aviso); `Estado::construir` solo la añade si existe, así
+  que sin ella `estado.php` es idéntico al de antes. Las versiones publicadas no la leen (prueba en `community.test.ts`).
+- **Pruebas:** unitarias (`updatePolicy`, `appUpdate`, `updateNotice`, `updateArt`, `back`, `strings`, `community`,
+  `communitySystem`, `analyticsEvents`, `eventCatalog`), PHPUnit (`ContenidoTest`, `EstadoTest`) y de juego
+  (`tests/e2e/actualizacion.spec.ts`, Play falso).
+
+**No verificado aún:** el aspecto (lo valida David con capturas), el AAB con el plugin (`check:aab`; `check:manifest`
+pasó pero contra un manifiesto compilado antes del plugin), la política de «Diseñado para Familias» sobre este
+flujo, y la prueba de verdad con dos versiones en la pista interna de Play. La versión (2.11.0, versionCode 14) no
+está subida en los archivos: es de otro paso.
