@@ -1,6 +1,6 @@
 # Aviso para actualizar el juego (suave, de versión grande y obligatorio)
 
-Fecha: 2026-11-19 · Rama: `feat/release-2.11.0` · Estado: **diseño, pendiente de aprobar**
+Fecha: 2026-11-19 · Rama: `feat/release-2.11.0` · Estado: **diseño aprobado por David el 2026-11-19** (política de tres niveles; el plan de salida de abajo lo propuso él)
 
 ## Por qué
 
@@ -115,6 +115,27 @@ empiece de cero.
 **Se complementan:** la A protege de la 2.11.0 en adelante. A quien ya tiene la **2.10.0 o anteriores** (que nunca
 llevarán este código) solo le llega la D, y se lanza desde Play Console al publicar la 2.11.0 (con permiso de David,
 como siempre que se publica algo).
+
+## Plan de salida (idea de David: sacar una versión con esto y, ya publicada, llevar a todos a la última)
+
+El mecanismo vive **dentro de la app**, así que solo lo tienen las versiones que lo incluyan. Por eso el orden es:
+
+1. **Sacar la 2.11.0 (versionCode 14) con el aviso incluido.** En el servidor no se toca `ultima`: quien ya la tiene
+   no necesita nada, y a quien no la tiene el servidor no le llega.
+2. **Ya publicada y al 100 % en Play** (producción y prueba cerrada), lanzar la herramienta de Play Console
+   «avisar para actualizar» contra la 2.10.0 y anteriores. Es el único camino para quien no tiene el mecanismo:
+   aviso a pantalla completa que **se puede cerrar y vuelve en cada arranque en frío** (no bloquea; Google contó
+   más de un 50 % de respuesta). Publicar y lanzar esto va con permiso expreso de David.
+3. **Desde la 2.11.0, cada versión siguiente** (2.12.0…) ya se puede subir a «grande» u obligar por el servidor, y
+   llega a todos los que pasaron por la 2.11.0.
+
+Lo que **no** se puede: obligar de verdad (bloqueo) a quien se quede en la 2.10.0 o anterior. Si no abre Play, no
+actualiza sola y cierra el aviso cada vez, esa persona queda fuera hasta que actualice por su cuenta. Se mide con
+los informes de Play y con la tabla de versiones de Matomo (hoy, casi 1 de cada 4 está en versiones antes de la
+2.9.0).
+
+No se marca la propia 2.11.0 como `grande`: obligar a actualizar a una versión que ya se tiene no tiene sentido.
+La primera vez que se use la clave será con la 2.12.0.
 
 ## Dónde va cada cosa
 
