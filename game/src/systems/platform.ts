@@ -16,6 +16,7 @@ import type { BookScene } from '../scenes/BookScene';
 import type { SettingsScene } from '../scenes/SettingsScene';
 import type { ShopScene } from '../scenes/ShopScene';
 import { getAds } from './ads';
+import { getReview } from './review';
 import { getAnalytics } from './analytics';
 import { sfx } from './audio';
 import { bus } from './events';
@@ -147,6 +148,7 @@ export class Platform {
     sfx.setPaused('background', hidden);
     getAnalytics()?.setBackground(hidden);
     getAds()?.setBackground(hidden);
+    getReview()?.setBackground(hidden);
     if (hidden) {
       void getSessionSafe()?.save();
       this.pauseWorld('background');
