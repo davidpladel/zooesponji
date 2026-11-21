@@ -1,7 +1,7 @@
 // game/src/systems/analyticsEvents.ts
 import { dayKey, type ActivityFlag } from '../core/activity';
 import { isBookComplete } from '../core/book';
-import { STARTING_COINS, initialCounts, openPens, type GameState } from '../core/economy';
+import { STARTING_COINS, boughtAnimal, openPens, type GameState } from '../core/economy';
 import {
   animalsBucket, bookBucket, coinsBucket, feedsBucket, pagesBucket, part, reachAction, residentName,
   type ActionOf, type Category, type ReachKind, type Step,
@@ -43,8 +43,7 @@ function zooComplete(state: GameState): boolean {
 
 /** Pasos del embudo que una partida ya empezada tiene dados: se apuntan sin avisar, para no falsear tiempos. */
 export function knownSteps(state: GameState, book: BookProgress): Step[] {
-  const initial = initialCounts();
-  const bought = PEN_IDS.some((id) => state.counts[id] > initial[id]);
+  const bought = boughtAnimal(state);
   const steps: Step[] = [];
   // Desde el 2026-11-08 se empieza con STARTING_COINS: tener otras monedas (más o menos) es que ya se ha jugado.
   const played = state.coins !== STARTING_COINS || bought || state.luna || state.clinic;
