@@ -29,6 +29,8 @@ import type { TutorialScene } from '../scenes/TutorialScene';
 import type { WorldScene } from '../scenes/WorldScene';
 import { getAds } from './ads';
 import { startAds } from './adsInstall';
+import { getReview } from './review';
+import { startReview } from './reviewInstall';
 import { getCommunity } from './community';
 import { startCommunity } from './communityInstall';
 import { createFakePlayUpdater, type PlayUpdateResult } from './appUpdate';
@@ -200,6 +202,16 @@ export interface ZooTestApi {
   lookAtTile(x: number, y: number): void;
   spawnTile(): { x: number; y: number } | null;
   /** Monta la publicidad con un proveedor falso. `outcome`: qué pasa al enseñar el anuncio; `ready`: si hay anuncio que cargar. */
+  /** Monta la valoración con un Play falso: `ok` termina en seguida, `fallo` rechaza, `colgada` no contesta nunca. */
+  reviewFake(result: 'ok' | 'fallo' | 'colgada', playSeconds?: number): Promise<void>;
+  /** Suma segundos de juego a la valoración. */
+  reviewAdvance(seconds: number): void;
+  /** Marca el aviso del tutorial como ya ofrecido (como si se hubiera saltado). */
+  tutorialOffered(): Promise<void>;
+  /** Veces que se ha llamado al Play falso. */
+  reviewCalls(): number;
+  /** La tarjeta (falsa) está abierta. */
+  reviewOpen(): boolean;
   adsFake(outcome: 'visto' | 'cortado' | 'fallo', ready?: boolean): Promise<void>;
   /** Hace pasar segundos de juego para la publicidad y espera a que terminen las cargas. */
   adsAdvance(seconds: number): Promise<void>;
@@ -264,12 +276,13 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
     'animal-tapped', 'feed-opened', 'animal-fed', 'food-missed', 'feed-closed', 'pen-near', 'locked-tap', 'shop-locked',
     'control-used', 'shop-opened', 'shop-look', 'shop-denied', 'purchase', 'shop-closed', 'book-opened', 'book-page-shown',
     'book-index', 'book-closed', 'legal-opened', 'quit-asked', 'quit-answered',
-    'ad-offered', 'ad-accepted', 'ad-declined', 'ad-watched', 'ad-cut', 'ad-failed', 'ad-empty', 'ad-closed',
+    'review-requested', 'review-failed', 'ad-offered', 'ad-accepted', 'ad-declined', 'ad-watched', 'ad-cut', 'ad-failed', 'ad-empty', 'ad-closed',
     'board-opened', 'board-voted', 'board-qr', 'board-offline', 'poll-notice',
     'update-offered', 'update-accepted', 'update-later', 'update-forced', 'update-failed',
     'tutorial-offered', 'tutorial-answered', 'tutorial-started', 'tutorial-step', 'tutorial-ended', 'tutorial-prepared',
   ];
   const busLog: string[] = [];
+  let reviewCalls = 0;
   for (const name of logged) bus.on(name, () => busLog.push(name));
 
   window.__GAME__ = game;
@@ -422,6 +435,27 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
     lookAtTile: (x, y) => activeScene<WorldScene>('World')?.lookAtTile({ x, y }),
     shopDoorTile: () => activeScene<WorldScene>('World')?.shopDoorTile() ?? null,
     spawnTile: () => activeScene<WorldScene>('World')?.spawnTile() ?? null,
+    reviewFake: async (result, playSeconds) => {
+      reviewCalls = 0;
+      await startReview(
+        game,
+        {
+          request: () => {
+            reviewCalls++;
+            if (result === 'fallo') return Promise.reject(new Error('Play falso: fallo'));
+            return result === 'colgada' ? new Promise<void>(() => undefined) : new Promise<void>((resolve) => setTimeout(resolve, 300));
+          },
+        },
+        { playSeconds },
+      );
+    },
+    reviewAdvance: (seconds) => {
+      const review = getReview();
+      for (let i = 0; i < seconds; i++) review?.tick(1);
+    },
+    reviewCalls: () => reviewCalls,
+    tutorialOffered: () => getSession().markLessonOffered('inicio'),
+    reviewOpen: () => getReview()?.open ?? false,
     adsFake: async (outcome, ready = true) => {
       await startAds(
         game,

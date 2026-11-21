@@ -5,6 +5,7 @@ import type { UpdateNoticeScene } from '../scenes/UpdateNoticeScene';
 import { UPDATE_KEY } from '../core/updatePolicy';
 import { createFakePlayUpdater, createPlayUpdater, fakePlayFromQuery, getPlayUpdater, setPlayUpdater, type PlayUpdater } from './appUpdate';
 import { getCommunity } from './community';
+import { getReview } from './review';
 import { createStore } from './createStore';
 import { bus } from './events';
 import { UpdateNotice } from './updateNotice';
@@ -27,7 +28,8 @@ export function startUpdateNotice(game: Phaser.Game, play: PlayUpdater, options:
     events: bus,
     community: () => getCommunity(),
     play: () => getPlayUpdater(),
-    activeScenes: () => game.scene.getScenes(true).map((scene) => scene.scene.key),
+    // Con la tarjeta de la valoración encima tampoco es momento: cuenta como una escena más.
+    activeScenes: () => [...game.scene.getScenes(true).map((scene) => scene.scene.key), ...(getReview()?.open ? ['Review'] : [])],
     show: (data) => {
       // Como el aviso de votación: el mundo queda en pausa debajo y la escena lo reanuda al cerrarse.
       if (game.scene.isActive('World')) game.scene.pause('World');

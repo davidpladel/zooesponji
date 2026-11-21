@@ -99,3 +99,9 @@ describe('isSafeMoment', () => {
     expect(isSafeMoment(['Boot'])).toBe(false);
   });
 });
+
+describe('isSafeMoment con la tarjeta de la valoración', () => {
+  it('con la tarjeta de Google encima no es momento', () => {
+    expect(isSafeMoment(['World', 'Hud', 'Review'])).toBe(false);
+  });
+});

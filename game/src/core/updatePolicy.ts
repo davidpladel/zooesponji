@@ -97,7 +97,7 @@ export function afterLater(memory: UpdateMemory, key: UpdateKey, today: string):
 }
 
 /** Escenas que, abiertas, hacen que NO sea momento de molestar: el niño está haciendo algo. */
-const BUSY = ['Feed', 'Clean', 'Cure', 'Clinic', 'Shop', 'Book', 'Board', 'Tutorial', 'TutorialOffer', 'Quit', 'Settings', 'AdOffer', 'PollNotice', 'UpdateNotice', 'Rotate'];
+const BUSY = ['Feed', 'Clean', 'Cure', 'Clinic', 'Shop', 'Book', 'Board', 'Tutorial', 'TutorialOffer', 'Quit', 'Settings', 'AdOffer', 'PollNotice', 'UpdateNotice', 'Rotate', 'Review'];
 
 /** Momento seguro: en el título, o en el mundo sin ventanas ni lecciones abiertas. */
 export function isSafeMoment(active: readonly string[]): boolean {
