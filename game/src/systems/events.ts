@@ -167,6 +167,10 @@ export interface GameEvents {
   'update-forced': { kind: 'grande' | 'rota' };
   /** Play cancela o falla la actualización. */
   'update-failed': { kind: UpdateKind };
+  /** El juego llama a la API de reseñas de Play (no se sabe si salió la tarjeta ni si valoró). `attempt`: 1 o 2. */
+  'review-requested': { attempt: number };
+  /** La API de reseñas falla. El niño no ve nada. */
+  'review-failed': { attempt: number };
 }
 
 export const bus = new EventBus<GameEvents>();
