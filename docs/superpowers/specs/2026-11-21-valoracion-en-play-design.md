@@ -1,6 +1,6 @@
 # Pedir la valoración en Google Play (ventana de Google, sin enlace)
 
-Fecha: 2026-11-21 · Rama: `feat/release-2.11.0` · Estado: **diseño pendiente de aprobar por David** (opción A elegida el 2026-11-21; criterio decidido por David el mismo día: **10 min de juego acumulados y primer animal comprado, sin condición de días**; falta confirmar con Google que la API vale en una app de Familias, ver «Antes de publicar»; **revisada contra el
+Fecha: 2026-11-21 · Rama: `feat/release-2.11.0` · Estado: **aprobada por David el 2026-11-21** (opción A elegida el 2026-11-21; criterio decidido por David el mismo día: **10 min de juego acumulados y primer animal comprado, sin condición de días**; falta confirmar con Google que la API vale en una app de Familias, ver «Antes de publicar»; **revisada contra el
 código el 2026-11-21**: cambios en el choque con los anuncios y las lecciones, la pausa mientras sale la tarjeta, el
 plugin y las pruebas en el móvil)
 
@@ -228,8 +228,8 @@ Todo lo que pasa lleva su evento; aquí hay pocos, porque la API no dice más.
 
 | Qué pasa | Aviso en el bus | Evento de Matomo | Notas |
 |---|---|---|---|
-| El juego llama a la API de reseñas | `review-requested` | `valoracion` / `solicitada` (nombre: `1` o `2`, el número de intento) | No dice si se mostró ni si valoró |
-| La API falla | `review-failed` | `valoracion` / `fallo` | Solo cuenta; el niño no ve nada |
+| El juego llama a la API de reseñas | `review-requested` | `valoracion` / `valoracion-solicitada` (nombre: `1` o `2`, el número de intento) | No dice si se mostró ni si valoró |
+| La API falla | `review-failed` | `valoracion` / `valoracion-fallo` | Solo cuenta; el niño no ve nada |
 
 Con esto se verá **qué % de los nuevos cumple 10 min y el primer animal** (el dato que hoy no tenemos), frente a la
 estimación del 30 %.
@@ -291,7 +291,7 @@ tarjeta sale pero no deja enviar; con cuentas de empresa no sale.
    Familias»? Hasta que conteste, no se sube a producción. Si dice que no, el diseño se cierra: no hay alternativa
    sin enlace.
 2. **Alcance:** con 10 min y primer animal se estima en torno al 30 % de los nuevos (23–39 %, no medido), por debajo
-   del 40 % que quería David. Tras publicar, el evento `solicitada` frente a los jugadores nuevos dirá el alcance
+   del 40 % que quería David. Tras publicar, el evento `valoracion-solicitada` frente a los jugadores nuevos dirá el alcance
    real: si sale poco, se baja el umbral (o se deja solo el primer animal, ≈ 40 %); si las valoraciones llegan
    flojas, se sube.
 3. **Ficha de seguridad de datos de Play y textos legales** (web y juego): las reseñas hechas con la API recogen
@@ -304,4 +304,4 @@ tarjeta sale pero no deja enviar; con cuentas de empresa no sale.
 
 ## Aprobación
 
-Aprobada por David: **pendiente**. Siguiente paso tras aprobarla: el plan en `docs/superpowers/plans/`.
+Aprobada por David: **sí, el 2026-11-21**, con los cambios de la revisión contra el código. Plan: `docs/superpowers/plans/2026-11-21-valoracion-en-play.md`.
