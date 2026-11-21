@@ -577,6 +577,21 @@ describe('GameTracker: aviso de actualizar', () => {
   });
 });
 
+describe('GameTracker: valoración en Play', () => {
+  it('solicitada y fallo, con el número de intento en el nombre', async () => {
+    const t = setup();
+    await t.tracker.start();
+    t.events.emit('review-requested', { attempt: 1 });
+    t.events.emit('review-failed', { attempt: 1 });
+    t.events.emit('review-requested', { attempt: 2 });
+    expect(t.sent).toEqual([
+      'valoracion | valoracion-solicitada | 1',
+      'valoracion | valoracion-fallo | 1',
+      'valoracion | valoracion-solicitada | 2',
+    ]);
+  });
+});
+
 describe('GameTracker: cuidados (cerdos, limpieza y clínica)', () => {
   it('comprar la clínica se cuenta como compra de edificio y da la primera compra', async () => {
     const t = setup();

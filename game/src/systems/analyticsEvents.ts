@@ -276,6 +276,8 @@ export class GameTracker implements AnalyticsHooks {
     on('update-later', ({ kind, deferred }) => this.send('actualizacion', 'actualizacion-luego', kind, deferred));
     on('update-forced', ({ kind }) => this.send('actualizacion', 'actualizacion-obliga', kind));
     on('update-failed', ({ kind }) => this.send('actualizacion', 'actualizacion-fallo', kind));
+    on('review-requested', ({ attempt }) => this.send('valoracion', 'valoracion-solicitada', String(attempt)));
+    on('review-failed', ({ attempt }) => this.send('valoracion', 'valoracion-fallo', String(attempt)));
 
     try {
       const saved = parseReach(await store.get(REACH_KEY));
