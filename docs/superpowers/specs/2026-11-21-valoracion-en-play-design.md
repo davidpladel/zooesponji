@@ -302,6 +302,24 @@ tarjeta sale pero no deja enviar; con cuentas de empresa no sale.
    preguntarlo en la misma consulta del punto 1.
 5. **Política de SDK de Play:** repetir la lectura cuando la página (`answer/15406736`) esté disponible.
 
+## Cómo quedó (2026-11-21)
+
+Hecho en `feat/release-2.11.0` según el plan (`docs/superpowers/plans/2026-11-21-valoracion-en-play.md`), sin subir.
+
+- **Plugin:** `@capawesome/capacitor-app-review` 8.1.0. Trae `com.google.android.play:review` **2.0.2** y su
+  manifiesto está vacío: **no añade permisos** (comprobado en el manifiesto fusionado: los mismos de siempre). El
+  juego solo llama a `requestReview()`, que espera a que termine `launchReviewFlow`. Su código nativo incluye
+  `openAppStore` (con `market://` y `play.google.com`), pero el juego no lo llama nunca y una prueba lo vigila.
+- **AAB:** compila con R8 (`check:aab` y `check:manifest` correctos, 10,5 MB). Hace falta Gradle con Java 21
+  (`~/.jdks/jbr-21.0.11`): el Java de Android Studio (25) no lo entiende Gradle 8.14.
+- **Un fallo que cazaron las pruebas de juego:** si Play contestaba muy rápido, el mapa se quedaba en pausa (Phaser
+  pone la pausa en cola y la comprobación de «¿está en pausa?» llegaba antes). Ahora se reanuda siempre al terminar.
+- **Pruebas:** unitarias (`reviewPrompt`, `review`, `reviewInstall`, `economy`, `updatePolicy`, `analyticsEvents`,
+  `eventCatalog`) y de juego (`valoracion.spec.ts`, 13 casos). Los 60 s de Play colgado se prueban en la unitaria;
+  en la de juego se comprueba que con Play colgado el mapa sigue en pausa.
+- **Sigue pendiente** todo «Antes de publicar»: consulta a Google sobre Familias, ficha de seguridad de datos y
+  textos legales, cuentas de niños y política de SDK. Y la prueba en el móvil desde la prueba interna.
+
 ## Aprobación
 
 Aprobada por David: **sí, el 2026-11-21**, con los cambios de la revisión contra el código. Plan: `docs/superpowers/plans/2026-11-21-valoracion-en-play.md`.

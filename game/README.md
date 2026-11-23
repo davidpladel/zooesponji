@@ -306,7 +306,34 @@ escribe: `server/README.md` › «Aviso para actualizar el juego»).
   4. La primera vez, Windows pregunta si deja entrar a `node` y a `php` desde la red: «Redes privadas», sí.
   Con «actualizada» el Play falso solo cierra el aviso; en el móvil de verdad Play reinicia la app.
 
-## Versión
+## Valoración en Google Play (solo Android, desde la 2.11.0)
+
+Con **10 min de juego acumulados y el primer animal comprado**, en un momento tranquilo, el juego llama a la API de
+reseñas de Play y Google pone su tarjeta encima (en el idioma del móvil). El juego **no dibuja nada**: ni cartel, ni
+botón, ni pregunta, ni premio, ni enlace a la ficha. Spec: `docs/superpowers/specs/2026-11-21-valoracion-en-play-design.md`.
+
+- `src/core/reviewPrompt.ts`: la lógica pura y sus números (`PLAY_MIN_S` 600, `SECOND_WAIT_DAYS` 30, `SECOND_PLAY_S`
+  600, `MAX_ATTEMPTS` 2, `CALM_WAIT_S` 300, `NOTICE_QUIET_S` 600, `AD_QUIET_S` 180). Memoria en la clave
+  `zooesponji_v3_review` (`playSeconds`, `attempts`, `lastAttemptDay`, `playAtAttempt`), fuera de la partida; el
+  «primer animal» se lee de la partida (`boughtAnimal` en `economy.ts`).
+- `src/systems/review.ts`: cuenta el juego (siempre, con o sin estadísticas), recuerda los avisos y anuncios de esta
+  partida y pide con la tarjeta abierta (`open`) hasta que Play termina o pasan 60 s. Marca el intento **antes** de
+  llamar.
+- `src/systems/reviewInstall.ts`: único archivo que toca `@capawesome/capacitor-app-review` (solo `requestReview`;
+  nunca `openAppStore`, y `tests/unit/reviewInstall.test.ts` lo vigila en todo `src/`).
+- En `WorldScene`: al volver de comer, limpiar o la tienda va **por delante del anuncio de la pausa** (si sale la
+  valoración, el anuncio espera a la pausa siguiente); al salir de la tienda con una lección por ofrecer, va la
+  lección. Sin pausa natural, a los 5 min de cumplir vale cualquier momento con el mapa libre (se mira cada 5 s).
+  Con la tarjeta abierta no sale ningún otro aviso (`'Review'` en `BUSY` de `updatePolicy.ts`).
+- Estadísticas: `valoracion` / `valoracion-solicitada` y `valoracion-fallo` (nombre: el intento, `1` o `2`); en
+  `tools/matomo/resumen.mjs`, «Valoración en Play». La API no dice si salió la tarjeta ni si se valoró.
+- **Probar en casa:** `npm run dev` y `http://localhost:5173/?valoracion=rapido` (Play falso y los 10 min ya hechos;
+  hace falta comprar un animal y haber pasado el aviso del tutorial). Cuando toca, sale `valoracion: pedida` en la
+  consola del navegador.
+- **En el móvil, solo desde la prueba interna de Play** (con un APK suelto no sale): ahí no hay cuota y sale cada
+  vez, pero la cuenta **no puede tener ya una reseña del juego**; con «compartir apps internamente» no deja enviar.
+  Nunca con una cuenta de niño real.
+
 
 `version` en `package.json` y `versionName` en `android/app/build.gradle`: **2.10.0** con el `versionCode` **13** (2026-11-10, hecha en la rama `feat/plaza-recintos-recorrido` y en `main` desde el 2026-11-14, etiqueta `v2.10.0`; subida a Play el 2026-11-11 y publicada en producción y prueba cerrada el 2026-11-13). La próxima subida lleva el **14**. `versionCode` sube en 1 con cada subida a Play: el **7** es la 2.6.0 (primera con anuncios), subida a la prueba cerrada el 2026-10-12; el **8** es la 2.7.0 (tablón de la comunidad), subida; el **9** es la 2.7.1 (arreglos del muro del tablón), publicada en Play; el **10** es la 2.8.0; el **11**, la 2.8.1, publicada; el **12**, la 2.9.0 (con R8; la 2.8.2 no se llegó a subir), publicada.
 
