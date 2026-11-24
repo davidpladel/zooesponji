@@ -1,15 +1,22 @@
 // Saca capturas 1920x1080 del juego para la ficha de Play (necesita `npm run dev`).
+// Uso (desde game/store):  node shots.mjs [en]   Sin argumento, en español (out/<toma>.png); con «en», el juego en
+// inglés (out/en-<toma>.png), para que la tienda y el libro de las fichas en inglés y árabe no salgan en español.
 import { chromium } from '@playwright/test';
 import fs from 'node:fs';
 const OUT = new URL('./out/', import.meta.url).pathname.replace(/^\/(\w:)/, '$1');
 fs.mkdirSync(OUT, { recursive: true });
 const browser = await chromium.launch({ channel: 'chrome' });
-const ctx = await browser.newContext({ viewport: { width: 1920, height: 1080 }, locale: 'es-ES' });
+const EN = process.argv[2] === 'en';
+const ctx = await browser.newContext({ viewport: { width: 1920, height: 1080 }, locale: EN ? 'en-US' : 'es-ES' });
 const page = await ctx.newPage();
 const zoo = (fn, arg) => page.evaluate(fn, arg);
 const wait = (ms) => page.waitForTimeout(ms);
 const box = () => page.locator('canvas').boundingBox();
-const shot = (n) => page.screenshot({ path: OUT + n + '.png' });
+// «node shots.mjs en sin-cerdo»: compra antes los cerdos para que no salgan a la venta en la tienda (ficha árabe,
+// que no los nombra). Las tomas salen como out/ar-<toma>.png.
+const SIN_CERDO = process.argv[3] === 'sin-cerdo';
+const PREFIJO = SIN_CERDO ? 'ar-' : EN ? 'en-' : '';
+const shot = (n) => page.screenshot({ path: OUT + PREFIJO + n + '.png' });
 const scene = (n, t = 90000) => page.waitForFunction((n) => window.__ZOO__?.activeScenes().includes(n), n, { timeout: t });
 const noScene = (n) => page.waitForFunction((n) => !window.__ZOO__?.activeScenes().includes(n), n);
 
@@ -41,7 +48,7 @@ async function drag(food) {
   await page.mouse.up();
 }
 
-await page.goto('http://localhost:5173/');
+await page.goto('http://localhost:5173/?sin-tutorial', { waitUntil: 'domcontentloaded', timeout: 120000 });
 await page.evaluate(() => localStorage.clear());
 await page.reload();
 await scene('Title');
@@ -76,6 +83,12 @@ await wait(2500);
 await closeFeed();
 await burst('panteras');
 
+if (SIN_CERDO) {
+  await zoo(async () => {
+    await window.__ZOO__.addCoins(1000);
+    for (const i of ['cerdos', 'extra-cerdos', 'extra-cerdos', 'extra-cerdos', 'extra-cerdos']) await window.__ZOO__.buy(i);
+  });
+}
 const door = await zoo(() => window.__ZOO__.shopDoorTile());
 await zoo(([x, y]) => window.__ZOO__.goToTile(x, y), [door.x, door.y]);
 await scene('Shop');

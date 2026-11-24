@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { STARTING_COINS, adReward, addCoins, penCount, buyExtra, initialState, isPenOpen, purchase, openPens, type GameState } from '../../src/core/economy';
+import { STARTING_COINS, adReward, boughtAnimal, addCoins, penCount, buyExtra, initialState, isPenOpen, purchase, openPens, type GameState } from '../../src/core/economy';
 import { PENS } from '../../src/data/pens';
 import { SHOP_ITEMS } from '../../src/data/shop';
 
@@ -223,5 +223,21 @@ describe('la clínica', () => {
 
   it('no cambia las monedas del principio', () => {
     expect(STARTING_COINS).toBe(10);
+  });
+});
+
+describe('boughtAnimal', () => {
+  it('partida nueva: no ha comprado ningún animal', () => {
+    expect(boughtAnimal(initialState())).toBe(false);
+  });
+
+  it('Luna y la clínica no cuentan como animal', () => {
+    expect(boughtAnimal({ ...initialState(), luna: true, clinic: true })).toBe(false);
+  });
+
+  it('un recinto con un animal más de los iniciales: sí', () => {
+    const state = initialState();
+    expect(boughtAnimal({ ...state, counts: { ...state.counts, cabra: state.counts.cabra + 1 } })).toBe(true);
+    expect(boughtAnimal({ ...state, counts: { ...state.counts, pantera: 1 } })).toBe(true);
   });
 });

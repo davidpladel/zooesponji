@@ -12,6 +12,8 @@ dependencies {
     implementation project(':capacitor-community-admob')
     implementation project(':capacitor-app')
     implementation project(':capacitor-preferences')
+    implementation project(':capawesome-capacitor-app-review')
+    implementation project(':capawesome-capacitor-app-update')
 
 }
 

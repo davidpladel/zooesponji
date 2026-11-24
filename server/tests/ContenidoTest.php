@@ -100,6 +100,50 @@ final class ContenidoTest extends TestCase
         Contenido::validar($romper(self::ejemplo()));
     }
 
+    public function testActualizacionValidaAusenteYPorDefecto(): void
+    {
+        self::assertNull(Contenido::validar(self::ejemplo())['actualizacion']);
+        $d = self::ejemplo();
+        $d['actualizacion'] = ['minima' => 12, 'ultima' => 14, 'grande' => true, 'otra' => 'x'];
+        self::assertSame(['minima' => 12, 'ultima' => 14, 'grande' => true], Contenido::validar($d)['actualizacion']);
+        $d['actualizacion'] = ['minima' => 0, 'ultima' => 0];
+        self::assertSame(['minima' => 0, 'ultima' => 0, 'grande' => false], Contenido::validar($d)['actualizacion']);
+        $d['actualizacion'] = null;
+        self::assertNull(Contenido::validar($d)['actualizacion']);
+    }
+
+    /** @return iterable<string, array{mixed}> */
+    public static function actualizacionRota(): iterable
+    {
+        yield 'minima negativa' => [['minima' => -1, 'ultima' => 14]];
+        yield 'ultima menor que minima' => [['minima' => 15, 'ultima' => 14]];
+        yield 'ultima texto' => [['minima' => 12, 'ultima' => '14']];
+        yield 'decimal' => [['minima' => 12, 'ultima' => 14.5]];
+        yield 'grande no booleano' => [['minima' => 12, 'ultima' => 14, 'grande' => 1]];
+        yield 'falta ultima' => [['minima' => 12]];
+        yield 'falta minima' => [['ultima' => 14]];
+        yield 'no es objeto' => ['hola'];
+        yield 'lista' => [[12, 14]];
+    }
+
+    #[DataProvider('actualizacionRota')]
+    public function testRechazaActualizacionMal(mixed $actualizacion): void
+    {
+        $d = self::ejemplo();
+        $d['actualizacion'] = $actualizacion;
+        $this->expectException(InvalidArgumentException::class);
+        Contenido::validar($d);
+    }
+
+    public function testArchivoRotoNoDejaAvisoDeActualizacion(): void
+    {
+        $ruta = $this->dir . '/comunidad.json';
+        file_put_contents($ruta, json_encode(self::ejemplo() + ['actualizacion' => ['minima' => 12, 'ultima' => 14]]));
+        self::assertNotNull(Contenido::leer($ruta)['actualizacion']);
+        file_put_contents($ruta, '{ esto no es json');
+        self::assertNull(Contenido::leer($ruta)['actualizacion']);
+    }
+
     public function testAbiertaIncluyeLosDosDias(): void
     {
         $v = Contenido::validar(self::ejemplo())['votacion'];

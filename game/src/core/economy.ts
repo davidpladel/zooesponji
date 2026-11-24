@@ -28,6 +28,12 @@ export function initialCounts(): Record<PenId, number> {
   return counts;
 }
 
+/** Ha comprado algún animal: algún recinto tiene más de los iniciales. Luna y la clínica no cuentan. */
+export function boughtAnimal(state: GameState): boolean {
+  const initial = initialCounts();
+  return PEN_IDS.some((id) => state.counts[id] > initial[id]);
+}
+
 /**
  * Lo más barato que se puede comprar en la tienda nada más empezar: otro residente de un recinto abierto, un
  * recinto nuevo o Luna.

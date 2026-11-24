@@ -28,6 +28,8 @@ export const CATALOG = {
   anuncio: ['anuncio-ofrece', 'anuncio-acepta', 'anuncio-no', 'anuncio-visto', 'anuncio-cortado', 'anuncio-fallo', 'anuncio-vacio', 'anuncio-segundos'],
   tablon: ['tablon-abre', 'tablon-aviso', 'tablon-vota', 'tablon-qr', 'tablon-sin-red', 'tablon-aviso-ganadora', 'tablon-pestana', 'tablon-pagina'],
   tutorial: ['tutorial-ofrece', 'tutorial-aprende', 'tutorial-salta', 'tutorial-menu', 'tutorial-paso', 'tutorial-fin', 'tutorial-deja', 'tutorial-prepara'],
+  actualizacion: ['actualizacion-ofrece', 'actualizacion-acepta', 'actualizacion-luego', 'actualizacion-obliga', 'actualizacion-fallo'],
+  valoracion: ['valoracion-solicitada', 'valoracion-fallo'],
   tiene: ['tiene-recinto', 'tiene-animal', 'tiene-extra', 'tiene-saldo', 'tiene-paginas', 'tiene-ajuste'],
   alcance: [
     'dia-animal', 'semana-animal', 'vida-animal',

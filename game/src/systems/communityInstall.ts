@@ -21,7 +21,7 @@ export async function startCommunity(baseUrl: string): Promise<Community> {
 /** Sin `VITE_COMMUNITY_URL` no hay tablón. No espera a la red: el juego arranca igual. Nunca lanza. */
 export async function installCommunity(): Promise<void> {
   try {
-    const url = communityUrl(import.meta.env as { VITE_COMMUNITY_URL?: string });
+    const url = communityUrl(import.meta.env as { VITE_COMMUNITY_URL?: string; DEV?: boolean });
     if (!url) return;
     void startCommunity(url).catch(() => setCommunity(null));
   } catch {

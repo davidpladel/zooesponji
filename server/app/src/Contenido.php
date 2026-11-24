@@ -10,7 +10,7 @@ final class Contenido
 {
     public const ID = '/^[a-z0-9-]{1,40}$/';
     public const DIBUJO = '/^[a-z0-9-]{1,40}\.png$/';
-    public const VACIO = ['votacion' => null, 'muro' => []];
+    public const VACIO = ['votacion' => null, 'muro' => [], 'actualizacion' => null];
 
     private const MAX_BYTES = 65536;
     private const MAX_MURO = 30;
@@ -30,7 +30,11 @@ final class Contenido
         if (!is_array($entradas) || !array_is_list($entradas) || count($entradas) > self::MAX_MURO) {
             throw new InvalidArgumentException('muro');
         }
-        return ['votacion' => $votacion, 'muro' => array_map(self::entrada(...), $entradas)];
+        return [
+            'votacion' => $votacion,
+            'muro' => array_map(self::entrada(...), $entradas),
+            'actualizacion' => self::actualizacion($datos['actualizacion'] ?? null),
+        ];
     }
 
     /** Abierta entre `abre` y `cierra`, los dos días incluidos. */
@@ -54,7 +58,7 @@ final class Contenido
             return $bueno;
         }
         $anterior = self::intentar($copia);
-        return $anterior === null ? self::VACIO : ['votacion' => null, 'muro' => $anterior['muro']];
+        return $anterior === null ? self::VACIO : ['votacion' => null, 'muro' => $anterior['muro'], 'actualizacion' => null];
     }
 
     private static function intentar(string $archivo): ?array
@@ -71,6 +75,24 @@ final class Contenido
         } catch (\Throwable) {
             return null;
         }
+    }
+
+    /**
+     * Aviso para actualizar el juego: `versionCode` enteros >= 0, `ultima >= minima`, `grande` booleano (por defecto false).
+     * Ausente o null = sin aviso.
+     *
+     * @return array{minima: int, ultima: int, grande: bool}|null
+     */
+    private static function actualizacion(mixed $a): ?array
+    {
+        if ($a === null) {
+            return null;
+        }
+        if (!is_array($a) || array_is_list($a) || !is_int($a['minima'] ?? null) || !is_int($a['ultima'] ?? null)
+            || $a['minima'] < 0 || $a['ultima'] < $a['minima'] || (array_key_exists('grande', $a) && !is_bool($a['grande']))) {
+            throw new InvalidArgumentException('actualizacion');
+        }
+        return ['minima' => $a['minima'], 'ultima' => $a['ultima'], 'grande' => $a['grande'] ?? false];
     }
 
     private static function votacion(mixed $v): array

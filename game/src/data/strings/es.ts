@@ -148,6 +148,7 @@ export const STRINGS_ES = {
   'board.lastDay': '¡último día!',
   'board.vote': 'Votar',
   'board.goVote': '¡A votar!',
+  'update.title': '¡Hay versión nueva!',
   'board.change': 'Cambiar',
   'board.winner': '¡Ha ganado!',
   'board.see': '¡A verla!',

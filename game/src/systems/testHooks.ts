@@ -1,3 +1,4 @@
+import type { StringKey } from '../data/strings';
 import type { LessonId } from '../core/tutorial';
 import type * as Phaser from 'phaser';
 import { getArt } from '../art/art';
@@ -29,8 +30,14 @@ import type { TutorialScene } from '../scenes/TutorialScene';
 import type { WorldScene } from '../scenes/WorldScene';
 import { getAds } from './ads';
 import { startAds } from './adsInstall';
+import { getReview } from './review';
+import { startReview } from './reviewInstall';
 import { getCommunity } from './community';
 import { startCommunity } from './communityInstall';
+import { createFakePlayUpdater, type PlayUpdateResult } from './appUpdate';
+import { getUpdateNotice, startUpdateNotice } from './updateNoticeInstall';
+import type { UpdateMemory } from '../core/updatePolicy';
+import type { UpdateNoticeScene } from '../scenes/UpdateNoticeScene';
 import { bus, type GameEvents } from './events';
 import { sfx } from './audio';
 import { getLanguage, isLanguage } from './language';
@@ -147,6 +154,14 @@ export interface ZooTestApi {
   shopDoorScreenPos(): Vec | null;
   shopKeeperScreenPos(): Vec | null;
   shopBuyBubblePos(): Vec | null;
+  shopBuyBubbleRect(): { x: number; y: number; w: number; h: number } | null;
+  shopBubbleRect(): { x: number; y: number; w: number; h: number } | null;
+  shopBubbleAbove(): boolean;
+  /** El tendero dice el mensaje `key` (con `params`), para revisar todos sus mensajes. */
+  shopSay(key: string, params?: Record<string, number>): void;
+  hudToastRect(): { x: number; y: number; w: number; h: number } | null;
+  /** Lanza un aviso normal de arriba (sin colocación especial). */
+  emitToast(text: string): void;
   shopHintVisible(): boolean;
   shopActiveItem(): string | null;
   shopBookPos(): Vec | null;
@@ -196,6 +211,16 @@ export interface ZooTestApi {
   lookAtTile(x: number, y: number): void;
   spawnTile(): { x: number; y: number } | null;
   /** Monta la publicidad con un proveedor falso. `outcome`: qué pasa al enseñar el anuncio; `ready`: si hay anuncio que cargar. */
+  /** Monta la valoración con un Play falso: `ok` termina en seguida, `fallo` rechaza, `colgada` no contesta nunca. */
+  reviewFake(result: 'ok' | 'fallo' | 'colgada', playSeconds?: number): Promise<void>;
+  /** Suma segundos de juego a la valoración. */
+  reviewAdvance(seconds: number): void;
+  /** Marca el aviso del tutorial como ya ofrecido (como si se hubiera saltado). */
+  tutorialOffered(): Promise<void>;
+  /** Veces que se ha llamado al Play falso. */
+  reviewCalls(): number;
+  /** La tarjeta (falsa) está abierta. */
+  reviewOpen(): boolean;
   adsFake(outcome: 'visto' | 'cortado' | 'fallo', ready?: boolean): Promise<void>;
   /** Hace pasar segundos de juego para la publicidad y espera a que terminen las cargas. */
   adsAdvance(seconds: number): Promise<void>;
@@ -213,6 +238,16 @@ export interface ZooTestApi {
   /** Monta el tablón contra un servidor (en las pruebas, uno falso con `page.route`). */
   communityStart(baseUrl: string): Promise<void>;
   communityPhase(): string | null;
+  /** Vuelve a pedir el estado al servidor (como hace el tablón), sin reiniciar nada más. */
+  communityRefresh(): Promise<void>;
+  /** Aviso de actualizar con un Play falso (en el navegador no hay Play). `results`: lo que devuelve cada intento (el último se repite). */
+  updateFake(o?: { available?: boolean; allowed?: boolean; versionCode?: number; results?: PlayUpdateResult[]; today?: string }): void;
+  /** Cambia el día del móvil que ve el aviso (`AAAA-MM-DD`). */
+  updateSetToday(day: string): void;
+  updateCheck(): Promise<void>;
+  updateState(): { mode: 'suave' | 'bloqueo' | null; memory: UpdateMemory | null; immediate: PlayUpdateResult[] };
+  updatePos(key: 'yes' | 'no' | 'exit'): Vec | null;
+  updateTitleFit(): { width: number; max: number; size: number } | null;
   boardTile(): { x: number; y: number } | null;
   boardScreenPos(): Vec | null;
   boardSparkling(): boolean;
@@ -238,6 +273,10 @@ declare global {
 }
 
 /** Solo en desarrollo: API para Playwright y depuración. Nunca en la build de producción. */
+/** Play falso del aviso de actualizar: día que ve y lo que ha devuelto cada intento. */
+let updateToday = '2026-11-20';
+const updateCalls: PlayUpdateResult[] = [];
+
 export function installTestHooks(game: Phaser.Game, platform: Platform): void {
   if (!import.meta.env.DEV) return;
 
@@ -248,11 +287,13 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
     'animal-tapped', 'feed-opened', 'animal-fed', 'food-missed', 'feed-closed', 'pen-near', 'locked-tap', 'shop-locked',
     'control-used', 'shop-opened', 'shop-look', 'shop-denied', 'purchase', 'shop-closed', 'book-opened', 'book-page-shown',
     'book-index', 'book-closed', 'legal-opened', 'quit-asked', 'quit-answered',
-    'ad-offered', 'ad-accepted', 'ad-declined', 'ad-watched', 'ad-cut', 'ad-failed', 'ad-empty', 'ad-closed',
-    'board-opened', 'board-voted', 'board-qr', 'board-offline', 'poll-notice',
+    'review-requested', 'review-failed', 'ad-offered', 'ad-accepted', 'ad-declined', 'ad-watched', 'ad-cut', 'ad-failed', 'ad-empty', 'ad-closed',
+    'board-opened', 'board-voted', 'board-qr', 'board-offline', 'poll-notice', 'poll-winner-notice',
+    'update-offered', 'update-accepted', 'update-later', 'update-forced', 'update-failed',
     'tutorial-offered', 'tutorial-answered', 'tutorial-started', 'tutorial-step', 'tutorial-ended', 'tutorial-prepared',
   ];
   const busLog: string[] = [];
+  let reviewCalls = 0;
   for (const name of logged) bus.on(name, () => busLog.push(name));
 
   window.__GAME__ = game;
@@ -296,6 +337,8 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
     hudClinicButtonPos: () => activeScene<HudScene>('Hud')?.clinicButtonPos() ?? null,
     hudShopEdgeVisible: () => activeScene<HudScene>('Hud')?.shopEdgeVisible() ?? false,
     hudToast: () => activeScene<HudScene>('Hud')?.toastShown() ?? null,
+    hudToastRect: () => activeScene<HudScene>('Hud')?.toastRect() ?? null,
+    emitToast: (text) => bus.emit('toast', { text }),
     shopTrailTiles: () => activeScene<WorldScene>('World')?.shopTrailTiles() ?? [],
     tutorialTrailTiles: () => activeScene<WorldScene>('World')?.residentTrailTiles() ?? [],
     shopRoute: () => activeScene<WorldScene>('World')?.shopRoute() ?? [],
@@ -356,6 +399,10 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
     shopDoorScreenPos: () => activeScene<ShopScene>('Shop')?.doorScreenPos() ?? null,
     shopKeeperScreenPos: () => activeScene<ShopScene>('Shop')?.keeperScreenPos() ?? null,
     shopBuyBubblePos: () => activeScene<ShopScene>('Shop')?.buyBubblePos() ?? null,
+    shopBuyBubbleRect: () => activeScene<ShopScene>('Shop')?.buyBubbleRect() ?? null,
+    shopBubbleRect: () => activeScene<ShopScene>('Shop')?.keeperBubbleRect() ?? null,
+    shopBubbleAbove: () => activeScene<ShopScene>('Shop')?.keeperBubbleAbove() ?? false,
+    shopSay: (key, params) => activeScene<ShopScene>('Shop')?.keeperSay(key as StringKey, params),
     shopHintVisible: () => activeScene<ShopScene>('Shop')?.hintVisible() ?? false,
     shopActiveItem: () => activeScene<ShopScene>('Shop')?.activeItem() ?? null,
     shopBookPos: () => activeScene<ShopScene>('Shop')?.bookScreenPos() ?? null,
@@ -405,6 +452,27 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
     lookAtTile: (x, y) => activeScene<WorldScene>('World')?.lookAtTile({ x, y }),
     shopDoorTile: () => activeScene<WorldScene>('World')?.shopDoorTile() ?? null,
     spawnTile: () => activeScene<WorldScene>('World')?.spawnTile() ?? null,
+    reviewFake: async (result, playSeconds) => {
+      reviewCalls = 0;
+      await startReview(
+        game,
+        {
+          request: () => {
+            reviewCalls++;
+            if (result === 'fallo') return Promise.reject(new Error('Play falso: fallo'));
+            return result === 'colgada' ? new Promise<void>(() => undefined) : new Promise<void>((resolve) => setTimeout(resolve, 300));
+          },
+        },
+        { playSeconds },
+      );
+    },
+    reviewAdvance: (seconds) => {
+      const review = getReview();
+      for (let i = 0; i < seconds; i++) review?.tick(1);
+    },
+    reviewCalls: () => reviewCalls,
+    tutorialOffered: () => getSession().markLessonOffered('inicio'),
+    reviewOpen: () => getReview()?.open ?? false,
     adsFake: async (outcome, ready = true) => {
       await startAds(
         game,
@@ -433,8 +501,12 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
     adOfferAmount: () => activeScene<AdOfferScene>('AdOffer')?.offeredAmount() ?? null,
     adOfferCountdown: () => activeScene<AdOfferScene>('AdOffer')?.countdownLeft() ?? null,
     busLog: () => [...busLog],
+    communityRefresh: async () => {
+      await getCommunity()?.refresh();
+    },
     communityStart: async (baseUrl) => {
       PollNoticeScene.shownFor = null;
+      PollNoticeScene.kindFor = null;
       // Como un jugador que ya jugó otro día: el aviso no sale el primer día de juego.
       try {
         if (!window.localStorage.getItem(COMMUNITY_KEY)) window.localStorage.setItem(COMMUNITY_KEY, JSON.stringify({ firstDay: '2000-01-01' }));
@@ -444,6 +516,24 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
       await startCommunity(baseUrl);
     },
     communityPhase: () => getCommunity()?.phase() ?? null,
+    updateFake: (o = {}) => {
+      updateToday = o.today ?? '2026-11-20';
+      updateCalls.length = 0;
+      startUpdateNotice(game, createFakePlayUpdater(o, (result) => updateCalls.push(result)), { today: () => updateToday });
+    },
+    updateSetToday: (day) => { updateToday = day; },
+    updateCheck: async () => { await getUpdateNotice()?.check(); },
+    updateState: () => ({
+      mode: activeScene<UpdateNoticeScene>('UpdateNotice')?.mode ?? null,
+      memory: getUpdateNotice()?.memory ?? null,
+      immediate: [...updateCalls],
+    }),
+    updateTitleFit: () => activeScene<UpdateNoticeScene>('UpdateNotice')?.titleFit() ?? null,
+    updatePos: (key) => {
+      const scene = activeScene<UpdateNoticeScene>('UpdateNotice');
+      if (!scene) return null;
+      return key === 'yes' ? scene.yesPos() : key === 'no' ? scene.noPos() : scene.exitPos();
+    },
     boardTile: () => game.scene.getScene<WorldScene>('World').boardTile(),
     boardScreenPos: () => activeScene<WorldScene>('World')?.boardScreenPos() ?? null,
     boardSparkling: () => game.scene.getScene<WorldScene>('World').boardSparkling(),

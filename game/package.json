@@ -1,7 +1,7 @@
 {
   "name": "zooesponji",
   "private": true,
-  "version": "2.10.0",
+  "version": "2.11.0",
   "type": "module",
   "license": "SEE LICENSE IN ../LICENSE",
   "scripts": {
@@ -39,6 +39,8 @@
     "@capacitor/app": "^8.1.2",
     "@capacitor/core": "^8.6.0",
     "@capacitor/preferences": "^8.0.1",
+    "@capawesome/capacitor-app-review": "^8.1.0",
+    "@capawesome/capacitor-app-update": "^8.1.1",
     "phaser": "4.2.1"
   },
   "devDependencies": {

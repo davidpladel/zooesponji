@@ -8,6 +8,7 @@ import { Ads, setAds, type AdProvider } from './ads';
 import { sfx } from './audio';
 import { createStore } from './createStore';
 import { bus } from './events';
+import { playing } from './playing';
 import { getSession } from './session';
 
 /** Avisos del complemento para cada hueco: bonificado en la tienda, intersticial bonificado en la pausa. */
@@ -49,11 +50,6 @@ function capacitorAdMob(): AdMobLike {
 }
 
 let timer: ReturnType<typeof setInterval> | null = null;
-
-/** Tiempo de juego: el juego en pantalla y la partida empezada (ya se ha salido de la portada). */
-function playing(game: Phaser.Game): boolean {
-  return !document.hidden && (game.scene.isActive('World') || game.scene.isPaused('World'));
-}
 
 /** Monta la publicidad con un proveedor dado y arranca el reloj de juego. Las pruebas pasan uno falso. */
 export async function startAds(game: Phaser.Game, provider: AdProvider, slots: readonly AdSlot[]): Promise<Ads> {

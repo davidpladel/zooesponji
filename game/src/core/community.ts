@@ -1,4 +1,5 @@
 import { LANGUAGES, type Language } from '../systems/language';
+import { parseUpdateKey, type UpdateKey } from './updatePolicy';
 
 /**
  * El tablón de la comunidad: lo que dice el servidor (`estado.php`) y lo que recuerda el aparato.
@@ -40,6 +41,8 @@ export interface CommunityStatus {
   ideas: number;
   votacion: Poll | null;
   muro: WallEntry[];
+  /** Aviso para actualizar el juego; `null` si no viene o viene mal (sin aviso). */
+  actualizacion: UpdateKey | null;
 }
 
 export const MAX_TITLE = 30;
@@ -121,7 +124,7 @@ export function parseStatus(raw: unknown): CommunityStatus | null {
   const ideas = raw.ideas;
   if (typeof ideas !== 'number' || !Number.isInteger(ideas) || ideas < 0) return null;
   const muro = raw.muro.slice(0, MAX_WALL).map(readWallEntry).filter((e): e is WallEntry => e !== null);
-  return { hoy: raw.hoy, ideas, votacion: readPoll(raw.votacion), muro };
+  return { hoy: raw.hoy, ideas, votacion: readPoll(raw.votacion), muro, actualizacion: parseUpdateKey(raw.actualizacion) };
 }
 
 // --- Memoria del aparato ---
@@ -224,15 +227,27 @@ export function shouldNotifyWinner(status: CommunityStatus, memory: CommunityMem
   return poll !== null && poll.ganadora !== null && memory.winnerSeen !== poll.id && memory.winnerNoticed !== poll.id;
 }
 
+/**
+ * Qué panel toca enseñar: el de la ganadora va por delante del de votar. `null` si no toca ninguno. Nunca «votar» con
+ * la votación cerrada (fallo de la 2.11.0: al reiniciar el panel por un giro salía «A votar» sin votación abierta).
+ */
+export function pollNoticeKind(status: CommunityStatus, memory: CommunityMemory, today: string): 'winner' | 'vote' | null {
+  if (shouldNotifyWinner(status, memory, today)) return 'winner';
+  if (shouldNotify(status, memory, today)) return 'vote';
+  return null;
+}
+
 export function localized(text: Localized, lang: Language): string {
   // Las traducciones llegan del servidor y pueden cambiar sin sacar versión: si falta un idioma, inglés.
   return text[lang] ?? text.en;
 }
 
 /** La dirección del servidor de comunidad. Solo HTTPS (o localhost para probar). Sin barra final. */
-export function communityUrl(env: { VITE_COMMUNITY_URL?: string }): string | null {
+/** Dirección del servidor del tablón. Con `DEV` (solo `npm run dev`) admite también un servidor de la red de casa por http. */
+export function communityUrl(env: { VITE_COMMUNITY_URL?: string; DEV?: boolean }): string | null {
   const url = (env.VITE_COMMUNITY_URL ?? '').trim().replace(/\/+$/, '');
   if (/^https:\/\/[a-z0-9.-]+(:\d+)?$/i.test(url)) return url;
   if (/^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(url)) return url;
+  if (env.DEV === true && /^http:\/\/(192\.168|10\.\d{1,3}|172\.(1[6-9]|2\d|3[01]))\.\d{1,3}\.\d{1,3}(:\d+)?$/.test(url)) return url;
   return null;
 }

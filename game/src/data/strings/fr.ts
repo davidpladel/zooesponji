@@ -134,6 +134,7 @@ export const STRINGS_FR: Record<StringKey, string> = {
   'board.lastDay': 'dernier jour !',
   'board.vote': 'Voter',
   'board.goVote': 'On vote !',
+  'update.title': 'Nouvelle version disponible !',
   'board.change': 'Changer',
   'board.see': 'Voir !',
   'board.nextSoon': 'De nouvelles idées à voter arrivent bientôt',

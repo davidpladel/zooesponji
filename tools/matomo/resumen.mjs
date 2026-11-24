@@ -184,5 +184,20 @@ out.push('## Anuncios', '', 'Solo Android. El dinero real no sale aquí: los ing
   ['Monedas que tenía', 'Paneles', 'Rechazados (X)'],
   adByBalance(index, AD_BALANCES).map((row) => [row.bucket, row.offered, share(row.declined, row.offered)]),
 ), '');
+
+// Aviso para actualizar (spec 2026-11-19-actualizacion-obligatoria). Solo Android, desde la 2.11.0.
+const UPDATE_KINDS = ['pequena', 'grande', 'rota'];
+out.push('## Avisos para actualizar', '', 'Solo Android, desde la 2.11.0. «Obligadas» es la ventana de Play que no deja seguir (la grande a la tercera, o la rota); «Fallos», cuando Play cancela o falla. Muchos fallos con pocas aceptadas: la gente se queda atascada.', '', table(
+  ['Tipo', 'Avisos', 'Actualizar', '«Luego»', 'Obligadas', 'Fallos'],
+  UPDATE_KINDS.map((kind) => {
+    const offered = n('actualizacion-ofrece', kind);
+    return [kind, offered, share(n('actualizacion-acepta', kind), offered), share(n('actualizacion-luego', kind), offered), n('actualizacion-obliga', kind), n('actualizacion-fallo', kind)];
+  }),
+), '');
+// Valoración en Play (spec 2026-11-21-valoracion-en-play). Solo Android, desde la 2.11.0.
+out.push('## Valoración en Play', '', 'Solo Android, desde la 2.11.0. «Solicitadas» son las veces que el juego llamó a la API de reseñas de Google; la API no dice si salió la tarjeta ni si se valoró (eso se mira en Play Console). Comparar las solicitadas del intento 1 con los jugadores nuevos da el alcance real (estimado: en torno al 30 %).', '', table(
+  ['Intento', 'Solicitadas', 'Fallos'],
+  ['1', '2'].map((attempt) => [attempt, n('valoracion-solicitada', attempt), n('valoracion-fallo', attempt)]),
+), '');
 writeFileSync(join(DATA, 'resumen.md'), `${out.join('\n')}\n`);
 console.log('Resumen escrito en tools/matomo/data/resumen.md');

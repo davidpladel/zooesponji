@@ -38,6 +38,20 @@ final class EstadoTest extends TestCase
         self::assertCount(1, $estado['muro']);
     }
 
+    public function testActualizacionSoloSaleSiExiste(): void
+    {
+        $almacen = AlmacenTest::nuevo();
+        $sin = Estado::construir(Contenido::validar(ContenidoTest::ejemplo()), $almacen, '2026-11-03');
+        self::assertArrayNotHasKey('actualizacion', $sin);
+        self::assertSame(['hoy', 'ideas', 'votacion', 'muro'], array_keys($sin));
+        $d = ContenidoTest::ejemplo();
+        $d['actualizacion'] = ['minima' => 12, 'ultima' => 14, 'grande' => true];
+        $con = Estado::construir(Contenido::validar($d), $almacen, '2026-11-03');
+        self::assertSame(['minima' => 12, 'ultima' => 14, 'grande' => true], $con['actualizacion']);
+        self::assertSame($sin['muro'], $con['muro']);
+        self::assertArrayNotHasKey('actualizacion', Estado::construir(Contenido::VACIO, $almacen, '2026-11-03'));
+    }
+
     public function testNoEnsenaTotales(): void
     {
         $almacen = AlmacenTest::nuevo();

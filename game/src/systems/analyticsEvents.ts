@@ -1,7 +1,7 @@
 // game/src/systems/analyticsEvents.ts
 import { dayKey, type ActivityFlag } from '../core/activity';
 import { isBookComplete } from '../core/book';
-import { STARTING_COINS, initialCounts, openPens, type GameState } from '../core/economy';
+import { STARTING_COINS, boughtAnimal, openPens, type GameState } from '../core/economy';
 import {
   animalsBucket, bookBucket, coinsBucket, feedsBucket, pagesBucket, part, reachAction, residentName,
   type ActionOf, type Category, type ReachKind, type Step,
@@ -43,8 +43,7 @@ function zooComplete(state: GameState): boolean {
 
 /** Pasos del embudo que una partida ya empezada tiene dados: se apuntan sin avisar, para no falsear tiempos. */
 export function knownSteps(state: GameState, book: BookProgress): Step[] {
-  const initial = initialCounts();
-  const bought = PEN_IDS.some((id) => state.counts[id] > initial[id]);
+  const bought = boughtAnimal(state);
   const steps: Step[] = [];
   // Desde el 2026-11-08 se empieza con STARTING_COINS: tener otras monedas (más o menos) es que ya se ha jugado.
   const played = state.coins !== STARTING_COINS || bought || state.luna || state.clinic;
@@ -270,6 +269,15 @@ export class GameTracker implements AnalyticsHooks {
     on('poll-winner-notice', ({ poll }) => this.send('tablon', 'tablon-aviso-ganadora', poll));
     on('board-zone', ({ zone }) => this.send('tablon', 'tablon-pestana', zone));
     on('board-page', ({ page }) => this.send('tablon', 'tablon-pagina', undefined, page));
+
+    // Aviso de actualizar: el tipo (pequena, grande o rota) en el nombre; en «luego», las veces aplazadas ya.
+    on('update-offered', ({ kind }) => this.send('actualizacion', 'actualizacion-ofrece', kind));
+    on('update-accepted', ({ kind }) => this.send('actualizacion', 'actualizacion-acepta', kind));
+    on('update-later', ({ kind, deferred }) => this.send('actualizacion', 'actualizacion-luego', kind, deferred));
+    on('update-forced', ({ kind }) => this.send('actualizacion', 'actualizacion-obliga', kind));
+    on('update-failed', ({ kind }) => this.send('actualizacion', 'actualizacion-fallo', kind));
+    on('review-requested', ({ attempt }) => this.send('valoracion', 'valoracion-solicitada', String(attempt)));
+    on('review-failed', ({ attempt }) => this.send('valoracion', 'valoracion-fallo', String(attempt)));
 
     try {
       const saved = parseReach(await store.get(REACH_KEY));

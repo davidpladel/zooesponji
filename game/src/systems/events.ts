@@ -1,6 +1,7 @@
 import type { AdSlot } from '../core/adPacing';
 import type { Settings } from '../core/save';
 import type { LessonId } from '../core/tutorial';
+import type { UpdateKind } from '../core/updatePolicy';
 import type { Reaction } from '../data/animals';
 import type { FoodId } from '../data/foods';
 import type { PenId } from '../data/pens';
@@ -137,7 +138,9 @@ export interface GameEvents {
   /** Las reglas dejaban ofrecerlo y no había anuncio listo. */
   'ad-empty': { slot: AdSlot };
   /** Aviso arriba en el centro; `icon: 'shop'` añade la tiendita pixelada detrás del texto. */
-  toast: { text: string; icon?: 'shop' };
+  /** `place: 'right'` lo pone arriba a la derecha (no tapa la tienda); `ms`: cuánto se ve antes de irse (1800 por defecto);
+   * `avoid`: cajas que no debe pisar (el botón de comprar y el globo del tendero). */
+  toast: { text: string; icon?: 'shop'; place?: 'right'; ms?: number; avoid?: { x: number; y: number; w: number; h: number }[] };
   /** Comunidad: llegó (o falló) la respuesta del servidor; el tablón y los carteles se ponen al día. */
   'community-updated': Record<string, never>;
   /** Se abre el tablón. `phase`: la de la votación al abrir. */
@@ -156,6 +159,20 @@ export interface GameEvents {
   'board-zone': { zone: string };
   /** Se pasa de página en el muro. `page`: la nueva, desde 1. */
   'board-page': { page: number };
+  /** Sale el aviso para actualizar (la ventana suave o la pantalla de bloqueo). */
+  'update-offered': { kind: UpdateKind };
+  /** Pulsa «actualizar» (en la ventana suave o en el bloqueo). */
+  'update-accepted': { kind: UpdateKind };
+  /** Pulsa «luego» o «atrás» en la ventana suave. `deferred`: veces aplazadas ya, contando esta. */
+  'update-later': { kind: UpdateKind; deferred: number };
+  /** Llega la actualización obligatoria (la grande a la tercera, o la rota). */
+  'update-forced': { kind: 'grande' | 'rota' };
+  /** Play cancela o falla la actualización. */
+  'update-failed': { kind: UpdateKind };
+  /** El juego llama a la API de reseñas de Play (no se sabe si salió la tarjeta ni si valoró). `attempt`: 1 o 2. */
+  'review-requested': { attempt: number };
+  /** La API de reseñas falla. El niño no ve nada. */
+  'review-failed': { attempt: number };
 }
 
 export const bus = new EventBus<GameEvents>();

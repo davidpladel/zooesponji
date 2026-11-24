@@ -66,7 +66,7 @@ async function snap(g: Game, accion: string, datos: Record<string, unknown>): Pr
   return file;
 }
 
-async function openGame(id: string, escenario: string | null): Promise<Game> {
+async function openGame(id: string, escenario: string | null, abrir: string | null = null): Promise<Game> {
   browser ??= await chromium.launch({ channel: process.env.CI ? undefined : 'chrome' });
   const old = games.get(id);
   if (old) await old.context.close();
@@ -82,10 +82,22 @@ async function openGame(id: string, escenario: string | null): Promise<Game> {
     }, [prepared.key, JSON.stringify(prepared.save)]);
   }
   const page = await context.newPage();
-  await page.goto(GAME_URL);
+  // `domcontentloaded`: en modo desarrollo el evento `load` tarda más de 30 s (cientos de módulos).
+  await page.goto(GAME_URL, { waitUntil: 'domcontentloaded', timeout: 90_000 });
   // En la versión construida no hay ganchos de prueba: se espera al lienzo y a que pase la carga.
   await page.waitForSelector('canvas', { timeout: 60_000 });
   await page.waitForTimeout(5000);
+  if (abrir === 'comida-malito') {
+    // Solo con el juego en modo desarrollo (IA_GAME_URL=http://localhost:5173/): usa los ganchos de prueba para
+    // dejar al niño ya en la pantalla de comida del cerdito malito (con el escenario `cuidados`), sin gastar sus
+    // 30 acciones en cruzar el zoo.
+    await page.waitForFunction(() => (window as unknown as { __ZOO__?: unknown }).__ZOO__ !== undefined, null, { timeout: 60_000 });
+    await page.waitForFunction(() => (window as unknown as { __ZOO__: { activeScenes(): string[] } }).__ZOO__.activeScenes().includes('Title'));
+    await page.mouse.click(SIZE.width / 2, SIZE.height * 0.62);
+    await page.waitForFunction(() => (window as unknown as { __ZOO__: { activeScenes(): string[] } }).__ZOO__.activeScenes().includes('World'));
+    await page.evaluate(() => (window as unknown as { __ZOO__: { openFeed(id: string): void } }).__ZOO__.openFeed('morrito'));
+    await page.waitForFunction(() => (window as unknown as { __ZOO__: { feedFoodsHome(): boolean } }).__ZOO__.feedFoodsHome());
+  }
   const g: Game = { id, dir, context, page, log: [] };
   games.set(id, g);
   return g;
@@ -157,7 +169,9 @@ const server = createServer(async (req, res) => {
     if (path === '/partida') {
       const escenario = body.escenario === undefined ? null : String(body.escenario);
       if (escenario !== null && !ESCENARIOS[escenario]) return { error: `escenario desconocido; hay: ${Object.keys(ESCENARIOS).join(', ')}` };
-      const g = await openGame(id, escenario);
+      const abrir = body.abrir === undefined ? null : String(body.abrir);
+      if (abrir !== null && abrir !== 'comida-malito') return { error: 'abrir desconocido; hay: comida-malito' };
+      const g = await openGame(id, escenario, abrir);
       return { captura: await snap(g, 'partida', {}) };
     }
     const g = games.get(id);

@@ -7,7 +7,7 @@ from urllib.parse import urlencode
 ROOT = Path(__file__).resolve().parents[1]
 HERE = Path(__file__).resolve().parent
 DATA = json.loads((HERE / 'dossiers.json').read_text(encoding='utf-8'))
-STAMP = '20261102b'
+STAMP = '20261116'
 REL = '/assets/prensa/' + STAMP
 OUT = ROOT / 'public' / REL.lstrip('/')
 SITE = 'https://www.zooesponji.com'

@@ -13,6 +13,7 @@ import { ENTRY_TARGET, approachPoint, hintTarget, onDoorMat, openInteriorGrid, p
 import { buildWalkGrid, type TiledMap } from '../core/tiledmap';
 import { MAPS } from '../config';
 import { t, type StringKey } from '../data/strings';
+import type { Rect } from '../core/bubbleLayout';
 import { getAds } from '../systems/ads';
 import { sfx } from '../systems/audio';
 import { getCommunity } from '../systems/community';
@@ -75,6 +76,7 @@ export class ShopScene extends Phaser.Scene {
   private cursors?: Phaser.Types.Input.Keyboard.CursorKeys;
   private wasd?: WasdKeys;
   private buyBubble: Phaser.GameObjects.Container | null = null;
+  private buyRect: Rect | null = null;
   private activeId: string | null = null;
   private restored: Vec | null = null;
   private entering = false;
@@ -433,6 +435,24 @@ export class ShopScene extends Phaser.Scene {
     return this.keeper.screen;
   }
 
+  buyBubbleRect(): Rect | null {
+    return this.buyRect;
+  }
+
+  keeperBubbleRect(): Rect | null {
+    return this.shopkeeper.bubbleRect();
+  }
+
+  /** ¿El globo del tendero va por encima del bocadillo de comprar? */
+  keeperBubbleAbove(): boolean {
+    return this.buyBubble === null || this.shopkeeper.bubbleDepth() > this.buyBubble.depth;
+  }
+
+  /** El tendero dice uno de sus mensajes (para las pruebas). */
+  keeperSay(key: StringKey, params?: Record<string, number>): void {
+    this.shopkeeper.say(t(key, params), 60_000);
+  }
+
   buyBubblePos(): Vec | null {
     return this.buyBubble ? { x: this.buyBubble.x, y: this.buyBubble.y } : null;
   }
@@ -616,6 +636,9 @@ export class ShopScene extends Phaser.Scene {
     this.tweens.add({ targets: bubble, scale: 1, duration: 200, ease: 'Back.Out' });
     this.tweens.add({ targets: bubble, y: y - 2 * s, duration: 600, yoyo: true, repeat: -1, ease: 'Sine.InOut', delay: 200 });
     this.buyBubble = bubble;
+    // La caja a tamaño final, contando el vaivén: el globo del tendero se aparta de ella.
+    this.buyRect = { x: product.hit.x, y: y - s, w, h: h + 2 * s };
+    this.shopkeeper.setAvoid(this.buyRect);
   }
 
   private hideBuyBubble(): void {
@@ -623,12 +646,15 @@ export class ShopScene extends Phaser.Scene {
     this.tweens.killTweensOf(this.buyBubble);
     this.buyBubble.destroy();
     this.buyBubble = null;
+    this.buyRect = null;
+    this.shopkeeper.setAvoid(null);
   }
 
   private async onBuy(entry: ShopEntry): Promise<void> {
     if (this.busy || this.closing || entry.status !== 'buy') return;
     this.busy = true;
     this.idleMs = 0;
+    const buySpot = this.buyRect;
     const s = this.interior.layout.scale;
     const before = getSession().state;
     const result = await getSession().buy(entry.id);
@@ -651,7 +677,9 @@ export class ShopScene extends Phaser.Scene {
       // Página nueva: aviso y el libro se abrirá por ella (o por la primera hoja, si nunca se ha abierto).
       const fresh = newlyUnlockedPages(before, result.state);
       if (fresh.length > 0) {
-        bus.emit('toast', { text: t('book.newPage') });
+        // Más rato y a la derecha: no tapa el botón de comprar ni lo que dice el tendero.
+        const avoid = [buySpot, this.shopkeeper.bubbleRect()].filter((r): r is Rect => r !== null);
+        bus.emit('toast', { text: t('book.newPage'), place: 'right', ms: 3500, avoid });
         const page = bookPageAfterPurchase(getSession().book, fresh);
         if (page) void getSession().setBookPage(page);
       }

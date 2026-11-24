@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
-  communityUrl, daysLeft, drawingName, emptyMemory, hasUnseen, localized, parseMemory, parseStatus, pollPhase,
+  communityUrl, daysLeft, drawingName, emptyMemory, hasUnseen, localized, parseMemory, parseStatus, pollNoticeKind, pollPhase,
   shouldNotify, shouldNotifyWinner, wallKey, type CommunityStatus,
 } from '../../src/core/community';
 
@@ -19,6 +19,33 @@ const raw = () => ({
 });
 
 const status = (patch: (r: ReturnType<typeof raw>) => unknown = (r) => r): CommunityStatus => parseStatus(patch(raw()))!;
+
+describe('parseStatus: clave actualizacion', () => {
+  it('la lee si es válida y, si falta, es null con el resto igual', () => {
+    expect(status((r) => ({ ...r, actualizacion: { minima: 12, ultima: 14, grande: true } })).actualizacion).toEqual({ minima: 12, ultima: 14, grande: true });
+    expect(status().actualizacion).toBeNull();
+  });
+
+  it('mal formada: sin aviso, pero la votación y el muro se leen', () => {
+    for (const bad of [{ minima: 12, ultima: 'x' }, { minima: -1, ultima: 14 }, { minima: 15, ultima: 14 }, { minima: 12, ultima: 14, grande: 1 }, 5, 'x']) {
+      const s = status((r) => ({ ...r, actualizacion: bad }));
+      expect(s.actualizacion, JSON.stringify(bad)).toBeNull();
+      expect(s.ideas).toBe(127);
+      expect(s.votacion?.id).toBe('2026-11-a');
+      expect(s.muro).toHaveLength(1);
+    }
+  });
+
+  it('compatibilidad: con la clave nueva, lo que leen las versiones ya publicadas (hoy, ideas, votacion, muro) es idéntico', () => {
+    const old = status();
+    const next = status((r) => ({ ...r, actualizacion: { minima: 12, ultima: 14, grande: false } }));
+    expect({ hoy: next.hoy, ideas: next.ideas, votacion: next.votacion, muro: next.muro }).toEqual({ hoy: old.hoy, ideas: old.ideas, votacion: old.votacion, muro: old.muro });
+  });
+
+  it('un guardado viejo (última respuesta sin la clave) se lee con actualizacion null', () => {
+    expect(parseMemory(JSON.stringify({ last: raw() })).last?.actualizacion).toBeNull();
+  });
+});
 
 describe('parseStatus', () => {
   it('acepta la respuesta del servidor', () => {
@@ -132,6 +159,21 @@ describe('qué hay sin ver', () => {
     expect(shouldNotifyWinner(status(), veteran, '2026-11-03')).toBe(false);
   });
 
+  it('qué panel toca: ganadora, votar o ninguno (nunca «votar» con la votación cerrada)', () => {
+    const closed = status((r) => ({ ...r, votacion: { ...r.votacion, abierta: false, ganadora: 'koalas' } }));
+    const veteran = { ...emptyMemory(), firstDay: '2026-11-01' };
+    expect(pollNoticeKind(closed, veteran, '2026-11-20')).toBe('winner');
+    // El fallo de la 2.11.0: tras avisar de la ganadora, al reiniciar el panel salía «A votar».
+    expect(pollNoticeKind(closed, { ...veteran, winnerNoticed: '2026-11-a' }, '2026-11-20')).toBeNull();
+    const noWinner = status((r) => ({ ...r, votacion: { ...r.votacion, abierta: false } }));
+    expect(pollNoticeKind(noWinner, veteran, '2026-11-20')).toBeNull();
+    expect(pollNoticeKind(status(), veteran, '2026-11-03')).toBe('vote');
+    expect(pollNoticeKind(status(), { ...veteran, firstDay: '2026-11-03' }, '2026-11-03')).toBeNull();
+    // Partida vieja: memoria guardada sin winnerNoticed.
+    const old = parseMemory(JSON.stringify({ firstDay: '2026-11-01' }));
+    expect(pollNoticeKind(closed, old, '2026-11-20')).toBe('winner');
+  });
+
   it('el primer día de juego no hay aviso', () => {
     const s = status();
     expect(shouldNotify(s, emptyMemory(), '2026-11-03')).toBe(false);
@@ -179,5 +221,16 @@ describe('communityUrl', () => {
     expect(communityUrl({ VITE_COMMUNITY_URL: 'http://localhost:8080' })).toBe('http://localhost:8080');
     expect(communityUrl({ VITE_COMMUNITY_URL: '' })).toBeNull();
     expect(communityUrl({})).toBeNull();
+  });
+
+  it('red de casa (http a una IP privada): solo en modo desarrollo, nunca en el paquete', () => {
+    for (const url of ['http://192.168.1.40:8080', 'http://10.0.0.5:8080', 'http://172.16.3.2:8080']) {
+      expect(communityUrl({ VITE_COMMUNITY_URL: url, DEV: true }), url).toBe(url);
+      expect(communityUrl({ VITE_COMMUNITY_URL: url, DEV: false }), url).toBeNull();
+      expect(communityUrl({ VITE_COMMUNITY_URL: url }), url).toBeNull();
+    }
+    for (const url of ['http://8.8.8.8:8080', 'http://172.32.0.1', 'http://192.168.1.40.evil.com', 'http://api.zooesponji.com']) {
+      expect(communityUrl({ VITE_COMMUNITY_URL: url, DEV: true }), url).toBeNull();
+    }
   });
 });

@@ -34,4 +34,23 @@ describe('decideBack', () => {
   it('cargando: no hace nada', () => {
     expect(decideBack({ ...base, screen: 'other' })).toBe('none');
   });
+
+  it('aviso de actualizar suave: atrás equivale a «luego», incluso con la tienda abierta o en el título', () => {
+    expect(decideBack({ ...base, updateNotice: 'soft' })).toBe('close-ad');
+    expect(decideBack({ ...base, updateNotice: 'soft', overlayOpen: true })).toBe('close-ad');
+    expect(decideBack({ ...base, updateNotice: 'soft', screen: 'title' })).toBe('close-ad');
+  });
+
+  it('pantalla de bloqueo: atrás abre «¿Salir?» (la puerta de salida), nunca cierra el bloqueo ni sale de golpe', () => {
+    expect(decideBack({ ...base, updateNotice: 'block', screen: 'title' })).toBe('ask-quit');
+    expect(decideBack({ ...base, updateNotice: 'block', overlayOpen: true, settingsOpen: true })).toBe('ask-quit');
+  });
+
+  it('con «¿Salir?» abierto encima del bloqueo, atrás lo cierra', () => {
+    expect(decideBack({ ...base, updateNotice: 'block', quitDialogOpen: true })).toBe('close-quit');
+  });
+
+  it('sin aviso de actualizar, todo igual que antes', () => {
+    expect(decideBack({ ...base, updateNotice: 'none' })).toBe('ask-quit');
+  });
 });

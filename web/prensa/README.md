@@ -48,4 +48,4 @@ Los assets tienen caché de 10 años en el navegador: **nunca sobrescribir un de
 3. Publicar la carpeta nueva y las dos páginas. La vieja se queda sin enlaces, pero sigue respondiendo.
 4. Con permiso de David, borrar la carpeta vieja del servidor después de guardar `~/copia-web/prensa-<carpeta>-borrada.tgz`.
 
-Historial: `20261102` (primera edición, borrada el 2026-11-02) → `20261102b` (contacto «David Plaza»).
+Historial: `20261102` (primera edición, borrada el 2026-11-02) → `20261102b` (contacto «David Plaza») → `20261116` (insignia «Aprobada por profesores» de Google Play). Las direcciones de los PDF de `20261102b` redirigen a los de `20261116`.

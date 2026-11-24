@@ -3,7 +3,7 @@ import { getArt } from '../art/art';
 import { KEEPER_SPEED, MAPS, TEXTURES, TILE_SIZE } from '../config';
 import { fallSick, makeMuddy, pickTapScene, soil } from '../core/care';
 import { CareDirector } from '../core/careDirector';
-import { isPenOpen, type GameState } from '../core/economy';
+import { boughtAnimal, isPenOpen, type GameState } from '../core/economy';
 import { facingFromDelta } from '../core/facing';
 import { approachTile } from '../core/interaction';
 import { inJoystickZone } from '../core/joystick';
@@ -19,6 +19,7 @@ import { PEN_IDS, findResident, residentsIn, type PenId } from '../data/pens';
 import { SHOP_UNLOCK_COINS } from '../data/shop';
 import { t } from '../data/strings';
 import { getAds } from '../systems/ads';
+import { getReview } from '../systems/review';
 import { sfx } from '../systems/audio';
 import { getCommunity } from '../systems/community';
 import { bus, type ControlMode } from '../systems/events';
@@ -51,6 +52,8 @@ const FEED_REACH = 18;
 const AD_OFFER_MS = 300;
 /** El aviso de votación se mira un poco después del anuncio, para no pisarse. */
 const NOTICE_MS = AD_OFFER_MS + 250;
+/** Cada cuánto se mira si toca la valoración sin pausa natural (con el mapa en pausa no corre). */
+const REVIEW_CHECK_MS = 5000;
 /** Lo que Luna espera quieta antes de pararse y mirar a la cuidadora. */
 const PET_REST_MS = 200;
 /** Lo que duran las huellas hasta la tienda si nadie las sigue (ms). */
@@ -203,6 +206,8 @@ export class WorldScene extends Phaser.Scene {
     this.time.delayedCall(NOTICE_MS, () => {
       if (!this.maybeTutorialOffer()) this.maybeNotice();
     });
+    // La valoración, si a los 5 min de cumplirlo no ha llegado una pausa natural (core/reviewPrompt.ts).
+    this.time.addEvent({ delay: REVIEW_CHECK_MS, loop: true, callback: () => this.maybeReview(false) });
     // Quien ya tenía recintos de barro o la clínica y nunca vio sus avisos: le salen al rato de empezar.
     if (pendingLessonOffers(getSession().state, getSession().tutorial).length > 0) {
       this.lessonOffers = 'start';
@@ -707,7 +712,12 @@ export class WorldScene extends Phaser.Scene {
       return;
     }
     // Una pausa natural: se vuelve de dar de comer o de la tienda. De Ajustes, del libro o de «¿Salir?», no.
-    if (data?.from === 'shop' || data?.from === 'feed' || data?.from === 'clean') this.time.delayedCall(AD_OFFER_MS, () => this.offerAd());
+    // Si en la misma pausa tocan la valoración y el anuncio, va la valoración: el anuncio, en la siguiente.
+    if (data?.from === 'shop' || data?.from === 'feed' || data?.from === 'clean') {
+      this.time.delayedCall(AD_OFFER_MS, () => {
+        if (!this.maybeReview(true)) this.offerAd();
+      });
+    }
     if (data?.from !== 'notice' && data?.from !== 'board') this.time.delayedCall(NOTICE_MS, () => this.maybeNotice());
   }
 
@@ -798,7 +808,7 @@ export class WorldScene extends Phaser.Scene {
 
   /** Una vez por votación, al llegar al mapa, si no hay otro panel abierto. Si lo hay, espera a otra vuelta. */
   private maybeNotice(): void {
-    if (this.tutorialRunning()) return;
+    if (this.tutorialRunning() || getReview()?.open) return;
     // Las demás ventanas (tienda, comer, libro, tablón, ajustes, salir) pausan World, así que aquí isActive() es falso.
     if (!this.scene.isActive() || this.scene.isActive('AdOffer') || this.scene.isActive('PollNotice')) return;
     if (getAds()?.panelOpen) return;
@@ -808,9 +818,31 @@ export class WorldScene extends Phaser.Scene {
     this.scene.launch('PollNotice');
   }
 
+  /**
+   * La valoración en Google Play (spec 2026-11-21-valoracion-en-play): si toca, el mapa queda en pausa debajo de la
+   * tarjeta de Google hasta que Play termina (o al tiempo máximo). El juego no dibuja nada. `natural`: se vuelve de
+   * comer, limpiar o la tienda.
+   */
+  private maybeReview(natural: boolean): boolean {
+    const review = getReview();
+    if (!review || !this.scene.isActive()) return false;
+    const session = getSession();
+    const tutorialReady =
+      session.tutorial.offered && !this.tutorialRunning() && pendingLessonOffers(session.state, session.tutorial).length === 0;
+    const panelOpen =
+      this.scene.isActive('AdOffer') || this.scene.isActive('PollNotice') || this.scene.isActive('UpdateNotice') || Boolean(getAds()?.panelOpen);
+    if (!review.canRequest({ boughtAnimal: boughtAnimal(session.state), tutorialReady, panelOpen, natural })) return false;
+    this.stopWalking();
+    this.scene.pause();
+    // Sin mirar si ya está en pausa: Phaser puede aplicar la pausa después (va en cola) y, si Play contesta en seguida,
+    // el mapa se quedaría parado. Reanudar uno que no está en pausa no hace nada.
+    void review.request().finally(() => this.scene.resume());
+    return true;
+  }
+
   /** Si toca y hay anuncio listo, se ofrece: el mundo queda en pausa debajo del panel. */
   private offerAd(): void {
-    if (!this.scene.isActive() || this.tutorialRunning()) return;
+    if (!this.scene.isActive() || this.tutorialRunning() || getReview()?.open) return;
     if (!getAds()?.canOffer('pausa')) return;
     const data: AdOfferSceneData = { slot: 'pausa', resume: 'World' };
     this.stopWalking();

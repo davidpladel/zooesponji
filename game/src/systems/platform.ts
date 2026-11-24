@@ -4,6 +4,7 @@ import type * as Phaser from 'phaser';
 import { decideBack, type BackAction } from '../core/back';
 import type { AdOfferScene } from '../scenes/AdOfferScene';
 import type { PollNoticeScene } from '../scenes/PollNoticeScene';
+import type { UpdateNoticeScene } from '../scenes/UpdateNoticeScene';
 import type { TutorialOfferScene } from '../scenes/TutorialOfferScene';
 import type { CleanScene } from '../scenes/CleanScene';
 import type { ClinicScene } from '../scenes/ClinicScene';
@@ -15,6 +16,7 @@ import type { BookScene } from '../scenes/BookScene';
 import type { SettingsScene } from '../scenes/SettingsScene';
 import type { ShopScene } from '../scenes/ShopScene';
 import { getAds } from './ads';
+import { getReview } from './review';
 import { getAnalytics } from './analytics';
 import { sfx } from './audio';
 import { bus } from './events';
@@ -90,8 +92,15 @@ export class Platform {
       settingsOpen: this.active('Settings') || this.active('Book'),
       overlayOpen: this.active('Feed') || this.active('Clean') || this.active('Shop') || this.active('Board') || this.active('Clinic') || this.active('Cure'),
       adOfferOpen: this.active('AdOffer') || this.active('PollNotice') || this.active('TutorialOffer'),
+      updateNotice: this.updateNoticeState(),
       screen,
     });
+  }
+
+  /** Aviso de actualizar abierto: la ventana suave (atrás = «luego») o el bloqueo (atrás = puerta de salida). */
+  private updateNoticeState(): 'none' | 'soft' | 'block' {
+    if (!this.active('UpdateNotice')) return 'none';
+    return this.game.scene.getScene<UpdateNoticeScene>('UpdateNotice').mode === 'bloqueo' ? 'block' : 'soft';
   }
 
   async back(): Promise<BackAction> {
@@ -108,7 +117,8 @@ export class Platform {
         else scene<SettingsScene>('Settings').close();
         break;
       case 'close-ad':
-        if (this.active('TutorialOffer')) scene<TutorialOfferScene>('TutorialOffer').skip();
+        if (this.active('UpdateNotice')) scene<UpdateNoticeScene>('UpdateNotice').decline();
+        else if (this.active('TutorialOffer')) scene<TutorialOfferScene>('TutorialOffer').skip();
         else if (this.active('PollNotice')) scene<PollNoticeScene>('PollNotice').decline();
         else scene<AdOfferScene>('AdOffer').decline();
         break;
@@ -138,6 +148,7 @@ export class Platform {
     sfx.setPaused('background', hidden);
     getAnalytics()?.setBackground(hidden);
     getAds()?.setBackground(hidden);
+    getReview()?.setBackground(hidden);
     if (hidden) {
       void getSessionSafe()?.save();
       this.pauseWorld('background');

@@ -1,3 +1,4 @@
+import { placeClearAll, type Rect } from '../core/bubbleLayout';
 import * as Phaser from 'phaser';
 import { edgeHint } from '../core/guideArt';
 import { clinicButtonVisible, gearVisible } from '../core/hud';
@@ -28,6 +29,11 @@ const HUD_CORNER = { x: 190, y: 270 };
 /** Tiendita del aviso «Cómpralo en la tienda»: 14x11 a x3 (unos 33 px de alto, como el texto). */
 const TOAST_ICON_SCALE = 3;
 const TOAST_ICON_GAP = 10;
+/** Cuánto se ve un aviso antes de desvanecerse, y aire con el borde cuando va a la derecha. */
+const TOAST_MS = 1800;
+const TOAST_EDGE = 16;
+/** A la derecha va más bajo: por debajo de la X de salir de la tienda (acaba en y = 76). */
+const TOAST_RIGHT_Y = 112;
 
 export class HudScene extends Phaser.Scene {
   private coins!: CoinCounter;
@@ -73,7 +79,7 @@ export class HudScene extends Phaser.Scene {
 
     const unsubscribe = [
       bus.on('coins-changed', ({ coins }) => this.renderCoins(coins, true)),
-      bus.on('toast', ({ text, icon }) => this.showToast(text, icon)),
+      bus.on('toast', ({ text, icon, place, ms, avoid }) => this.showToast(text, icon, place, ms, avoid)),
       bus.on('shop-unlocked', () => {
         sfx.play('unlock');
         this.showToast(t('toast.shopOpen'));
@@ -187,7 +193,7 @@ export class HudScene extends Phaser.Scene {
     this.coins.set(coins, pop);
   }
 
-  private showToast(text: string, icon?: 'shop'): void {
+  private showToast(text: string, icon?: 'shop', place?: 'right', ms = TOAST_MS, avoid: readonly Rect[] = []): void {
     this.tweens.killTweensOf(this.toast);
     this.toastText.setText(text);
     // La tiendita va detrás del texto (a la izquierda en árabe, que se lee al revés), y el conjunto centrado.
@@ -195,15 +201,35 @@ export class HudScene extends Phaser.Scene {
     const iconWidth = icon ? this.toastIcon.displayWidth + TOAST_ICON_GAP : 0;
     this.toastText.setX((-dir * iconWidth) / 2);
     this.toastIcon.setVisible(!!icon).setX(dir * (this.toastText.width / 2 + TOAST_ICON_GAP + this.toastIcon.displayWidth / 2 - iconWidth / 2));
-    this.toast.setPosition(this.scale.width / 2, 90).setVisible(true).setAlpha(1).setScale(0.6);
+    // A la derecha (aviso de página nueva en la tienda): borde derecho a 16 px del borde, sin pasar de la mitad.
+    const half = (this.toastText.width + iconWidth) / 2;
+    const x = place === 'right' ? Math.max(this.scale.width / 2 + 1, this.scale.width - TOAST_EDGE - half) : this.scale.width / 2;
+    const y = place === 'right' ? TOAST_RIGHT_Y : 90;
+    // Si aun así pisa el botón de comprar o el globo del tendero (pantallas bajas), se aparta de ellos.
+    const at = place === 'right'
+      ? placeClearAll({ x, y, w: half * 2, h: this.toastText.height }, avoid, { width: this.scale.width, height: this.scale.height, minY: TOAST_RIGHT_Y - 32 }, 6)
+      : { x, y };
+    this.toast.setPosition(at.x, at.y).setVisible(true).setAlpha(1).setScale(0.6);
     this.tweens.add({ targets: this.toast, scale: 1, duration: 200, ease: 'Back.easeOut' });
     this.tweens.add({
       targets: this.toast,
       alpha: 0,
-      delay: 1800,
+      delay: ms,
       duration: 400,
       onComplete: () => this.toast.setVisible(false),
     });
+  }
+
+  /** Caja del aviso de arriba en pantalla (centro y tamaño), para las pruebas. Null si no se ve. */
+  toastRect(): { x: number; y: number; w: number; h: number } | null {
+    if (!this.toast.visible) return null;
+    // Solo lo que se ve: el texto y, si toca, la tiendita (la oculta no cuenta).
+    const parts = [this.toastText.getBounds(), ...(this.toastIcon.visible ? [this.toastIcon.getBounds()] : [])];
+    const left = Math.min(...parts.map((b) => b.left));
+    const right = Math.max(...parts.map((b) => b.right));
+    const top = Math.min(...parts.map((b) => b.top));
+    const bottom = Math.max(...parts.map((b) => b.bottom));
+    return { x: (left + right) / 2, y: (top + bottom) / 2, w: right - left, h: bottom - top };
   }
 
   /** El aviso de arriba, para las pruebas: texto y si lleva la tiendita. Null si no se ve. */

@@ -126,6 +126,10 @@ recintos de al menos 14×9 por dentro con el paisaje de cada especie y farolas r
 - Las pruebas del mapa (`zoomap`, `caminos`, `recintos`, `tour`) leen las posiciones del propio mapa, no números
   fijos. La prueba de juego `recorrido.spec.ts` hace andar a la cuidadora tocando la pantalla por una ruta que pisa
   todas las casillas (`core/tour.ts`) y comprueba que llega, que Luna la sigue y que nada que se pisa queda encima.
+- **Histórico del mapa:** cada vez que cambia el mapa (o entra algo nuevo que se ve en él) se saca una foto del zoo
+  entero con todo comprado y se guarda en `mapa-historico/` del repo privado (lleva el arte de los packs, nunca aquí).
+  Con `npm run dev` en marcha, desde `game/`: `node ../../zooesponji-private/mapa-historico/foto-mapa.mjs`. Se
+  apunta qué hay nuevo en la tabla de su README.
 
 ## Llegar a la tienda sin leer
 
@@ -204,7 +208,7 @@ Las piezas de los menús (píldoras, paneles, carteles, chapa de cerrar, monedas
 - `src/core/` — lógica pura sin Phaser (reacciones, economía y extras, guardado, A*, mapas, movimiento, `flock` para que los animales no se pisen, `petting` para el aforo de la granja de contacto, `back` para el botón atrás, `adPacing` para el ritmo de la publicidad, `adConfig` para la configuración de AdMob). Todo con tests.
 - `src/data/` — contenido: animales, comidas, tienda, libro del zoo (`book.ts`: ids de página y qué las desbloquea) y textos (`strings/`: `es.ts` y `en.ts`, una clave por texto; `en.ts` no compila si le falta una; todo texto visible pasa por `t()`, que usa el idioma activo).
 - `src/systems/` — eventos, sesión, almacenamiento, zoom, `audio` (samples y música), `platform` (botón atrás, segundo plano, girar el móvil), `errors` (pantalla ¡Ups!), `language` (idioma activo y detección por el idioma del móvil), `ads` (publicidad con premio: cuándo se pide y se ofrece un anuncio), `adProvider` (avisos del SDK), `adsInstall` (único archivo que toca el complemento de AdMob; solo instala en Android).
-- `src/scenes/` — escenas de Phaser (solo dibujan y recogen input): Boot, Preload, Title, World, Feed (dar de comer), Clean (limpieza), Shop (tienda), Clinic (la clínica por dentro), Cure (curar), Book (libro del zoo), Hud, Settings (menú ⚙️: ajustes, idioma, créditos, privacidad y salir), Quit (¿Salir?), Rotate (gira el móvil), AdOffer (panel que ofrece un anuncio), TutorialOffer (aviso de la primera vez y de las lecciones de limpieza y clínica) y Tutorial (la mano que enseña; una cola de lecciones: inicio, limpieza y clínica; pasos en `core/tutorial.ts`, qué avisos tocan y con qué animal se practica en `core/lessons.ts`).
+- `src/scenes/` — escenas de Phaser (solo dibujan y recogen input): Boot, Preload, Title, World, Feed (dar de comer), Clean (limpieza), Shop (tienda), Clinic (la clínica por dentro), Cure (curar), Book (libro del zoo), Hud, Settings (menú ⚙️: ajustes, idioma, créditos, privacidad y salir), Quit (¿Salir?), Rotate (gira el móvil), AdOffer (panel que ofrece un anuncio), UpdateNotice (aviso para actualizar: ventana suave o bloqueo), TutorialOffer (aviso de la primera vez y de las lecciones de limpieza y clínica) y Tutorial (la mano que enseña; una cola de lecciones: inicio, limpieza y clínica; pasos en `core/tutorial.ts`, qué avisos tocan y con qué animal se practica en `core/lessons.ts`).
 - Luna: `core/petFollow.ts` (sigue el rastro de la cuidadora y espera en la puerta de los recintos) y `world/ShopPet.ts` (curiosea por la tienda; destinos con `pickShopSpot` de `core/shopWalk.ts`).
 - `src/world/` — ayudantes del mundo: `Pens` (los animales de cada recinto, cada uno con su identidad, los candados y el toque sobre un animal para darle de comer; los recintos que no se ven no se actualizan), `ShopBuilding` (edificio y puerta de la tienda), `ShopInterior` (la tienda por dentro), `ShopKeeperWalker` (la cuidadora dentro de la tienda), `Shopkeeper` (el tendero), `ShopHint` (huellas de pista), `VisitorCrowd` (visitantes; en el recinto de ovejas entran a acariciar, 3 como mucho, y salen corazones).
 
@@ -262,9 +266,76 @@ El tablón de la plaza habla con el servidor de comunidad. Sin configuración no
 - `game/.env.production.local` (no se sube): `VITE_COMMUNITY_URL`, la dirección del servidor (`https://api.zooesponji.com`).
 - `src/core/community.ts`: tipos y validación de lo que llega del servidor. `src/systems/community.ts`: consulta el estado, guarda el voto y construye la dirección de los dibujos (`dibujo.php?f=...`). `BoardScene` es el tablón y `PollNoticeScene`, el aviso de votación nueva.
 
-## Versión
+## Avisos de actualización (solo Android, desde la 2.11.0)
 
-`version` en `package.json` y `versionName` en `android/app/build.gradle`: **2.10.0** con el `versionCode` **13** (2026-11-10, hecha en la rama `feat/plaza-recintos-recorrido` y en `main` desde el 2026-11-14, etiqueta `v2.10.0`; subida a Play el 2026-11-11 y publicada en producción y prueba cerrada el 2026-11-13). La próxima subida lleva el **14**. `versionCode` sube en 1 con cada subida a Play: el **7** es la 2.6.0 (primera con anuncios), subida a la prueba cerrada el 2026-10-12; el **8** es la 2.7.0 (tablón de la comunidad), subida; el **9** es la 2.7.1 (arreglos del muro del tablón), publicada en Play; el **10** es la 2.8.0; el **11**, la 2.8.1, publicada; el **12**, la 2.9.0 (con R8; la 2.8.2 no se llegó a subir), publicada.
+Quien tenga una versión vieja ve un aviso para actualizar; la ventana la pone Play encima del juego (actualización
+inmediata), sin enlaces a la tienda. Lo decide la clave `actualizacion` de `comunidad.json` en el servidor (cómo se
+escribe: `server/README.md` › «Aviso para actualizar el juego»).
+
+- `src/core/updatePolicy.ts`: la lógica pura (`decideUpdate`: `nada`, `suave` u `obligatoria`), los topes
+  (`MAX_SOFT_SMALL` = 3, `MAX_SOFT_BIG` = 2, como mucho un aviso al día), la memoria del aparato (clave
+  `zooesponji_v3_update`: `ultima`, `aplazadas`, `ultimoAviso`; con otra `ultima` empieza de cero) y `isSafeMoment`.
+- `src/systems/appUpdate.ts`: único archivo que toca el plugin `@capawesome/capacitor-app-update` (solo
+  `getAppUpdateInfo` y `performImmediateUpdate`; nunca `openAppStore`).
+- `src/systems/updateNotice.ts` (y `updateNoticeInstall.ts`): mira en el título, al llegar la respuesta del servidor
+  y al volver a abrir la app. Solo avisa si el servidor respondió **en esta sesión**, si es un momento seguro (título
+  o mapa sin ventanas ni lecciones abiertas) y si Play dice que hay versión y que la actualización inmediata está
+  permitida. Si el jugador cancela la obligatoria, sale la pantalla de bloqueo (flecha para reintentar y puerta de
+  «Salir»); si Play falla, se deja jugar.
+- `UpdateNoticeScene`: ventana suave (flecha, ✓ verde y reloj de «luego»; «atrás» = «luego») o bloqueo («atrás» =
+  «¿Salir?»). Dibujos en `src/ui/updateArt.ts`. Un solo texto, `update.title`, en los 11 idiomas.
+- Estadísticas: categoría `actualizacion` (`actualizacion-ofrece`, `-acepta`, `-luego`, `-obliga`, `-fallo`).
+- **No se ve en `npm run dev`:** en el navegador no hay Play. Las pruebas usan uno falso:
+  `window.__ZOO__.updateFake({ available, allowed, versionCode, results, today })`, `updateCheck()`,
+  `updateState()`, `updateSetToday('AAAA-MM-DD')` y `updatePos('yes' | 'no' | 'exit')`
+  (`tests/e2e/actualizacion.spec.ts`). Probarlo de verdad pide dos versiones en la pista interna de Play.
+- **Probar en casa (servidor real en el PC + Play falso, también desde el móvil por la wifi):**
+  1. Servidor: desde `server/`, `.\local\servidor.ps1 -Tipo grande` (tipos `pequena`, `grande`, `rota`, `ninguno`).
+     Usa el PHP de XAMPP y una base de datos SQLite de archivo (sin MySQL): crea `app/config.php` de prueba (ignorado
+     por git; si ya hay uno que no es el de prueba, no lo toca) y `app/datos/comunidad.json` sin votación. Dice la
+     dirección del PC en la red de casa.
+  2. Juego: desde `game/`, `$env:VITE_COMMUNITY_URL = 'http://<IP del PC>:8080'` (con los números de verdad, p. ej.
+     `192.168.1.35`: `servidor.ps1` escribe la línea exacta) y `npm run dev -- --host`. Con
+     `npm run dev`, el juego acepta un servidor `http://` de la red de casa (192.168.x, 10.x, 172.16–31.x); el
+     paquete de Play, nunca.
+  3. Abrir `http://<IP del PC>:5173/?play-falso&aviso-de-cero` (en el PC o en el Chrome del móvil). Opciones de la
+     dirección: `play-falso=cancelada,actualizada` (lo que «contesta» Play en cada intento; el último se repite),
+     `codigo=13` (la versión que dice tener el juego; con `codigo=9` y `-Tipo pequena` o `grande` está por debajo
+     de la mínima: rota), `dia=2026-11-21` (cambia el día para ver el aviso siguiente), `play=no-hay` o
+     `play=no-permitida` (Play dice que no se puede: no debe salir nada) y `aviso-de-cero` (borra lo aplazado).
+  4. La primera vez, Windows pregunta si deja entrar a `node` y a `php` desde la red: «Redes privadas», sí.
+  Con «actualizada» el Play falso solo cierra el aviso; en el móvil de verdad Play reinicia la app.
+
+## Valoración en Google Play (solo Android, desde la 2.11.0)
+
+Con **10 min de juego acumulados y el primer animal comprado**, en un momento tranquilo, el juego llama a la API de
+reseñas de Play y Google pone su tarjeta encima (en el idioma del móvil). El juego **no dibuja nada**: ni cartel, ni
+botón, ni pregunta, ni premio, ni enlace a la ficha. Spec: `docs/superpowers/specs/2026-11-21-valoracion-en-play-design.md`.
+
+- `src/core/reviewPrompt.ts`: la lógica pura y sus números (`PLAY_MIN_S` 600, `SECOND_WAIT_DAYS` 30, `SECOND_PLAY_S`
+  600, `MAX_ATTEMPTS` 2, `CALM_WAIT_S` 300, `NOTICE_QUIET_S` 600, `AD_QUIET_S` 180). Memoria en la clave
+  `zooesponji_v3_review` (`playSeconds`, `attempts`, `lastAttemptDay`, `playAtAttempt`), fuera de la partida; el
+  «primer animal» se lee de la partida (`boughtAnimal` en `economy.ts`).
+- `src/systems/review.ts`: cuenta el juego (siempre, con o sin estadísticas), recuerda los avisos y anuncios de esta
+  partida y pide con la tarjeta abierta (`open`) hasta que Play termina o pasan 60 s. Marca el intento **antes** de
+  llamar.
+- `src/systems/reviewInstall.ts`: único archivo que toca `@capawesome/capacitor-app-review` (solo `requestReview`;
+  nunca `openAppStore`, y `tests/unit/reviewInstall.test.ts` lo vigila en todo `src/`).
+- En `WorldScene`: al volver de comer, limpiar o la tienda va **por delante del anuncio de la pausa** (si sale la
+  valoración, el anuncio espera a la pausa siguiente); al salir de la tienda con una lección por ofrecer, va la
+  lección. Sin pausa natural, a los 5 min de cumplir vale cualquier momento con el mapa libre (se mira cada 5 s).
+  Con la tarjeta abierta no sale ningún otro aviso (`'Review'` en `BUSY` de `updatePolicy.ts`).
+- Estadísticas: `valoracion` / `valoracion-solicitada` y `valoracion-fallo` (nombre: el intento, `1` o `2`); en
+  `tools/matomo/resumen.mjs`, «Valoración en Play». La API no dice si salió la tarjeta ni si se valoró.
+- **Probar en casa:** `npm run dev` y `http://localhost:5173/?valoracion=rapido` (Play falso y los 10 min ya hechos;
+  hace falta comprar un animal y haber pasado el aviso del tutorial). Cuando toca, sale `valoracion: pedida` en la
+  consola del navegador.
+- **En el móvil, solo desde la prueba interna de Play** (con un APK suelto no sale): ahí no hay cuota y sale cada
+  vez, pero la cuenta **no puede tener ya una reseña del juego**; con «compartir apps internamente» no deja enviar.
+  Nunca con una cuenta de niño real.
+
+
+`version` en `package.json` y `versionName` en `android/app/build.gradle`: **2.11.0** con el `versionCode` **15** (2026-11-24, rama `feat/release-2.11.0`). La **2.10.0** llevó el **13** (2026-11-10, hecha en la rama `feat/plaza-recintos-recorrido` y en `main` desde el 2026-11-14, etiqueta `v2.10.0`; subida a Play el 2026-11-11 y publicada en producción y prueba cerrada el 2026-11-13). El **14** es una 2.11.0 de prueba (con anuncios de prueba y sin estadísticas), subida solo a la prueba interna el 2026-11-23 para ver la tarjeta de valoración: no vale para producción. El **15** es la 2.11.0 de verdad. `versionCode` sube en 1 con cada subida a Play: el **7** es la 2.6.0 (primera con anuncios), subida a la prueba cerrada el 2026-10-12; el **8** es la 2.7.0 (tablón de la comunidad), subida; el **9** es la 2.7.1 (arreglos del muro del tablón), publicada en Play; el **10** es la 2.8.0; el **11**, la 2.8.1, publicada; el **12**, la 2.9.0 (con R8; la 2.8.2 no se llegó a subir), publicada.
 
 Al sacar una versión nueva, la versión se cambia a mano en estos sitios (el resto la leen solos):
 

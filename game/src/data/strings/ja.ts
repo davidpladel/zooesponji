@@ -134,6 +134,7 @@ export const STRINGS_JA: Record<StringKey, string> = {
   'board.lastDay': 'きょうが さいご！',
   'board.vote': 'とうひょう',
   'board.goVote': 'とうひょうしよう！',
+  'update.title': 'あたらしいバージョンがあるよ！',
   'board.change': 'かえる',
   'board.see': 'みる！',
   'board.nextSoon': 'もうすぐ あたらしい アイデアの とうひょうが あるよ',
