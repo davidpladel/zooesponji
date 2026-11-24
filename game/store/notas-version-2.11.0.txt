@@ -1,0 +1,104 @@
+<es-ES>
+¡Novedades en Zoo Esponji!
+• Icono nuevo: ¡nuestro león con su moneda!
+• El juego te avisa cuando hay una versión nueva.
+• Pequeños ajustes de avisos que no se leían bien.
+• La cruz del animal malito se ve y se toca mejor.
+• Al limpiar, cada herramienta suena en cuanto la eliges.
+</es-ES>
+<es-419>
+¡Novedades en Zoo Esponji!
+• Icono nuevo: ¡nuestro león con su moneda!
+• El juego te avisa cuando hay una versión nueva.
+• Pequeños ajustes de avisos que no se leían bien.
+• La cruz del animal enfermito se ve y se toca mejor.
+• Al limpiar, cada herramienta suena en cuanto la eliges.
+</es-419>
+<en-US>
+What's new in Zoo Esponji!
+• New icon: our lion with his coin!
+• The game tells you when a new version is out.
+• Small fixes to notices that were hard to read.
+• The sick animal's cross is easier to see and tap.
+• When cleaning, each tool makes its sound as soon as you pick it.
+</en-US>
+<en-GB>
+What's new in Zoo Esponji!
+• New icon: our lion with his coin!
+• The game tells you when a new version is out.
+• Small fixes to notices that were hard to read.
+• The poorly animal's cross is easier to see and tap.
+• When cleaning, each tool makes its sound as soon as you pick it.
+</en-GB>
+<fr-FR>
+Du nouveau dans Zoo Esponji !
+• Nouvelle icône : notre lion avec sa pièce !
+• Le jeu te prévient quand une nouvelle version sort.
+• Petites retouches des messages difficiles à lire.
+• La croix de l'animal malade se voit et se touche mieux.
+• Au nettoyage, chaque outil sonne dès que tu le choisis.
+</fr-FR>
+<it-IT>
+Novità in Zoo Esponji!
+• Nuova icona: il nostro leone con la sua moneta!
+• Il gioco ti avvisa quando esce una nuova versione.
+• Piccole correzioni agli avvisi che non si leggevano bene.
+• La croce dell'animale malato si vede e si tocca meglio.
+• Quando pulisci, ogni attrezzo suona appena lo scegli.
+</it-IT>
+<pt-BR>
+Novidades no Zoo Esponji!
+• Ícone novo: o nosso leão com sua moeda!
+• O jogo avisa quando há uma versão nova.
+• Pequenos ajustes em avisos que não se liam bem.
+• A cruz do animal doentinho ficou mais fácil de ver e tocar.
+• Ao limpar, cada ferramenta faz som assim que você a escolhe.
+</pt-BR>
+<pt-PT>
+Novidades no Zoo Esponji!
+• Ícone novo: o nosso leão com a sua moeda!
+• O jogo avisa quando há uma versão nova.
+• Pequenos ajustes em avisos que não se liam bem.
+• A cruz do animal doentinho vê-se e toca-se melhor.
+• Ao limpar, cada ferramenta faz som assim que a escolhes.
+</pt-PT>
+<ru-RU>
+Новое в Zoo Esponji!
+• Новая иконка: наш лев со своей монеткой!
+• Игра сообщает, когда выходит новая версия.
+• Небольшие правки сообщений, которые плохо читались.
+• Крестик у больного животного лучше видно, и на него легче нажать.
+• Во время уборки каждый инструмент звучит, как только ты его выбираешь.
+</ru-RU>
+<ar>
+جديد في Zoo Esponji!
+• أيقونة جديدة: أسدنا مع قطعته النقدية!
+• اللعبة تخبرك عندما يصدر إصدار جديد.
+• تعديلات صغيرة على رسائل كانت صعبة القراءة.
+• صار الصليب عند الحيوان المريض أوضح وأسهل في اللمس.
+• عند التنظيف، تصدر كل أداة صوتها فور اختيارها.
+</ar>
+<hi-IN>
+Zoo Esponji में नया क्या है!
+• नया आइकन: हमारा शेर अपने सिक्के के साथ!
+• नया वर्ज़न आने पर गेम तुम्हें बताता है।
+• जो संदेश ठीक से नहीं पढ़े जाते थे, उनमें छोटे सुधार।
+• बीमार जानवर का क्रॉस अब आसानी से दिखता और दबता है।
+• सफ़ाई करते समय हर औज़ार चुनते ही आवाज़ करता है।
+</hi-IN>
+<ja-JP>
+Zoo Esponji の新しいこと！
+• 新しいアイコン：コインを持ったライオン！
+• 新しいバージョンが出たら、ゲームが教えてくれます。
+• 読みにくかったお知らせを少し直しました。
+• 病気の動物のバツ印が見やすく、押しやすくなりました。
+• おそうじで、道具をえらぶとすぐに音が鳴ります。
+</ja-JP>
+<zh-CN>
+Zoo Esponji 新内容！
+• 新图标：我们的狮子和它的金币！
+• 有新版本时，游戏会提醒你。
+• 小小调整了一些不好看清的提示。
+• 生病动物身上的叉更容易看到和点击。
+• 清洁时，选好工具马上就有声音。
+</zh-CN>
