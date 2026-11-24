@@ -238,6 +238,8 @@ export interface ZooTestApi {
   /** Monta el tablón contra un servidor (en las pruebas, uno falso con `page.route`). */
   communityStart(baseUrl: string): Promise<void>;
   communityPhase(): string | null;
+  /** Vuelve a pedir el estado al servidor (como hace el tablón), sin reiniciar nada más. */
+  communityRefresh(): Promise<void>;
   /** Aviso de actualizar con un Play falso (en el navegador no hay Play). `results`: lo que devuelve cada intento (el último se repite). */
   updateFake(o?: { available?: boolean; allowed?: boolean; versionCode?: number; results?: PlayUpdateResult[]; today?: string }): void;
   /** Cambia el día del móvil que ve el aviso (`AAAA-MM-DD`). */
@@ -499,6 +501,9 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
     adOfferAmount: () => activeScene<AdOfferScene>('AdOffer')?.offeredAmount() ?? null,
     adOfferCountdown: () => activeScene<AdOfferScene>('AdOffer')?.countdownLeft() ?? null,
     busLog: () => [...busLog],
+    communityRefresh: async () => {
+      await getCommunity()?.refresh();
+    },
     communityStart: async (baseUrl) => {
       PollNoticeScene.shownFor = null;
       PollNoticeScene.kindFor = null;

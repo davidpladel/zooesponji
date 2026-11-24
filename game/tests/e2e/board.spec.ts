@@ -232,3 +232,18 @@ test('girar el móvil con el aviso de la ganadora no lo cambia a votar', async (
   expect(names.filter((n) => n === 'poll-winner-notice')).toHaveLength(1);
   expect(names).not.toContain('poll-notice');
 });
+
+test('la votación se cierra con ganadora en la misma partida: sale la copa aunque antes saliera «A votar»', async ({ page }) => {
+  const fake = await fakeServer(page);
+  await startGame(page);
+  await page.evaluate((b) => window.__ZOO__!.communityStart(b), BASE);
+  await closeNoticeIfAny(page);
+  fake.status = { ...OPEN, hoy: '2026-11-20', votacion: { ...OPEN.votacion, abierta: false, ganadora: 'koalas' } };
+  await page.evaluate(() => window.__ZOO__!.communityRefresh());
+  // Vuelta al mapa desde la tienda: toca el aviso de la ganadora.
+  await page.evaluate(() => window.__ZOO__!.openShop());
+  await page.waitForTimeout(800);
+  await page.evaluate(() => window.__ZOO__!.back());
+  await expect.poll(() => log(page), { timeout: 10_000 }).toContain('poll-winner-notice');
+  expect(await page.evaluate(() => window.__ZOO__!.pollNoticePos('yes'))).not.toBeNull();
+});
