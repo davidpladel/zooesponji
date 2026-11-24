@@ -216,3 +216,19 @@ test('el aviso no salta encima del panel del anuncio, y sale al cerrarlo', async
   await page.evaluate(() => window.__ZOO__!.back());
   await page.waitForFunction(() => window.__ZOO__!.pollNoticePos('yes') !== null, undefined, { timeout: 10_000 });
 });
+
+test('girar el móvil con el aviso de la ganadora no lo cambia a votar', async ({ page }) => {
+  const closed = { ...OPEN, hoy: '2026-11-20', votacion: { ...OPEN.votacion, abierta: false, ganadora: 'koalas' } };
+  await fakeServer(page, { status: closed });
+  await startGame(page);
+  await page.evaluate((b) => window.__ZOO__!.communityStart(b), BASE);
+  await page.waitForFunction(() => window.__ZOO__!.pollNoticePos('yes') !== null);
+  const size = page.viewportSize()!;
+  await page.setViewportSize({ width: size.height + 200, height: size.width > size.height ? size.height : size.width });
+  await page.waitForTimeout(1200);
+  await page.setViewportSize(size);
+  await page.waitForTimeout(1200);
+  const names = await log(page);
+  expect(names.filter((n) => n === 'poll-winner-notice')).toHaveLength(1);
+  expect(names).not.toContain('poll-notice');
+});

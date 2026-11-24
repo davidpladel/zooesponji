@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
-  communityUrl, daysLeft, drawingName, emptyMemory, hasUnseen, localized, parseMemory, parseStatus, pollPhase,
+  communityUrl, daysLeft, drawingName, emptyMemory, hasUnseen, localized, parseMemory, parseStatus, pollNoticeKind, pollPhase,
   shouldNotify, shouldNotifyWinner, wallKey, type CommunityStatus,
 } from '../../src/core/community';
 
@@ -157,6 +157,21 @@ describe('qué hay sin ver', () => {
     expect(shouldNotifyWinner(s, { ...veteran, winnerSeen: '2026-11-a' }, '2026-11-20')).toBe(false);
     expect(shouldNotifyWinner(s, { ...veteran, firstDay: '2026-11-20' }, '2026-11-20')).toBe(false);
     expect(shouldNotifyWinner(status(), veteran, '2026-11-03')).toBe(false);
+  });
+
+  it('qué panel toca: ganadora, votar o ninguno (nunca «votar» con la votación cerrada)', () => {
+    const closed = status((r) => ({ ...r, votacion: { ...r.votacion, abierta: false, ganadora: 'koalas' } }));
+    const veteran = { ...emptyMemory(), firstDay: '2026-11-01' };
+    expect(pollNoticeKind(closed, veteran, '2026-11-20')).toBe('winner');
+    // El fallo de la 2.11.0: tras avisar de la ganadora, al reiniciar el panel salía «A votar».
+    expect(pollNoticeKind(closed, { ...veteran, winnerNoticed: '2026-11-a' }, '2026-11-20')).toBeNull();
+    const noWinner = status((r) => ({ ...r, votacion: { ...r.votacion, abierta: false } }));
+    expect(pollNoticeKind(noWinner, veteran, '2026-11-20')).toBeNull();
+    expect(pollNoticeKind(status(), veteran, '2026-11-03')).toBe('vote');
+    expect(pollNoticeKind(status(), { ...veteran, firstDay: '2026-11-03' }, '2026-11-03')).toBeNull();
+    // Partida vieja: memoria guardada sin winnerNoticed.
+    const old = parseMemory(JSON.stringify({ firstDay: '2026-11-01' }));
+    expect(pollNoticeKind(closed, old, '2026-11-20')).toBe('winner');
   });
 
   it('el primer día de juego no hay aviso', () => {

@@ -15,6 +15,8 @@ import type { WorldScene } from './WorldScene';
 export class PollNoticeScene extends Phaser.Scene {
   /** Votación ya anunciada: al reiniciar por cambio de tamaño no se cuenta dos veces. */
   static shownFor: string | null = null;
+  /** Qué panel se decidió para cada votación: al reiniciar por cambio de tamaño se repite el mismo. */
+  static kindFor: { poll: string; kind: 'winner' | 'vote' } | null = null;
 
   private yes: Phaser.GameObjects.Container | null = null;
   private no: Phaser.GameObjects.Container | null = null;
@@ -37,6 +39,14 @@ export class PollNoticeScene extends Phaser.Scene {
       this.finish(false);
       return;
     }
+    const kept = PollNoticeScene.kindFor?.poll === poll.id ? PollNoticeScene.kindFor.kind : null;
+    const kind = kept ?? community.noticeKind();
+    const win = kind === 'winner' ? poll.opciones.find((o) => o.id === poll.ganadora) : undefined;
+    if (!kind || (kind === 'winner' && !win) || (kind === 'vote' && community.phase() !== 'open')) {
+      this.finish(false);
+      return;
+    }
+    PollNoticeScene.kindFor = { poll: poll.id, kind };
     const { width, height } = this.scale;
     addVeil(this);
     const panelW = Math.min(width * 0.62, 520);
@@ -45,14 +55,16 @@ export class PollNoticeScene extends Phaser.Scene {
     const cy = height / 2;
     addPanel(this, cx, cy, panelW, panelH);
     const button = Phaser.Math.Clamp(panelH * 0.24, 60, 110);
-    const win = community.notifyWinner() ? poll.opciones.find((o) => o.id === poll.ganadora) : undefined;
     if (win) {
       // Ganadora: copa, nombre de la idea y botón que lleva al tablón a verla.
       addEmoji(this, cx, cy - panelH * 0.22, '🏆', panelH * 0.26);
       fitText(addUiText(this, cx, cy + panelH * 0.04, `${t('board.winner')} ${localized(win.titulo, getLanguage())}`, textStyle(Math.round(panelH * 0.09), UI.brown, UI.cream)).setOrigin(0.5), panelW * 0.86);
       this.yes = addPillButton(this, cx, cy + panelH * 0.3, Math.min(panelW * 0.8, button * 3), button, { color: 'green', icon: 'play', label: t('board.see'), onTap: () => this.finish(true) });
       community.markWinnerNoticed();
-      bus.emit('poll-winner-notice', { poll: poll.id });
+      if (PollNoticeScene.shownFor !== poll.id) {
+        PollNoticeScene.shownFor = poll.id;
+        bus.emit('poll-winner-notice', { poll: poll.id });
+      }
     } else {
       addEmoji(this, cx, cy - panelH * 0.14, '🙋', panelH * 0.32);
       // Botón con texto («¡A votar!»): el ▶ solo no decía qué hacía.

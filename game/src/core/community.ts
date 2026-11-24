@@ -227,6 +227,16 @@ export function shouldNotifyWinner(status: CommunityStatus, memory: CommunityMem
   return poll !== null && poll.ganadora !== null && memory.winnerSeen !== poll.id && memory.winnerNoticed !== poll.id;
 }
 
+/**
+ * Qué panel toca enseñar: el de la ganadora va por delante del de votar. `null` si no toca ninguno. Nunca «votar» con
+ * la votación cerrada (fallo de la 2.11.0: al reiniciar el panel por un giro salía «A votar» sin votación abierta).
+ */
+export function pollNoticeKind(status: CommunityStatus, memory: CommunityMemory, today: string): 'winner' | 'vote' | null {
+  if (shouldNotifyWinner(status, memory, today)) return 'winner';
+  if (shouldNotify(status, memory, today)) return 'vote';
+  return null;
+}
+
 export function localized(text: Localized, lang: Language): string {
   // Las traducciones llegan del servidor y pueden cambiar sin sacar versión: si falta un idioma, inglés.
   return text[lang] ?? text.en;

@@ -1,5 +1,5 @@
 import {
-  COMMUNITY_KEY, drawingName, emptyMemory, hasUnseen, parseMemory, parseStatus, pollPhase, shouldNotify, shouldNotifyWinner, wallKey,
+  COMMUNITY_KEY, drawingName, emptyMemory, hasUnseen, parseMemory, parseStatus, pollNoticeKind, pollPhase, shouldNotify, shouldNotifyWinner, wallKey,
   type CommunityMemory, type CommunityStatus, type PollPhase,
 } from '../core/community';
 import { dayKey } from '../core/activity';
@@ -83,6 +83,11 @@ export class Community {
   /** ¿El aviso que toca es el de la ganadora (y no el de votar)? */
   notifyWinner(): boolean {
     return this.last !== null && shouldNotifyWinner(this.last, this.mem, this.today());
+  }
+
+  /** Qué panel de aviso toca ahora: ganadora, votar o ninguno. */
+  noticeKind(): 'winner' | 'vote' | null {
+    return this.last ? pollNoticeKind(this.last, this.mem, this.today()) : null;
   }
 
   async refresh(): Promise<boolean> {
