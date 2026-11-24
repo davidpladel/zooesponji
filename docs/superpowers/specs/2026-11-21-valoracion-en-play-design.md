@@ -318,7 +318,12 @@ Hecho en `feat/release-2.11.0` según el plan (`docs/superpowers/plans/2026-11-2
   `eventCatalog`) y de juego (`valoracion.spec.ts`, 13 casos). Los 60 s de Play colgado se prueban en la unitaria;
   en la de juego se comprueba que con Play colgado el mapa sigue en pausa.
 - **Sigue pendiente** todo «Antes de publicar»: consulta a Google sobre Familias, ficha de seguridad de datos y
-  textos legales, cuentas de niños y política de SDK. Y la prueba en el móvil desde la prueba interna.
+  textos legales, cuentas de niños y política de SDK.
+- **Probada en el móvil de David (2026-11-23/24):** por cable (APK aparte, `.prueba`), el registro muestra la
+  llamada a Play al salir de la tienda, sin error, el intento guardado y la cuidadora moviéndose después. Desde la
+  prueba interna (2.11.0 de prueba, `versionCode` 14, anuncios de prueba y sin estadísticas) **salió la tarjeta de
+  Google** y el juego siguió bien. Para instalar desde Play hubo que borrar antes el juego instalado desde el
+  ordenador (firma distinta: «INSTALL_FAILED_UPDATE_INCOMPATIBLE»).
 
 ## Aprobación
 
