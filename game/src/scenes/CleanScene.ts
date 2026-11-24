@@ -69,6 +69,8 @@ export class CleanScene extends Phaser.Scene {
   private trail = 0;
   /** Cuándo sonó la herramienta por última vez al frotar (ms del reloj de la escena). */
   private lastRubSound = -Infinity;
+  /** De qué herramienta fue el último sonido: al cambiar de herramienta, la nueva suena enseguida. */
+  private lastRubStep: CleanStep | null = null;
   private finished = false;
   private fx: Phaser.GameObjects.Text[] = [];
 
@@ -185,8 +187,9 @@ export class CleanScene extends Phaser.Scene {
   private rubSound(step: CleaningState['step']): void {
     if (step === 'hecho') return;
     const id = toolSound(step);
-    if (!id || this.time.now - this.lastRubSound < RUB_SOUND_GAP_MS[step]) return;
+    if (!id || (step === this.lastRubStep && this.time.now - this.lastRubSound < RUB_SOUND_GAP_MS[step])) return;
     this.lastRubSound = this.time.now;
+    this.lastRubStep = step;
     sfx.play(id);
   }
 
