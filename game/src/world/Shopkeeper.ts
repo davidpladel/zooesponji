@@ -5,9 +5,13 @@ import type { Point } from '../core/pathfinding';
 import type { ShopInterior } from './ShopInterior';
 import { HUD_COIN } from '../ui/widgets';
 import { wrapStyle } from '../ui/wrap';
+import { placeClear, type Rect } from '../core/bubbleLayout';
 
 /** Borde de abajo del contador de monedas (moneda de 44 px centrada en HUD_COIN) y un poco de aire. */
 const COIN_CLEAR_Y = HUD_COIN.y + 22 + 6;
+
+/** El globo va por encima del bocadillo de comprar (3100). */
+const BUBBLE_DEPTH = 3200;
 
 /** Cuánto se aparta la cuidadora (px de pantalla por unidad de escala) antes de que el tendero gire la cabeza. */
 const LOOK_MARGIN = 10;
@@ -19,6 +23,10 @@ export class Shopkeeper {
   private facing: Facing = 'down';
   private bubble: Phaser.GameObjects.Container | null = null;
   private current: string | null = null;
+  /** Caja que el globo no debe pisar (el bocadillo de comprar). */
+  private avoid: Rect | null = null;
+  /** Posición de siempre del globo, antes de apartarlo. */
+  private home: Rect | null = null;
 
   constructor(
     private readonly scene: Phaser.Scene,
@@ -96,7 +104,10 @@ export class Shopkeeper {
     // la izquierda) para no taparlo.
     const x = Math.min(this.scene.scale.width - w / 2 - 8, this.feet.x + 10 * s + w / 2);
     const y = Math.max(h / 2 + COIN_CLEAR_Y, this.feet.y - this.sprite.displayHeight - 2 * s - h / 2);
-    const bubble = this.scene.add.container(x, y, [g, text]).setDepth(2000).setScale(0);
+    this.home = { x, y, w, h };
+    // Por encima del bocadillo de comprar (3100) y apartado de él si se cruzan: lo que dice no queda tapado.
+    const at = this.clearSpot();
+    const bubble = this.scene.add.container(at.x, at.y, [g, text]).setDepth(BUBBLE_DEPTH).setScale(0);
     this.bubble = bubble;
     this.current = message;
     this.scene.tweens.add({ targets: bubble, scale: 1, duration: 220, ease: 'Back.Out' });
@@ -109,5 +120,30 @@ export class Shopkeeper {
     this.bubble?.destroy();
     this.bubble = null;
     this.current = null;
+    this.home = null;
+  }
+
+  /** Caja que el globo no debe pisar (null: ninguna). Recoloca el globo que se esté viendo. */
+  setAvoid(rect: Rect | null): void {
+    this.avoid = rect;
+    if (!this.bubble) return;
+    const at = this.clearSpot();
+    this.bubble.setPosition(at.x, at.y);
+  }
+
+  /** Caja del globo en pantalla (para las pruebas). */
+  bubbleRect(): Rect | null {
+    return this.bubble && this.home ? { ...this.home, x: this.bubble.x, y: this.bubble.y } : null;
+  }
+
+  bubbleDepth(): number {
+    return this.bubble?.depth ?? 0;
+  }
+
+  private clearSpot(): { x: number; y: number } {
+    const home = this.home!;
+    const s = this.interior.layout.scale;
+    const bounds = { width: this.scene.scale.width, height: this.scene.scale.height, minY: COIN_CLEAR_Y };
+    return placeClear(home, this.avoid, bounds, 4 * s);
   }
 }
