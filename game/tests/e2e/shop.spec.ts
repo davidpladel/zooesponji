@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 
 async function canvasBox(page: Page) {
-  const box = await page.locator('canvas').boundingBox();
+  const box = await page.locator('canvas').first().boundingBox();
   if (!box) throw new Error('No hay canvas');
   return box;
 }
@@ -196,4 +196,94 @@ test('libro: desde la 3.ª visita se ve parpadeando, y ya siempre', async ({ pag
   await leave();
   await visit();
   expect(await page.evaluate(() => window.__ZOO__!.shopBookNotice())).toBe(true);
+});
+
+/** Todos los mensajes del tendero, con el bocadillo de comprar a la vista (spec 2026-11-24-avisos-y-tienda). */
+const KEEPER_LINES: [string, Record<string, number>?][] = [
+  ['shop.hello'], ['shop.bookHint'], ['shop.boardHint'], ['shop.about.pantera'], ['shop.about.elefante-asiatico'],
+  ['shop.about.luna'], ['shop.about.clinic'], ['shop.owned'], ['shop.full'], ['shop.needCoinsHow', { n: 120 }], ['shop.thanks'],
+];
+
+for (const size of [null, { width: 740, height: 340 }]) {
+  test(`el tendero no queda tapado por el botón de comprar con ninguno de sus mensajes${size ? ' (apaisado bajo)' : ''}`, async ({ page }) => {
+    test.setTimeout(90_000);
+    if (size) await page.setViewportSize(size);
+    await startGame(page);
+    await page.evaluate(() => window.__ZOO__!.addCoins(60));
+    await page.evaluate(() => window.__ZOO__!.openShop());
+    await page.waitForFunction(() => window.__ZOO__!.shopCardScreenPos('pantera') !== null, undefined, { timeout: 20_000 });
+    await walkToProduct(page, 'pantera');
+    const canvas = await canvasBox(page);
+    for (const [key, params] of KEEPER_LINES) {
+      await page.evaluate(([k, p]) => window.__ZOO__!.shopSay(k as string, p as Record<string, number> | undefined), [key, params] as const);
+      await page.waitForTimeout(260);
+      const bubble = await page.evaluate(() => window.__ZOO__!.shopBubbleRect());
+      const buy = await page.evaluate(() => window.__ZOO__!.shopBuyBubbleRect());
+      expect(bubble, key).not.toBeNull();
+      expect(buy, key).not.toBeNull();
+      const apart = Math.abs(bubble!.x - buy!.x) >= (bubble!.w + buy!.w) / 2 || Math.abs(bubble!.y - buy!.y) >= (bubble!.h + buy!.h) / 2;
+      expect(apart, `${key}: el globo pisa el botón de comprar`).toBe(true);
+      expect(bubble!.x - bubble!.w / 2, key).toBeGreaterThanOrEqual(0);
+      expect(bubble!.x + bubble!.w / 2, key).toBeLessThanOrEqual(canvas.width + 1);
+      expect(bubble!.y + bubble!.h / 2, key).toBeLessThanOrEqual(canvas.height + 1);
+      expect(await page.evaluate(() => window.__ZOO__!.shopBubbleAbove()), key).toBe(true);
+    }
+  });
+}
+
+async function buyPanteraAndWatchToast(page: Page) {
+  await startGame(page);
+  await page.evaluate(() => window.__ZOO__!.addCoins(60));
+  await page.evaluate(() => window.__ZOO__!.openShop());
+  await page.waitForFunction(() => window.__ZOO__!.shopCardScreenPos('pantera') !== null, undefined, { timeout: 20_000 });
+  const box = await canvasBox(page);
+  const buy = await walkToProduct(page, 'pantera');
+  const buyRect = (await page.evaluate(() => window.__ZOO__!.shopBuyBubbleRect()))!;
+  await page.mouse.click(box.x + buy.x, box.y + buy.y);
+  await page.waitForFunction(() => window.__ZOO__!.hudToastRect() !== null, undefined, { timeout: 5_000 });
+  const shownAt = Date.now();
+  const toast = (await page.evaluate(() => window.__ZOO__!.hudToastRect()))!;
+  const keeper = await page.evaluate(() => window.__ZOO__!.shopBubbleRect());
+  return { box, toast, keeper, buyRect, shownAt };
+}
+
+const apart = (a: { x: number; y: number; w: number; h: number }, b: { x: number; y: number; w: number; h: number }) =>
+  Math.abs(a.x - b.x) >= (a.w + b.w) / 2 || Math.abs(a.y - b.y) >= (a.h + b.h) / 2;
+
+for (const size of [null, { width: 740, height: 340 }]) {
+  test(`el aviso de página nueva sale a la derecha y dura más${size ? ' (apaisado bajo)' : ''}`, async ({ page }) => {
+    test.setTimeout(60_000);
+    if (size) await page.setViewportSize(size);
+    const { box, toast, keeper, buyRect, shownAt } = await buyPanteraAndWatchToast(page);
+    // A la derecha; en pantalla baja manda no pisar el botón ni el globo, aunque tenga que moverse.
+    if (!size) expect(toast.x).toBeGreaterThan(box.width / 2);
+    expect(toast.x - toast.w / 2).toBeGreaterThanOrEqual(0);
+    expect(toast.x + toast.w / 2).toBeLessThanOrEqual(box.width + 1);
+    expect(apart(toast, buyRect)).toBe(true);
+    expect(toast.y - toast.h / 2, 'por debajo de la X de salir').toBeGreaterThan(76);
+    if (keeper) expect(apart(toast, keeper)).toBe(true);
+    await page.waitForTimeout(Math.max(0, 3000 - (Date.now() - shownAt)));
+    expect(await page.evaluate(() => window.__ZOO__!.hudToast())).not.toBeNull();
+    await expect.poll(() => page.evaluate(() => window.__ZOO__!.hudToast()), { timeout: 3_000 }).toBeNull();
+  });
+}
+
+test.describe('en árabe', () => {
+  test.use({ locale: 'ar-SA' });
+  test('el aviso de página nueva también va a la derecha y cabe en pantalla', async ({ page }) => {
+    test.setTimeout(60_000);
+    const { box, toast } = await buyPanteraAndWatchToast(page);
+    expect(toast.x).toBeGreaterThan(box.width / 2);
+    expect(toast.x - toast.w / 2).toBeGreaterThanOrEqual(0);
+    expect(toast.x + toast.w / 2).toBeLessThanOrEqual(box.width + 1);
+  });
+});
+
+test('los demás avisos siguen saliendo en el centro', async ({ page }) => {
+  await startGame(page);
+  const box = await canvasBox(page);
+  await page.evaluate(() => window.__ZOO__!.emitToast('¡Prueba!'));
+  await page.waitForFunction(() => window.__ZOO__!.hudToastRect() !== null);
+  const toast = (await page.evaluate(() => window.__ZOO__!.hudToastRect()))!;
+  expect(Math.abs(toast.x - box.width / 2)).toBeLessThan(2);
 });

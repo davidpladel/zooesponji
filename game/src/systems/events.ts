@@ -138,7 +138,9 @@ export interface GameEvents {
   /** Las reglas dejaban ofrecerlo y no había anuncio listo. */
   'ad-empty': { slot: AdSlot };
   /** Aviso arriba en el centro; `icon: 'shop'` añade la tiendita pixelada detrás del texto. */
-  toast: { text: string; icon?: 'shop' };
+  /** `place: 'right'` lo pone arriba a la derecha (no tapa la tienda); `ms`: cuánto se ve antes de irse (1800 por defecto);
+   * `avoid`: cajas que no debe pisar (el botón de comprar y el globo del tendero). */
+  toast: { text: string; icon?: 'shop'; place?: 'right'; ms?: number; avoid?: { x: number; y: number; w: number; h: number }[] };
   /** Comunidad: llegó (o falló) la respuesta del servidor; el tablón y los carteles se ponen al día. */
   'community-updated': Record<string, never>;
   /** Se abre el tablón. `phase`: la de la votación al abrir. */

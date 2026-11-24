@@ -1,3 +1,4 @@
+import type { StringKey } from '../data/strings';
 import type { LessonId } from '../core/tutorial';
 import type * as Phaser from 'phaser';
 import { getArt } from '../art/art';
@@ -153,6 +154,14 @@ export interface ZooTestApi {
   shopDoorScreenPos(): Vec | null;
   shopKeeperScreenPos(): Vec | null;
   shopBuyBubblePos(): Vec | null;
+  shopBuyBubbleRect(): { x: number; y: number; w: number; h: number } | null;
+  shopBubbleRect(): { x: number; y: number; w: number; h: number } | null;
+  shopBubbleAbove(): boolean;
+  /** El tendero dice el mensaje `key` (con `params`), para revisar todos sus mensajes. */
+  shopSay(key: string, params?: Record<string, number>): void;
+  hudToastRect(): { x: number; y: number; w: number; h: number } | null;
+  /** Lanza un aviso normal de arriba (sin colocación especial). */
+  emitToast(text: string): void;
   shopHintVisible(): boolean;
   shopActiveItem(): string | null;
   shopBookPos(): Vec | null;
@@ -277,7 +286,7 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
     'control-used', 'shop-opened', 'shop-look', 'shop-denied', 'purchase', 'shop-closed', 'book-opened', 'book-page-shown',
     'book-index', 'book-closed', 'legal-opened', 'quit-asked', 'quit-answered',
     'review-requested', 'review-failed', 'ad-offered', 'ad-accepted', 'ad-declined', 'ad-watched', 'ad-cut', 'ad-failed', 'ad-empty', 'ad-closed',
-    'board-opened', 'board-voted', 'board-qr', 'board-offline', 'poll-notice',
+    'board-opened', 'board-voted', 'board-qr', 'board-offline', 'poll-notice', 'poll-winner-notice',
     'update-offered', 'update-accepted', 'update-later', 'update-forced', 'update-failed',
     'tutorial-offered', 'tutorial-answered', 'tutorial-started', 'tutorial-step', 'tutorial-ended', 'tutorial-prepared',
   ];
@@ -326,6 +335,8 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
     hudClinicButtonPos: () => activeScene<HudScene>('Hud')?.clinicButtonPos() ?? null,
     hudShopEdgeVisible: () => activeScene<HudScene>('Hud')?.shopEdgeVisible() ?? false,
     hudToast: () => activeScene<HudScene>('Hud')?.toastShown() ?? null,
+    hudToastRect: () => activeScene<HudScene>('Hud')?.toastRect() ?? null,
+    emitToast: (text) => bus.emit('toast', { text }),
     shopTrailTiles: () => activeScene<WorldScene>('World')?.shopTrailTiles() ?? [],
     tutorialTrailTiles: () => activeScene<WorldScene>('World')?.residentTrailTiles() ?? [],
     shopRoute: () => activeScene<WorldScene>('World')?.shopRoute() ?? [],
@@ -386,6 +397,10 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
     shopDoorScreenPos: () => activeScene<ShopScene>('Shop')?.doorScreenPos() ?? null,
     shopKeeperScreenPos: () => activeScene<ShopScene>('Shop')?.keeperScreenPos() ?? null,
     shopBuyBubblePos: () => activeScene<ShopScene>('Shop')?.buyBubblePos() ?? null,
+    shopBuyBubbleRect: () => activeScene<ShopScene>('Shop')?.buyBubbleRect() ?? null,
+    shopBubbleRect: () => activeScene<ShopScene>('Shop')?.keeperBubbleRect() ?? null,
+    shopBubbleAbove: () => activeScene<ShopScene>('Shop')?.keeperBubbleAbove() ?? false,
+    shopSay: (key, params) => activeScene<ShopScene>('Shop')?.keeperSay(key as StringKey, params),
     shopHintVisible: () => activeScene<ShopScene>('Shop')?.hintVisible() ?? false,
     shopActiveItem: () => activeScene<ShopScene>('Shop')?.activeItem() ?? null,
     shopBookPos: () => activeScene<ShopScene>('Shop')?.bookScreenPos() ?? null,
@@ -486,6 +501,7 @@ export function installTestHooks(game: Phaser.Game, platform: Platform): void {
     busLog: () => [...busLog],
     communityStart: async (baseUrl) => {
       PollNoticeScene.shownFor = null;
+      PollNoticeScene.kindFor = null;
       // Como un jugador que ya jugó otro día: el aviso no sale el primer día de juego.
       try {
         if (!window.localStorage.getItem(COMMUNITY_KEY)) window.localStorage.setItem(COMMUNITY_KEY, JSON.stringify({ firstDay: '2000-01-01' }));

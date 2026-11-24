@@ -39,15 +39,22 @@ function fits(box: Rect, bounds: Bounds): boolean {
  * pantalla; si no cabe ninguno, con el que menos se solapa.
  */
 export function placeClear(box: Rect, avoid: Rect | null, bounds: Bounds, gap: number): { x: number; y: number } {
-  if (!avoid || !overlaps(box, avoid)) return { x: box.x, y: box.y };
-  const candidates: Rect[] = [
-    { ...box, y: avoid.y - avoid.h / 2 - gap - box.h / 2 },
-    { ...box, x: avoid.x + avoid.w / 2 + gap + box.w / 2 },
-    { ...box, x: avoid.x - avoid.w / 2 - gap - box.w / 2 },
-    { ...box, y: avoid.y + avoid.h / 2 + gap + box.h / 2 },
-  ];
-  const clear = candidates.find((c) => fits(c, bounds) && !overlaps(c, avoid));
+  return placeClearAll(box, avoid ? [avoid] : [], bounds, gap);
+}
+
+/** Como `placeClear`, pero sin pisar ninguna de las cajas de `avoid` (p. ej. el botón de comprar y el globo). */
+export function placeClearAll(box: Rect, avoid: readonly Rect[], bounds: Bounds, gap: number): { x: number; y: number } {
+  const free = (c: Rect) => avoid.every((a) => !overlaps(c, a));
+  if (free(box)) return { x: box.x, y: box.y };
+  const candidates = avoid.flatMap((a): Rect[] => [
+    { ...box, y: a.y - a.h / 2 - gap - box.h / 2 },
+    { ...box, x: a.x + a.w / 2 + gap + box.w / 2 },
+    { ...box, x: a.x - a.w / 2 - gap - box.w / 2 },
+    { ...box, y: a.y + a.h / 2 + gap + box.h / 2 },
+  ]);
+  const clear = candidates.find((c) => fits(c, bounds) && free(c));
   if (clear) return { x: clear.x, y: clear.y };
-  const best = candidates.map((c) => clamp(c, bounds)).sort((a, b) => overlapArea(a, avoid) - overlapArea(b, avoid))[0]!;
+  const total = (c: Rect) => avoid.reduce((sum, a) => sum + overlapArea(c, a), 0);
+  const best = candidates.map((c) => clamp(c, bounds)).sort((a, b) => total(a) - total(b))[0]!;
   return { x: best.x, y: best.y };
 }
