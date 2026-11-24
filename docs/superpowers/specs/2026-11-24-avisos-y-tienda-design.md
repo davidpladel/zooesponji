@@ -69,3 +69,16 @@ El desplazamiento exacto del globo, la posición exacta del aviso a la derecha y
 ## Validación
 
 David lo comprueba en el móvil: la tienda con varios mensajes y una compra que abra una página del libro.
+
+## Cómo quedó (2026-11-24)
+
+- **Votación:** `pollNoticeKind` (en `core/community.ts`) decide ganadora, votar o nada, y `PollNoticeScene.kindFor`
+  conserva la decisión al reiniciar por un giro. «A votar» exige la votación abierta. Además, el aviso de la ganadora
+  se contaba en Matomo una vez por cada giro: ahora cuenta una vez por votación, igual que el de votar.
+- **Tendero:** `core/bubbleLayout.ts` (`placeClear`) aparta el globo del bocadillo de comprar, y el globo va a
+  profundidad 3200. Probado con sus 11 mensajes, también a 740×340.
+- **Página nueva:** el evento `toast` admite `place: 'right'`, `ms` y `avoid`. En la tienda se ve 3,5 s, arriba a la
+  derecha y por debajo de la X de salir (y = 112). En pantallas bajas se aparta del botón de comprar y del globo
+  (`placeClearAll`), aunque tenga que correrse a la izquierda. Los demás avisos siguen igual.
+- Pruebas: unitarias (`community`, `bubbleLayout`) y de juego (`board.spec`, `shop.spec`). Falta que David lo pruebe
+  en el móvil.

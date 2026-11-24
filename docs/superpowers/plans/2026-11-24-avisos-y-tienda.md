@@ -43,14 +43,14 @@ Playwright mida las cajas.
 - Produces: `pollNoticeKind(status: CommunityStatus, memory: CommunityMemory, today: string): 'winner' | 'vote' | null` en `core/community.ts`: `'winner'` si `shouldNotifyWinner`, si no `'vote'` si `shouldNotify`, si no `null`.
 - Produces: `PollNoticeScene.kindFor: { poll: string; kind: 'winner' | 'vote' } | null` (estático, como `shownFor`).
 
-- [ ] **Step 1: Pruebas unitarias que fallan** en `community.test.ts`:
+- [x] **Step 1: Pruebas unitarias que fallan** en `community.test.ts`:
   - `pollNoticeKind` con votación cerrada y ganadora no vista → `'winner'`; con la misma memoria y `winnerNoticed` = id → `null` (este es el caso del fallo: nunca `'vote'`).
   - cerrada sin ganadora → `null`; abierta sin votar ni avisar → `'vote'`; primer día → `null`; memoria vieja sin `winnerNoticed` (se parsea con `parseMemory` de un JSON sin ese campo) → `'winner'`.
-- [ ] **Step 2: Prueba de juego que falla** en `board.spec.ts`: `'girar el móvil con el aviso de la ganadora no lo cambia a votar'`. Servidor falso con `{ ...OPEN, abierta: false, ganadora: <id de una opción> }`, `firstDay` de ayer (como los demás casos de ganadora del archivo, o con el gancho que ya usen), esperar el panel, `page.setViewportSize` a otro tamaño, y comprobar que el bus registra `poll-winner-notice` una vez y **ningún** `poll-notice`.
-- [ ] **Step 3: Lanzar ambas en el subagente.** Esperado: FAIL (no existe `pollNoticeKind`; en juego sale `poll-notice` tras el giro).
-- [ ] **Step 4: Implementar.** `pollNoticeKind` en `core`. En `create()`: si `kindFor?.poll === poll.id` se usa ese `kind`; si no, se calcula con `pollNoticeKind` y se guarda. Si sale `null`, o si es `'vote'` y `community.phase() !== 'open'`, se llama a `finish(false)`. La rama `'winner'` busca la opción ganadora como ahora (si no la encuentra, `finish(false)`). `Community` expone `noticeKind()` envolviendo la función pura con `this.today()`.
-- [ ] **Step 5: Lanzar** `npm test -- community` y `npx playwright test tests/e2e/board.spec.ts --workers=1`. Esperado: todo PASS, incluidos los casos que ya existían.
-- [ ] **Step 6: Commit** `fix(tablon): el aviso de la ganadora no se convierte en «A votar» al girar el móvil`.
+- [x] **Step 2: Prueba de juego que falla** en `board.spec.ts`: `'girar el móvil con el aviso de la ganadora no lo cambia a votar'`. Servidor falso con `{ ...OPEN, abierta: false, ganadora: <id de una opción> }`, `firstDay` de ayer (como los demás casos de ganadora del archivo, o con el gancho que ya usen), esperar el panel, `page.setViewportSize` a otro tamaño, y comprobar que el bus registra `poll-winner-notice` una vez y **ningún** `poll-notice`.
+- [x] **Step 3: Lanzar ambas en el subagente.** Esperado: FAIL (no existe `pollNoticeKind`; en juego sale `poll-notice` tras el giro).
+- [x] **Step 4: Implementar.** `pollNoticeKind` en `core`. En `create()`: si `kindFor?.poll === poll.id` se usa ese `kind`; si no, se calcula con `pollNoticeKind` y se guarda. Si sale `null`, o si es `'vote'` y `community.phase() !== 'open'`, se llama a `finish(false)`. La rama `'winner'` busca la opción ganadora como ahora (si no la encuentra, `finish(false)`). `Community` expone `noticeKind()` envolviendo la función pura con `this.today()`.
+- [x] **Step 5: Lanzar** `npm test -- community` y `npx playwright test tests/e2e/board.spec.ts --workers=1`. Esperado: todo PASS, incluidos los casos que ya existían.
+- [x] **Step 6: Commit** `fix(tablon): el aviso de la ganadora no se convierte en «A votar» al girar el móvil`.
 
 ### Task 2: El globo del tendero, encima y sin chocar con el botón de comprar
 
@@ -64,12 +64,12 @@ Playwright mida las cajas.
 - Produces: `Shopkeeper.setAvoid(rect: Rect | null): void`: guarda la caja y recoloca el globo visible.
 - Produces ganchos: `shopBubbleRect(): Rect | null`, `shopBuyBubbleRect(): Rect | null`, `shopBubbleAbove(): boolean` (profundidad del globo > profundidad del bocadillo).
 
-- [ ] **Step 1: Pruebas unitarias que fallan** (`bubbleLayout.test.ts`): sin choque → misma posición; choque → resultado sin solape y dentro de `bounds`; sin sitio arriba (cerca de `minY`) → va a un lado; pantalla 740×340 con caja grande → dentro de `bounds`.
-- [ ] **Step 2: Prueba de juego que falla** (`shop.spec.ts`): `'el tendero no queda tapado por el botón de comprar con ninguno de sus mensajes'`. Recorre: saludo, curiosidad de un animal, Luna, clínica, `owned`, `full`, `needCoinsHow` (con pocas monedas), `thanks` tras comprar. En cada uno, con el bocadillo visible, las dos cajas no se solapan, el globo está dentro del lienzo y `shopBubbleAbove()` es true. La misma prueba se repite a 740×340 apaisado.
-- [ ] **Step 3: Lanzar en el subagente.** Esperado: FAIL.
-- [ ] **Step 4: Implementar.** El globo sube a profundidad 3200. `say()` calcula su posición de siempre y la pasa por `placeClear` con el `avoid` guardado (`minY` = `COIN_CLEAR_Y`, gap `4 * s`). `showBuyBubble` llama a `shopkeeper.setAvoid(caja del bocadillo a escala 1, contando el vaivén de 2·s)` y `hideBuyBubble` a `setAvoid(null)`. La punta del globo puede quedar como está.
-- [ ] **Step 5: Lanzar** `npm test -- bubbleLayout` y `npx playwright test tests/e2e/shop.spec.ts --workers=1`. Esperado: PASS.
-- [ ] **Step 6: Commit** `fix(tienda): el globo del tendero va encima y se aparta del botón de comprar`.
+- [x] **Step 1: Pruebas unitarias que fallan** (`bubbleLayout.test.ts`): sin choque → misma posición; choque → resultado sin solape y dentro de `bounds`; sin sitio arriba (cerca de `minY`) → va a un lado; pantalla 740×340 con caja grande → dentro de `bounds`.
+- [x] **Step 2: Prueba de juego que falla** (`shop.spec.ts`): `'el tendero no queda tapado por el botón de comprar con ninguno de sus mensajes'`. Recorre: saludo, curiosidad de un animal, Luna, clínica, `owned`, `full`, `needCoinsHow` (con pocas monedas), `thanks` tras comprar. En cada uno, con el bocadillo visible, las dos cajas no se solapan, el globo está dentro del lienzo y `shopBubbleAbove()` es true. La misma prueba se repite a 740×340 apaisado.
+- [x] **Step 3: Lanzar en el subagente.** Esperado: FAIL.
+- [x] **Step 4: Implementar.** El globo sube a profundidad 3200. `say()` calcula su posición de siempre y la pasa por `placeClear` con el `avoid` guardado (`minY` = `COIN_CLEAR_Y`, gap `4 * s`). `showBuyBubble` llama a `shopkeeper.setAvoid(caja del bocadillo a escala 1, contando el vaivén de 2·s)` y `hideBuyBubble` a `setAvoid(null)`. La punta del globo puede quedar como está.
+- [x] **Step 5: Lanzar** `npm test -- bubbleLayout` y `npx playwright test tests/e2e/shop.spec.ts --workers=1`. Esperado: PASS.
+- [x] **Step 6: Commit** `fix(tienda): el globo del tendero va encima y se aparta del botón de comprar`.
 
 ### Task 3: El aviso de página nueva, más largo y a la derecha
 
@@ -81,15 +81,15 @@ Playwright mida las cajas.
 - Produces: carga del evento `'toast'` con `{ text: string; icon?: 'shop'; place?: 'right'; ms?: number }`. Sin `place` ni `ms` funciona igual que ahora (centro, 1800 ms).
 - Produces gancho: `hudToastRect(): Rect | null` (usa `Rect` de la Task 2).
 
-- [ ] **Step 1: Prueba de juego que falla** (`shop.spec.ts`): `'el aviso de página nueva sale a la derecha y dura más'`. Comprar un animal que abre una página. El aviso queda en la mitad derecha del lienzo, sin solaparse con `shopBubbleRect()` ni con `shopBuyBubbleRect()`, sigue visible a los 3 s y desaparece antes de los 5 s. Se repite en árabe (dentro del lienzo) y a 740×340. Otra prueba comprueba que un aviso normal (`toast.shopOpen`) sigue centrado.
-- [ ] **Step 2: Lanzar en el subagente.** Esperado: FAIL.
-- [ ] **Step 3: Implementar.** Con `place: 'right'`, `showToast` coloca el aviso con su borde derecho a 16 px del borde del lienzo, a la altura de siempre (y 90), sin pasar de la mitad hacia la izquierda; el `delay` del desvanecido es `ms ?? 1800`. En `onBuy` se emite `{ text: t('book.newPage'), place: 'right', ms: 3500 }`. Si al probarlo choca con el botón de ajustes del HUD, se baja lo justo y se anota en «Cómo quedó».
-- [ ] **Step 4: Lanzar** `npx playwright test tests/e2e/shop.spec.ts --workers=1`. Esperado: PASS.
-- [ ] **Step 5: Commit** `fix(tienda): el aviso de página nueva dura más y sale a la derecha`.
+- [x] **Step 1: Prueba de juego que falla** (`shop.spec.ts`): `'el aviso de página nueva sale a la derecha y dura más'`. Comprar un animal que abre una página. El aviso queda en la mitad derecha del lienzo, sin solaparse con `shopBubbleRect()` ni con `shopBuyBubbleRect()`, sigue visible a los 3 s y desaparece antes de los 5 s. Se repite en árabe (dentro del lienzo) y a 740×340. Otra prueba comprueba que un aviso normal (`toast.shopOpen`) sigue centrado.
+- [x] **Step 2: Lanzar en el subagente.** Esperado: FAIL.
+- [x] **Step 3: Implementar.** Con `place: 'right'`, `showToast` coloca el aviso con su borde derecho a 16 px del borde del lienzo, a la altura de siempre (y 90), sin pasar de la mitad hacia la izquierda; el `delay` del desvanecido es `ms ?? 1800`. En `onBuy` se emite `{ text: t('book.newPage'), place: 'right', ms: 3500 }`. Si al probarlo choca con el botón de ajustes del HUD, se baja lo justo y se anota en «Cómo quedó».
+- [x] **Step 4: Lanzar** `npx playwright test tests/e2e/shop.spec.ts --workers=1`. Esperado: PASS.
+- [x] **Step 5: Commit** `fix(tienda): el aviso de página nueva dura más y sale a la derecha`.
 
 ### Task 4: Comprobación completa, documentación y prueba de David
 
-- [ ] **Step 1:** El subagente lanza `npm run typecheck`, `npm test` y, de una en una, `board.spec.ts`, `shop.spec.ts`, `valoracion.spec.ts` y `stats.spec.ts`. Todo PASS.
-- [ ] **Step 2:** Documentación: apartado «Cómo quedó» en la spec y casillas de este plan.
-- [ ] **Step 3:** Commit `docs: cómo quedaron los arreglos de aviso y tienda`.
+- [x] **Step 1:** El subagente lanza `npm run typecheck`, `npm test` y, de una en una, `board.spec.ts`, `shop.spec.ts`, `valoracion.spec.ts` y `stats.spec.ts`. Todo PASS.
+- [x] **Step 2:** Documentación: apartado «Cómo quedó» en la spec y casillas de este plan.
+- [x] **Step 3:** Commit `docs: cómo quedaron los arreglos de aviso y tienda`.
 - [ ] **Step 4:** Preguntar a David si hay que sacar una nueva subida a la prueba interna (versionCode 15, según la tabla de `game/README.md` › Versión) para probarlo en el móvil. Lo visual no se da por terminado sin su prueba.
