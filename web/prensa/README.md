@@ -49,8 +49,9 @@ Los assets tienen caché de 10 años en el navegador: **nunca sobrescribir un de
 2. Cambiar `STAMP` en `build.py` (también sube el `?v=` de `prensa.css`) y regenerar.
 3. Redirigir las carpetas viejas a la nueva en `web/public/.htaccess` (regla «Ediciones viejas del kit de prensa»).
    Si cambian imágenes o el ZIP, rehacer también las miniaturas y el ZIP (ver «Materiales y permisos»).
-4. Publicar la carpeta nueva, `.htaccess`, `prensa.css` y las dos páginas. La vieja deja de servirse: sus direcciones
-   llevan a la nueva con un 301.
+4. Publicar la carpeta nueva, `.htaccess`, `prensa.css` y las dos páginas, y **apartar** la carpeta vieja del servidor a
+   `~/copia-web/prensa-<carpeta>-apartada` (sin borrarla). nginx sirve directamente los archivos que existen y solo
+   pasa a Apache los que no, así que la redirección 301 a la carpeta nueva solo funciona cuando la vieja ya no está.
 5. Con permiso de David, borrar la carpeta vieja del servidor después de guardar `~/copia-web/prensa-<carpeta>-borrada.tgz`.
 
 Historial: `20261102` (primera edición, borrada el 2026-11-02) → `20261102b` (contacto «David Plaza») → `20261116` (insignia «Aprobada por profesores» de Google Play) → `20261126` (icono nuevo de la app separado del logo, seis capturas del mapa nuevo con baño, textos con el baño y la clínica, icono hecho con ChatGPT en los créditos). Las direcciones de `20261102b` y `20261116` redirigen a las de `20261126` (una sola regla en `web/public/.htaccess`: al sacar edición nueva se cambia el destino y se añade la carpeta anterior a la lista).
