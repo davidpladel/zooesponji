@@ -7,7 +7,7 @@ ErrorDocument 404 /pagina.php?p=404
   RewriteCond %{HTTP_HOST} ^zooesponji\.com$ [NC]
   RewriteRule ^(.*)$ https://www.zooesponji.com/$1 [R=301,L]
   # Ediciones viejas del kit de prensa: sus enlaces llevan a la edición actual (mismos nombres de fichero)
-  RewriteRule ^assets/prensa/20261102b/(.*)$ /assets/prensa/20261116/$1 [R=301,L]
+  RewriteRule ^assets/prensa/(20261102b|20261116)/(.*)$ /assets/prensa/20261126/$2 [R=301,L]
   RewriteRule ^$ pagina.php?p=inicio [QSA,L]
   RewriteRule ^en/?$ pagina.php?p=home [QSA,L]
   RewriteRule ^ideas/?$ pagina.php?p=ideas [QSA,L]

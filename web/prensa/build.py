@@ -7,7 +7,7 @@ from urllib.parse import urlencode
 ROOT = Path(__file__).resolve().parents[1]
 HERE = Path(__file__).resolve().parent
 DATA = json.loads((HERE / 'dossiers.json').read_text(encoding='utf-8'))
-STAMP = '20261116'
+STAMP = '20261126'
 REL = '/assets/prensa/' + STAMP
 OUT = ROOT / 'public' / REL.lstrip('/')
 SITE = 'https://www.zooesponji.com'
@@ -61,7 +61,7 @@ def pdfs():
                 p.set_xy(18,36)
             start(1)
             text(d['tagline'],True); text(d['intro'])
-            y=p.get_y(); p.image(str(OUT/'capturas/captura-1-leones.png'),x=18,y=y,w=174,h=97.875);p.set_y(y+102)
+            y=p.get_y(); p.image(str(OUT/'capturas/captura-2-comer.png'),x=18,y=y,w=174,h=97.875);p.set_y(y+102)
             text(d['storyTitle'],True); text(d['story'])
             if p.get_y()>276: raise ValueError(f'{lang} page 1 overflow: {p.get_y()}')
             start(2)
@@ -112,8 +112,9 @@ def pages():
         mb=(OUT/'zoo-esponji-imagenes.zip').stat().st_size/1_000_000
         download='Descargar' if es else 'Download'
         cards=''
-        for name,filename,label in [('leones','captura-1-leones.png','Leones' if es else 'Lions'),('tienda','captura-4-tienda.png','La tienda' if es else 'The shop'),('libro','captura-5-libro.png','El libro' if es else 'The book'),('panteras','captura-6-panteras.png','Panteras' if es else 'Panthers')]:
-            cards+=f'<figure class="funcion"><a href="{REL}/capturas/{filename}" download><img src="/assets/img/{name}.webp" alt="{label}" width="960" height="540" loading="lazy"></a><figcaption><h3>{label}</h3><a href="{REL}/capturas/{filename}" download>{download} PNG · 1920 × 1080</a></figcaption></figure>'
+        # Same file names as earlier editions, so the redirect of old folders lands on a picture of the same thing.
+        for name,filename,label in [('comer','captura-2-comer.png','Dar de comer' if es else 'Feeding time'),('banar','captura-3-banar.png','El baño' if es else 'Bath time'),('leones','captura-1-leones.png','Leones' if es else 'Lions'),('panteras','captura-6-panteras.png','Panteras' if es else 'Panthers'),('tienda','captura-4-tienda.png','La tienda' if es else 'The shop'),('libro','captura-5-libro.png','El libro' if es else 'The book')]:
+            cards+=f'<figure class="funcion"><a href="{REL}/capturas/{filename}" download><img src="{REL}/miniaturas/{name}.webp" alt="{label}" width="960" height="540" loading="lazy"></a><figcaption><h3>{label}</h3><a href="{REL}/capturas/{filename}" download>{download} PNG · 1920 × 1080</a></figcaption></figure>'
         languageLinks=''.join(f'<li><a href="{REL}/zoo-esponji-press-{code}.pdf" download hreflang="{code}"><span lang="{code}" dir="auto">{item["name"]}</span> <small>PDF · 2 '+('páginas' if es else 'pages')+f' · {round((OUT/f"zoo-esponji-press-{code}.pdf").stat().st_size/1024)} KB</small></a></li>' for code,item in DATA.items())
         story='<h2>'+d['storyTitle']+'</h2>'+paras(d['story'])+'<h3>'+d['aiTitle']+'</h3>'+paras(d['ai'])
         anchors=[('historia' if es else 'story','La historia' if es else 'The story'),('ficha' if es else 'facts','Ficha' if es else 'Facts'),('materiales' if es else 'assets','Materiales' if es else 'Assets'),('contacto' if es else 'contact','Contacto' if es else 'Contact')]
@@ -121,12 +122,13 @@ def pages():
 <a class="saltar" href="#contenido">{'Saltar al contenido' if es else 'Skip to content'}</a>
 <header class="cabecera-texto"><div class="envoltura"><a class="marca" href="{'/' if es else '/en'}"><img src="/assets/img/icono-192.png" alt="" width="40" height="40">Zoo Esponji</a><nav class="idiomas" aria-label="{'Idioma' if es else 'Language'}"><a href="/prensa" lang="es" {'aria-current="page"' if es else ''}>ES</a><a href="/press" lang="en" {'' if es else 'aria-current="page"'}>EN</a></nav></div></header>
 <main id="contenido">
-<section class="prensa-hero"><div class="envoltura prensa-intro"><div><p class="prensa-etiqueta">{'Para medios y creadores' if es else 'For media and creators'}</p><h1>{d['kit']}</h1><p class="prensa-lema">{d['tagline']}</p><p>{d['intro']}</p><div class="prensa-acciones"><a class="boton" href="{pdf}" download>{download} PDF</a><a class="prensa-secundario" href="#materiales" >{'Ver imágenes y vídeos' if es else 'Browse images and videos'}</a></div></div><figure class="prensa-destacada"><img src="/assets/img/leones.webp" alt="{'Los leones en su recinto del juego' if es else 'Lions in their enclosure in the game'}" width="960" height="540"><figcaption>Android · PEGI 3 · 11 {'idiomas' if es else 'languages'}</figcaption></figure></div></section>
+<section class="prensa-hero"><div class="envoltura prensa-intro"><div><p class="prensa-etiqueta">{'Para medios y creadores' if es else 'For media and creators'}</p><h1>{d['kit']}</h1><p class="prensa-lema">{d['tagline']}</p><p>{d['intro']}</p><div class="prensa-acciones"><a class="boton" href="{pdf}" download>{download} PDF</a><a class="prensa-secundario" href="#materiales" >{'Ver imágenes y vídeos' if es else 'Browse images and videos'}</a></div></div><figure class="prensa-destacada"><img src="{REL}/miniaturas/comer.webp" alt="{'Tembo, el elefante, encantado con su comida' if es else 'Tembo the elephant loving his food'}" width="960" height="540"><figcaption>Android · PEGI 3 · 11 {'idiomas' if es else 'languages'}</figcaption></figure></div></section>
 <nav class="prensa-nav envoltura" aria-label="{'En esta página' if es else 'On this page'}">{''.join('<a href="#'+i+'">'+label+'</a>' for i,label in anchors)}</nav>
 <div class="envoltura prensa-columnas"><section id="{anchors[0][0]}">{story}</section><aside id="{anchors[1][0]}" class="prensa-ficha"><h2>{d['factsTitle']}</h2><ul>{''.join('<li>'+e(x)+'</li>' for x in d['facts'])}</ul><a class="boton" href="{e(PLAY)}">Google Play</a></aside></div>
 <section class="envoltura prensa-bloque"><h2>{d['playTitle']}</h2>{paras(d['play'])}<h3>{d['privacyTitle']}</h3>{paras(d['privacy'])}<a href="{'/privacidad' if es else '/privacy'}">{d['links'][2]}</a></section>
-<section id="{anchors[2][0]}" class="prensa-materiales"><div class="envoltura"><h2>{d['resourcesTitle']}</h2><p>{d['resources']}</p><a class="boton" href="{REL}/zoo-esponji-imagenes.zip" download>{download} ZIP · {mb:.2f} MB</a><p class="prensa-detalle">{'Contenido: 4 capturas PNG (1920 × 1080), logo PNG transparente (2048 × 2048), icono PNG (512 × 512), condiciones y enlaces a los tráileres. Sin vídeos dentro del ZIP.' if es else 'Contents: 4 PNG screenshots (1920 × 1080), transparent PNG logo (2048 × 2048), PNG icon (512 × 512), terms and trailer links. The ZIP contains no video files.'}</p><div class="funciones">{cards}</div>
-<div class="prensa-logo"><img src="{REL}/identidad/icono-512.png" alt="{'Logo del león de Zoo Esponji' if es else 'Zoo Esponji lion logo'}" width="110" height="110" loading="lazy"><div><h3>{'Logo e icono' if es else 'Logo and icon'}</h3><a href="{REL}/identidad/leon-icono-master.png" download>PNG · 2048 × 2048</a> · <a href="{REL}/identidad/icono-512.png" download>PNG · 512 × 512</a></div></div>
+<section id="{anchors[2][0]}" class="prensa-materiales"><div class="envoltura"><h2>{d['resourcesTitle']}</h2><p>{d['resources']}</p><a class="boton" href="{REL}/zoo-esponji-imagenes.zip" download>{download} ZIP · {mb:.2f} MB</a><p class="prensa-detalle">{'Contenido: 6 capturas PNG (1920 × 1080), logo PNG transparente (2048 × 2048 y 512 × 512), icono de la app PNG (512 × 512), condiciones y enlaces a los tráileres. Sin vídeos dentro del ZIP.' if es else 'Contents: 6 PNG screenshots (1920 × 1080), transparent PNG logo (2048 × 2048 and 512 × 512), PNG app icon (512 × 512), terms and trailer links. The ZIP contains no video files.'}</p><div class="funciones">{cards}</div>
+<div class="prensa-logo"><img src="{REL}/identidad/logo-512.png" alt="{'Logo del león de Zoo Esponji' if es else 'Zoo Esponji lion logo'}" width="110" height="110" loading="lazy"><div><h3>Logo</h3><a href="{REL}/identidad/leon-icono-master.png" download>PNG · 2048 × 2048</a> · <a href="{REL}/identidad/logo-512.png" download>PNG · 512 × 512</a></div></div>
+<div class="prensa-logo"><img src="{REL}/identidad/icono-512.png" alt="{'Icono de la app: el león con su moneda' if es else 'App icon: the lion with his coin'}" width="110" height="110" loading="lazy"><div><h3>{'Icono de la app' if es else 'App icon'}</h3><p>{'El que se ve en el móvil y en Google Play.' if es else 'As seen on phones and on Google Play.'}</p><a href="{REL}/identidad/icono-512.png" download>PNG · 512 × 512</a></div></div>
 <h3>{'Tráileres oficiales' if es else 'Official trailers'}</h3><p><a href="{TRAILERS[0]}">{d['links'][4]} · YouTube</a> · <a href="{TRAILERS[1]}">{d['links'][5]} · YouTube</a></p>
 <h3 id="{'idiomas' if es else 'languages'}">{'El dossier en los 11 idiomas del juego' if es else 'The press kit in all 11 game languages'}</h3><ul class="prensa-idiomas">{languageLinks}</ul></div></section>
 <section id="{'uso-editorial' if es else 'editorial-use'}" class="envoltura prensa-bloque"><h2>{d['rightsTitle']}</h2>{paras(d['rights'])}<a href="{REL}/{'Uso_editorial_de_materiales.txt' if es else 'Editorial_use.txt'}">{'Condiciones y créditos completos' if es else 'Full terms and credits'}</a></section>

@@ -12,9 +12,9 @@ python -m venv <carpeta-temporal>/venv
 <carpeta-temporal>/venv/Scripts/python.exe web/prensa/build.py
 ```
 
-Desde la raíz del repositorio. Los avisos `MERG NOT subset` de fontTools son normales. Las fuentes se buscan en `C:/Windows/Fonts` o en `PRESS_FONTS_DIR`: arial.ttf, tahoma.ttf, Nirmala.ttc, msyh.ttc y YuGothR.ttc. No se copian los archivos de fuentes al repositorio; los PDF incorporan subconjuntos. Mantener las imágenes y el ZIP de `public/assets/prensa/20261102b` antes de regenerar. Revisar visualmente las dos páginas de cada idioma después de cambiar textos. Las traducciones no cuentan con revisión profesional externa.
+Desde la raíz del repositorio. Los avisos `MERG NOT subset` de fontTools son normales. Las fuentes se buscan en `C:/Windows/Fonts` o en `PRESS_FONTS_DIR`: arial.ttf, tahoma.ttf, Nirmala.ttc, msyh.ttc y YuGothR.ttc. No se copian los archivos de fuentes al repositorio; los PDF incorporan subconjuntos. Mantener las imágenes y el ZIP de la carpeta de la edición actual (`STAMP`) antes de regenerar. Revisar visualmente las dos páginas de cada idioma después de cambiar textos. Las traducciones no cuentan con revisión profesional externa.
 
-El generador actualiza únicamente los once PDF y las dos páginas. La navegación, rutas, CSS y ZIP se mantienen aparte. Los textos HTML proceden del mismo JSON que los PDF; la cabecera y el pie se derivan de las portadas existentes para mantener metadatos, fuentes y consentimiento. No editar el HTML generado para cambiar textos del dossier.
+El generador actualiza únicamente los once PDF y las dos páginas. La navegación, rutas, CSS, miniaturas y ZIP se mantienen aparte (ver «Materiales y permisos»). Los textos HTML proceden del mismo JSON que los PDF; la cabecera y el pie se derivan de las portadas existentes para mantener metadatos, fuentes y consentimiento. No editar el HTML generado para cambiar textos del dossier.
 
 **Nombre de contacto:** David Plaza (no «David Pladel»; `davidpladel` es solo el nombre de la cuenta de desarrollador y del dominio del correo). Está en `CONTACT` de `build.py` (contacto y autor de los PDF) y en la ficha de cada idioma de `dossiers.json` («Proyecto familiar…»).
 
@@ -22,7 +22,9 @@ El generador actualiza únicamente los once PDF y las dos páginas. La navegaci�
 
 ## Materiales y permisos
 
-ZIP: cuatro capturas originales PNG de 1920 × 1080, logo transparente PNG de 2048 × 2048, icono PNG de 512 × 512, condiciones ES/EN y enlaces a los tráileres. Sin vídeos pesados, sprites, datos de contactos ni fotografías de menores. Las descargas individuales usan las mismas imágenes. Las condiciones son de uso editorial, no una cesión de propiedad o de los recursos licenciados.
+ZIP: seis capturas originales PNG de 1920 × 1080 (`capturas/`), el logo (el león sentado, el de la web y la portada del libro) transparente en PNG de 2048 × 2048 (`identidad/leon-icono-master.png`) y de 512 × 512 (`identidad/logo-512.png`), el icono de la app (el león con la moneda, el de Play y el móvil desde la 2.11.0) en PNG de 512 × 512 (`identidad/icono-512.png`, copia de `game/store/play/icono-512.png`), condiciones ES/EN y enlaces a los tráileres. Sin vídeos pesados, sprites, datos de contactos ni fotografías de menores. Las descargas individuales usan las mismas imágenes; las de la página son miniaturas WebP de 960 × 540 en `miniaturas/` de la misma carpeta. El ZIP se rehace a mano con esos archivos (sin PDF ni miniaturas).
+
+**Capturas sin cerdos:** el kit es uno para todos los idiomas, árabe incluido, así que se eligen capturas en las que no salen cerdos (como en las fichas de Play de países de mayoría musulmana). Edición 20261126: zona de los leones, Tembo comiendo (también en la portada de los PDF y de la página), baño de Tembo, panteras, tienda y libro. Salen de `game/store/out/` (`galeria/es-*`, `es-tembo-01.png` con `node shots-cerdo.mjs es tembo elefantes-africanos`, `tienda.png`, `libro-mary.png`). **Los nombres de fichero se mantienen** (`captura-1-leones.png`, `captura-4-tienda.png`…) para que la redirección de las carpetas viejas caiga en una imagen equivalente; si una captura nueva no tiene equivalente, lleva nombre nuevo (`captura-2-comer.png`, `captura-3-banar.png`). Las condiciones son de uso editorial, no una cesión de propiedad o de los recursos licenciados.
 
 ## Medición y privacidad
 
@@ -45,7 +47,10 @@ Los assets tienen caché de 10 años en el navegador: **nunca sobrescribir un de
 
 1. `git mv` de la carpeta actual a una nueva (fecha, o fecha + letra si es el mismo día: `20261102` → `20261102b`).
 2. Cambiar `STAMP` en `build.py` (también sube el `?v=` de `prensa.css`) y regenerar.
-3. Publicar la carpeta nueva y las dos páginas. La vieja se queda sin enlaces, pero sigue respondiendo.
-4. Con permiso de David, borrar la carpeta vieja del servidor después de guardar `~/copia-web/prensa-<carpeta>-borrada.tgz`.
+3. Redirigir las carpetas viejas a la nueva en `web/public/.htaccess` (regla «Ediciones viejas del kit de prensa»).
+   Si cambian imágenes o el ZIP, rehacer también las miniaturas y el ZIP (ver «Materiales y permisos»).
+4. Publicar la carpeta nueva, `.htaccess`, `prensa.css` y las dos páginas. La vieja deja de servirse: sus direcciones
+   llevan a la nueva con un 301.
+5. Con permiso de David, borrar la carpeta vieja del servidor después de guardar `~/copia-web/prensa-<carpeta>-borrada.tgz`.
 
-Historial: `20261102` (primera edición, borrada el 2026-11-02) → `20261102b` (contacto «David Plaza») → `20261116` (insignia «Aprobada por profesores» de Google Play). Las direcciones de los PDF de `20261102b` redirigen a los de `20261116`.
+Historial: `20261102` (primera edición, borrada el 2026-11-02) → `20261102b` (contacto «David Plaza») → `20261116` (insignia «Aprobada por profesores» de Google Play) → `20261126` (icono nuevo de la app separado del logo, seis capturas del mapa nuevo con baño, textos con el baño y la clínica, icono hecho con ChatGPT en los créditos). Las direcciones de `20261102b` y `20261116` redirigen a las de `20261126` (una sola regla en `web/public/.htaccess`: al sacar edición nueva se cambia el destino y se añade la carpeta anterior a la lista).
